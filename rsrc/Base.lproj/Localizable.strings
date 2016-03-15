@@ -1,0 +1,43 @@
+"lbl_cancel" = "Cancel";
+"lbl_ok" = "OK";
+"lbl_optional" = "Optional";
+"lbl_by" = "by";
+"lbl_played" = "played";
+
+"lbl_track" = "track";
+"lbl_minute" = "minute";
+"lbl_second" = "second";
+"lbl_play" = "Play";
+"lbl_pause" = "Pause";
+"lbl_shuffle_enable" = "Enable shuffle";
+"lbl_shuffle_disable" = "Disable shuffle";
+"lbl_repeat_enable" = "Enable repeat";
+"lbl_repeat_disable" = "Disable repeat";
+"lbl_header_albums_count" = "Album";
+"lbl_header_server_cfg" = "Server configuration";
+
+"lbl_alert_playalbum" = "Play";
+"lbl_alert_playalbum_shuffle" = "Shuffle";
+"lbl_alert_playalbum_addqueue" = "Add to queue";
+"lbl_alert_servercfg_error" = "Server configuration error";
+"lbl_alert_servercfg_error_msg" = "Invalid parameters";
+"lbl_alert_servercfg_error_host" = "Server parameter invalid";
+
+"lbl_server_name" = "Name";
+"lbl_server_host" = "Server";
+"lbl_server_port" = "Port";
+"lbl_server_password" = "Password";
+"lbl_server_defaultname" = "My MPD Server";
+"lbl_server_coverurl" = "URL";
+"lbl_server_covername" = "Cover filename";
+"lbl_server_coverclearcache" = "Clear cache";
+"lbl_server_section_cover" = "Cover Art";
+"lbl_server_section_server" = "MPD server";
+
+"lbl_section_home" = "Home";
+"lbl_section_server" = "Server";
+"lbl_section_settings" = "Settings";
+
+/* accessibility */
+"vo_displaymenu" = "Display navigation menu";
+"vo_hidemenu" = "Hide navigation menu";
