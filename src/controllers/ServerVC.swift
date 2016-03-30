@@ -210,10 +210,7 @@ final class ServerVC : MenuVC
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
 		let rawFrame = value.CGRectValue
 		let keyboardFrame = self.view.convertRect(rawFrame, fromView:nil)
-		Logger.dlog(keyboardFrame)
-		Logger.dlog(self.tableView.frame)
 		self.tableView.frame = CGRect(self.tableView.frame.origin, self.tableView.frame.width, self.tableView.frame.height - keyboardFrame.height)
-		Logger.dlog(self.tableView.frame)
 		self._keyboardVisible = true
 	}
 
@@ -223,9 +220,7 @@ final class ServerVC : MenuVC
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
 		let rawFrame = value.CGRectValue
 		let keyboardFrame = self.view.convertRect(rawFrame, fromView:nil)
-		Logger.dlog(keyboardFrame)
 		self.tableView.frame = CGRect(self.tableView.frame.origin, self.tableView.frame.width, self.tableView.frame.height + keyboardFrame.height)
-		//Logger.dlog(keyboardFrame)
 		self._keyboardVisible = false
 	}
 }
