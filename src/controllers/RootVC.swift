@@ -80,11 +80,11 @@ final class RootVC : MenuVC
 		sb.showsCancelButton = true
 		sb.delegate = self
 		searchView.addSubview(sb)
-		searchView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, searchView.height - 2.0, searchView.width + 4.0, 4.0)).CGPath
+		/*searchView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, searchView.height - 2.0, searchView.width + 4.0, 4.0)).CGPath
 		searchView.layer.shadowRadius = 3.0
 		searchView.layer.shadowOpacity = 1.0
 		searchView.layer.shadowColor = UIColor.blackColor().CGColor
-		searchView.layer.masksToBounds = false
+		searchView.layer.masksToBounds = false*/
 
 		// Navigation bar title
 		self.titleView = UIButton(frame:CGRect(0.0, 0.0, 100.0, navigationBar.height))
@@ -95,7 +95,7 @@ final class RootVC : MenuVC
 		self.titleView.setAttributedTitle(astr, forState:.Normal)
 		let astr2 = NSAttributedString(string:"Albums", attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont.systemFontOfSize(14.0), NSParagraphStyleAttributeName : p])
 		self.titleView.setAttributedTitle(astr2, forState:.Highlighted)
-		self.titleView.addTarget(self, action:"changeTypeAction:", forControlEvents:.TouchUpInside)
+		self.titleView.addTarget(self, action:#selector(RootVC.changeTypeAction(_:)), forControlEvents:.TouchUpInside)
 		self.navigationItem.titleView = self.titleView
 
 		// Create collection view
@@ -109,21 +109,21 @@ final class RootVC : MenuVC
 		self.view.addSubview(self.collectionView)
 
 		// Longpress
-		let longPress = UILongPressGestureRecognizer(target:self, action:"longPress:")
+		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(RootVC.longPress(_:)))
 		longPress.minimumPressDuration = 0.5
 		longPress.delaysTouchesBegan = true
 		self.collectionView.addGestureRecognizer(longPress)
 
 		// Double tap
-		let doubleTap = UITapGestureRecognizer(target:self, action:"doubleTap:")
+		let doubleTap = UITapGestureRecognizer(target:self, action:#selector(RootVC.doubleTap(_:)))
 		doubleTap.numberOfTapsRequired = 2
 		doubleTap.numberOfTouchesRequired = 1
 		doubleTap.delaysTouchesBegan = true
 		self.collectionView.addGestureRecognizer(doubleTap)
 
 		// Register to some notifications
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"miniPlayerWillShow:", name:kNYXNotificationMiniPlayerViewWillShow, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"miniPlayerWillHide:", name:kNYXNotificationMiniPlayerViewWillHide, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(RootVC.miniPlayerWillShow(_:)), name:kNYXNotificationMiniPlayerViewWillShow, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(RootVC.miniPlayerWillHide(_:)), name:kNYXNotificationMiniPlayerViewWillHide, object:nil)
 		_ = MiniPlayerView.shared.visible
 	}
 

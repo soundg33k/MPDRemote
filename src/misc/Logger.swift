@@ -25,7 +25,7 @@ import Foundation
 
 final class Logger
 {
-	class func dlog(items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = __FILE__, _ function: String = __FUNCTION__, _ line: Int = __LINE__)
+	class func dlog(items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = #file, _ function: String = #function, _ line: Int = #line)
 	{
 #if NYX_DEBUG
 		let stringItem = items.map{"\($0)"}.joinWithSeparator(separator)
@@ -33,7 +33,7 @@ final class Logger
 #endif
 	}
 
-	class func alog(items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = __FILE__, _ function: String = __FUNCTION__, _ line: Int = __LINE__)
+	class func alog(items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = #file, _ function: String = #function, _ line: Int = #line)
 	{
 		let stringItem = items.map{"\($0)"}.joinWithSeparator(separator)
 		Swift.print("\(stringItem)", terminator:terminator)

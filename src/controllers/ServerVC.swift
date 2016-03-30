@@ -62,12 +62,12 @@ final class ServerVC : MenuVC
 		navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : headerColor]
 		navigationBar.setBackgroundImage(UIImage(), forBarPosition:.Any, barMetrics:.Default)
 		navigationBar.shadowImage = UIImage()
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:"validateSettingsAction:")
-		navigationBar.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).CGPath
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:#selector(ServerVC.validateSettingsAction(_:)))
+		/*navigationBar.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).CGPath
 		navigationBar.layer.shadowRadius = 3.0
 		navigationBar.layer.shadowOpacity = 1.0
 		navigationBar.layer.shadowColor = UIColor.blackColor().CGColor
-		navigationBar.layer.masksToBounds = false
+		navigationBar.layer.masksToBounds = false*/
 
 		// Navigation bar title
 		let titleView = UILabel(frame:CGRect(0.0, 0.0, 100.0, 44.0))
@@ -87,8 +87,8 @@ final class ServerVC : MenuVC
 		self.tableView.rowHeight = 44.0
 		self.view.addSubview(self.tableView)
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"keyboardDidShowNotification:", name:UIKeyboardDidShowNotification, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"keyboardDidHideNotification:", name:UIKeyboardDidHideNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(ServerVC.keyboardDidShowNotification(_:)), name:UIKeyboardDidShowNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(ServerVC.keyboardDidHideNotification(_:)), name:UIKeyboardDidHideNotification, object:nil)
 	}
 
 	override func viewWillAppear(animated: Bool)
