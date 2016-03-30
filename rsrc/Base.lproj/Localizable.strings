@@ -9,6 +9,8 @@
 "lbl_second" = "second";
 "lbl_play" = "Play";
 "lbl_pause" = "Pause";
+"lbl_next_track" = "Next track";
+"lbl_previous_track" = "Previous track";
 "lbl_shuffle_enable" = "Enable shuffle";
 "lbl_shuffle_disable" = "Disable shuffle";
 "lbl_repeat_enable" = "Enable repeat";
