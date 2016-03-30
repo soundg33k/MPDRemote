@@ -77,7 +77,7 @@ final class MiniPlayerView : UIView
 		self.btnPlayback = UIButton(type:.Custom)
 		self.btnPlayback.frame = CGRect(0.0, 0.0, frame.height, frame.height)
 		self.btnPlayback.setImage(UIImage(named:"btn-play"), forState:.Normal)
-		self.btnPlayback.addTarget(self, action:"changePlaybackAction:", forControlEvents:.TouchUpInside)
+		self.btnPlayback.addTarget(self, action:#selector(MiniPlayerView.changePlaybackAction(_:)), forControlEvents:.TouchUpInside)
 		self.btnPlayback.tag = PlayerStatus.Stopped.rawValue
 		self.btnPlayback.isAccessibilityElement = true
 		vibrancyEffectView.contentView.addSubview(self.btnPlayback)
@@ -107,7 +107,7 @@ final class MiniPlayerView : UIView
 		self.progressView.isAccessibilityElement = false
 		self.addSubview(self.progressView)
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"playingTrack:", name:kNYXNotificationCurrentPlayingTrack, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(MiniPlayerView.playingTrack(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
 
 		let w = UIApplication.sharedApplication().keyWindow!
 		w.addSubview(self)

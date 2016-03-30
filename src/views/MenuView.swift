@@ -91,7 +91,7 @@ final class MenuView : UIView
 		self.blurEffectView.contentView.addSubview(self.tableView)
 
 		// Pan
-		self.pan = UIPanGestureRecognizer(target:self, action:"pan:")
+		self.pan = UIPanGestureRecognizer(target:self, action:#selector(MenuView.pan(_:)))
 		self.pan.delegate = self
 		self.pan.enabled = false
 		self.addGestureRecognizer(self.pan)

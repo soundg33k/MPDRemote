@@ -135,9 +135,9 @@ final class KawaiiColors
 		var rawEdgeColors: [[[UInt]]] = [[[UInt]]](count:pp, repeatedValue:[[UInt]](count:pp, repeatedValue:[UInt](count:pp, repeatedValue:0)))
 
 		let edge = self.samplingEdge == .Left ? 0 : width - 1
-		for var y = 0; y < height; y++
+		for y in 0 ..< height
 		{
-			for var x = 0; x < width; x++
+			for x in 0 ..< width
 			{
 				let index = x + y * width
 				let pixel = pixels[index]
@@ -155,11 +155,11 @@ final class KawaiiColors
 		var edgeColors = [CountedObject<UIColor>]()
 
 		let ppf = CGFloat(pp)
-		for var b = 0; b < pp; b++
+		for b in 0 ..< pp
 		{
-			for var g = 0; g < pp; g++
+			for g in 0 ..< pp
 			{
-				for var r = 0; r < pp; r++
+				for r in 0 ..< pp
 				{
 					var count = rawImageColors[r][g][b]
 					if count > __threshold
@@ -191,7 +191,7 @@ final class KawaiiColors
 			var proposedEdgeColor = edgeColors[0]
 			if proposedEdgeColor.object.isBlackOrWhite() // want to choose color over black/white so we keep looking
 			{
-				for var i = 1; i < edgeColors.count; i++
+				for i in 1 ..< edgeColors.count
 				{
 					let nextProposedColor = edgeColors[i]
 

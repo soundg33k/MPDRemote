@@ -104,7 +104,7 @@ final class DetailVC : UIViewController
 		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
 		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
 		self.btnRandom.selected = random
-		self.btnRandom.addTarget(self, action:"toggleRandomAction:", forControlEvents:.TouchUpInside)
+		self.btnRandom.addTarget(self, action:#selector(DetailVC.toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
 		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_shuffle_disable" : "lbl_shuffle_enable")
 		self.navigationController?.navigationBar.addSubview(self.btnRandom)
 
@@ -115,15 +115,15 @@ final class DetailVC : UIViewController
 		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
 		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
 		self.btnRepeat.selected = loop
-		self.btnRepeat.addTarget(self, action:"toggleRepeatAction:", forControlEvents:.TouchUpInside)
+		self.btnRepeat.addTarget(self, action:#selector(DetailVC.toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
 		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
 
 		// Notif for frame
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"miniPlayerWillShow:", name:kNYXNotificationMiniPlayerViewWillShow, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"miniPlayerWillHide:", name:kNYXNotificationMiniPlayerViewWillHide, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"currentPlayingTrackChanged:", name:kNYXNotificationCurrentPlayingTrackChanged, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"currentPlayingStatusChanged:", name:kNYXNotificationPlayerStatusChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(DetailVC.miniPlayerWillShow(_:)), name:kNYXNotificationMiniPlayerViewWillShow, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(DetailVC.miniPlayerWillHide(_:)), name:kNYXNotificationMiniPlayerViewWillHide, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(DetailVC.currentPlayingTrackChanged(_:)), name:kNYXNotificationCurrentPlayingTrackChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(DetailVC.currentPlayingStatusChanged(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 	}
 
 	override func viewWillAppear(animated: Bool)
@@ -411,11 +411,13 @@ extension DetailVC : UITableViewDelegate
 					let cell = tableView.cellForRowAtIndexPath(indexPath) as? TrackTableViewCell
 					if MPDPlayer.shared.status == .Playing
 					{
-						cell?.imgPlayback.image = UIImage(named:"btn-play")
+						let img = UIImage(named:"btn-play")
+						cell?.imgPlayback.image = img
 					}
 					else
 					{
-						cell?.imgPlayback.image = UIImage(named:"btn-pause")
+						let img = UIImage(named:"btn-pause")
+						cell?.imgPlayback.image = img
 					}
 					MPDPlayer.shared.togglePausePlayback()
 					return

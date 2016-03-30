@@ -62,7 +62,7 @@ extension String
 		}
 
 		let ret = NSMutableString()
-		for var i = 0; i < Int(CC_MD5_DIGEST_LENGTH); i++
+		for i in 0 ..< Int(CC_MD5_DIGEST_LENGTH)
 		{
 			ret.appendFormat("%02x", Int(digest[i]))
 		}
