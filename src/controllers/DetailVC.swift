@@ -204,6 +204,8 @@ final class DetailVC : UIViewController
 
 		prefs.setBool(random, forKey:kNYXPrefRandom)
 		prefs.synchronize()
+
+		MPDPlayer.shared.setRandom(random)
 	}
 
 	func toggleRepeatAction(sender: AnyObject?)
@@ -216,6 +218,8 @@ final class DetailVC : UIViewController
 		
 		prefs.setBool(loop, forKey:kNYXPrefRepeat)
 		prefs.synchronize()
+
+		MPDPlayer.shared.setRepeat(loop)
 	}
 
 	// MARK: - Notifications
