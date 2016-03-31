@@ -130,6 +130,14 @@ final class DetailVC : UIViewController
 	{
 		super.viewWillAppear(animated)
 
+		// Add navbar shadow
+		let navigationBar = self.navigationController!.navigationBar
+		navigationBar.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).CGPath
+		navigationBar.layer.shadowRadius = 3.0
+		navigationBar.layer.shadowOpacity = 1.0
+		navigationBar.layer.shadowColor = UIColor.blackColor().CGColor
+		navigationBar.layer.masksToBounds = false
+
 		// Update header
 		self._updateHeader()
 
@@ -163,6 +171,13 @@ final class DetailVC : UIViewController
 	override func viewWillDisappear(animated: Bool)
 	{
 		super.viewWillDisappear(animated)
+
+		// Remove navbar shadow
+		let navigationBar = self.navigationController!.navigationBar
+		navigationBar.layer.shadowPath = nil
+		navigationBar.layer.shadowRadius = 0.0
+		navigationBar.layer.shadowOpacity = 0.0
+
 		// Buttons display
 		self.btnRandom.alpha = 0.0
 		self.btnRepeat.alpha = 0.0

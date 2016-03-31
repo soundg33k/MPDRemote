@@ -80,11 +80,6 @@ final class RootVC : MenuVC
 		sb.showsCancelButton = true
 		sb.delegate = self
 		searchView.addSubview(sb)
-		/*searchView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, searchView.height - 2.0, searchView.width + 4.0, 4.0)).CGPath
-		searchView.layer.shadowRadius = 3.0
-		searchView.layer.shadowOpacity = 1.0
-		searchView.layer.shadowColor = UIColor.blackColor().CGColor
-		searchView.layer.masksToBounds = false*/
 
 		// Navigation bar title
 		self.titleView = UIButton(frame:CGRect(0.0, 0.0, 100.0, navigationBar.height))

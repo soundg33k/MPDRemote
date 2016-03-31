@@ -63,11 +63,6 @@ final class ServerVC : MenuVC
 		navigationBar.setBackgroundImage(UIImage(), forBarPosition:.Any, barMetrics:.Default)
 		navigationBar.shadowImage = UIImage()
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:#selector(ServerVC.validateSettingsAction(_:)))
-		/*navigationBar.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).CGPath
-		navigationBar.layer.shadowRadius = 3.0
-		navigationBar.layer.shadowOpacity = 1.0
-		navigationBar.layer.shadowColor = UIColor.blackColor().CGColor
-		navigationBar.layer.masksToBounds = false*/
 
 		// Navigation bar title
 		let titleView = UILabel(frame:CGRect(0.0, 0.0, 100.0, 44.0))
