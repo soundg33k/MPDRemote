@@ -196,7 +196,7 @@ final class RootVC : MenuVC
 			if let indexPath = self.collectionView.indexPathForItemAtPoint(point)
 			{
 				let album = self.searching ? self.searchResults[indexPath.row] : MPDDataSource.shared.albums[indexPath.row]
-				MPDPlayer.shared.playAlbum(album, random:false, loop:false)
+				MPDPlayer.shared.playAlbum(album, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
 			}
 		}
 	}
