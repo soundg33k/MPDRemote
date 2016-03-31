@@ -120,10 +120,10 @@ final class DetailVC : UIViewController
 		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
 
 		// Notif for frame
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(DetailVC.miniPlayerWillShow(_:)), name:kNYXNotificationMiniPlayerViewWillShow, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(DetailVC.miniPlayerWillHide(_:)), name:kNYXNotificationMiniPlayerViewWillHide, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(DetailVC.currentPlayingTrackChanged(_:)), name:kNYXNotificationCurrentPlayingTrackChanged, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(DetailVC.currentPlayingStatusChanged(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(miniPlayerWillShow(_:)), name:kNYXNotificationMiniPlayerViewWillShow, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(miniPlayerWillHide(_:)), name:kNYXNotificationMiniPlayerViewWillHide, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingTrackChanged(_:)), name:kNYXNotificationCurrentPlayingTrackChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingStatusChanged(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 	}
 
 	override func viewWillAppear(animated: Bool)
