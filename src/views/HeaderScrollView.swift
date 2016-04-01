@@ -28,7 +28,7 @@ protocol HeaderScrollViewDelegate : class
 	func requestNextAlbum() -> Album?
 	func requestPreviousAlbum() -> Album?
 	func shouldShowNextAlbum() -> Bool
-	func shouldPreviousNextAlbum() -> Bool
+	func shouldShowPreviousAlbum() -> Bool
 }
 
 
@@ -177,7 +177,7 @@ extension HeaderScrollView : UIScrollViewDelegate
 			{
 				scrollView.contentInset = UIEdgeInsets(top:0.0, left:-scrollView.frame.width, bottom:0.0, right:0.0)
 				self.fromLeft = true
-				if !self.navDelegate.shouldPreviousNextAlbum()
+				if !self.navDelegate.shouldShowPreviousAlbum()
 				{
 					scrollView.contentInset = UIEdgeInsetsZero
 				}

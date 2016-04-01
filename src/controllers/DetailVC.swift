@@ -59,7 +59,7 @@ final class DetailVC : UIViewController
 		self.automaticallyAdjustsScrollViewInsets = false
 
 		// Navigation bar title
-		self.titleView = UILabel(frame:CGRect(0.0, 0.0, 100.0, 44.0))
+		self.titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
 		self.titleView.font = UIFont.systemFontOfSize(12.0)
 		self.titleView.numberOfLines = 2
 		self.titleView.textAlignment = .Center
@@ -69,14 +69,14 @@ final class DetailVC : UIViewController
 
 		// Album header view
 		let coverSize = NSKeyedUnarchiver.unarchiveObjectWithData(NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!) as! NSValue
-		self.headerView = HeaderScrollView(frame:CGRect(0.0, 0.0, self.view.frame.width, coverSize.CGSizeValue().height))
+		self.headerView = HeaderScrollView(frame:CGRect(CGPointZero, self.view.width, coverSize.CGSizeValue().height))
 		self.headerView.navDelegate = self
 		self.view.addSubview(self.headerView)
 
 		// Dummy tableview host
-		let yDecal = CGFloat(64.0) // at this point the self.view.height doesn't include the navbar height, so there's a decal
+		let yOffset = CGFloat(64.0) // at this point the self.view.height doesn't include the navbar height, so there's an offset
 		//let height = MiniPlayerView.shared.visible ? self.view.frame.height - self.headerView.frame.height - playerViewHeight - yDecal : self.view.frame.height - self.headerView.frame.height - yDecal
-		let height = self.view.frame.height - self.headerView.frame.height - yDecal
+		let height = self.view.frame.height - self.headerView.frame.height - yOffset
 		let dummy = UIView(frame:CGRect(0.0, self.headerView.frame.bottom, self.view.frame.width, height))
 		dummy.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, self.view.frame.width + 4.0, 4.0)).CGPath
 		dummy.layer.shadowRadius = 3.0
@@ -161,11 +161,6 @@ final class DetailVC : UIViewController
 			self._updateNavigationTitle()
 			self.tableView.reloadData()
 		}
-	}
-
-	override func viewDidAppear(animated: Bool)
-	{
-		super.viewDidAppear(animated)
 	}
 
 	override func viewWillDisappear(animated: Bool)
@@ -491,7 +486,7 @@ extension DetailVC : HeaderScrollViewDelegate
 		return false
 	}
 
-	func shouldPreviousNextAlbum() -> Bool
+	func shouldShowPreviousAlbum() -> Bool
 	{
 		if self.selectedIndex > 0
 		{

@@ -405,12 +405,14 @@ final class MPDConnection
 		let song = mpd_run_current_song(self._connection)
 		if song == nil
 		{
+			Logger.dlog("[!] No current song.")
 			return nil
 		}
 
 		let status = mpd_run_status(self._connection)
 		if status == nil
 		{
+			Logger.dlog("[!] No status.")
 			return nil
 		}
 
@@ -423,6 +425,7 @@ final class MPDConnection
 		{
 			return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state.rawValue]
 		}
+		Logger.dlog("[!] No matching album found.")
 		return nil
 	}
 
@@ -430,10 +433,12 @@ final class MPDConnection
 	{
 		return mpd_run_pause(self._connection, true)
 	}
+
 	func runPlayback() -> Bool
 	{
 		return mpd_run_play(self._connection)
 	}
+
 	func togglePause() -> Bool
 	{
 		return mpd_run_toggle_pause(self._connection)
@@ -450,6 +455,30 @@ final class MPDConnection
 	func setRepeat(loop: Bool)
 	{
 		if !mpd_run_repeat(self._connection, loop)
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+		}
+	}
+
+	func nextTrack()
+	{
+		if !mpd_run_next(self._connection)
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+		}
+	}
+
+	func previousTrack()
+	{
+		if !mpd_run_previous(self._connection)
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+		}
+	}
+
+	func setTrackPosition(position: Int, trackPosition: UInt32)
+	{
+		if !mpd_run_seek_pos(self._connection, trackPosition, UInt32(position))
 		{
 			Logger.dlog(self._getErrorMessageForConnection(self._connection))
 		}
@@ -480,9 +509,12 @@ final class MPDConnection
 		// uri
 		tmp = mpd_song_get_uri(song)
 		let uri = NSString(bytes:tmp, length:Int(strlen(tmp)), encoding:NSUTF8StringEncoding) as! String
+		// Position in the queue
+		let pos = mpd_song_get_pos(song)
 		
 		// create track
 		let track = Track(title:title, artist:artist, duration:Duration(seconds:UInt(duration)), trackNumber:Int(trackNumber)!, uri:uri)
+		track.position = pos
 		return track
 	}
 

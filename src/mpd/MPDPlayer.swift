@@ -32,7 +32,7 @@ enum PlayerStatus : Int
 }
 
 
-final class MPDPlayer
+final class MPDPlayer : NSObject
 {
 	// MARK: - Public properties
 	// Singletion instance
@@ -55,7 +55,7 @@ final class MPDPlayer
 	private var _timer: dispatch_source_t!
 
 	// MARK: - Initializers
-	init()
+	override init()
 	{
 		self._queue = dispatch_queue_create("io.whine.mpdremote.queue.player", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_DEFAULT, 0))
 	}
@@ -187,6 +187,42 @@ final class MPDPlayer
 
 		dispatch_async(self._queue, {
 			self._mpdConnection.setRandom(random)
+		})
+	}
+
+	func requestNextTrack()
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue, {
+			self._mpdConnection.nextTrack()
+		})
+	}
+
+	func requestPreviousTrack()
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue, {
+			self._mpdConnection.previousTrack()
+		})
+	}
+
+	func setTrackPosition(position: Int, trackPosition: UInt32)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue, {
+			self._mpdConnection.setTrackPosition(position, trackPosition:trackPosition)
 		})
 	}
 

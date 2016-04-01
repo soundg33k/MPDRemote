@@ -38,6 +38,7 @@ public let kNYXNotificationCurrentPlayingTrackChanged = "kNYXNotificationCurrent
 public let kNYXNotificationPlayerStatusChanged = "kNYXNotificationPlayerStatusChanged"
 public let kNYXNotificationMiniPlayerViewWillShow = "kNYXNotificationMiniPlayerViewWillShow"
 public let kNYXNotificationMiniPlayerViewWillHide = "kNYXNotificationMiniPlayerViewWillHide"
+public let kNYXNotificationMiniPlayerShouldExpand = "kNYXNotificationMiniPlayerShouldExpand"
 
 /* App color */
 public let kNYXAppColor = UInt(0x660000)

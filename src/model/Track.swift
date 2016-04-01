@@ -36,6 +36,8 @@ final class Track : NSObject
 	var trackNumber: Int
 	// Track uri
 	var uri: String
+	// Position in the queue
+	var position: UInt32 = 0
 
 	// MARK: - Initializers
 	init(title: String, artist: String, duration: Duration, trackNumber: Int, uri: String)
@@ -50,7 +52,7 @@ final class Track : NSObject
 	// MARK: - Debugging
 	override var description: String
 	{
-		return "Title: <\(self.title)>\nArtist: <\(self.artist)>\nDuration: <\(self.duration)>\nTrack: <\(self.trackNumber)>\nURI: <\(self.uri)>"
+		return "Title: <\(self.title)>\nArtist: <\(self.artist)>\nDuration: <\(self.duration)>\nTrack: <\(self.trackNumber)>\nURI: <\(self.uri)>\nPosition: <\(self.position)>"
 	}
 }
 

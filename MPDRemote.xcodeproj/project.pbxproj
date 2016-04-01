@@ -10,6 +10,7 @@
 		1E2B80BE1C7EF97300D2273F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2B80B21C7EF97300D2273F /* LaunchScreen.storyboard */; };
 		1E2B80C81C7EF98B00D2273F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E2B80C71C7EF98B00D2273F /* Assets.xcassets */; };
 		1E3424361C948E8D009F6BF8 /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3424351C948E8D009F6BF8 /* Duration.swift */; };
+		1E441D4B1CAC048C009DCEF4 /* PlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E441D4A1CAC048C009DCEF4 /* PlayerVC.swift */; };
 		1E4CD4381C96CB9A00785FD2 /* CoreImageUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4CD4371C96CB9A00785FD2 /* CoreImageUtilities.swift */; };
 		1E5653981C908A310049C02D /* AlbumCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E56536F1C908A310049C02D /* AlbumCollectionViewCell.swift */; };
 		1E5653991C908A310049C02D /* TrackTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653701C908A310049C02D /* TrackTableViewCell.swift */; };
@@ -56,6 +57,7 @@
 		1E2B80B41C7EF97300D2273F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E2B80C71C7EF98B00D2273F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1E3424351C948E8D009F6BF8 /* Duration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Duration.swift; sourceTree = "<group>"; };
+		1E441D4A1CAC048C009DCEF4 /* PlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerVC.swift; sourceTree = "<group>"; };
 		1E4CD4371C96CB9A00785FD2 /* CoreImageUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreImageUtilities.swift; sourceTree = "<group>"; };
 		1E56536F1C908A310049C02D /* AlbumCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCollectionViewCell.swift; sourceTree = "<group>"; };
 		1E5653701C908A310049C02D /* TrackTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackTableViewCell.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 				1E5653741C908A310049C02D /* NYXNavigationController.swift */,
 				1E5653721C908A310049C02D /* DetailVC.swift */,
 				1E5653731C908A310049C02D /* MenuVC.swift */,
+				1E441D4A1CAC048C009DCEF4 /* PlayerVC.swift */,
 				1E5653751C908A310049C02D /* RootVC.swift */,
 				1E5653761C908A310049C02D /* ServerVC.swift */,
 			);
@@ -476,6 +479,7 @@
 				1E5653A11C908A310049C02D /* CGRect+Extensions.swift in Sources */,
 				1E5653AA1C908A310049C02D /* CountedObject.swift in Sources */,
 				1E5653B31C908A310049C02D /* MPDServer.swift in Sources */,
+				1E441D4B1CAC048C009DCEF4 /* PlayerVC.swift in Sources */,
 				1E5653A31C908A310049C02D /* String+Extensions.swift in Sources */,
 				1E5653A41C908A310049C02D /* UIColor+Extensions.swift in Sources */,
 				1E56539D1C908A310049C02D /* RootVC.swift in Sources */,

@@ -107,6 +107,12 @@ final class MiniPlayerView : UIView
 		self.progressView.isAccessibilityElement = false
 		self.addSubview(self.progressView)
 
+		// Single tap
+		let tap = UITapGestureRecognizer(target:self, action:#selector(singleTap(_:)))
+		tap.numberOfTapsRequired = 1
+		tap.numberOfTouchesRequired = 1
+		self.addGestureRecognizer(tap)
+
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(MiniPlayerView.playingTrack(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
 
 		let w = UIApplication.sharedApplication().keyWindow!
@@ -133,11 +139,12 @@ final class MiniPlayerView : UIView
 		}
 		else
 		{
+			let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
+			let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				let op = DownloadCoverOperation(album:album)
-				//op.completionBlock = {
-				op.cplBlock = {(cover: UIImage) in
+				let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
+				op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
 					dispatch_async(dispatch_get_main_queue(), {
 						self.setInfoFromTrack(track, ofAlbum:album)
 					})
@@ -147,9 +154,8 @@ final class MiniPlayerView : UIView
 			else
 			{
 				MPDDataSource.shared.findCoverPathForAlbum(album, callback:{
-					let op = DownloadCoverOperation(album:album)
-					//op.completionBlock = {
-					op.cplBlock = {(cover: UIImage) in
+					let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
+					op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
 						dispatch_async(dispatch_get_main_queue(), {
 							self.setInfoFromTrack(track, ofAlbum:album)
 						})
@@ -197,6 +203,12 @@ final class MiniPlayerView : UIView
 			self.btnPlayback.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 		MPDPlayer.shared.togglePausePlayback()
+	}
+
+	// MARK: - Private
+	func singleTap(gest: UITapGestureRecognizer)
+	{
+		NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerShouldExpand, object:nil)
 	}
 
 	// MARK: - Notifications

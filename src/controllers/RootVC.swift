@@ -86,8 +86,8 @@ final class RootVC : MenuVC
 		let p = NSMutableParagraphStyle()
 		p.alignment = .Center
 		p.lineBreakMode = .ByWordWrapping
-		let astr = NSAttributedString(string:"Albums", attributes:[NSForegroundColorAttributeName : UIColor.whiteColor(), NSFontAttributeName : UIFont.systemFontOfSize(14.0), NSParagraphStyleAttributeName : p])
-		self.titleView.setAttributedTitle(astr, forState:.Normal)
+		let astr1 = NSAttributedString(string:"Albums", attributes:[NSForegroundColorAttributeName : UIColor.whiteColor(), NSFontAttributeName : UIFont.systemFontOfSize(14.0), NSParagraphStyleAttributeName : p])
+		self.titleView.setAttributedTitle(astr1, forState:.Normal)
 		let astr2 = NSAttributedString(string:"Albums", attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont.systemFontOfSize(14.0), NSParagraphStyleAttributeName : p])
 		self.titleView.setAttributedTitle(astr2, forState:.Highlighted)
 		self.titleView.addTarget(self, action:#selector(RootVC.changeTypeAction(_:)), forControlEvents:.TouchUpInside)
@@ -316,25 +316,25 @@ extension RootVC : UICollectionViewDataSource
 			cell.image = UIImage(named:"default-cover")
 			return cell
 		}
-		if let cover = UIImage.loadFromURL(coverURL) //UIImage(contentsOfFile:coverURL.path!)
+		if let cover = UIImage.loadFromURL(coverURL)
 		{
 			cell.image = cover
 		}
 		else
 		{
 			cell.image = UIImage(named:"default-cover")
+			let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
+			let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				let op = DownloadCoverOperation(album:album)
+				let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
 				let key = album.name + album.year
 				weak var wo = op
-				//op.completionBlock = {
-				op.cplBlock = {(cover: UIImage) in
+				op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
 					dispatch_async(dispatch_get_main_queue(), {
 						if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
 						{
-							c.image = cover
-							//self.collectionView.reloadItemsAtIndexPaths([indexPath])
+							c.image = thumbnail
 						}
 					})
 					if let x = wo
@@ -351,16 +351,14 @@ extension RootVC : UICollectionViewDataSource
 			else
 			{
 				MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
-					let op = DownloadCoverOperation(album:album)
+					let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
 					let key = album.name + album.year
 					weak var wo = op
-					//op.completionBlock = {
-					op.cplBlock = {(cover: UIImage) in
+					op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
 						dispatch_async(dispatch_get_main_queue(), {
 							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
 							{
-								c.image = cover
-								//self.collectionView.reloadItemsAtIndexPaths([indexPath])
+								c.image = thumbnail
 							}
 						})
 						if let x = wo
@@ -515,7 +513,7 @@ extension RootVC : UISearchBarDelegate
 		if MPDDataSource.shared.albums.count > 0
 		{
 			self.searchResults = MPDDataSource.shared.albums.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
-			print(self.searchResults.count)
+			Logger.dlog(self.searchResults.count)
 			self.collectionView.reloadData()
 		}
 	}

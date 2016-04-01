@@ -57,13 +57,16 @@ final class DownloadCoverOperation : NSOperation
 	// MARK : Public properties
 	// Album
 	let album: Album
+	// Size of the thumbnail to create
+	let cropSize: CGSize
 	// Custom completion block
-	var cplBlock: ((UIImage) -> Void)? = nil
+	var cplBlock: ((UIImage, UIImage) -> Void)? = nil
 
 	// MARK: - Initializers
-	init(album: Album)
+	init(album: Album, cropSize: CGSize)
 	{
 		self.album = album
+		self.cropSize = cropSize
 	}
 
 	// MARK: - Override
@@ -80,6 +83,7 @@ final class DownloadCoverOperation : NSOperation
 		// No path for album, abort
 		guard let path = self.album.path else
 		{
+			Logger.alog("[!] No album art path defined.")
 			self.finished = true
 			return
 		}
@@ -87,11 +91,13 @@ final class DownloadCoverOperation : NSOperation
 		// No mpd server configured, abort
 		guard let serverAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefMPDServer) else
 		{
+			Logger.alog("[!] No MPD server configured.")
 			self.finished = true
 			return
 		}
 		guard let server = NSKeyedUnarchiver.unarchiveObjectWithData(serverAsData) as! MPDServer? else
 		{
+			Logger.alog("[!] No MPD server configured.")
 			self.finished = true
 			return
 		}
@@ -123,9 +129,7 @@ final class DownloadCoverOperation : NSOperation
 			self.album.hasCover = false
 			return
 		}
-		let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
-		let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
-		guard let thumbnail = cover.imageCroppedToFitSize(cropSize.CGSizeValue()) else
+		guard let thumbnail = cover.imageCroppedToFitSize(self.cropSize) else
 		{
 			self.album.hasCover = false
 			return
@@ -138,13 +142,9 @@ final class DownloadCoverOperation : NSOperation
 		UIImageJPEGRepresentation(thumbnail, 0.7)?.writeToURL(saveURL, atomically:true)
 		self.album.hasCover = true
 
-		/*if let cpl = self.completionBlock
-		{
-			cpl()
-		}*/
 		if let cpl = self.cplBlock
 		{
-			cpl(thumbnail)
+			cpl(thumbnail, cover)
 		}
 	}
 }

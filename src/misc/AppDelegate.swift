@@ -37,6 +37,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	private(set) lazy var serverVC: UIViewController = {
 		return NYXNavigationController(rootViewController:ServerVC())
 	}()
+	// Player VC
+	private(set) lazy var playerVC: PlayerVC = {
+		return PlayerVC()
+	}()
 
 	// MARK: - UIApplicationDelegate
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
@@ -55,6 +59,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		self.window = UIWindow()
 		self.window?.rootViewController = self.homeVC
 		self.window?.makeKeyAndVisible()
+
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:kNYXNotificationMiniPlayerShouldExpand, object:nil)
 
 		return true
 	}
@@ -81,5 +87,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 		NSUserDefaults.standardUserDefaults().registerDefaults(defaults)
 		NSUserDefaults.standardUserDefaults().synchronize()
+	}
+
+	// MARK: - Notifications
+	func miniPlayShouldExpandNotification(aNotification: NSNotification)
+	{
+		self.window?.rootViewController?.presentViewController(self.playerVC, animated:true, completion:nil)
+		MiniPlayerView.shared.stayHidden = true
+		MiniPlayerView.shared.hide()
 	}
 }
