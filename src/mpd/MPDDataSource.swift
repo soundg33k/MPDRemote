@@ -38,6 +38,8 @@ final class MPDDataSource : MPDConnectionDelegate
 	private var _mpdConnection: MPDConnection! = nil
 	// Serial queue for the connection
 	private let _queue: dispatch_queue_t
+	// Timer (1sec)
+	private var _timer: dispatch_source_t!
 
 	// MARK: - Initializers
 	init()
@@ -70,6 +72,7 @@ final class MPDDataSource : MPDConnectionDelegate
 		if ret
 		{
 			self._mpdConnection.delegate = self
+			self._startTimer(20.0)
 		}
 		else
 		{
@@ -130,5 +133,27 @@ final class MPDDataSource : MPDConnectionDelegate
 			self._mpdConnection.getMetadatasForAlbum(album)
 			callback()
 		})
+	}
+
+	// MARK: - Private
+	private func _startTimer(interval: Double)
+	{
+		self._timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self._queue)
+		dispatch_source_set_timer(self._timer, DISPATCH_TIME_NOW, UInt64(interval * Double(NSEC_PER_SEC)), UInt64(0.2 * Double(NSEC_PER_SEC))) // every interval seconds, with leeway of 0.2 second
+		dispatch_source_set_event_handler(self._timer) {
+			self._playerStatus()
+		}
+		dispatch_resume(self._timer)
+	}
+	
+	private func _stopTimer()
+	{
+		dispatch_source_cancel(self._timer)
+		self._timer = nil
+	}
+
+	private func _playerStatus()
+	{
+		self._mpdConnection.getStatus()
 	}
 }

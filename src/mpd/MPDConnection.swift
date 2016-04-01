@@ -484,6 +484,15 @@ final class MPDConnection
 		}
 	}
 
+	func getStatus()
+	{
+		let ret = mpd_run_status(self._connection)
+		if ret == nil
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+		}
+	}
+
 	// MARK: - Private
 	private func _getErrorMessageForConnection(connection: COpaquePointer) -> String
 	{
