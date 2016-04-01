@@ -164,9 +164,11 @@ extension MenuView : UITableViewDataSource
 		{
 			case 0:
 				title = NYXLocalizedString("lbl_section_home")
+				cell.imageView?.image = UIImage(named:"img-home")
 				selected = (APP_DELEGATE().window!.rootViewController === APP_DELEGATE().homeVC)
 			case 1:
 				title = NYXLocalizedString("lbl_section_server")
+				cell.imageView?.image = UIImage(named:"img-server")
 				selected = (APP_DELEGATE().window!.rootViewController === APP_DELEGATE().serverVC)
 			case __numberOfRows:
 				break
