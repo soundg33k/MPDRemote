@@ -67,7 +67,7 @@ final class MenuView : UIView
 		self.backgroundColor = UIColor.clearColor()
 		_menuMinX = -(frame.size.width + 2.0)
 
-		// Kikoo effect
+		// Blur effect
 		self.blurEffectView = UIVisualEffectView(effect:UIBlurEffect(style:.Light))
 		self.blurEffectView.frame = self.bounds
 		self.layer.shadowColor = UIColor.fromRGB(0xAAAAAA).CGColor
@@ -87,7 +87,8 @@ final class MenuView : UIView
 		self.tableView.scrollsToTop = false
 		self.tableView.scrollEnabled = false
 		self.tableView.separatorColor = UIColor.blackColor()
-		self.tableView.separatorInset = UIEdgeInsets(top:10.0, left:2.0, bottom:0.0, right:10.0)
+		self.tableView.separatorInset = UIEdgeInsetsZero
+		self.tableView.layoutMargins = UIEdgeInsetsZero
 		self.blurEffectView.contentView.addSubview(self.tableView)
 
 		// Pan
@@ -156,6 +157,7 @@ extension MenuView : UITableViewDataSource
 		cell.selectionStyle = .None
 		cell.backgroundColor = UIColor.clearColor()
 		cell.textLabel?.textColor = UIColor.blackColor()
+		cell.layoutMargins = UIEdgeInsetsZero
 		var title = ""
 		var selected = false
 		switch (indexPath.row)
