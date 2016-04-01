@@ -513,7 +513,6 @@ extension RootVC : UISearchBarDelegate
 		if MPDDataSource.shared.albums.count > 0
 		{
 			self.searchResults = MPDDataSource.shared.albums.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
-			Logger.dlog(self.searchResults.count)
 			self.collectionView.reloadData()
 		}
 	}
