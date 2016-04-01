@@ -156,7 +156,7 @@ extension HeaderScrollView : UIScrollViewDelegate
 		}
 		self.directionChanged = false
 	}
-	
+
 	func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool)
 	{
 		if scrollView.contentOffset.x >= self.coverWidth // next
@@ -184,7 +184,7 @@ extension HeaderScrollView : UIScrollViewDelegate
 			}
 		}
 	}
-	
+
 	func scrollViewWillBeginDecelerating(scrollView: UIScrollView)
 	{
 		if scrollView.contentOffset.x >= self.coverWidth // next
