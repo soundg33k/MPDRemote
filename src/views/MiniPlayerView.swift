@@ -208,7 +208,7 @@ final class MiniPlayerView : UIView
 			self.btnPlay.setImage(UIImage(named:"btn-pause")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
 			self.btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
-		MPDPlayer.shared.togglePausePlayback()
+		MPDPlayer.shared.togglePause()
 	}
 
 	// MARK: - Gestures

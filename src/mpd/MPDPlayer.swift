@@ -94,6 +94,7 @@ final class MPDPlayer : NSObject
 		return ret
 	}
 
+	// MARK: - Playing
 	func playAlbum(album: Album, random: Bool, loop: Bool)
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
@@ -118,31 +119,7 @@ final class MPDPlayer : NSObject
 		})
 	}
 
-	func addAlbumToQueue(album: Album)
-	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
-		{
-			return
-		}
-
-		dispatch_async(self._queue, {
-			self._mpdConnection.addAlbumToQueue(album)
-		})
-	}
-
-	func togglePausePlayback()
-	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
-		{
-			return
-		}
-
-		dispatch_async(self._queue, {
-			self._mpdConnection.togglePause()
-		})
-	}
-
-	func pausePlayback()
+	/*func pause()
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
 		{
@@ -154,7 +131,7 @@ final class MPDPlayer : NSObject
 		})
 	}
 
-	func runPlayback()
+	func play()
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
 		{
@@ -164,8 +141,35 @@ final class MPDPlayer : NSObject
 		dispatch_async(self._queue, {
 			self._mpdConnection.runPlayback()
 		})
+	}*/
+
+	// MARK: - Pausing
+	func togglePause()
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+		
+		dispatch_async(self._queue, {
+			self._mpdConnection.togglePause()
+		})
 	}
 
+	// MARK: - Add to queue
+	func addAlbumToQueue(album: Album)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+		
+		dispatch_async(self._queue, {
+			self._mpdConnection.addAlbumToQueue(album)
+		})
+	}
+
+	// MARK: - Repeat
 	func setRepeat(loop: Bool)
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
@@ -178,6 +182,7 @@ final class MPDPlayer : NSObject
 		})
 	}
 
+	// MARK: - Random
 	func setRandom(random: Bool)
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
@@ -190,6 +195,7 @@ final class MPDPlayer : NSObject
 		})
 	}
 
+	// MARK: - Tracks navigation
 	func requestNextTrack()
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
@@ -214,6 +220,7 @@ final class MPDPlayer : NSObject
 		})
 	}
 
+	// MARK: - Track position
 	func setTrackPosition(position: Int, trackPosition: UInt32)
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected

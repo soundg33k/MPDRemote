@@ -404,7 +404,7 @@ extension DetailVC : UITableViewDelegate
 						let img = UIImage(named:"btn-pause")
 						cell?.imgPlayback.image = img
 					}
-					MPDPlayer.shared.togglePausePlayback()
+					MPDPlayer.shared.togglePause()
 					return
 				}
 			}

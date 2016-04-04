@@ -128,7 +128,7 @@ final class MPDDataSource : MPDConnectionDelegate
 		{
 			return
 		}
-		
+
 		dispatch_async(self._queue, {
 			self._mpdConnection.getMetadatasForAlbum(album)
 			callback()
@@ -145,7 +145,7 @@ final class MPDDataSource : MPDConnectionDelegate
 		}
 		dispatch_resume(self._timer)
 	}
-	
+
 	private func _stopTimer()
 	{
 		dispatch_source_cancel(self._timer)

@@ -104,7 +104,7 @@ final class PlayerVC : UIViewController
 		// Play button
 		self.btnPlay = UIButton(type:.Custom)
 		self.btnPlay.frame = CGRect((self.view.width - 44.0) * 0.5, self.coverView.bottom + 10.0, 44.0, 44.0)
-		self.btnPlay.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.togglePausePlayback), forControlEvents:.TouchUpInside)
+		self.btnPlay.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.togglePause), forControlEvents:.TouchUpInside)
 		blurEffectView.addSubview(self.btnPlay)
 		
 		// Next button

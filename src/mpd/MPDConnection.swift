@@ -429,7 +429,7 @@ final class MPDConnection
 		return nil
 	}
 
-	func pausePlayback() -> Bool
+	/*func pausePlayback() -> Bool
 	{
 		return mpd_run_pause(self._connection, true)
 	}
@@ -437,7 +437,7 @@ final class MPDConnection
 	func runPlayback() -> Bool
 	{
 		return mpd_run_play(self._connection)
-	}
+	}*/
 
 	func togglePause() -> Bool
 	{
