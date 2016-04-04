@@ -239,7 +239,7 @@ final class MPDPlayer : NSObject
 		self._timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self._queue)
 		dispatch_source_set_timer(self._timer, DISPATCH_TIME_NOW, UInt64(interval * Double(NSEC_PER_SEC)), UInt64(0.2 * Double(NSEC_PER_SEC))) // every interval seconds, with leeway of 0.2 second
 		dispatch_source_set_event_handler(self._timer) {
-			self._playerStatus()
+			self._playerInformations()
 		}
 		dispatch_resume(self._timer)
 	}
@@ -250,9 +250,9 @@ final class MPDPlayer : NSObject
 		self._timer = nil
 	}
 
-	private func _playerStatus()
+	private func _playerInformations()
 	{
-		guard let infos = self._mpdConnection.getPlayerStatus() else {return}
+		guard let infos = self._mpdConnection.getPlayerInfos() else {return}
 		let status = PlayerStatus(rawValue:infos[kPlayerStatusKey] as! Int)!
 		let track = infos[kPlayerTrackKey] as! Track!
 		let album = infos[kPlayerAlbumKey] as! Album!
