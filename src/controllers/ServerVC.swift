@@ -82,6 +82,7 @@ final class ServerVC : MenuVC
 		self.tableView.rowHeight = 44.0
 		self.view.addSubview(self.tableView)
 
+		// Keyboard appearance notifications
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(ServerVC.keyboardDidShowNotification(_:)), name:UIKeyboardDidShowNotification, object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(ServerVC.keyboardDidHideNotification(_:)), name:UIKeyboardDidHideNotification, object:nil)
 	}
@@ -201,6 +202,7 @@ final class ServerVC : MenuVC
 		{
 			return
 		}
+
 		let info = aNotification.userInfo!
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
 		let rawFrame = value.CGRectValue
@@ -211,6 +213,11 @@ final class ServerVC : MenuVC
 
 	func keyboardDidHideNotification(aNotification: NSNotification)
 	{
+		if !self._keyboardVisible
+		{
+			return
+		}
+
 		let info = aNotification.userInfo!
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
 		let rawFrame = value.CGRectValue
@@ -393,20 +400,28 @@ extension ServerVC : UITableViewDelegate
 	{
 		if indexPath.section == 1 && indexPath.row == 2
 		{
-			let fileManager = NSFileManager()
-			let cachesDirectoryURL = fileManager.URLsForDirectory(.CachesDirectory, inDomains:.UserDomainMask).last!
-			let coversDirectoryName = NSUserDefaults.standardUserDefaults().stringForKey(kNYXPrefDirectoryCovers)!
-			let coversDirectoryURL = cachesDirectoryURL.URLByAppendingPathComponent(coversDirectoryName)
-
-			do
-			{
-				try fileManager.removeItemAtURL(coversDirectoryURL)
-				try fileManager.createDirectoryAtURL(coversDirectoryURL, withIntermediateDirectories:true, attributes:nil)
+			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_purge_cache_title"), message:NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle:.Alert)
+			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_cancel"), style:.Cancel) { (action) in
 			}
-			catch _
-			{
-				Logger.alog("[!] Can't delete cover cache :<")
+			alertController.addAction(cancelAction)
+			let okAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.Destructive) { (action) in
+				let fileManager = NSFileManager()
+				let cachesDirectoryURL = fileManager.URLsForDirectory(.CachesDirectory, inDomains:.UserDomainMask).last!
+				let coversDirectoryName = NSUserDefaults.standardUserDefaults().stringForKey(kNYXPrefDirectoryCovers)!
+				let coversDirectoryURL = cachesDirectoryURL.URLByAppendingPathComponent(coversDirectoryName)
+				
+				do
+				{
+					try fileManager.removeItemAtURL(coversDirectoryURL)
+					try fileManager.createDirectoryAtURL(coversDirectoryURL, withIntermediateDirectories:true, attributes:nil)
+				}
+				catch _
+				{
+					Logger.alog("[!] Can't delete cover cache :<")
+				}
 			}
+			alertController.addAction(okAction)
+			self.presentViewController(alertController, animated:true, completion:nil)
 		}
 		tableView.deselectRowAtIndexPath(indexPath, animated:true)
 	}

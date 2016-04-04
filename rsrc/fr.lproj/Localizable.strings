@@ -24,6 +24,8 @@
 "lbl_alert_servercfg_error" = "Erreur de configuration serveur";
 "lbl_alert_servercfg_error_msg" = "Paramètre(s) invalide(s)";
 "lbl_alert_servercfg_error_host" = "Paramètre serveur invalide";
+"lbl_alert_purge_cache_title" = "Suppression du cache des images";
+"lbl_alert_purge_cache_msg" = "Êtes-vous sûr de vouloir procéder ?";
 
 "lbl_server_name" = "Nom";
 "lbl_server_host" = "Serveur";

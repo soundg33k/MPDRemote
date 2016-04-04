@@ -24,6 +24,8 @@
 "lbl_alert_servercfg_error" = "Server configuration error";
 "lbl_alert_servercfg_error_msg" = "Invalid parameters";
 "lbl_alert_servercfg_error_host" = "Server parameter invalid";
+"lbl_alert_purge_cache_title" = "Images cache deletion";
+"lbl_alert_purge_cache_msg" = "Do you really want to proceed ?";
 
 "lbl_server_name" = "Name";
 "lbl_server_host" = "Server";
