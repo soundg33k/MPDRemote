@@ -180,9 +180,9 @@ final class PlayerVC : UIViewController
 	{
 		super.viewWillAppear(animated)
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingTrackChanged(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrack(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingStatusChanged(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackNotification(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 
 		if let track = MPDPlayer.shared.currentTrack, let album = MPDPlayer.shared.currentAlbum
 		{
@@ -236,8 +236,8 @@ final class PlayerVC : UIViewController
 	{
 		super.viewWillDisappear(animated)
 
-		NSNotificationCenter.defaultCenter().removeObserver(self, name:kNYXNotificationPlayingTrackChanged, object:nil)
 		NSNotificationCenter.defaultCenter().removeObserver(self, name:kNYXNotificationCurrentPlayingTrack, object:nil)
+		NSNotificationCenter.defaultCenter().removeObserver(self, name:kNYXNotificationPlayingTrackChanged, object:nil)
 		NSNotificationCenter.defaultCenter().removeObserver(self, name:kNYXNotificationPlayerStatusChanged, object:nil)
 	}
 
@@ -302,23 +302,7 @@ final class PlayerVC : UIViewController
 	}
 
 	// MARK: - Notifications
-	func currentPlayingTrackChanged(aNotification: NSNotification?)
-	{
-		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track else
-		{
-			return
-		}
-		guard let album = aNotification?.userInfo![kPlayerAlbumKey] as? Album else
-		{
-			return
-		}
-		self.lblTrackTitle.text = track.title
-		self.lblTrackArtist.text = track.artist
-		self.lblAlbumName.text = album.name
-		self.slider.maximumValue = Float(track.duration.seconds)
-	}
-
-	func playingTrack(aNotification: NSNotification?)
+	func playingTrackNotification(aNotification: NSNotification?)
 	{
 		guard let elapsed = aNotification?.userInfo![kPlayerElapsedKey] as? Int else
 		{
@@ -340,7 +324,23 @@ final class PlayerVC : UIViewController
 		self.lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
 	}
 
-	func currentPlayingStatusChanged(aNotification: NSNotification?)
+	func playingTrackChangedNotification(aNotification: NSNotification?)
+	{
+		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track else
+		{
+			return
+		}
+		guard let album = aNotification?.userInfo![kPlayerAlbumKey] as? Album else
+		{
+			return
+		}
+		self.lblTrackTitle.text = track.title
+		self.lblTrackArtist.text = track.artist
+		self.lblAlbumName.text = album.name
+		self.slider.maximumValue = Float(track.duration.seconds)
+	}
+
+	func playerStatusChangedNotification(aNotification: NSNotification?)
 	{
 		if MPDPlayer.shared.status == .Paused
 		{

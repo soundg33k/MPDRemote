@@ -119,8 +119,8 @@ final class DetailVC : UIViewController
 		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
 
 		// Notif for frame changes
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingTrackChanged(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingStatusChanged(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 	}
 
 	override func viewWillAppear(animated: Bool)
@@ -215,12 +215,12 @@ final class DetailVC : UIViewController
 	}
 
 	// MARK: - Notifications
-	func currentPlayingTrackChanged(aNotification: NSNotification?)
+	func playingTrackChangedNotification(aNotification: NSNotification?)
 	{
 		self.tableView.reloadData()
 	}
 
-	func currentPlayingStatusChanged(aNotification: NSNotification?)
+	func playerStatusChangedNotification(aNotification: NSNotification?)
 	{
 		self.tableView.reloadData()
 	}
