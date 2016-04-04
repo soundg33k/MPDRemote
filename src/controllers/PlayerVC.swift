@@ -174,6 +174,17 @@ final class PlayerVC : UIViewController
 		singleTap.numberOfTapsRequired = 1
 		singleTap.numberOfTouchesRequired = 1
 		self.coverView.addGestureRecognizer(singleTap)
+
+		// Swipe for previous / next tracks
+		let swipeLeft = UISwipeGestureRecognizer(target:self, action:#selector(swipeLeft(_:)))
+		swipeLeft.direction = .Left
+		swipeLeft.numberOfTouchesRequired = 1
+		self.coverView.addGestureRecognizer(swipeLeft)
+
+		let swipeRight = UISwipeGestureRecognizer(target:self, action:#selector(swipeRight(_:)))
+		swipeRight.direction = .Right
+		swipeRight.numberOfTouchesRequired = 1
+		self.coverView.addGestureRecognizer(swipeRight)
 	}
 
 	override func viewWillAppear(animated: Bool)
@@ -262,6 +273,16 @@ final class PlayerVC : UIViewController
 		self.dismissViewControllerAnimated(true, completion:nil)
 		MiniPlayerView.shared.stayHidden = false
 		MiniPlayerView.shared.show()
+	}
+
+	func swipeLeft(gest: UISwipeGestureRecognizer)
+	{
+		MPDPlayer.shared.requestNextTrack()
+	}
+
+	func swipeRight(gest: UISwipeGestureRecognizer)
+	{
+		MPDPlayer.shared.requestPreviousTrack()
 	}
 
 	// MARK: - Buttons actions
