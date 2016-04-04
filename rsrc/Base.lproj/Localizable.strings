@@ -11,8 +11,8 @@
 "lbl_pause" = "Pause";
 "lbl_next_track" = "Next track";
 "lbl_previous_track" = "Previous track";
-"lbl_shuffle_enable" = "Enable shuffle";
-"lbl_shuffle_disable" = "Disable shuffle";
+"lbl_random_enable" = "Enable random";
+"lbl_random_disable" = "Disable random";
 "lbl_repeat_enable" = "Enable repeat";
 "lbl_repeat_disable" = "Disable repeat";
 "lbl_header_albums_count" = "Album";

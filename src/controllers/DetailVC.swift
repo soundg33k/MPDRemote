@@ -104,7 +104,7 @@ final class DetailVC : UIViewController
 		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
 		self.btnRandom.selected = random
 		self.btnRandom.addTarget(self, action:#selector(DetailVC.toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
-		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_shuffle_disable" : "lbl_shuffle_enable")
+		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 		self.navigationController?.navigationBar.addSubview(self.btnRandom)
 
 		let loop = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat)
@@ -192,7 +192,7 @@ final class DetailVC : UIViewController
 		let random = !prefs.boolForKey(kNYXPrefRandom)
 
 		self.btnRandom.selected = random
-		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_shuffle_disable" : "lbl_shuffle_enable")
+		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
 		prefs.setBool(random, forKey:kNYXPrefRandom)
 		prefs.synchronize()
