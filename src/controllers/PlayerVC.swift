@@ -46,6 +46,10 @@ final class PlayerVC : UIViewController
 	private(set) var btnRepeat: UIButton! = nil
 	// Progress bar
 	private(set) var slider: UISlider! = nil
+	// Track title
+	private(set) var lblElapsedDuration: UILabel! = nil
+	// Track artist name
+	private(set) var lblRemainingDuration: UILabel! = nil
 
 	// MARK: - UIViewController
 	override func loadView()
@@ -127,6 +131,20 @@ final class PlayerVC : UIViewController
 		self.slider.minimumValue = 0.0
 		self.slider.addTarget(self, action:#selector(changeTrackPositionAction(_:)), forControlEvents:.TouchUpInside)
 		blurEffectView.addSubview(self.slider)
+
+		// Elapsed duration
+		self.lblElapsedDuration = UILabel(frame:CGRect(self.slider.x, self.slider.bottom + 20.0, 44.0, 18.0))
+		self.lblElapsedDuration.font = UIFont.systemFontOfSize(13.0)
+		self.lblElapsedDuration.textAlignment = .Left
+		self.lblElapsedDuration.textColor = UIColor.whiteColor()
+		blurEffectView.addSubview(self.lblElapsedDuration)
+
+		// Remaining duration
+		self.lblRemainingDuration = UILabel(frame:CGRect(self.slider.right - 44.0, self.slider.bottom + 20.0, 44.0, 18.0))
+		self.lblRemainingDuration.font = self.lblElapsedDuration.font
+		self.lblRemainingDuration.textAlignment = .Right
+		self.lblRemainingDuration.textColor = UIColor.whiteColor()
+		blurEffectView.addSubview(self.lblRemainingDuration)
 		
 		// Random/repeat buttons
 		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
@@ -306,10 +324,20 @@ final class PlayerVC : UIViewController
 		{
 			return
 		}
+		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track else
+		{
+			return
+		}
+
 		if !self.slider.selected && !self.slider.highlighted
 		{
 			self.slider.setValue(Float(elapsed), animated:true)
 		}
+
+		let elapsedDuration = Duration(seconds:UInt(elapsed))
+		let remainingDuration = Duration(seconds:UInt(track.duration.seconds - UInt(elapsed)))
+		self.lblElapsedDuration.text = elapsedDuration.minutesRepresentationAsString()
+		self.lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
 	}
 
 	func currentPlayingStatusChanged(aNotification: NSNotification?)

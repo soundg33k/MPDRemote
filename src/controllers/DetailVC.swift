@@ -351,8 +351,8 @@ extension DetailVC : UITableViewDataSource
 			let track = tracks[indexPath.row]
 			cell.lblTrack.text = String(track.trackNumber)
 			cell.lblTitle.text = track.title
-			let minutes = track.duration.minutesRepresentation.minutes
-			let seconds = track.duration.minutesRepresentation.seconds
+			let minutes = track.duration.minutesRepresentation().minutes
+			let seconds = track.duration.minutesRepresentation().seconds
 			cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
 
 			// Display playing image if this track is the current one being played

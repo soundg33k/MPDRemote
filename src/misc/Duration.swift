@@ -28,15 +28,23 @@ struct Duration
 	// MARK: - Properties
 	// Value in secondss
 	let seconds: UInt
-	// Minutes / seconds value
-	lazy var minutesRepresentation: (minutes: UInt, seconds: UInt) = {
-		return (self.seconds / 60, self.seconds % 60)
-	}()
 
 	// MARK: - Initializer
 	init(seconds: UInt)
 	{
 		self.seconds = seconds
+	}
+
+	// MARK: - Public
+	func minutesRepresentation() -> (minutes: UInt, seconds: UInt)
+	{
+		return (self.seconds / 60, self.seconds % 60)
+	}
+
+	func minutesRepresentationAsString(delim: String = ":") -> String
+	{
+		let tmp = self.minutesRepresentation()
+		return "\(tmp.minutes)\(delim)\(tmp.seconds < 10 ? "0" : "")\(tmp.seconds)"
 	}
 }
 
