@@ -103,7 +103,7 @@ extension UIColor
 					return false
 				}
 			}
-			
+
 			return true
 		}
 

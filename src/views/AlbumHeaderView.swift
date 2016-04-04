@@ -113,14 +113,26 @@ final class AlbumHeaderView : UIView
 	// MARK: - Public
 	func updateHeaderWithAlbum(album: Album)
 	{
-		guard let coverURL = album.localCoverURL else {return}
-		var image = UIImage(contentsOfFile:coverURL.path!)
-		if image == nil
+		// Set cover
+		var image: UIImage? = nil
+		if let coverURL = album.localCoverURL
+		{
+			if let cover = UIImage(contentsOfFile:coverURL.path!)
+			{
+				image = cover
+			}
+			else
+			{
+				image = UIImage(named:"default-cover")
+			}
+		}
+		else
 		{
 			image = UIImage(named:"default-cover")
 		}
 		self.image = image
 
+		// Analyze colors
 		let x = KawaiiColors(image:image!, precision:8, samplingEdge:.Right)
 		x.analyze()
 		self.backgroundColor = x.edgeColor
@@ -128,9 +140,10 @@ final class AlbumHeaderView : UIView
 		self.lblArtist.textColor = x.secondaryColor
 		self.lblGenre.textColor = x.thirdColor
 		self.lblYear.textColor = x.thirdColor
-	
+
 		self.setNeedsDisplay()
 
+		// Update frame for title / artist
 		let s = album.name as NSString
 		let width = self.frame.width - (self.coverSize.width + 8.0)
 		let r = s.boundingRectWithSize(CGSize(width, 40.0), options:.UsesLineFragmentOrigin, attributes:[NSFontAttributeName : self.lblTitle.font], context:nil)
@@ -147,12 +160,8 @@ final class AlbumHeaderView : UIView
 		if let tracks = album.songs
 		{
 			stra += "\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n"
-			var duration = UInt(0)
-			for track in tracks
-			{
-				duration += track.duration.seconds
-			}
-			let minutes = duration / 60
+			let total = tracks.map({$0.duration}).reduce(Duration(seconds:0)){$0 + $1}
+			let minutes = total.seconds / 60
 			stra += "\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")\n"
 		}
 		self.accessibilityLabel = stra

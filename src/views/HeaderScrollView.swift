@@ -41,8 +41,6 @@ final class HeaderScrollView : UIScrollView
 	private(set) var sideView: AlbumHeaderView! = nil
 	// Size of the cover
 	private(set) var coverWidth = CGFloat(0.0)
-	// Delegate
-	weak var navDelegate: HeaderScrollViewDelegate! = nil
 	// Scroll direction changed, flag
 	private(set) var directionChanged = false
 	// Scroll direction, flag
@@ -51,6 +49,8 @@ final class HeaderScrollView : UIScrollView
 	private(set) var canDisplayNext = false
 	// Delegate can display previous header, flag
 	private(set) var canDisplayPrevious = false
+	// Delegate
+	weak var navDelegate: HeaderScrollViewDelegate! = nil
 
 	// MARK: - Initializers
 	override init(frame: CGRect)
@@ -112,7 +112,7 @@ extension HeaderScrollView : UIScrollViewDelegate
 	{
 		self.directionChanged = true
 	}
-	
+
 	func scrollViewDidScroll(scrollView: UIScrollView)
 	{
 		let x = scrollView.contentOffset.x
