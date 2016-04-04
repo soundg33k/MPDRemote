@@ -30,7 +30,7 @@ extension String
 	{
 		return self.characters.count
 	}
-	
+
 	var range: NSRange
 	{
 		return NSRange(location:0, length:self.length)
@@ -39,16 +39,22 @@ extension String
 	// MARK: - Base64 encode
 	func base64Encode() -> String
 	{
-		let utf8str = self.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion:false)!
-		return utf8str.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+		if let utf8str = self.dataUsingEncoding(NSUTF8StringEncoding)
+		{
+			return utf8str.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+		}
+		return ""
 	}
 
 	// MARK: - Base64 decode
 	func base64Decode() -> String
 	{
-		if let base64data = NSData(base64EncodedString:self, options:.IgnoreUnknownCharacters)
+		if let base64data = NSData(base64EncodedString:self, options:[])
 		{
-			return NSString(data:base64data, encoding:NSUTF8StringEncoding)! as String
+			if let str = String(data:base64data, encoding:NSUTF8StringEncoding)
+			{
+				return str
+			}
 		}
 		return ""
 	}
@@ -61,13 +67,12 @@ extension String
 			CC_MD5(data.bytes, CC_LONG(data.length), &digest)
 		}
 
-		let ret = NSMutableString()
+		var ret = ""
 		for i in 0 ..< Int(CC_MD5_DIGEST_LENGTH)
 		{
-			ret.appendFormat("%02x", Int(digest[i]))
+			ret += String(format:"%02x", digest[i])
 		}
-
-		return ret.copy() as! String
+		return ret
 	}
 }
 
