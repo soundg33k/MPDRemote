@@ -254,7 +254,7 @@ final class MPDPlayer : NSObject
 		if self.currentTrack == nil || (self.currentTrack != nil && track != self.currentTrack!)
 		{
 			dispatch_async(dispatch_get_main_queue(), {
-				NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationCurrentPlayingTrackChanged, object:nil, userInfo:infos)
+				NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationPlayingTrackChanged, object:nil, userInfo:infos)
 			})
 		}
 

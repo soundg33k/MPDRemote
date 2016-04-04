@@ -34,10 +34,12 @@ public let kNYXPrefRepeat = "kNYXPrefRepeat"
 
 /* Notifications names */
 public let kNYXNotificationCurrentPlayingTrack = "kNYXNotificationCurrentPlayingTrack"
-public let kNYXNotificationCurrentPlayingTrackChanged = "kNYXNotificationCurrentPlayingTrackChanged"
+public let kNYXNotificationPlayingTrackChanged = "kNYXNotificationPlayingTrackChanged"
 public let kNYXNotificationPlayerStatusChanged = "kNYXNotificationPlayerStatusChanged"
 public let kNYXNotificationMiniPlayerViewWillShow = "kNYXNotificationMiniPlayerViewWillShow"
+public let kNYXNotificationMiniPlayerViewDidShow = "kNYXNotificationMiniPlayerViewDidShow"
 public let kNYXNotificationMiniPlayerViewWillHide = "kNYXNotificationMiniPlayerViewWillHide"
+public let kNYXNotificationMiniPlayerViewDidHide = "kNYXNotificationMiniPlayerViewDidHide"
 public let kNYXNotificationMiniPlayerShouldExpand = "kNYXNotificationMiniPlayerShouldExpand"
 
 /* App color */

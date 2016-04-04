@@ -119,7 +119,7 @@ final class DetailVC : UIViewController
 		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
 
 		// Notif for frame changes
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingTrackChanged(_:)), name:kNYXNotificationCurrentPlayingTrackChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingTrackChanged(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingStatusChanged(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 	}
 

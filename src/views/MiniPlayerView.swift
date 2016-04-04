@@ -107,13 +107,13 @@ final class MiniPlayerView : UIView
 		self.progressView.isAccessibilityElement = false
 		self.addSubview(self.progressView)
 
-		// Single tap
+		// Single tap to request full player view
 		let tap = UITapGestureRecognizer(target:self, action:#selector(singleTap(_:)))
 		tap.numberOfTapsRequired = 1
 		tap.numberOfTouchesRequired = 1
 		self.addGestureRecognizer(tap)
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(MiniPlayerView.playingTrack(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrack(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
 
 		let w = UIApplication.sharedApplication().keyWindow!
 		w.addSubview(self)
@@ -166,25 +166,27 @@ final class MiniPlayerView : UIView
 		}
 	}
 
-	func show()
+	func show(animated: Bool = true)
 	{
 		NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerViewWillShow, object:nil)
 		let w = UIApplication.sharedApplication().keyWindow!
-		UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseInOut, animations:{
+		UIView.animateWithDuration(animated ? 0.35 : 0.0, delay:0.0, options:.CurveEaseInOut, animations:{
 			self.y = w.frame.height - self.height
 		}, completion: { finished in
 			self.visible = true
+			NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerViewDidShow, object:nil)
 		})
 	}
 
-	func hide()
+	func hide(animated: Bool = true)
 	{
 		NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerViewWillHide, object:nil)
 		let w = UIApplication.sharedApplication().keyWindow!
-		UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseInOut, animations:{
+		UIView.animateWithDuration(animated ? 0.35 : 0.0, delay:0.0, options:.CurveEaseInOut, animations:{
 			self.y = w.frame.height + self.height
 		}, completion: { finished in
 			self.visible = false
+			NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerViewDidHide, object:nil)
 		})
 	}
 
@@ -192,14 +194,12 @@ final class MiniPlayerView : UIView
 	{
 		if self.btnPlayback.tag == PlayerStatus.Playing.rawValue
 		{
-			let img = UIImage(named:"btn-play")!
-			self.btnPlayback.setImage(img.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+			self.btnPlayback.setImage(UIImage(named:"btn-play")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
 			self.btnPlayback.accessibilityLabel = NYXLocalizedString("lbl_play")
 		}
 		else
 		{
-			let img = UIImage(named:"btn-pause")!
-			self.btnPlayback.setImage(img.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+			self.btnPlayback.setImage(UIImage(named:"btn-pause")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
 			self.btnPlayback.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 		MPDPlayer.shared.togglePausePlayback()

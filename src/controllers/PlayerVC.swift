@@ -180,7 +180,7 @@ final class PlayerVC : UIViewController
 	{
 		super.viewWillAppear(animated)
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingTrackChanged(_:)), name:kNYXNotificationCurrentPlayingTrackChanged, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingTrackChanged(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrack(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingStatusChanged(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 
@@ -236,7 +236,7 @@ final class PlayerVC : UIViewController
 	{
 		super.viewWillDisappear(animated)
 
-		NSNotificationCenter.defaultCenter().removeObserver(self, name:kNYXNotificationCurrentPlayingTrackChanged, object:nil)
+		NSNotificationCenter.defaultCenter().removeObserver(self, name:kNYXNotificationPlayingTrackChanged, object:nil)
 		NSNotificationCenter.defaultCenter().removeObserver(self, name:kNYXNotificationCurrentPlayingTrack, object:nil)
 		NSNotificationCenter.defaultCenter().removeObserver(self, name:kNYXNotificationPlayerStatusChanged, object:nil)
 	}
