@@ -335,7 +335,7 @@ final class PlayerVC : UIViewController
 		}
 
 		let elapsedDuration = Duration(seconds:UInt(elapsed))
-		let remainingDuration = Duration(seconds:UInt(track.duration.seconds - UInt(elapsed)))
+		let remainingDuration = track.duration - elapsedDuration
 		self.lblElapsedDuration.text = elapsedDuration.minutesRepresentationAsString()
 		self.lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
 	}
