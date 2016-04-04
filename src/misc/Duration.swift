@@ -76,3 +76,14 @@ extension Duration : CustomStringConvertible
 		return String(self.seconds)
 	}
 }
+
+// MARK: - Maths
+func +(lhs: Duration, rhs: Duration) -> Duration
+{
+	return Duration(seconds:lhs.seconds + rhs.seconds)
+}
+
+func -(lhs: Duration, rhs: Duration) -> Duration
+{
+	return Duration(seconds:lhs.seconds - rhs.seconds)
+}
