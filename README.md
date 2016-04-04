@@ -16,14 +16,15 @@ There's no persistence layer apart from cover caching.
 
 ### TODO
 
-- Possibility to browse by Artists, Genre, etc…
-- Optimize things
-- Add some settings
-- iPad version
-- Persistence layer? probably not since it's quite fast on a local network and my 40K musical library evolve quite often
-- An app icon, that won't be me since my design skills are (void*)0
-- Better buttons icons, I took random free icons on the net, but same problem as above
-- …
+- [X] Full player view
+- [ ] Possibility to browse by Artists, Genre, etc…
+- [ ] Optimize things
+- [ ] Add some settings
+- [ ] iPad version
+- [ ] Persistence layer? probably not since it's quite fast on a local network and my 40K musical library evolve quite often
+- [ ] An app icon, that won't be me since my design skills are (void*)0
+- [ ] Better buttons icons, I took random free icons on the net, but same problem as above
+- [ ] …
 
 ### LICENSE
 
