@@ -73,9 +73,8 @@ final class DetailVC : UIViewController
 		self.headerView.navDelegate = self
 		self.view.addSubview(self.headerView)
 
-		// Dummy tableview host
+		// Dummy tableview host, to create a nice shadow effect
 		let yOffset = CGFloat(64.0) // at this point the self.view.height doesn't include the navbar height, so there's an offset
-		//let height = MiniPlayerView.shared.visible ? self.view.frame.height - self.headerView.frame.height - playerViewHeight - yDecal : self.view.frame.height - self.headerView.frame.height - yDecal
 		let height = self.view.frame.height - self.headerView.frame.height - yOffset
 		let dummy = UIView(frame:CGRect(0.0, self.headerView.frame.bottom, self.view.frame.width, height))
 		dummy.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, self.view.frame.width + 4.0, 4.0)).CGPath
@@ -96,7 +95,7 @@ final class DetailVC : UIViewController
 		self.tableView.rowHeight = 44.0
 		dummy.addSubview(self.tableView)
 
-		// Random/repeat buttons
+		// Random & repeat buttons
 		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
 		let imageRandom = UIImage(named:"btn-random")
 		self.btnRandom = UIButton(type:.Custom)
@@ -119,9 +118,7 @@ final class DetailVC : UIViewController
 		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
 
-		// Notif for frame
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(miniPlayerWillShow(_:)), name:kNYXNotificationMiniPlayerViewWillShow, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(miniPlayerWillHide(_:)), name:kNYXNotificationMiniPlayerViewWillHide, object:nil)
+		// Notif for frame changes
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingTrackChanged(_:)), name:kNYXNotificationCurrentPlayingTrackChanged, object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(currentPlayingStatusChanged(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 	}
@@ -210,7 +207,7 @@ final class DetailVC : UIViewController
 
 		self.btnRepeat.selected = loop
 		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
-		
+
 		prefs.setBool(loop, forKey:kNYXPrefRepeat)
 		prefs.synchronize()
 
@@ -218,20 +215,6 @@ final class DetailVC : UIViewController
 	}
 
 	// MARK: - Notifications
-	func miniPlayerWillShow(aNotification: NSNotification?)
-	{
-		/*self.view.frame = CGRect(self.view.origin, self.view.width, self.view.height - playerViewHeight)
-		self.tableView.superview?.frame = CGRect(0.0, self.headerView.bottom, self.view.width, self.view.height - self.headerView.height)
-		self.tableView.frame = (self.tableView.superview?.bounds)!*/
-	}
-
-	func miniPlayerWillHide(aNotification: NSNotification?)
-	{
-		/*self.view.frame = CGRect(self.view.origin, self.view.width, self.view.height + playerViewHeight)
-		self.tableView.superview?.frame = CGRect(0.0, self.headerView.bottom, self.view.width, self.view.height - self.headerView.height)
-		self.tableView.frame = (self.tableView.superview?.bounds)!*/
-	}
-
 	func currentPlayingTrackChanged(aNotification: NSNotification?)
 	{
 		self.tableView.reloadData()
@@ -245,7 +228,7 @@ final class DetailVC : UIViewController
 	// MARK: - Private
 	private func _nextAlbum() -> Album?
 	{
-		if selectedIndex < (self.albums.count - 1)
+		if self.selectedIndex < (self.albums.count - 1)
 		{
 			return self.albums[self.selectedIndex + 1]
 		}
@@ -254,7 +237,7 @@ final class DetailVC : UIViewController
 
 	private func _previousAlbum() -> Album?
 	{
-		if selectedIndex > 0
+		if self.selectedIndex > 0
 		{
 			return self.albums[self.selectedIndex - 1]
 		}
@@ -270,19 +253,11 @@ final class DetailVC : UIViewController
 	{
 		if let nextAlbum = self._nextAlbum()
 		{
-			MPDDataSource.shared.getMetadatasForAlbum(nextAlbum, callback: {
-				dispatch_async(dispatch_get_main_queue(), {
-					self._updateHeader()
-				})
-			})
+			MPDDataSource.shared.getMetadatasForAlbum(nextAlbum, callback:{})
 		}
 		if let previousAlbum = self._previousAlbum()
 		{
-			MPDDataSource.shared.getMetadatasForAlbum(previousAlbum, callback: {
-				dispatch_async(dispatch_get_main_queue(), {
-					self._updateHeader()
-				})
-			})
+			MPDDataSource.shared.getMetadatasForAlbum(previousAlbum, callback:{})
 		}
 	}
 
@@ -310,12 +285,8 @@ final class DetailVC : UIViewController
 		let album = self._currentAlbum()
 		if let tracks = album.songs
 		{
-			var duration = UInt(0)
-			for track in tracks
-			{
-				duration += track.duration.seconds
-			}
-			let minutes = duration / 60
+			let total = tracks.map({$0.duration}).reduce(Duration(seconds:0)){$0 + $1}
+			let minutes = total.seconds / 60
 			self.titleView.text = "\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")"
 		}
 	}
@@ -437,7 +408,7 @@ extension DetailVC : UITableViewDelegate
 					return
 				}
 			}
-			
+
 			let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
 			MPDPlayer.shared.playTracks(b, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
 		}
@@ -462,13 +433,14 @@ extension DetailVC : HeaderScrollViewDelegate
 		if self.selectedIndex < (self.albums.count - 1)
 		{
 			self.selectedIndex += 1
-			
+
 			let album = self._currentAlbum()
 			if album.songs == nil
 			{
 				MPDDataSource.shared.getSongsForAlbum(album, callback:{
 					dispatch_async(dispatch_get_main_queue(), {
 						self._updateHeader()
+						self._updateNavigationTitle()
 						self.tableView.reloadData()
 						self.headerView.itemChanged()
 					})
@@ -477,10 +449,11 @@ extension DetailVC : HeaderScrollViewDelegate
 			else
 			{
 				self._updateHeader()
+				self._updateNavigationTitle()
 				self.tableView.reloadData()
 				self.headerView.itemChanged()
 			}
-			
+
 			return true
 		}
 		return false
@@ -491,13 +464,14 @@ extension DetailVC : HeaderScrollViewDelegate
 		if self.selectedIndex > 0
 		{
 			self.selectedIndex -= 1
-			
+
 			let album = self._currentAlbum()
 			if album.songs == nil
 			{
 				MPDDataSource.shared.getSongsForAlbum(album, callback:{
 					dispatch_async(dispatch_get_main_queue(), {
 						self._updateHeader()
+						self._updateNavigationTitle()
 						self.tableView.reloadData()
 						self.headerView.itemChanged()
 					})
@@ -506,10 +480,11 @@ extension DetailVC : HeaderScrollViewDelegate
 			else
 			{
 				self._updateHeader()
+				self._updateNavigationTitle()
 				self.tableView.reloadData()
 				self.headerView.itemChanged()
 			}
-			
+
 			return true
 		}
 		return false
