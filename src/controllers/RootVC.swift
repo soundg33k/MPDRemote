@@ -36,7 +36,7 @@ final class RootVC : MenuVC
 	// Button in the navigationbar
 	private(set) var titleView: UIButton! = nil
 	// Detailed album view
-	private(set) var detailVC: DetailVC! = nil
+	private(set) var detailVC: AlbumDetailVC! = nil
 	// Should show the search view, flag
 	private(set) var searchBarVisible = false
 	// Is currently searching, flag
@@ -395,7 +395,7 @@ extension RootVC : UICollectionViewDelegate
 		// Create detail VC
 		if self.detailVC == nil
 		{
-			self.detailVC = DetailVC()
+			self.detailVC = AlbumDetailVC()
 		}
 
 		// Set data according to search state

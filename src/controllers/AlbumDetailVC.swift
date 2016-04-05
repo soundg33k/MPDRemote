@@ -1,4 +1,4 @@
-// DetailVC.swift
+// AlbumDetailVC.swift
 // Copyright (c) 2016 Nyx0uf ( https://mpdremote.whine.io )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class DetailVC : UIViewController
+final class AlbumDetailVC : UIViewController
 {
 	// MARK: - Properties
 	// Albums list
@@ -103,7 +103,7 @@ final class DetailVC : UIViewController
 		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
 		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
 		self.btnRandom.selected = random
-		self.btnRandom.addTarget(self, action:#selector(DetailVC.toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
+		self.btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
 		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 		self.navigationController?.navigationBar.addSubview(self.btnRandom)
 
@@ -114,7 +114,7 @@ final class DetailVC : UIViewController
 		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
 		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
 		self.btnRepeat.selected = loop
-		self.btnRepeat.addTarget(self, action:#selector(DetailVC.toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
+		self.btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
 		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
 
@@ -293,7 +293,7 @@ final class DetailVC : UIViewController
 }
 
 // MARK: - UITableViewDataSource
-extension DetailVC : UITableViewDataSource
+extension AlbumDetailVC : UITableViewDataSource
 {
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
@@ -372,7 +372,7 @@ extension DetailVC : UITableViewDataSource
 }
 
 // MARK: - UITableViewDelegate
-extension DetailVC : UITableViewDelegate
+extension AlbumDetailVC : UITableViewDelegate
 {
 	func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
 	{
@@ -416,7 +416,7 @@ extension DetailVC : UITableViewDelegate
 }
 
 // MARK: - HeaderScrollViewDelegate
-extension DetailVC : HeaderScrollViewDelegate
+extension AlbumDetailVC : HeaderScrollViewDelegate
 {
 	func requestNextAlbum() -> Album?
 	{
