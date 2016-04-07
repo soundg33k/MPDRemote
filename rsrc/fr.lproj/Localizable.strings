@@ -15,7 +15,6 @@
 "lbl_random_disable" = "Désactiver l'aléatoire";
 "lbl_repeat_enable" = "Activer la lecture en boucle";
 "lbl_repeat_disable" = "Désactiver la lecture en boucle";
-"lbl_header_albums_count" = "Album";
 "lbl_header_server_cfg" = "Configuration serveur";
 
 "lbl_alert_playalbum" = "Lire";
@@ -26,6 +25,7 @@
 "lbl_alert_servercfg_error_host" = "Paramètre serveur invalide";
 "lbl_alert_purge_cache_title" = "Suppression du cache des images";
 "lbl_alert_purge_cache_msg" = "Êtes-vous sûr de vouloir procéder ?";
+"lbl_alert_server_need_check" = "Vérifiez votre configuration";
 
 "lbl_server_name" = "Nom";
 "lbl_server_host" = "Serveur";
@@ -41,6 +41,13 @@
 "lbl_section_home" = "Accueil";
 "lbl_section_server" = "Serveur";
 "lbl_section_settings" = "Réglages";
+
+"lbl_album" = "Album";
+"lbl_albums" = "Albums";
+"lbl_genre" = "Genre";
+"lbl_genres" = "Genres";
+"lbl_artist" = "Artiste";
+"lbl_artists" = "Artistes";
 
 /* accessibility */
 "vo_displaymenu" = "Afficher le menu de navigation";

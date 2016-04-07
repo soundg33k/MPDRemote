@@ -25,7 +25,7 @@ import UIKit
 
 extension UIColor
 {
-	class func fromRGBA(RGB: UInt, alpha: CGFloat) -> UIColor
+	class func fromRGBA(RGB: Int, alpha: CGFloat) -> UIColor
 	{
 		let red = ((CGFloat)((RGB & 0xFF0000) >> 16)) / 255
 		let green = ((CGFloat)((RGB & 0xFF00) >> 8)) / 255
@@ -33,7 +33,7 @@ extension UIColor
 		return UIColor(red:red, green:green, blue:blue, alpha:alpha)
 	}
 
-	class func fromRGB(RGB: UInt) -> UIColor
+	class func fromRGB(RGB: Int) -> UIColor
 	{
 		return UIColor.fromRGBA(RGB, alpha:1.0)
 	}

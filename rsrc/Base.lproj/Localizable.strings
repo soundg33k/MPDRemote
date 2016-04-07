@@ -15,7 +15,6 @@
 "lbl_random_disable" = "Disable random";
 "lbl_repeat_enable" = "Enable repeat";
 "lbl_repeat_disable" = "Disable repeat";
-"lbl_header_albums_count" = "Album";
 "lbl_header_server_cfg" = "Server configuration";
 
 "lbl_alert_playalbum" = "Play";
@@ -26,6 +25,7 @@
 "lbl_alert_servercfg_error_host" = "Server parameter invalid";
 "lbl_alert_purge_cache_title" = "Images cache deletion";
 "lbl_alert_purge_cache_msg" = "Do you really want to proceed ?";
+"lbl_alert_server_need_check" = "Check your configuration";
 
 "lbl_server_name" = "Name";
 "lbl_server_host" = "Server";
@@ -41,6 +41,13 @@
 "lbl_section_home" = "Home";
 "lbl_section_server" = "Server";
 "lbl_section_settings" = "Settings";
+
+"lbl_album" = "Album";
+"lbl_albums" = "Albums";
+"lbl_genre" = "Genre";
+"lbl_genres" = "Genres";
+"lbl_artist" = "Artist";
+"lbl_artists" = "Artists";
 
 /* accessibility */
 "vo_displaymenu" = "Display navigation menu";

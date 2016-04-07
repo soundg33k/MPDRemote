@@ -34,23 +34,25 @@ protocol HeaderScrollViewDelegate : class
 
 final class HeaderScrollView : UIScrollView
 {
-	// MARK: - Properties
+	// MARK: - Public properties
+	// Delegate
+	weak var navDelegate: HeaderScrollViewDelegate? = nil
 	// Current album view
 	private(set) var mainView: AlbumHeaderView! = nil
 	// Previous or next album view
 	private(set) var sideView: AlbumHeaderView! = nil
 	// Size of the cover
 	private(set) var coverWidth = CGFloat(0.0)
+
+	// MARK: - Private properties
 	// Scroll direction changed, flag
-	private(set) var directionChanged = false
+	private var directionChanged = false
 	// Scroll direction, flag
-	private(set) var fromLeft = false
+	private var fromLeft = false
 	// Delegate can display next header, flag
-	private(set) var canDisplayNext = false
+	private var canDisplayNext = false
 	// Delegate can display previous header, flag
-	private(set) var canDisplayPrevious = false
-	// Delegate
-	weak var navDelegate: HeaderScrollViewDelegate! = nil
+	private var canDisplayPrevious = false
 
 	// MARK: - Initializers
 	override init(frame: CGRect)
@@ -121,7 +123,7 @@ extension HeaderScrollView : UIScrollViewDelegate
 			if self.directionChanged
 			{
 				self.sideView.frame.x = self.frame.width
-				if let album = self.navDelegate.requestNextAlbum()
+				if let album = self.navDelegate?.requestNextAlbum()
 				{
 					self.sideView.updateHeaderWithAlbum(album)
 				}
@@ -140,7 +142,7 @@ extension HeaderScrollView : UIScrollViewDelegate
 			if self.directionChanged
 			{
 				self.sideView.frame.x = -self.frame.width
-				if let album = self.navDelegate.requestPreviousAlbum()
+				if let album = self.navDelegate?.requestPreviousAlbum()
 				{
 					self.sideView.updateHeaderWithAlbum(album)
 				}
@@ -165,7 +167,7 @@ extension HeaderScrollView : UIScrollViewDelegate
 			{
 				scrollView.contentInset = UIEdgeInsets(top:0.0, left:0.0, bottom:0.0, right:scrollView.frame.width)
 				self.fromLeft = false
-				if !self.navDelegate.shouldShowNextAlbum()
+				if !(self.navDelegate?.shouldShowNextAlbum())!
 				{
 					scrollView.contentInset = UIEdgeInsetsZero
 				}
@@ -177,7 +179,7 @@ extension HeaderScrollView : UIScrollViewDelegate
 			{
 				scrollView.contentInset = UIEdgeInsets(top:0.0, left:-scrollView.frame.width, bottom:0.0, right:0.0)
 				self.fromLeft = true
-				if !self.navDelegate.shouldShowPreviousAlbum()
+				if !(self.navDelegate?.shouldShowPreviousAlbum())!
 				{
 					scrollView.contentInset = UIEdgeInsetsZero
 				}

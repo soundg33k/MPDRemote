@@ -118,4 +118,49 @@ extension UIImage
 		let image = UIImage(CGImage:imageRef)
 		return image
 	}
+
+	class func fromString(string: String, font: UIFont, fontColor: UIColor, backgroundColor: UIColor, maxSize: CGSize) -> UIImage?
+	{
+		// Create an attributed string with string and font information
+		let paragraphStyle = NSMutableParagraphStyle()
+		paragraphStyle.lineBreakMode = .ByWordWrapping
+		paragraphStyle.alignment = .Center
+		let attributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : fontColor, NSParagraphStyleAttributeName : paragraphStyle]
+		let attrString = NSAttributedString(string:string, attributes:attributes)
+		let scale = UIScreen.mainScreen().scale
+		let trueMaxSize = maxSize * scale
+
+		// Figure out how big an image we need
+		let framesetter = CTFramesetterCreateWithAttributedString(attrString)
+		var osef = CFRange(location:0, length:0)
+		let goodSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, osef, nil, trueMaxSize, &osef).ceil()
+		let rect = CGRect((trueMaxSize.width - goodSize.width) * 0.5, (trueMaxSize.height - goodSize.height) * 0.5, goodSize.width, goodSize.height)
+		let path = CGPathCreateWithRect(rect, nil)
+		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location:0, length:0), path, nil)
+
+		// Create the context and fill it
+		guard let bmContext = BitmapContext.ARGBBitmapContext(width:Int(trueMaxSize.width), height:Int(trueMaxSize.height), withAlpha:true) else
+		{
+			return nil
+		}
+		CGContextSetFillColorWithColor(bmContext, backgroundColor.CGColor)
+		CGContextFillRect(bmContext, /*rect*/CGRect(CGPointZero, trueMaxSize))
+
+		// Draw the text
+		CGContextSetAllowsAntialiasing(bmContext, true)
+		CGContextSetAllowsFontSmoothing(bmContext, true)
+		CGContextSetInterpolationQuality(bmContext, .High)
+		CTFrameDraw(frame, bmContext)
+
+		// Save
+		if let imageRef = CGBitmapContextCreateImage(bmContext)
+		{
+			let img = UIImage(CGImage:imageRef)
+			return img
+		}
+		else
+		{
+			return nil
+		}
+	}
 }

@@ -57,12 +57,7 @@ final class Track : NSObject
 }
 
 // MARK: - Operators
-func ==(lhs: Track, rhs: Track) -> Bool
+func == (lhs: Track, rhs: Track) -> Bool
 {
 	return (lhs.title == rhs.title) && (lhs.artist == rhs.artist) && (lhs.duration == rhs.duration) && (lhs.trackNumber == rhs.trackNumber) && (lhs.uri == rhs.uri)
-}
-
-func !=(lhs: Track, rhs: Track) -> Bool
-{
-	return !(lhs == rhs)
 }

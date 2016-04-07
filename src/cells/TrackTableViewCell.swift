@@ -38,7 +38,7 @@ final class TrackTableViewCell : UITableViewCell
 	// MARK: - Initializers
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?)
 	{
-		super.init(style: style, reuseIdentifier: reuseIdentifier)
+		super.init(style:style, reuseIdentifier:reuseIdentifier)
 		self.backgroundColor = UIColor.fromRGB(0xECECEC)
 
 		self.lblTrack = UILabel(frame:CGRect(8.0, (self.height - 14.0) * 0.5, 18.0, 14.0))

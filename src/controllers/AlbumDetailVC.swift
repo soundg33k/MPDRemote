@@ -25,21 +25,23 @@ import UIKit
 
 final class AlbumDetailVC : UIViewController
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Albums list
 	var albums: [Album]! = nil
 	// Album index in the list
 	var selectedIndex: Int = 0
+
+	// MARK: - Private properties
 	// Header view (cover + album name, artist)
-	private(set) var headerView: HeaderScrollView! = nil
+	private var headerView: HeaderScrollView! = nil
 	// Tableview for song list
-	private(set) var tableView: UITableView! = nil
+	private var tableView: UITableView! = nil
 	// Label in the navigationbar
-	private(set) var titleView: UILabel! = nil
+	private var titleView: UILabel! = nil
 	// Random button
-	private(set) var btnRandom: UIButton! = nil
+	private var btnRandom: UIButton! = nil
 	// Repeat button
-	private(set) var btnRepeat: UIButton! = nil
+	private var btnRepeat: UIButton! = nil
 
 	// MARK: - Initializers
 	init()
@@ -60,7 +62,6 @@ final class AlbumDetailVC : UIViewController
 
 		// Navigation bar title
 		self.titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
-		self.titleView.font = UIFont.systemFontOfSize(12.0)
 		self.titleView.numberOfLines = 2
 		self.titleView.textAlignment = .Center
 		self.titleView.isAccessibilityElement = false
@@ -93,6 +94,7 @@ final class AlbumDetailVC : UIViewController
 		self.tableView.separatorInset = UIEdgeInsets(top:0.0, left:8.0, bottom:0.0, right:8.0)
 		self.tableView.separatorColor = UIColor.fromRGB(0xCCCCCC)
 		self.tableView.rowHeight = 44.0
+		self.tableView.tableFooterView = UIView()
 		dummy.addSubview(self.tableView)
 
 		// Random & repeat buttons
@@ -147,10 +149,10 @@ final class AlbumDetailVC : UIViewController
 		if album.songs == nil
 		{
 			MPDDataSource.shared.getSongsForAlbum(album, callback: {
-				dispatch_async(dispatch_get_main_queue(), {
+				dispatch_async(dispatch_get_main_queue()) {
 					self._updateNavigationTitle()
 					self.tableView.reloadData()
-				})
+				}
 			})
 		}
 		else
@@ -273,9 +275,9 @@ final class AlbumDetailVC : UIViewController
 		if album.artist.length == 0
 		{
 			MPDDataSource.shared.getMetadatasForAlbum(album, callback: {
-				dispatch_async(dispatch_get_main_queue(), {
+				dispatch_async(dispatch_get_main_queue()) {
 					self._updateHeader()
-				})
+				}
 			})
 		}
 	}
@@ -287,7 +289,9 @@ final class AlbumDetailVC : UIViewController
 		{
 			let total = tracks.map({$0.duration}).reduce(Duration(seconds:0)){$0 + $1}
 			let minutes = total.seconds / 60
-			self.titleView.text = "\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")"
+			let attrs = NSMutableAttributedString(string:"\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
+			attrs.appendAttributedString(NSAttributedString(string:"\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
+			self.titleView.attributedText = attrs
 		}
 	}
 }
@@ -316,6 +320,7 @@ extension AlbumDetailVC : UITableViewDataSource
 				cell.lblTitle.text = ""
 				cell.lblTrack.text = ""
 				cell.lblDuration.text = ""
+				cell.selectionStyle = .None
 				return cell
 			}
 
@@ -385,33 +390,37 @@ extension AlbumDetailVC : UITableViewDelegate
 	{
 		tableView.deselectRowAtIndexPath(indexPath, animated:true)
 
-		if let tracks = self._currentAlbum().songs
+		// Dummy cell
+		guard let tracks = self._currentAlbum().songs else {return}
+		if indexPath.row == tracks.count
 		{
-			// Toggle play / pause for the current track
-			if let currentPlayingTrack = MPDPlayer.shared.currentTrack
-			{
-				let selectedTrack = tracks[indexPath.row]
-				if selectedTrack == currentPlayingTrack
-				{
-					let cell = tableView.cellForRowAtIndexPath(indexPath) as? TrackTableViewCell
-					if MPDPlayer.shared.status == .Playing
-					{
-						let img = UIImage(named:"btn-play")
-						cell?.imgPlayback.image = img
-					}
-					else
-					{
-						let img = UIImage(named:"btn-pause")
-						cell?.imgPlayback.image = img
-					}
-					MPDPlayer.shared.togglePause()
-					return
-				}
-			}
-
-			let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-			MPDPlayer.shared.playTracks(b, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
+			return
 		}
+
+		// Toggle play / pause for the current track
+		if let currentPlayingTrack = MPDPlayer.shared.currentTrack
+		{
+			let selectedTrack = tracks[indexPath.row]
+			if selectedTrack == currentPlayingTrack
+			{
+				let cell = tableView.cellForRowAtIndexPath(indexPath) as? TrackTableViewCell
+				if MPDPlayer.shared.status == .Playing
+				{
+					let img = UIImage(named:"btn-play")
+					cell?.imgPlayback.image = img
+				}
+				else
+				{
+					let img = UIImage(named:"btn-pause")
+					cell?.imgPlayback.image = img
+				}
+				MPDPlayer.shared.togglePause()
+				return
+			}
+		}
+
+		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
+		MPDPlayer.shared.playTracks(b, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
 	}
 }
 
@@ -438,12 +447,12 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 			if album.songs == nil
 			{
 				MPDDataSource.shared.getSongsForAlbum(album, callback:{
-					dispatch_async(dispatch_get_main_queue(), {
+					dispatch_async(dispatch_get_main_queue()) {
 						self._updateHeader()
 						self._updateNavigationTitle()
 						self.tableView.reloadData()
 						self.headerView.itemChanged()
-					})
+					}
 				})
 			}
 			else
@@ -469,12 +478,12 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 			if album.songs == nil
 			{
 				MPDDataSource.shared.getSongsForAlbum(album, callback:{
-					dispatch_async(dispatch_get_main_queue(), {
+					dispatch_async(dispatch_get_main_queue()) {
 						self._updateHeader()
 						self._updateNavigationTitle()
 						self.tableView.reloadData()
 						self.headerView.itemChanged()
-					})
+					}
 				})
 			}
 			else

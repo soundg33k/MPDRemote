@@ -100,12 +100,7 @@ struct RGBAPixel
 }
 
 // MARK: - Operators
-func ==(lhs: RGBAPixel, rhs: RGBAPixel) -> Bool
+func == (lhs: RGBAPixel, rhs: RGBAPixel) -> Bool
 {
 	return (lhs.r == rhs.r) && (lhs.g == rhs.g) && (lhs.b == rhs.b) && (lhs.a == rhs.a)
-}
-
-func !=(lhs: RGBAPixel, rhs: RGBAPixel) -> Bool
-{
-	return !(lhs == rhs)
 }

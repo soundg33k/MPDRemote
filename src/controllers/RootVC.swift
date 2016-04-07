@@ -30,32 +30,34 @@ private let __insets = UIEdgeInsets(top:__sideSpan, left:__sideSpan, bottom:__si
 
 final class RootVC : MenuVC
 {
-	// MARK: - Public properties
-	// Albums view
-	private(set) var collectionView: UICollectionView!
-	// Button in the navigationbar
-	private(set) var titleView: UIButton! = nil
-	// Detailed album view
-	private(set) var detailVC: AlbumDetailVC! = nil
-	// Should show the search view, flag
-	private(set) var searchBarVisible = false
-	// Is currently searching, flag
-	private(set) var searching = false
-	// Search results
-	private(set) var searchResults = [Album]()
-	// Long press gesture is recognized, flag
-	private(set) var longPressRecognized = false
-
 	// MARK: - Private properties
+	// Albums view
+	private var collectionView: UICollectionView!
+	// Button in the navigationbar
+	private var titleView: UIButton! = nil
+	// Detailed album view
+	private var albumDetailVC: AlbumDetailVC! = nil
+	// Should show the search view, flag
+	private var searchBarVisible = false
+	// Is currently searching, flag
+	private var searching = false
+	// Search results
+	private var searchResults = [AnyObject]()
+	// Long press gesture is recognized, flag
+	private var longPressRecognized = false
 	// Keep track of download operations to eventually cancel them
-	private let _downloadOperations = NSMutableDictionary()
+	private var _downloadOperations = [String : NSOperation]()
+	// View to change the type of items in the collection view
+	private var _typeChoiceView: TypeChoiceView! = nil
+	// Active display type
+	private var _displayType = DisplayType(rawValue:NSUserDefaults.standardUserDefaults().integerForKey(kNYXPrefDisplayType))!
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
 		self.automaticallyAdjustsScrollViewInsets = false
-		self.view.backgroundColor = UIColor.fromRGB(0xECECEC)
+		self.view.backgroundColor = UIColor.blackColor()
 
 		// Customize navbar
 		let headerColor = UIColor.whiteColor()
@@ -83,14 +85,7 @@ final class RootVC : MenuVC
 
 		// Navigation bar title
 		self.titleView = UIButton(frame:CGRect(0.0, 0.0, 100.0, navigationBar.height))
-		let p = NSMutableParagraphStyle()
-		p.alignment = .Center
-		p.lineBreakMode = .ByWordWrapping
-		let astr1 = NSAttributedString(string:"Albums", attributes:[NSForegroundColorAttributeName : UIColor.whiteColor(), NSFontAttributeName : UIFont.systemFontOfSize(14.0), NSParagraphStyleAttributeName : p])
-		self.titleView.setAttributedTitle(astr1, forState:.Normal)
-		let astr2 = NSAttributedString(string:"Albums", attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont.systemFontOfSize(14.0), NSParagraphStyleAttributeName : p])
-		self.titleView.setAttributedTitle(astr2, forState:.Highlighted)
-		self.titleView.addTarget(self, action:#selector(RootVC.changeTypeAction(_:)), forControlEvents:.TouchUpInside)
+		self.titleView.addTarget(self, action:#selector(changeTypeAction(_:)), forControlEvents:.TouchUpInside)
 		self.navigationItem.titleView = self.titleView
 
 		// Create collection view
@@ -99,26 +94,23 @@ final class RootVC : MenuVC
 		self.collectionView.dataSource = self
 		self.collectionView.delegate = self
 		self.collectionView.registerClass(AlbumCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
-		self.collectionView.backgroundColor = self.view.backgroundColor
+		self.collectionView.backgroundColor = UIColor.fromRGB(0xECECEC)
 		self.collectionView.scrollsToTop = true
 		self.view.addSubview(self.collectionView)
 
 		// Longpress
-		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(RootVC.longPress(_:)))
+		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(longPress(_:)))
 		longPress.minimumPressDuration = 0.5
 		longPress.delaysTouchesBegan = true
 		self.collectionView.addGestureRecognizer(longPress)
 
 		// Double tap
-		let doubleTap = UITapGestureRecognizer(target:self, action:#selector(RootVC.doubleTap(_:)))
+		let doubleTap = UITapGestureRecognizer(target:self, action:#selector(doubleTap(_:)))
 		doubleTap.numberOfTapsRequired = 2
 		doubleTap.numberOfTouchesRequired = 1
 		doubleTap.delaysTouchesBegan = true
 		self.collectionView.addGestureRecognizer(doubleTap)
 
-		// Register to some notifications
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(RootVC.miniPlayerWillShow(_:)), name:kNYXNotificationMiniPlayerViewWillShow, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(RootVC.miniPlayerWillHide(_:)), name:kNYXNotificationMiniPlayerViewWillHide, object:nil)
 		_ = MiniPlayerView.shared.visible
 	}
 
@@ -131,16 +123,31 @@ final class RootVC : MenuVC
 			{
 				if let server = NSKeyedUnarchiver.unarchiveObjectWithData(serverAsData) as! MPDServer?
 				{
+					// Data source
 					MPDDataSource.shared.server = server
 					MPDDataSource.shared.initialize()
-					MPDDataSource.shared.fill({
-						dispatch_async(dispatch_get_main_queue(), {
+					if self._displayType != .Albums
+					{
+						// Always fetch the albums list
+						MPDDataSource.shared.fill(.Albums, callback:{})
+					}
+					MPDDataSource.shared.fill(self._displayType, callback:{
+						dispatch_async(dispatch_get_main_queue()) {
 							self.collectionView.reloadData()
-						})
+							self._updateNavigationTitle()
+						}
 					})
 
+					// Player
 					MPDPlayer.shared.server = server
 					MPDPlayer.shared.initialize()
+				}
+				else
+				{
+					let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_server_need_check"), preferredStyle:.Alert)
+					let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.Cancel, handler:nil)
+					alertController.addAction(cancelAction)
+					self.presentViewController(alertController, animated:true, completion:nil)
 				}
 			}
 			else
@@ -158,7 +165,7 @@ final class RootVC : MenuVC
 		}
 
 		// Deselect cell
-		if self.detailVC != nil
+		if self.albumDetailVC != nil
 		{
 			if let idxs = self.collectionView.indexPathsForSelectedItems()
 			{
@@ -173,8 +180,9 @@ final class RootVC : MenuVC
 	override func viewWillDisappear(animated: Bool)
 	{
 		super.viewWillDisappear(animated)
+
 		APP_DELEGATE().operationQueue.cancelAllOperations()
-		self._downloadOperations.removeAllObjects()
+		self._downloadOperations.removeAll()
 	}
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
@@ -187,22 +195,34 @@ final class RootVC : MenuVC
 		return .LightContent
 	}
 
-	// MARK: - Public
+	// MARK: - Gestures
 	func doubleTap(gest: UITapGestureRecognizer)
 	{
+		// TODO: support more than just albums
+		if self._displayType != .Albums
+		{
+			return
+		}
+
 		if (gest.state == .Ended)
 		{
 			let point = gest.locationInView(self.collectionView)
 			if let indexPath = self.collectionView.indexPathForItemAtPoint(point)
 			{
 				let album = self.searching ? self.searchResults[indexPath.row] : MPDDataSource.shared.albums[indexPath.row]
-				MPDPlayer.shared.playAlbum(album, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
+				MPDPlayer.shared.playAlbum(album as! Album, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
 			}
 		}
 	}
 
 	func longPress(gest: UILongPressGestureRecognizer)
 	{
+		// TODO: support more than just albums
+		if self._displayType != .Albums
+		{
+			return
+		}
+
 		if self.longPressRecognized
 		{
 			return
@@ -227,21 +247,21 @@ final class RootVC : MenuVC
 			}
 			alertController.addAction(cancelAction)
 			let playAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum"), style:.Default) { (action) in
-				MPDPlayer.shared.playAlbum(album, random:false, loop:false)
+				MPDPlayer.shared.playAlbum(album as! Album, random:false, loop:false)
 				self.longPressRecognized = false
 				cell.longPressed = false
 				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(playAction)
 			let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.Default) { (action) in
-				MPDPlayer.shared.playAlbum(album, random:true, loop:false)
+				MPDPlayer.shared.playAlbum(album as! Album, random:true, loop:false)
 				self.longPressRecognized = false
 				cell.longPressed = false
 				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(shuffleAction)
 			let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.Default) { (action) in
-				MPDPlayer.shared.addAlbumToQueue(album)
+				MPDPlayer.shared.addAlbumToQueue(album as! Album)
 				self.longPressRecognized = false
 				cell.longPressed = false
 				MiniPlayerView.shared.stayHidden = false
@@ -254,18 +274,30 @@ final class RootVC : MenuVC
 	// MARK: - Buttons actions
 	func changeTypeAction(sender: UIButton?)
 	{
-		Logger.dlog("Not implemented yet.")
-	}
+		if self._typeChoiceView == nil
+		{
+			self._typeChoiceView = TypeChoiceView(frame:CGRect(0.0, 0.0, self.collectionView.width, 96.0))
+			self._typeChoiceView.delegate = self
+		}
 
-	// MARK: - Notifications
-	func miniPlayerWillShow(aNotification: NSNotification?)
-	{
-		//self.collectionView.frame = CGRect(self.collectionView.origin, self.collectionView.width, self.collectionView.height - MiniPlayerView.shared.height)
-	}
-
-	func miniPlayerWillHide(aNotification: NSNotification?)
-	{
-		//self.collectionView.frame = CGRect(self.collectionView.origin, self.collectionView.width, self.collectionView.height + MiniPlayerView.shared.height)
+		if self._typeChoiceView.superview != nil
+		{
+			self.view.backgroundColor = UIColor.fromRGB(0xECECEC)
+			UIView.animateWithDuration(0.35, delay:0.0, usingSpringWithDamping:0.5, initialSpringVelocity:10.0, options:.CurveEaseOut, animations:{
+				self.collectionView.y = self.collectionView.y - self._typeChoiceView.height
+			}, completion:{ finished in
+				self._typeChoiceView.removeFromSuperview()
+			})
+		}
+		else
+		{
+			self.view.backgroundColor = UIColor.blackColor()
+			self._typeChoiceView.tableView.reloadData()
+			self.view.insertSubview(self._typeChoiceView, belowSubview:self.collectionView)
+			UIView.animateWithDuration(0.35, delay:0.0, usingSpringWithDamping:0.5, initialSpringVelocity:10.0, options:.CurveEaseOut, animations:{
+				self.collectionView.y = self.collectionView.y + self._typeChoiceView.height
+			}, completion:nil)
+		}
 	}
 
 	// MARK: - Private
@@ -284,6 +316,30 @@ final class RootVC : MenuVC
 			bar.y = -48.0
 		}, completion:nil)
 	}
+
+	private func _updateNavigationTitle()
+	{
+		let p = NSMutableParagraphStyle()
+		p.alignment = .Center
+		p.lineBreakMode = .ByWordWrapping
+		var title = ""
+		switch self._displayType
+		{
+			case .Albums:
+				let n = MPDDataSource.shared.albums.count
+				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_albums") : NYXLocalizedString("lbl_album"))"
+			case .Genres:
+				let n = MPDDataSource.shared.genres.count
+				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_genres") : NYXLocalizedString("lbl_genre"))"
+			case .Artists:
+				let n = MPDDataSource.shared.artists.count
+				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_artists") : NYXLocalizedString("lbl_artist"))"
+		}
+		let astr1 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.whiteColor(), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
+		self.titleView.setAttributedTitle(astr1, forState:.Normal)
+		let astr2 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
+		self.titleView.setAttributedTitle(astr2, forState:.Highlighted)
+	}
 }
 
 // MARK: - UICollectionViewDataSource
@@ -291,7 +347,19 @@ extension RootVC : UICollectionViewDataSource
 {
 	func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
 	{
-		return self.searching ? self.searchResults.count : MPDDataSource.shared.albums.count
+		if self.searching
+		{
+			return self.searchResults.count
+		}
+		switch self._displayType
+		{
+			case .Albums:
+				return MPDDataSource.shared.albums.count
+			case .Genres:
+				return MPDDataSource.shared.genres.count
+			case .Artists:
+				return MPDDataSource.shared.artists.count
+		}
 	}
 
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
@@ -300,7 +368,25 @@ extension RootVC : UICollectionViewDataSource
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.mainScreen().scale
 
-		let album = self.searching ? self.searchResults[indexPath.row] : MPDDataSource.shared.albums[indexPath.row]
+		switch self._displayType
+		{
+			case .Albums:
+				let album = self.searching ? self.searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
+				self._configureCellForAlbum(cell, indexPath:indexPath, album:album)
+			case .Genres:
+				let genre = self.searching ? self.searchResults[indexPath.row] as! String : MPDDataSource.shared.genres[indexPath.row]
+				self._configureCellForGenre(cell, indexPath:indexPath, genre:genre)
+			case .Artists:
+				let artist = self.searching ? self.searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
+				self._configureCellForArtist(cell, indexPath:indexPath, artist:artist)
+		}
+
+		return cell
+	}
+
+	private func _configureCellForAlbum(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, album: Album)
+	{
+		// Set title
 		cell.label.text = album.name
 		cell.accessibilityLabel = album.name
 
@@ -308,14 +394,17 @@ extension RootVC : UICollectionViewDataSource
 		if !album.hasCover
 		{
 			cell.image = UIImage(named:"default-cover")
-			return cell
+			return
 		}
 
+		// Get local URL for cover
 		guard let coverURL = album.localCoverURL else
 		{
+			Logger.alog("[!] No cover URL for \(album)") // should not happen
 			cell.image = UIImage(named:"default-cover")
-			return cell
+			return
 		}
+
 		if let cover = UIImage.loadFromURL(coverURL)
 		{
 			cell.image = cover
@@ -323,59 +412,132 @@ extension RootVC : UICollectionViewDataSource
 		else
 		{
 			cell.image = UIImage(named:"default-cover")
-			let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
-			let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
-				let key = album.name + album.year
-				weak var wo = op
-				op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
-					dispatch_async(dispatch_get_main_queue(), {
+				self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
+					dispatch_async(dispatch_get_main_queue()) {
 						if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
 						{
 							c.image = thumbnail
 						}
-					})
-					if let x = wo
-					{
-						if !x.cancelled
-						{
-							self._downloadOperations.removeObjectForKey(key)
-						}
 					}
-				}
-				self._downloadOperations[key] = op
-				APP_DELEGATE().operationQueue.addOperation(op)
+				})
 			}
 			else
 			{
 				MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
-					let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
-					let key = album.name + album.year
-					weak var wo = op
-					op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
-						dispatch_async(dispatch_get_main_queue(), {
+					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
+						dispatch_async(dispatch_get_main_queue()) {
 							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
 							{
 								c.image = thumbnail
 							}
-						})
-						if let x = wo
-						{
-							if !x.cancelled
-							{
-								self._downloadOperations.removeObjectForKey(key)
-							}
 						}
-					}
-					self._downloadOperations[key] = op
-					APP_DELEGATE().operationQueue.addOperation(op)
+					})
 				})
 			}
 		}
-		
-		return cell
+	}
+
+	private func _configureCellForGenre(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, genre: String)
+	{
+		cell.label.text = genre
+		cell.accessibilityLabel = genre
+		cell.image = UIImage.fromString(genre, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor: UIColor.whiteColor(), backgroundColor:UIColor.fromRGB(genre.djb2()), maxSize:cell.imageView.size)
+	}
+
+	private func _configureCellForArtist(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, artist: Artist)
+	{
+		cell.label.text = artist.name
+		cell.accessibilityLabel = artist.name
+
+		if artist.albums.count > 0
+		{
+			if let album = artist.albums.first
+			{
+				// No cover, abort
+				if !album.hasCover
+				{
+					cell.image = UIImage(named:"default-cover")
+					return
+				}
+
+				// Get local URL for cover
+				guard let coverURL = album.localCoverURL else
+				{
+					Logger.alog("[!] No cover URL for \(album)") // should not happen
+					cell.image = UIImage(named:"default-cover")
+					return
+				}
+
+				if let cover = UIImage.loadFromURL(coverURL)
+				{
+					cell.image = cover
+				}
+				else
+				{
+					cell.image = UIImage(named:"default-cover")
+					let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
+					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
+					if album.path != nil
+					{
+						self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+							let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
+							dispatch_async(dispatch_get_main_queue()) {
+								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+								{
+									c.image = cropped
+								}
+							}
+						})
+					}
+					else
+					{
+						MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
+							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+								let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
+								dispatch_async(dispatch_get_main_queue()) {
+									if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+									{
+										c.image = cropped
+									}
+								}
+							})
+						})
+					}
+				}
+			}
+		}
+		else
+		{
+			MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
+				dispatch_async(dispatch_get_main_queue()) {
+					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+					{
+						self.collectionView.reloadItemsAtIndexPaths([indexPath])
+					}
+				}
+			})
+		}
+	}
+
+	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(thumbnail: UIImage) -> Void)
+	{
+		let downloadOperation = DownloadCoverOperation(album:album, cropSize:cropSize)
+		let key = album.name + album.year
+		weak var weakOperation = downloadOperation
+		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+			if let op = weakOperation
+			{
+				if !op.cancelled
+				{
+					self._downloadOperations.removeValueForKey(key)
+				}
+			}
+			callback(thumbnail:thumbnail)
+		}
+		self._downloadOperations[key] = downloadOperation
+		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
 }
 
@@ -392,28 +554,47 @@ extension RootVC : UICollectionViewDelegate
 			return
 		}
 
-		// Create detail VC
-		if self.detailVC == nil
-		{
-			self.detailVC = AlbumDetailVC()
-		}
-
-		// Set data according to search state
-		self.detailVC.selectedIndex = indexPath.row
-		self.detailVC.albums = self.searching ? self.searchResults : MPDDataSource.shared.albums
-
 		// Hide the searchbar
 		if self.searchBarVisible
 		{
 			self._showNavigationBar(animated:true)
 		}
-		self.navigationController?.pushViewController(self.detailVC, animated:true)
+
+		switch self._displayType
+		{
+			case .Albums:
+				// Create detail VC
+				if self.albumDetailVC == nil
+				{
+					self.albumDetailVC = AlbumDetailVC()
+				}
+
+				// Set data according to search state
+				self.albumDetailVC.selectedIndex = indexPath.row
+				self.albumDetailVC.albums = self.searching ? self.searchResults as! [Album] : MPDDataSource.shared.albums
+				self.navigationController?.pushViewController(self.albumDetailVC, animated:true)
+			case .Genres:
+				// Set data according to search state
+				let genre = self.searching ? self.searchResults[indexPath.row] as! String : MPDDataSource.shared.genres[indexPath.row]
+				let artistsVC = ArtistsVC(genre:genre)
+				self.navigationController?.pushViewController(artistsVC, animated:true)
+			case .Artists:
+				// Set data according to search state
+				let artist = self.searching ? self.searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
+				let albumsVC = AlbumsVC(artist:artist)
+				self.navigationController?.pushViewController(albumsVC, animated:true)
+		}
 	}
 
 	func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath)
 	{
+		if self._displayType != .Albums
+		{
+			return
+		}
+
 		// When searching things can go wrong, this prevent some crashes
-		let src = self.searching ? self.searchResults : MPDDataSource.shared.albums
+		let src = self.searching ? self.searchResults as! [Album] : MPDDataSource.shared.albums
 		if indexPath.row >= src.count
 		{
 			return
@@ -425,7 +606,7 @@ extension RootVC : UICollectionViewDelegate
 		if let op = self._downloadOperations[key] as! DownloadCoverOperation?
 		{
 			op.cancel()
-			self._downloadOperations.removeObjectForKey(key)
+			self._downloadOperations.removeValueForKey(key)
 			Logger.dlog("[+] Cancelling \(op)")
 		}
 	}
@@ -510,11 +691,56 @@ extension RootVC : UISearchBarDelegate
 
 	func searchBar(searchBar: UISearchBar, textDidChange searchText: String)
 	{
-		if MPDDataSource.shared.albums.count > 0
+		/*if MPDDataSource.shared.albums.count > 0
 		{
 			self.searchResults = MPDDataSource.shared.albums.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
 			self.collectionView.reloadData()
+		}*/
+		switch self._displayType
+		{
+			case .Albums:
+				if MPDDataSource.shared.albums.count > 0
+				{
+					self.searchResults = MPDDataSource.shared.albums.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
+				}
+			case .Genres:
+				if MPDDataSource.shared.genres.count > 0
+				{
+					self.searchResults = MPDDataSource.shared.genres.filter({$0.lowercaseString.containsString(searchText.lowercaseString)})
+				}
+			case .Artists:
+				if MPDDataSource.shared.artists.count > 0
+				{
+					self.searchResults = MPDDataSource.shared.artists.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
+				}
 		}
+		self.collectionView.reloadData()
+	}
+}
+
+// MARK: - TypeChoiceViewDelegate
+extension RootVC : TypeChoiceViewDelegate
+{
+	func didSelectType(type: DisplayType)
+	{
+		// Ignore if type did not change
+		self.changeTypeAction(nil)
+		if self._displayType == type
+		{
+			return
+		}
+		self._displayType = type
+
+		NSUserDefaults.standardUserDefaults().setInteger(type.rawValue, forKey:kNYXPrefDisplayType)
+		NSUserDefaults.standardUserDefaults().synchronize()
+
+		// Refresh view
+		MPDDataSource.shared.fill(type, callback:{
+			dispatch_async(dispatch_get_main_queue()) {
+				self.collectionView.reloadData()
+				self._updateNavigationTitle()
+			}
+		})
 	}
 }
 

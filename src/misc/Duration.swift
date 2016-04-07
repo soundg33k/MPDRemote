@@ -50,13 +50,13 @@ struct Duration
 
 // MARK: - Comparisons
 extension Duration : Equatable {}
-func ==(lhs: Duration, rhs: Duration) -> Bool
+func == (lhs: Duration, rhs: Duration) -> Bool
 {
 	return lhs.seconds == rhs.seconds
 }
 
 extension Duration : Comparable {}
-func <(lhs: Duration, rhs: Duration) -> Bool
+func < (lhs: Duration, rhs: Duration) -> Bool
 {
 	return lhs.seconds < rhs.seconds
 }
@@ -77,13 +77,21 @@ extension Duration : CustomStringConvertible
 	}
 }
 
+extension Duration : IntegerLiteralConvertible
+{
+	init(integerLiteral value: IntegerLiteralType)
+	{
+		self.init(seconds:UInt(value))
+	}
+}
+
 // MARK: - Maths
-func +(lhs: Duration, rhs: Duration) -> Duration
+func + (lhs: Duration, rhs: Duration) -> Duration
 {
 	return Duration(seconds:lhs.seconds + rhs.seconds)
 }
 
-func -(lhs: Duration, rhs: Duration) -> Duration
+func - (lhs: Duration, rhs: Duration) -> Duration
 {
 	return Duration(seconds:lhs.seconds - rhs.seconds)
 }

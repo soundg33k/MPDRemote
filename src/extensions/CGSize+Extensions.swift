@@ -31,4 +31,14 @@ extension CGSize
 		self.width = width
 		self.height = height
 	}
+
+	func ceil() -> CGSize
+	{
+		return CGSize(CoreGraphics.ceil(self.width), CoreGraphics.ceil(self.height))
+	}
+}
+
+func * (lhs: CGSize, rhs: CGFloat) -> CGSize
+{
+	return CGSize(lhs.width * rhs, lhs.height * rhs)
 }

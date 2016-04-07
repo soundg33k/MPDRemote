@@ -23,6 +23,14 @@
 import UIKit
 
 
+extension Int
+{
+	func MB() -> Int
+	{
+		return self * 1024 * 1024
+	}
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
@@ -49,6 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		self._registerDefaultPreferences()
 
 		// URL cache
+		4.MB()
 		NSURLCache.setSharedURLCache(NSURLCache(memoryCapacity:(4 * 1024 * 1024), diskCapacity:(32 * 1024 * 1024), diskPath:nil))
 
 		// Global operation queue
@@ -78,6 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 			kNYXPrefCoverSize : NSKeyedArchiver.archivedDataWithRootObject(NSValue(CGSize:CGSize(width, width))),
 			kNYXPrefRandom : false,
 			kNYXPrefRepeat : false,
+			kNYXPrefDisplayType : DisplayType.Albums.rawValue,
 		]
 
 		let fileManager = NSFileManager()

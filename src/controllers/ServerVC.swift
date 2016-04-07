@@ -25,22 +25,22 @@ import UIKit
 
 final class ServerVC : MenuVC
 {
-	// MARK: - Public properties
-	private(set) var tableView: UITableView!
+	// MARK: - Private properties
+	private var tableView: UITableView!
 	// Server name
-	private(set) var tfName: UITextField!
+	private var tfName: UITextField!
 	// Server hostname
-	private(set) var tfHostname: UITextField!
+	private var tfHostname: UITextField!
 	// Server port
-	private(set) var tfPort: UITextField!
+	private var tfPort: UITextField!
 	// Server password
-	private(set) var tfPassword: UITextField!
+	private var tfPassword: UITextField!
 	// Cover name
-	private(set) var tfCoverName: UITextField!
+	private var tfCoverName: UITextField!
 	// Server url for cover
-	private(set) var tfCoverURL: UITextField!
+	private var tfCoverURL: UITextField!
 	// MPD Server
-	private(set) var mpdServer: MPDServer?
+	private var mpdServer: MPDServer?
 
 	// MARK: - Private properties
 	// Indicate that the keyboard is visible, flag
@@ -62,11 +62,11 @@ final class ServerVC : MenuVC
 		navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : headerColor]
 		navigationBar.setBackgroundImage(UIImage(), forBarPosition:.Any, barMetrics:.Default)
 		navigationBar.shadowImage = UIImage()
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:#selector(ServerVC.validateSettingsAction(_:)))
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:#selector(validateSettingsAction(_:)))
 
 		// Navigation bar title
 		let titleView = UILabel(frame:CGRect(0.0, 0.0, 100.0, 44.0))
-		titleView.font = UIFont.systemFontOfSize(14.0)
+		titleView.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .Center
 		titleView.isAccessibilityElement = false
@@ -83,8 +83,8 @@ final class ServerVC : MenuVC
 		self.view.addSubview(self.tableView)
 
 		// Keyboard appearance notifications
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(ServerVC.keyboardDidShowNotification(_:)), name:UIKeyboardDidShowNotification, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(ServerVC.keyboardDidHideNotification(_:)), name:UIKeyboardDidHideNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(keyboardDidShowNotification(_:)), name:UIKeyboardDidShowNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(keyboardDidHideNotification(_:)), name:UIKeyboardDidHideNotification, object:nil)
 	}
 
 	override func viewWillAppear(animated: Bool)

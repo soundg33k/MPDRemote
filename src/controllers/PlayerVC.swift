@@ -25,35 +25,36 @@ import UIKit
 
 final class PlayerVC : UIViewController
 {
-	// MARK: - Public properties
+	// MARK: - Private properties
 	// Cover view
-	private(set) var coverView: UIImageView! = nil
+	private var coverView: UIImageView! = nil
 	// Track title
-	private(set) var lblTrackTitle: UILabel! = nil
+	private var lblTrackTitle: UILabel! = nil
 	// Track artist name
-	private(set) var lblTrackArtist: UILabel! = nil
+	private var lblTrackArtist: UILabel! = nil
 	// Album name
-	private(set) var lblAlbumName: UILabel! = nil
+	private var lblAlbumName: UILabel! = nil
 	// Play/Pause button
-	private(set) var btnPlay: UIButton! = nil
+	private var btnPlay: UIButton! = nil
 	// Next button
-	private(set) var btnNext: UIButton! = nil
+	private var btnNext: UIButton! = nil
 	// Previous button
-	private(set) var btnPrevious: UIButton! = nil
+	private var btnPrevious: UIButton! = nil
 	// Random button
-	private(set) var btnRandom: UIButton! = nil
+	private var btnRandom: UIButton! = nil
 	// Repeat button
-	private(set) var btnRepeat: UIButton! = nil
+	private var btnRepeat: UIButton! = nil
 	// Progress bar
-	private(set) var slider: UISlider! = nil
+	private var slider: UISlider! = nil
 	// Track title
-	private(set) var lblElapsedDuration: UILabel! = nil
+	private var lblElapsedDuration: UILabel! = nil
 	// Track artist name
-	private(set) var lblRemainingDuration: UILabel! = nil
+	private var lblRemainingDuration: UILabel! = nil
 
 	// MARK: - UIViewController
 	override func loadView()
 	{
+		// Set an UIImageView as self.view
 		let iv = UIImageView(frame:UIScreen.mainScreen().bounds)
 		iv.contentMode = .ScaleToFill
 		iv.userInteractionEnabled = true
@@ -206,11 +207,11 @@ final class PlayerVC : UIViewController
 			if album.path != nil
 			{
 				let op = DownloadCoverOperation(album:album, cropSize:self.coverView.size)
-				op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
-					dispatch_async(dispatch_get_main_queue(), {
+				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+					dispatch_async(dispatch_get_main_queue()) {
 						self.coverView.image = cover
 						iv?.image = cover
-					})
+					}
 				}
 				APP_DELEGATE().operationQueue.addOperation(op)
 			}
@@ -218,11 +219,11 @@ final class PlayerVC : UIViewController
 			{
 				MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
 					let op = DownloadCoverOperation(album:album, cropSize:self.coverView.size)
-					op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
-						dispatch_async(dispatch_get_main_queue(), {
+					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+						dispatch_async(dispatch_get_main_queue()) {
 							self.coverView.image = cover
 							iv?.image = cover
-						})
+						}
 					}
 					APP_DELEGATE().operationQueue.addOperation(op)
 				})

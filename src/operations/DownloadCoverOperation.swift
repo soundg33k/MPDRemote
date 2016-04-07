@@ -144,7 +144,7 @@ final class DownloadCoverOperation : NSOperation
 
 		if let cpl = self.cplBlock
 		{
-			cpl(thumbnail, cover)
+			cpl(cover, thumbnail)
 		}
 	}
 }

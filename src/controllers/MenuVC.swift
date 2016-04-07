@@ -34,7 +34,7 @@ class MenuVC : UIViewController
 	// Menu
 	private(set) var menuView: MenuView! = nil
 	// Screen edge gesture
-	private(set) var panGestureMenu: UIScreenEdgePanGestureRecognizer! = nil
+	private var panGestureMenu: UIScreenEdgePanGestureRecognizer! = nil
 
 	// MARK: - Initializers
 	init()
@@ -42,7 +42,8 @@ class MenuVC : UIViewController
 		super.init(nibName:nil, bundle:nil)
 
 		// Hamburger button
-		let b = UIBarButtonItem(image:UIImage(named:"btn-hamb"), style:.Plain, target:self, action:#selector(MenuVC.showLeftViewAction(_:)))
+		let image = UIImage(named:"btn-hamb")
+		let b = UIBarButtonItem(image:image?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), style:.Plain, target:self, action:#selector(showLeftViewAction(_:)))
 		b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 		self.navigationItem.leftBarButtonItem = b
 	}
@@ -62,7 +63,7 @@ class MenuVC : UIViewController
 		self.menuView.visible = false
 		self.navigationController!.view.addSubview(self.menuView)
 
-		self.panGestureMenu = UIScreenEdgePanGestureRecognizer(target:self, action:#selector(MenuVC.panFromEdge(_:)))
+		self.panGestureMenu = UIScreenEdgePanGestureRecognizer(target:self, action:#selector(panFromEdge(_:)))
 		self.panGestureMenu.edges = .Left
 		self.panGestureMenu.delegate = self
 		self.view.addGestureRecognizer(self.panGestureMenu)

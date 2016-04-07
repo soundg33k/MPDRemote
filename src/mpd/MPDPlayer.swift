@@ -102,9 +102,9 @@ final class MPDPlayer : NSObject
 			return
 		}
 		
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.playAlbum(album, random:random, loop:loop)
-		})
+		}
 	}
 
 	func playTracks(tracks: [Track], random: Bool, loop: Bool)
@@ -114,34 +114,10 @@ final class MPDPlayer : NSObject
 			return
 		}
 
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.playTracks(tracks, random:random, loop:loop)
-		})
-	}
-
-	/*func pause()
-	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
-		{
-			return
 		}
-
-		dispatch_async(self._queue, {
-			self._mpdConnection.pausePlayback()
-		})
 	}
-
-	func play()
-	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
-		{
-			return
-		}
-
-		dispatch_async(self._queue, {
-			self._mpdConnection.runPlayback()
-		})
-	}*/
 
 	// MARK: - Pausing
 	func togglePause()
@@ -151,9 +127,9 @@ final class MPDPlayer : NSObject
 			return
 		}
 		
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.togglePause()
-		})
+		}
 	}
 
 	// MARK: - Add to queue
@@ -164,9 +140,9 @@ final class MPDPlayer : NSObject
 			return
 		}
 		
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.addAlbumToQueue(album)
-		})
+		}
 	}
 
 	// MARK: - Repeat
@@ -177,9 +153,9 @@ final class MPDPlayer : NSObject
 			return
 		}
 
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.setRepeat(loop)
-		})
+		}
 	}
 
 	// MARK: - Random
@@ -190,9 +166,9 @@ final class MPDPlayer : NSObject
 			return
 		}
 
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.setRandom(random)
-		})
+		}
 	}
 
 	// MARK: - Tracks navigation
@@ -203,9 +179,9 @@ final class MPDPlayer : NSObject
 			return
 		}
 
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.nextTrack()
-		})
+		}
 	}
 
 	func requestPreviousTrack()
@@ -215,9 +191,9 @@ final class MPDPlayer : NSObject
 			return
 		}
 
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.previousTrack()
-		})
+		}
 	}
 
 	// MARK: - Track position
@@ -228,9 +204,9 @@ final class MPDPlayer : NSObject
 			return
 		}
 
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.setTrackPosition(position, trackPosition:trackPosition)
-		})
+		}
 	}
 
 	// MARK: - Private
@@ -260,25 +236,25 @@ final class MPDPlayer : NSObject
 		// Track changed
 		if self.currentTrack == nil || (self.currentTrack != nil && track != self.currentTrack!)
 		{
-			dispatch_async(dispatch_get_main_queue(), {
+			dispatch_async(dispatch_get_main_queue()) {
 				NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationPlayingTrackChanged, object:nil, userInfo:infos)
-			})
+			}
 		}
 
 		// Status changed
 		if status != self.status
 		{
-			dispatch_async(dispatch_get_main_queue(), {
+			dispatch_async(dispatch_get_main_queue()) {
 				NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationPlayerStatusChanged, object:nil, userInfo:infos)
-			})
+			}
 		}
 
 		self.status = status
 		self.currentTrack = track
 		self.currentAlbum = album
-		dispatch_async(dispatch_get_main_queue(), {
+		dispatch_async(dispatch_get_main_queue()) {
 			NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationCurrentPlayingTrack, object:nil, userInfo:infos)
-		})
+		}
 	}
 }
 

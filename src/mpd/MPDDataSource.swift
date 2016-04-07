@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class MPDDataSource : MPDConnectionDelegate
+final class MPDDataSource
 {
 	// MARK: - Public properties
 	// Singletion instance
@@ -32,6 +32,10 @@ final class MPDDataSource : MPDConnectionDelegate
 	var server: MPDServer! = nil
 	// Albums list
 	private(set) var albums = [Album]()
+	// Genres list
+	private(set) var genres = [String]()
+	// Artists list
+	private(set) var artists = [Artist]()
 
 	// MARK: - Private properties
 	// MPD Connection
@@ -81,19 +85,62 @@ final class MPDDataSource : MPDConnectionDelegate
 		return ret
 	}
 
-	func fill(callback: () -> Void)
+	func fill(type: DisplayType, callback: () -> Void)
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue, {
+		/*dispatch_async(self._queue, {
 			let list = self._mpdConnection.getAlbumsList()
 			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
 			self.albums = list.sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
 			callback()
-		})
+		})*/
+		dispatch_async(self._queue) {
+			let list = self._mpdConnection.getListForType(type)
+			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
+			switch (type)
+			{
+				case .Albums:
+					self.albums = (list as! [Album]).sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
+				case .Genres:
+					self.genres = (list as! [String]).sort({$0.stringByTrimmingCharactersInSet(set) < $1.stringByTrimmingCharactersInSet(set)})
+				case .Artists:
+					self.artists = (list as! [Artist]).sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
+			}
+			callback()
+		}
+	}
+
+	func getArtistsForGenre(genre: String, callback: ([Artist]) -> Void)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			let list = self._mpdConnection.getArtistsForGenre(genre)
+			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
+			callback(list.sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)}))
+		}
+	}
+
+	func getAlbumsForArtist(artist: Artist, callback: () -> Void)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			self._mpdConnection.getAlbumsForArtist(artist)
+			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
+			artist.albums.sortInPlace({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
+			callback()
+		}
 	}
 
 	func findCoverPathForAlbum(album: Album, callback: () -> Void)
@@ -103,10 +150,10 @@ final class MPDDataSource : MPDConnectionDelegate
 			return
 		}
 
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.findCoverForAlbum(album)
 			callback()
-		})
+		}
 	}
 
 	func getSongsForAlbum(album: Album, callback: () -> Void)
@@ -116,10 +163,10 @@ final class MPDDataSource : MPDConnectionDelegate
 			return
 		}
 
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			album.songs = self._mpdConnection.getSongsForAlbum(album)
 			callback()
-		})
+		}
 	}
 
 	func getMetadatasForAlbum(album: Album, callback: () -> Void)
@@ -129,10 +176,10 @@ final class MPDDataSource : MPDConnectionDelegate
 			return
 		}
 
-		dispatch_async(self._queue, {
+		dispatch_async(self._queue) {
 			self._mpdConnection.getMetadatasForAlbum(album)
 			callback()
-		})
+		}
 	}
 
 	// MARK: - Private
@@ -155,5 +202,14 @@ final class MPDDataSource : MPDConnectionDelegate
 	private func _playerStatus()
 	{
 		self._mpdConnection.getStatus()
+	}
+}
+
+extension MPDDataSource : MPDConnectionDelegate
+{
+	@objc func albumMatchingName(name: String) -> Album?
+	{
+		let albums = MPDDataSource.shared.albums
+		return albums.filter({$0.name == name}).first
 	}
 }

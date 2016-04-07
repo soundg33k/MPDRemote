@@ -140,6 +140,150 @@ final class MPDConnection
 		return list
 	}
 
+	func getListForType(type: DisplayType) -> [AnyObject]
+	{
+		var t: mpd_tag_type
+		switch type
+		{
+			case .Albums:
+				t = MPD_TAG_ALBUM
+			case .Genres:
+				t = MPD_TAG_GENRE
+			case .Artists:
+				t = MPD_TAG_ARTIST
+		}
+		var list = [AnyObject]()
+		if (!mpd_search_db_tags(self._connection, t) || !mpd_search_commit(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return list
+		}
+
+		var p = mpd_recv_pair_tag(self._connection, t)
+		if p == nil
+		{
+			Logger.dlog("no data?")
+			return list
+		}
+
+		repeat
+		{
+			let m = p.memory
+			let name = NSString(bytes:m.value, length:Int(strlen(m.value)), encoding:NSUTF8StringEncoding) as! String
+
+			switch type
+			{
+				case .Albums:
+					list.append(Album(name:name))
+				case .Genres:
+					list.append(name)
+				case .Artists:
+					list.append(Artist(name:name))
+			}
+
+			mpd_return_pair(self._connection, p)
+			p = mpd_recv_pair_tag(self._connection, t)
+		} while p != nil
+
+		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return list
+		}
+
+		return list
+	}
+
+	func getArtistsForGenre(genre: String) -> [Artist]
+	{
+		var list = [Artist]()
+		if (!mpd_search_db_tags(self._connection, MPD_TAG_ARTIST))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return list
+		}
+		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return list
+		}
+		if (!mpd_search_commit(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return list
+		}
+
+		var p = mpd_recv_pair_tag(self._connection, MPD_TAG_ARTIST)
+		if p == nil
+		{
+			Logger.dlog("no data?")
+			return list
+		}
+
+		repeat
+		{
+			let m = p.memory
+			let name = NSString(bytes:m.value, length:Int(strlen(m.value)), encoding:NSUTF8StringEncoding) as! String
+			list.append(Artist(name:name))
+
+			mpd_return_pair(self._connection, p)
+			p = mpd_recv_pair_tag(self._connection, MPD_TAG_ARTIST)
+		} while p != nil
+
+		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return list
+		}
+
+		return list
+	}
+
+	func getAlbumsForArtist(artist: Artist)
+	{
+		if (!mpd_search_db_tags(self._connection, MPD_TAG_ALBUM))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist.name))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+		if (!mpd_search_commit(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+
+		var p = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+		if p == nil
+		{
+			Logger.dlog("no albums?")
+			return
+		}
+
+		repeat
+		{
+			let m = p.memory
+			let albumName = NSString(bytes:m.value, length:Int(strlen(m.value)), encoding:NSUTF8StringEncoding) as! String
+			if let album = self.delegate?.albumMatchingName!(albumName)
+			{
+				artist.albums.append(album)
+			}
+
+			mpd_return_pair(self._connection, p)
+			p = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+		} while p != nil
+
+		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+	}
+
 	func findCoverForAlbum(album: Album)
 	{
 		if (!mpd_search_db_songs(self._connection, true))
@@ -395,7 +539,7 @@ final class MPDConnection
 		let song = mpd_run_current_song(self._connection)
 		if song == nil
 		{
-			Logger.dlog("[!] No current song.")
+			//Logger.dlog("[!] No current song.")
 			return nil
 		}
 

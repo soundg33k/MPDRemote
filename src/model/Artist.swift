@@ -1,4 +1,4 @@
-// Array+Extensions.swift
+// Artist.swift
 // Copyright (c) 2016 Nyx0uf ( https://mpdremote.whine.io )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,15 +23,23 @@
 import Foundation
 
 
-extension Array
+final class Artist : NSObject
 {
-	func randomItem() -> Element
+	// MARK: - Properties
+	// Artist name
+	var name: String
+	// Albums list reference
+	var albums = [Album]()
+
+	// MARK: - Initializers
+	init(name: String)
 	{
-		return self[Int(arc4random_uniform(UInt32(self.count)))]
+		self.name = name
 	}
 
-	subscript(safe idx: Int) -> Element?
+	// MARK: - Debugging
+	override var description: String
 	{
-		return idx < self.endIndex ? self[idx] : nil
+		return "Name: <\(self.name)>\nNumber of albums: <\(self.albums.count)>"
 	}
 }

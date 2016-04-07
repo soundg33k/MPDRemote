@@ -31,6 +31,7 @@ public let kNYXPrefMPDServer = "kNYXPrefMPDServer"
 public let kNYXPrefCoverSize = "kNYXPrefCoverSize"
 public let kNYXPrefRandom = "kNYXPrefRandom"
 public let kNYXPrefRepeat = "kNYXPrefRepeat"
+public let kNYXPrefDisplayType = "kNYXPrefDisplayType"
 
 /* Notifications names */
 public let kNYXNotificationCurrentPlayingTrack = "kNYXNotificationCurrentPlayingTrack"
@@ -43,4 +44,12 @@ public let kNYXNotificationMiniPlayerViewDidHide = "kNYXNotificationMiniPlayerVi
 public let kNYXNotificationMiniPlayerShouldExpand = "kNYXNotificationMiniPlayerShouldExpand"
 
 /* App color */
-public let kNYXAppColor = UInt(0x660000)
+public let kNYXAppColor = Int(0x660000)
+
+/* RootVC display type */
+enum DisplayType : Int
+{
+	case Albums
+	case Artists
+	case Genres
+}

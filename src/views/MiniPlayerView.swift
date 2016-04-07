@@ -28,25 +28,27 @@ public let playerViewHeight = CGFloat(44.0)
 
 final class MiniPlayerView : UIView
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Singletion instance
 	static let shared = MiniPlayerView(frame:CGRect(0.0, (UIApplication.sharedApplication().keyWindow?.frame.height)! + playerViewHeight, (UIApplication.sharedApplication().keyWindow?.frame.width)!, playerViewHeight))
-	// Album cover
-	private(set) var imageView: UIImageView!
-	// Dummy acessible view for title
-	private(set) var accessibleView: UIView!
-	// Track title
-	private(set) var lblTitle: UILabel!
-	// Track artist
-	private(set) var lblArtist: UILabel!
-	// Play/pause button
-	private(set) var btnPlay: UIButton!
-	// View to indicate track progression
-	private(set) var progressView: UIView!
 	// Visible flag
 	private(set) var visible = false
 	// Player should stay hidden, regardless of playback status
 	var stayHidden = false
+
+	// MARK: - Private properties
+	// Album cover
+	private var imageView: UIImageView!
+	// Dummy acessible view for title
+	private var accessibleView: UIView!
+	// Track title
+	private var lblTitle: UILabel!
+	// Track artist
+	private var lblArtist: UILabel!
+	// Play/pause button
+	private var btnPlay: UIButton!
+	// View to indicate track progression
+	private var progressView: UIView!
 
 	// MARK: - Initializers
 	override init(frame: CGRect)
@@ -149,10 +151,10 @@ final class MiniPlayerView : UIView
 			if album.path != nil
 			{
 				let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
-				op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
-					dispatch_async(dispatch_get_main_queue(), {
+				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+					dispatch_async(dispatch_get_main_queue()) {
 						self.setInfoFromTrack(track, ofAlbum:album)
-					})
+					}
 				}
 				APP_DELEGATE().operationQueue.addOperation(op)
 			}
@@ -160,10 +162,10 @@ final class MiniPlayerView : UIView
 			{
 				MPDDataSource.shared.findCoverPathForAlbum(album, callback:{
 					let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
-					op.cplBlock = {(thumbnail: UIImage, cover: UIImage) in
-						dispatch_async(dispatch_get_main_queue(), {
+					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+						dispatch_async(dispatch_get_main_queue()) {
 							self.setInfoFromTrack(track, ofAlbum:album)
-						})
+						}
 					}
 					APP_DELEGATE().operationQueue.addOperation(op)
 				})

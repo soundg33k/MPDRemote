@@ -39,12 +39,6 @@ final class MenuView : UIView
 	// MARK: - Public properties
 	// Delegate
 	weak var menuDelegate: MenuViewDelegate? = nil
-	// TableView
-	private(set) var tableView: UITableView! = nil
-	// Kikoolol
-	private(set) var blurEffectView: UIVisualEffectView! = nil
-	// Pan gesture
-	private(set) var pan: UIPanGestureRecognizer! = nil
 	// Is visible flag
 	var visible = false {
 		didSet {
@@ -56,6 +50,12 @@ final class MenuView : UIView
 	}
 
 	// MARK: - Private properties
+	// TableView
+	private var tableView: UITableView! = nil
+	// Kikoolol
+	private var blurEffectView: UIVisualEffectView! = nil
+	// Pan gesture
+	private var pan: UIPanGestureRecognizer! = nil
 	// Minimum x for the menu
 	private var _menuMinX = CGFloat(0.0)
 
@@ -71,7 +71,7 @@ final class MenuView : UIView
 		self.blurEffectView = UIVisualEffectView(effect:UIBlurEffect(style:.Light))
 		self.blurEffectView.frame = self.bounds
 		self.layer.shadowColor = UIColor.fromRGB(0xAAAAAA).CGColor
-		self.layer.shadowPath = UIBezierPath(rect:CGRect(frame.width - 1.5, 5.0, 2.0, frame.height)).CGPath
+		self.layer.shadowPath = UIBezierPath(rect:CGRect(frame.width - 1.5, 4.0, 2.0, frame.height)).CGPath
 		self.layer.shadowRadius = 1.0
 		self.layer.shadowOpacity = 1.0
 		self.layer.masksToBounds = false

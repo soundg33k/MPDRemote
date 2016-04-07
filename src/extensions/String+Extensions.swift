@@ -59,6 +59,7 @@ extension String
 		return ""
 	}
 
+	// MARK: - Hash functions
 	func md5() -> String
 	{
 		var digest = [UInt8](count:Int(CC_MD5_DIGEST_LENGTH), repeatedValue:0)
@@ -73,6 +74,11 @@ extension String
 			ret += String(format:"%02x", digest[i])
 		}
 		return ret
+	}
+
+	func djb2() -> Int
+	{
+		return self.utf8.reduce(5381){($0 << 5) &+ $0 &+ Int($1)}
 	}
 }
 
