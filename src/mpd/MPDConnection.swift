@@ -176,7 +176,7 @@ final class MPDConnection
 				case .Albums:
 					list.append(Album(name:name))
 				case .Genres:
-					list.append(name)
+					list.append(Genre(name:name))
 				case .Artists:
 					list.append(Artist(name:name))
 			}
@@ -194,7 +194,7 @@ final class MPDConnection
 		return list
 	}
 
-	func getArtistsForGenre(genre: String) -> [Artist]
+	func getArtistsForGenre(genre: Genre) -> [Artist]
 	{
 		var list = [Artist]()
 		if (!mpd_search_db_tags(self._connection, MPD_TAG_ARTIST))
@@ -202,7 +202,7 @@ final class MPDConnection
 			Logger.dlog(self._getErrorMessageForConnection(self._connection))
 			return list
 		}
-		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre))
+		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
 		{
 			Logger.dlog(self._getErrorMessageForConnection(self._connection))
 			return list
@@ -456,6 +456,46 @@ final class MPDConnection
 			album.genre = artist
 		}
 		mpd_return_pair(self._connection, tmpGenre)
+		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+	}
+
+	func getAlbumForGenre(genre: Genre)
+	{
+		if (!mpd_search_db_tags(self._connection, MPD_TAG_ALBUM))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+		if (!mpd_search_commit(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+
+		let p = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+		if p == nil
+		{
+			Logger.dlog("no albums?")
+			return
+		}
+		let m = p.memory
+		let albumName = NSString(bytes:m.value, length:Int(strlen(m.value)), encoding:NSUTF8StringEncoding) as! String
+		if let album = self.delegate?.albumMatchingName!(albumName)
+		{
+			album.genre = genre.name
+			genre.albums.append(album)
+		}
+		mpd_return_pair(self._connection, p)
+
 		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
 		{
 			Logger.dlog(self._getErrorMessageForConnection(self._connection))

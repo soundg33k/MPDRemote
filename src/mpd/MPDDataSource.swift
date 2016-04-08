@@ -33,7 +33,7 @@ final class MPDDataSource
 	// Albums list
 	private(set) var albums = [Album]()
 	// Genres list
-	private(set) var genres = [String]()
+	private(set) var genres = [Genre]()
 	// Artists list
 	private(set) var artists = [Artist]()
 
@@ -106,7 +106,7 @@ final class MPDDataSource
 				case .Albums:
 					self.albums = (list as! [Album]).sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
 				case .Genres:
-					self.genres = (list as! [String]).sort({$0.stringByTrimmingCharactersInSet(set) < $1.stringByTrimmingCharactersInSet(set)})
+					self.genres = (list as! [Genre]).sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
 				case .Artists:
 					self.artists = (list as! [Artist]).sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
 			}
@@ -114,7 +114,7 @@ final class MPDDataSource
 		}
 	}
 
-	func getArtistsForGenre(genre: String, callback: ([Artist]) -> Void)
+	func getArtistsForGenre(genre: Genre, callback: ([Artist]) -> Void)
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
 		{
@@ -178,6 +178,19 @@ final class MPDDataSource
 
 		dispatch_async(self._queue) {
 			self._mpdConnection.getMetadatasForAlbum(album)
+			callback()
+		}
+	}
+
+	func getAlbumForGenre(genre: Genre, callback: () -> Void)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			self._mpdConnection.getAlbumForGenre(genre)
 			callback()
 		}
 	}

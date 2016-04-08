@@ -27,7 +27,7 @@ final class ArtistsVC : UITableViewController
 {
 	// MARK: - Private properties
 	// Selected genre
-	private let genre: String
+	private let genre: Genre
 	// List of artists
 	private var artists = [Artist]()
 	// Label in the navigationbar
@@ -36,7 +36,7 @@ final class ArtistsVC : UITableViewController
 	private var _downloadOperations = [String : NSOperation]()
 
 	// MARK: - Initializers
-	init(genre: String)
+	init(genre: Genre)
 	{
 		self.genre = genre
 		super.init(nibName:nil, bundle:nil)
@@ -96,7 +96,7 @@ final class ArtistsVC : UITableViewController
 	// MARK: - Private
 	private func _updateNavigationTitle()
 	{
-		let attrs = NSMutableAttributedString(string:self.genre + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
+		let attrs = NSMutableAttributedString(string:self.genre.name + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
 		attrs.appendAttributedString(NSAttributedString(string:"\(self.artists.count) \(self.artists.count > 1 ? NYXLocalizedString("lbl_artists").lowercaseString : NYXLocalizedString("lbl_artist").lowercaseString)", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
 		self.titleView.attributedText = attrs
 	}

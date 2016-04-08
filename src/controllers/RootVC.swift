@@ -429,7 +429,7 @@ extension RootVC : UICollectionViewDataSource
 				let album = self.searching ? self.searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
 				self._configureCellForAlbum(cell, indexPath:indexPath, album:album)
 			case .Genres:
-				let genre = self.searching ? self.searchResults[indexPath.row] as! String : MPDDataSource.shared.genres[indexPath.row]
+				let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
 				self._configureCellForGenre(cell, indexPath:indexPath, genre:genre)
 			case .Artists:
 				let artist = self.searching ? self.searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
@@ -494,11 +494,76 @@ extension RootVC : UICollectionViewDataSource
 		}
 	}
 
-	private func _configureCellForGenre(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, genre: String)
+	private func _configureCellForGenre(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, genre: Genre)
 	{
-		cell.label.text = genre
-		cell.accessibilityLabel = genre
-		cell.image = UIImage.fromString(genre, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor: UIColor.whiteColor(), backgroundColor:UIColor.fromRGB(genre.djb2()), maxSize:cell.imageView.size)
+		cell.label.text = genre.name
+		cell.accessibilityLabel = genre.name
+
+		if let album = genre.albums.first
+		{
+			// No cover, abort
+			if !album.hasCover
+			{
+				cell.image = UIImage(named:"default-cover")
+				return
+			}
+
+			// Get local URL for cover
+			guard let coverURL = album.localCoverURL else
+			{
+				Logger.alog("[!] No cover URL for \(album)") // should not happen
+				cell.image = UIImage(named:"default-cover")
+				return
+			}
+
+			if let cover = UIImage.loadFromURL(coverURL)
+			{
+				cell.image = cover
+			}
+			else
+			{
+				cell.image = UIImage(named:"default-cover")
+				if album.path != nil
+				{
+					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
+						dispatch_async(dispatch_get_main_queue()) {
+							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+							{
+								c.image = thumbnail
+							}
+						}
+					})
+				}
+				else
+				{
+					MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
+						self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
+							dispatch_async(dispatch_get_main_queue()) {
+								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+								{
+									c.image = thumbnail
+								}
+							}
+						})
+					})
+				}
+			}
+		}
+		else
+		{
+			cell.image = UIImage(named:"default-cover")
+			MPDDataSource.shared.getAlbumForGenre(genre, callback: {
+				dispatch_async(dispatch_get_main_queue()) {
+					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+					{
+						self.collectionView.reloadItemsAtIndexPaths([indexPath])
+					}
+				}
+			})
+			return
+		}
+
+		//cell.image = UIImage.fromString(genre, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor:UIColor.whiteColor(), backgroundColor:UIColor.fromRGB(genre.djb2()), maxSize:cell.imageView.size)
 	}
 
 	private func _configureCellForArtist(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, artist: Artist)
@@ -630,7 +695,7 @@ extension RootVC : UICollectionViewDelegate
 				self.navigationController?.pushViewController(self.albumDetailVC, animated:true)
 			case .Genres:
 				// Set data according to search state
-				let genre = self.searching ? self.searchResults[indexPath.row] as! String : MPDDataSource.shared.genres[indexPath.row]
+				let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
 				let artistsVC = ArtistsVC(genre:genre)
 				self.navigationController?.pushViewController(artistsVC, animated:true)
 			case .Artists:
@@ -761,7 +826,7 @@ extension RootVC : UISearchBarDelegate
 			case .Genres:
 				if MPDDataSource.shared.genres.count > 0
 				{
-					self.searchResults = MPDDataSource.shared.genres.filter({$0.lowercaseString.containsString(searchText.lowercaseString)})
+					self.searchResults = MPDDataSource.shared.genres.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
 				}
 			case .Artists:
 				if MPDDataSource.shared.artists.count > 0
