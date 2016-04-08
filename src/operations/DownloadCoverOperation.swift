@@ -102,7 +102,7 @@ final class DownloadCoverOperation : NSOperation
 			return
 		}
 		// No cover stuff configured, abort
-		if server.coverURL.length <= 0 || server.coverName.length <= 0
+		if server.hostname.length <= 0 || server.coverName.length <= 0
 		{
 			Logger.alog("[!] No web server configured, can't download covers.")
 			self.finished = true
@@ -112,7 +112,7 @@ final class DownloadCoverOperation : NSOperation
 		let allowedCharacters = NSCharacterSet(charactersInString:"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_/.")
 		var coverURLAsString = path + "/" + server.coverName
 		coverURLAsString = coverURLAsString.stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacters)!
-		let urlAsString = server.coverURL + coverURLAsString
+		let urlAsString = server.hostname + ":\(server.port)" + coverURLAsString
 
 		let request = NSMutableURLRequest(URL:NSURL(string:urlAsString)!)
 		request.addValue("image/*", forHTTPHeaderField:"Accept")

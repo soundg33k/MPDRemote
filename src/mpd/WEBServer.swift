@@ -26,36 +26,40 @@ import Foundation
 final class WEBServer : NSObject, NSCoding
 {
 	// MARK: - Properties
-	// HTTP url for covers
-	let coverURL: String
+	// Server hostname
+	let hostname: String
+	// Server port
+	let port: UInt16
 	// Name of the cover files
 	var coverName: String = "cover.jpg"
 
 	// MARK: - Initializers
-	init(coverURL: String)
+	init(hostname: String, port: UInt16)
 	{
-		self.coverURL = coverURL
+		self.hostname = hostname
+		self.port = port
 	}
 
-	convenience init(coverURL: String, coverName: String)
+	convenience init(hostname: String, port: UInt16, coverName: String)
 	{
-		self.init(coverURL:coverURL)
+		self.init(hostname:hostname, port:port)
 		self.coverName = coverName
 	}
 
 	// MARK: - NSCoding
 	required convenience init?(coder decoder: NSCoder)
 	{
-		guard let coverURL = decoder.decodeObjectForKey("coverurl") as? String,
+		guard let hostname = decoder.decodeObjectForKey("hostname") as? String,
 			let coverName = decoder.decodeObjectForKey("covername") as? String
 			else { return nil }
 
-		self.init(coverURL:coverURL, coverName:coverName)
+		self.init(hostname:hostname, port:UInt16(decoder.decodeIntegerForKey("port")), coverName:coverName)
 	}
 
 	func encodeWithCoder(coder: NSCoder)
 	{
-		coder.encodeObject(self.coverURL, forKey:"coverurl")
+		coder.encodeObject(self.hostname, forKey:"hostname")
+		coder.encodeInteger(Int(self.port), forKey:"port")
 		coder.encodeObject(self.coverName, forKey:"covername")
 	}
 }
