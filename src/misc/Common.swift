@@ -28,6 +28,7 @@ func APP_DELEGATE() -> AppDelegate {return UIApplication.sharedApplication().del
 /* Preferences keys */
 public let kNYXPrefDirectoryCovers = "kNYXPrefDirectoryCovers"
 public let kNYXPrefMPDServer = "kNYXPrefMPDServer"
+public let kNYXPrefWEBServer = "kNYXPrefWEBServer"
 public let kNYXPrefCoverSize = "kNYXPrefCoverSize"
 public let kNYXPrefRandom = "kNYXPrefRandom"
 public let kNYXPrefRepeat = "kNYXPrefRepeat"

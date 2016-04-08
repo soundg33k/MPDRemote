@@ -89,15 +89,15 @@ final class DownloadCoverOperation : NSOperation
 		}
 
 		// No mpd server configured, abort
-		guard let serverAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefMPDServer) else
+		guard let serverAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) else
 		{
-			Logger.alog("[!] No MPD server configured.")
+			Logger.alog("[!] No WEB server configured.")
 			self.finished = true
 			return
 		}
-		guard let server = NSKeyedUnarchiver.unarchiveObjectWithData(serverAsData) as! MPDServer? else
+		guard let server = NSKeyedUnarchiver.unarchiveObjectWithData(serverAsData) as! WEBServer? else
 		{
-			Logger.alog("[!] No MPD server configured.")
+			Logger.alog("[!] No WEB server configured.")
 			self.finished = true
 			return
 		}

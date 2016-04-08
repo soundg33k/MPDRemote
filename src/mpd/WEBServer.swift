@@ -1,4 +1,4 @@
-// MPDServer.swift
+// WEBServer.swift
 // Copyright (c) 2016 Nyx0uf ( https://mpdremote.whine.io )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,48 +23,39 @@
 import Foundation
 
 
-final class MPDServer : NSObject, NSCoding
+final class WEBServer : NSObject, NSCoding
 {
 	// MARK: - Properties
-	// Server name
-	var name: String
-	// Server IP / hostname
-	var hostname: String
-	// Server port
-	var port: UInt16
-	// Server password
-	var password: String = ""
+	// HTTP url for covers
+	let coverURL: String
+	// Name of the cover files
+	var coverName: String = "cover.jpg"
 
 	// MARK: - Initializers
-	init(name: String, hostname: String, port: UInt16)
+	init(coverURL: String)
 	{
-		self.name = name
-		self.hostname = hostname
-		self.port = port
+		self.coverURL = coverURL
 	}
 
-	convenience init(name: String, hostname: String, port: UInt16, password: String)
+	convenience init(coverURL: String, coverName: String)
 	{
-		self.init(name:name, hostname:hostname, port:port)
-		self.password = password
+		self.init(coverURL:coverURL)
+		self.coverName = coverName
 	}
 
 	// MARK: - NSCoding
 	required convenience init?(coder decoder: NSCoder)
 	{
-		guard let name = decoder.decodeObjectForKey("name") as? String,
-			let hostname = decoder.decodeObjectForKey("hostname") as? String,
-			let password = decoder.decodeObjectForKey("password") as? String
+		guard let coverURL = decoder.decodeObjectForKey("coverurl") as? String,
+			let coverName = decoder.decodeObjectForKey("covername") as? String
 			else { return nil }
-		
-		self.init(name:name, hostname:hostname, port:UInt16(decoder.decodeIntegerForKey("port")), password:password)
+
+		self.init(coverURL:coverURL, coverName:coverName)
 	}
 
 	func encodeWithCoder(coder: NSCoder)
 	{
-		coder.encodeObject(self.name, forKey:"name")
-		coder.encodeObject(self.hostname, forKey:"hostname")
-		coder.encodeInteger(Int(self.port), forKey:"port")
-		coder.encodeObject(self.password, forKey:"password")
+		coder.encodeObject(self.coverURL, forKey:"coverurl")
+		coder.encodeObject(self.coverName, forKey:"covername")
 	}
 }

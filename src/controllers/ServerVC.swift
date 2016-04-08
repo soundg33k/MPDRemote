@@ -41,6 +41,8 @@ final class ServerVC : MenuVC
 	private var tfCoverURL: UITextField!
 	// MPD Server
 	private var mpdServer: MPDServer?
+	// WEB Server for covers
+	private var webServer: WEBServer?
 
 	// MARK: - Private properties
 	// Indicate that the keyboard is visible, flag
@@ -91,9 +93,9 @@ final class ServerVC : MenuVC
 	{
 		super.viewWillAppear(animated)
 
-		if let serverAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefMPDServer)
+		if let mpdServerAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefMPDServer)
 		{
-			if let server = NSKeyedUnarchiver.unarchiveObjectWithData(serverAsData) as! MPDServer?
+			if let server = NSKeyedUnarchiver.unarchiveObjectWithData(mpdServerAsData) as! MPDServer?
 			{
 				self.mpdServer = server
 			}
@@ -101,6 +103,18 @@ final class ServerVC : MenuVC
 		else
 		{
 			Logger.dlog("[+] No MPD server registered yet.")
+		}
+
+		if let webServerAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer)
+		{
+			if let server = NSKeyedUnarchiver.unarchiveObjectWithData(webServerAsData) as! WEBServer?
+			{
+				self.webServer = server
+			}
+		}
+		else
+		{
+			Logger.dlog("[+] No WEB server registered yet.")
 		}
 
 		self.tableView.reloadData()
@@ -121,7 +135,7 @@ final class ServerVC : MenuVC
 	{
 		self.view.endEditing(true)
 
-		// Check server name (optional)
+		// Check MPD server name (optional)
 		var serverName = NYXLocalizedString("lbl_server_defaultname")
 		if let strName = self.tfName.text
 		{
@@ -131,7 +145,7 @@ final class ServerVC : MenuVC
 			}
 		}
 
-		// Check hostname / ip
+		// Check MPD hostname / ip
 		guard let ip = self.tfHostname.text where ip.length > 0 else
 		{
 			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle:.Alert)
@@ -142,14 +156,14 @@ final class ServerVC : MenuVC
 			return
 		}
 
-		// Check port
+		// Check MPD port
 		var port: UInt16 = 6600
 		if let strPort = self.tfPort.text, p = UInt16(strPort)
 		{
 			port = p
 		}
 
-		// Check password (optional)
+		// Check MPD password (optional)
 		var password = ""
 		if let strPassword = self.tfPassword.text
 		{
@@ -159,12 +173,12 @@ final class ServerVC : MenuVC
 			}
 		}
 
-		let server = password.length > 0 ? MPDServer(name:serverName, hostname:ip, port:port, password:password) : MPDServer(name:serverName, hostname:ip, port:port)
-		let cnn = MPDConnection(server:server)
+		let mpdServer = password.length > 0 ? MPDServer(name:serverName, hostname:ip, port:port, password:password) : MPDServer(name:serverName, hostname:ip, port:port)
+		let cnn = MPDConnection(server:mpdServer)
 		if cnn.connect()
 		{
 			// Check web URL (optional)
-			if let strURL = self.tfCoverURL.text
+			/*if let strURL = self.tfCoverURL.text
 			{
 				if strURL.length > 0
 				{
@@ -178,9 +192,9 @@ final class ServerVC : MenuVC
 				{
 					server.coverName = coverName
 				}
-			}
-			self.mpdServer = server
-			let serverAsData = NSKeyedArchiver.archivedDataWithRootObject(server)
+			}*/
+			self.mpdServer = mpdServer
+			let serverAsData = NSKeyedArchiver.archivedDataWithRootObject(mpdServer)
 			NSUserDefaults.standardUserDefaults().setObject(serverAsData, forKey:kNYXPrefMPDServer)
 			NSUserDefaults.standardUserDefaults().synchronize()
 		}
@@ -193,6 +207,26 @@ final class ServerVC : MenuVC
 			self.presentViewController(alertController, animated:true, completion:nil)
 		}
 		cnn.disconnect()
+
+		// Check web URL (optional)
+		if let strURL = self.tfCoverURL.text
+		{
+			if strURL.length > 0
+			{
+				let webServer = WEBServer(coverURL:strURL)
+				if let coverName = self.tfCoverName.text
+				{
+					if coverName.length > 0
+					{
+						webServer.coverName = coverName
+					}
+				}
+				self.webServer = webServer
+				let serverAsData = NSKeyedArchiver.archivedDataWithRootObject(webServer)
+				NSUserDefaults.standardUserDefaults().setObject(serverAsData, forKey:kNYXPrefWEBServer)
+				NSUserDefaults.standardUserDefaults().synchronize()
+			}
+		}
 	}
 
 	// MARK: - Notifications
@@ -349,7 +383,7 @@ extension ServerVC : UITableViewDataSource
 					self.tfCoverURL.delegate = self
 					cell.addSubview(self.tfCoverURL)
 				}
-				if let server = self.mpdServer
+				if let server = self.webServer
 				{
 					self.tfCoverURL.text = server.coverURL
 				}
@@ -369,7 +403,7 @@ extension ServerVC : UITableViewDataSource
 					self.tfCoverName.delegate = self
 					cell.addSubview(self.tfCoverName)
 				}
-				if let server = self.mpdServer
+				if let server = self.webServer
 				{
 					self.tfCoverName.text = server.coverName
 				}
