@@ -6,18 +6,18 @@ There's no persistence layer apart from cover caching.
 
 ### FEATURES
 
-- Browse by albums / genres / artists
+- Browse by Albums / Artists / Genres
 - Search
 - Play / pause, shuffle, repeat
 - Shake to play a random album
-- Add album to play queue
+- Add album / artist / genre to play queue
 - VoiceOver compliant
 - English and French localized
 
 ### TODO
 
 - [X] Full player view
-- [X] Possibility to browse by Artists, Genre, etc… **[WIP]**
+- [X] Possibility to browse by Artists, Genre…
 - [ ] Optimize things
 - [ ] Add some settings
 - [ ] iPad version
