@@ -31,7 +31,7 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 	// Album name
 	private(set) var label: UILabel! = nil
 	// Original image set
-	var image: UIImage! {
+	var image: UIImage? {
 		didSet {
 			self.imageView.image = self.image
 		}
