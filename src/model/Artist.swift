@@ -43,3 +43,9 @@ final class Artist : NSObject
 		return "Name: <\(self.name)>\nNumber of albums: <\(self.albums.count)>"
 	}
 }
+
+// MARK: - Operators
+func == (lhs: Artist, rhs: Artist) -> Bool
+{
+	return (lhs.name == rhs.name)
+}
