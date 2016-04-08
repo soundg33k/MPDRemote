@@ -259,27 +259,18 @@ final class RootVC : MenuVC
 
 	func longPress(gest: UILongPressGestureRecognizer)
 	{
-		// TODO: support more than just albums
-		if self._displayType != .Albums
-		{
-			return
-		}
-
 		if self.longPressRecognized
 		{
 			return
 		}
 		self.longPressRecognized = true
 
-		let point = gest.locationInView(self.collectionView)
-
-		if let indexPath = self.collectionView.indexPathForItemAtPoint(point)
+		if let indexPath = self.collectionView.indexPathForItemAtPoint(gest.locationInView(self.collectionView))
 		{
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
 			let cell = self.collectionView.cellForItemAtIndexPath(indexPath) as! AlbumCollectionViewCell
 			cell.longPressed = true
-			let album = self.searching ? self.searchResults[indexPath.row] : MPDDataSource.shared.albums[indexPath.row]
 
 			let alertController = UIAlertController(title:nil, message:nil, preferredStyle:.ActionSheet)
 			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_cancel"), style:.Cancel) { (action) in
@@ -288,27 +279,110 @@ final class RootVC : MenuVC
 				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(cancelAction)
-			let playAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum"), style:.Default) { (action) in
-				MPDPlayer.shared.playAlbum(album as! Album, random:false, loop:false)
-				self.longPressRecognized = false
-				cell.longPressed = false
-				MiniPlayerView.shared.stayHidden = false
+
+			switch self._displayType
+			{
+				case .Albums:
+					let album = self.searching ? self.searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
+					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.Default) { (action) in
+						MPDPlayer.shared.playAlbum(album, random:false, loop:false)
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(playAction)
+					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.Default) { (action) in
+						MPDPlayer.shared.playAlbum(album, random:true, loop:false)
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(shuffleAction)
+					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.Default) { (action) in
+						MPDPlayer.shared.addAlbumToQueue(album)
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(addQueueAction)
+				case .Artists:
+					let artist = self.searching ? self.searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
+					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.Default) { (action) in
+						MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
+							MPDDataSource.shared.getSongsForAlbums(artist.albums, callback: {
+								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
+								MPDPlayer.shared.playTracks(ar, random:false, loop:false)
+							})
+						})
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(playAction)
+					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.Default) { (action) in
+						MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
+							MPDDataSource.shared.getSongsForAlbums(artist.albums, callback: {
+								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
+								MPDPlayer.shared.playTracks(ar, random:true, loop:false)
+							})
+						})
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(shuffleAction)
+					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.Default) { (action) in
+						MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
+							for album in artist.albums
+							{
+								MPDPlayer.shared.addAlbumToQueue(album)
+							}
+						})
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(addQueueAction)
+				case .Genres:
+					let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
+					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.Default) { (action) in
+						MPDDataSource.shared.getAlbumsForGenre(genre, callback:{
+							MPDDataSource.shared.getSongsForAlbums(genre.albums, callback: {
+								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
+								MPDPlayer.shared.playTracks(ar, random:false, loop:false)
+							})
+						})
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(playAction)
+					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.Default) { (action) in
+						MPDDataSource.shared.getAlbumsForGenre(genre, callback:{
+							MPDDataSource.shared.getSongsForAlbums(genre.albums, callback: {
+								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
+								MPDPlayer.shared.playTracks(ar, random:true, loop:false)
+							})
+						})
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(shuffleAction)
+					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.Default) { (action) in
+						MPDDataSource.shared.getAlbumsForGenre(genre, callback:{
+							for album in genre.albums
+							{
+								MPDPlayer.shared.addAlbumToQueue(album)
+							}
+						})
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(addQueueAction)
 			}
-			alertController.addAction(playAction)
-			let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.Default) { (action) in
-				MPDPlayer.shared.playAlbum(album as! Album, random:true, loop:false)
-				self.longPressRecognized = false
-				cell.longPressed = false
-				MiniPlayerView.shared.stayHidden = false
-			}
-			alertController.addAction(shuffleAction)
-			let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.Default) { (action) in
-				MPDPlayer.shared.addAlbumToQueue(album as! Album)
-				self.longPressRecognized = false
-				cell.longPressed = false
-				MiniPlayerView.shared.stayHidden = false
-			}
-			alertController.addAction(addQueueAction)
+
 			self.presentViewController(alertController, animated:true, completion:nil)
 		}
 	}

@@ -17,7 +17,6 @@
 "lbl_repeat_disable" = "Désactiver la lecture en boucle";
 "lbl_header_server_cfg" = "Configuration serveur";
 
-"lbl_alert_playalbum" = "Lire";
 "lbl_alert_playalbum_shuffle" = "Aléatoire";
 "lbl_alert_playalbum_addqueue" = "Ajouter à la liste";
 "lbl_alert_servercfg_error" = "Erreur de configuration serveur";

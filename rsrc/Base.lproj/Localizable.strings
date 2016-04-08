@@ -17,7 +17,6 @@
 "lbl_repeat_disable" = "Disable repeat";
 "lbl_header_server_cfg" = "Server configuration";
 
-"lbl_alert_playalbum" = "Play";
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";
 "lbl_alert_servercfg_error" = "Server configuration error";
