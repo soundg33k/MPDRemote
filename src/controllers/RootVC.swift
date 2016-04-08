@@ -445,6 +445,12 @@ extension RootVC : UICollectionViewDataSource
 		cell.label.text = album.name
 		cell.accessibilityLabel = album.name
 
+		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
+		{
+			self._configureCellWithString(cell, indexPath:indexPath, string:album.name)
+			return
+		}
+
 		// No cover, abort
 		if !album.hasCover
 		{
@@ -498,6 +504,12 @@ extension RootVC : UICollectionViewDataSource
 	{
 		cell.label.text = genre.name
 		cell.accessibilityLabel = genre.name
+
+		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
+		{
+			self._configureCellWithString(cell, indexPath:indexPath, string:genre.name)
+			return
+		}
 
 		if let album = genre.albums.first
 		{
@@ -562,14 +574,18 @@ extension RootVC : UICollectionViewDataSource
 			})
 			return
 		}
-
-		//cell.image = UIImage.fromString(genre, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor:UIColor.whiteColor(), backgroundColor:UIColor.fromRGB(genre.djb2()), maxSize:cell.imageView.size)
 	}
 
 	private func _configureCellForArtist(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, artist: Artist)
 	{
 		cell.label.text = artist.name
 		cell.accessibilityLabel = artist.name
+
+		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
+		{
+			self._configureCellWithString(cell, indexPath:indexPath, string:artist.name)
+			return
+		}
 
 		if artist.albums.count > 0
 		{
@@ -639,6 +655,11 @@ extension RootVC : UICollectionViewDataSource
 				}
 			})
 		}
+	}
+
+	private func _configureCellWithString(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, string: String)
+	{
+		cell.image = UIImage.fromString(string, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor:UIColor.whiteColor(), backgroundColor:UIColor.fromRGB(string.djb2()), maxSize:cell.imageView.size)
 	}
 
 	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(thumbnail: UIImage) -> Void)

@@ -177,29 +177,13 @@ final class ServerVC : MenuVC
 		let cnn = MPDConnection(server:mpdServer)
 		if cnn.connect()
 		{
-			// Check web URL (optional)
-			/*if let strURL = self.tfCoverURL.text
-			{
-				if strURL.length > 0
-				{
-					server.coverURL = strURL
-				}
-			}
-			// Check cover name (optional)
-			if let coverName = self.tfCoverName.text
-			{
-				if coverName.length > 0
-				{
-					server.coverName = coverName
-				}
-			}*/
 			self.mpdServer = mpdServer
 			let serverAsData = NSKeyedArchiver.archivedDataWithRootObject(mpdServer)
 			NSUserDefaults.standardUserDefaults().setObject(serverAsData, forKey:kNYXPrefMPDServer)
-			NSUserDefaults.standardUserDefaults().synchronize()
 		}
 		else
 		{
+			NSUserDefaults.standardUserDefaults().removeObjectForKey(kNYXPrefMPDServer)
 			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle:.Alert)
 			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.Cancel) { (action) in
 			}
@@ -224,9 +208,18 @@ final class ServerVC : MenuVC
 				self.webServer = webServer
 				let serverAsData = NSKeyedArchiver.archivedDataWithRootObject(webServer)
 				NSUserDefaults.standardUserDefaults().setObject(serverAsData, forKey:kNYXPrefWEBServer)
-				NSUserDefaults.standardUserDefaults().synchronize()
+			}
+			else
+			{
+				NSUserDefaults.standardUserDefaults().removeObjectForKey(kNYXPrefWEBServer)
 			}
 		}
+		else
+		{
+			NSUserDefaults.standardUserDefaults().removeObjectForKey(kNYXPrefWEBServer)
+		}
+
+		NSUserDefaults.standardUserDefaults().synchronize()
 	}
 
 	// MARK: - Notifications
