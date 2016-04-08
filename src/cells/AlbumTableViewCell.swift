@@ -40,21 +40,23 @@ final class AlbumTableViewCell : UITableViewCell
 		self.backgroundColor = UIColor.fromRGB(0xECECEC)
 		let width = UIScreen.mainScreen().bounds.width // for some reason frame.size always is 320x44
 		let height = CGFloat(74.0)
+		let coverWH = height - 10.0
 
-		self.coverView = UIImageView(frame:CGRect(5.0, (height - 64.0) * 0.5, 64.0, 64.0))
+		self.coverView = UIImageView(frame:CGRect(5.0, (height - coverWH) * 0.5, coverWH, coverWH))
+		self.coverView.isAccessibilityElement = false
 		self.contentView.addSubview(self.coverView)
 
 		self.lblAlbum = TopAlignedLabel(frame:CGRect(self.coverView.right + 10.0, self.coverView.y, (width - self.coverView.right - 40.0), 40.0))
-		self.lblAlbum.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
-		self.lblAlbum.textAlignment = .Left
-		self.lblAlbum.textColor = UIColor.fromRGB(0x444444)
-		self.lblAlbum.numberOfLines = 2
 		self.lblAlbum.isAccessibilityElement = false
+		self.lblAlbum.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
+		self.lblAlbum.textColor = UIColor.fromRGB(0x444444)
+		self.lblAlbum.textAlignment = .Left
+		self.lblAlbum.numberOfLines = 2
 		self.contentView.addSubview(self.lblAlbum)
 
 		self.separator = UIView(frame:CGRect(0.0, height - 1.0, width, 1.0))
-		self.separator.backgroundColor = UIColor.fromRGB(0xCCCCCC)
 		self.separator.isAccessibilityElement = false
+		self.separator.backgroundColor = UIColor.fromRGB(0xCCCCCC)
 		self.contentView.addSubview(self.separator)
 	}
 

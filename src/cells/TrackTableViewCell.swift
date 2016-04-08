@@ -33,36 +33,41 @@ final class TrackTableViewCell : UITableViewCell
 	// Track duration
 	private(set) var lblDuration: UILabel!
 	// Image to indicate play / pause state
-	private(set) var imgPlayback: UIImageView!
+	private(set) var ivPlayback: UIImageView!
 
 	// MARK: - Initializers
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?)
 	{
 		super.init(style:style, reuseIdentifier:reuseIdentifier)
 		self.backgroundColor = UIColor.fromRGB(0xECECEC)
+		let width = UIScreen.mainScreen().bounds.width // for some reason frame.size always is 320x44
+		let height = CGFloat(44.0)
+		let margin = CGFloat(8.0)
 
-		self.lblTrack = UILabel(frame:CGRect(8.0, (self.height - 14.0) * 0.5, 18.0, 14.0))
-		self.lblTrack.font = UIFont(name:"HelveticaNeue", size:10.0)
-		self.lblTrack.textAlignment = .Center
-		self.lblTrack.textColor = UIColor.fromRGB(0x444444)
+		self.lblTrack = UILabel(frame:CGRect(margin, (height - 14.0) * 0.5, 18.0, 14.0))
 		self.lblTrack.isAccessibilityElement = false
+		self.lblTrack.font = UIFont(name:"HelveticaNeue", size:10.0)
+		self.lblTrack.textColor = UIColor.fromRGB(0x444444)
+		self.lblTrack.textAlignment = .Center
 		self.contentView.addSubview(self.lblTrack)
 
-		self.lblTitle = UILabel(frame:CGRect(34.0, (self.height - 18.0) * 0.5, 100.0, 18.0))
+		self.lblTitle = UILabel(frame:CGRect(34.0, (height - 18.0) * 0.5, 100.0, 18.0))
+		self.lblTitle.isAccessibilityElement = false
 		self.lblTitle.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
 		self.lblTitle.textColor = UIColor.fromRGB(0x444444)
-		self.lblTitle.isAccessibilityElement = false
+		self.lblTitle.textAlignment = .Left
 		self.contentView.addSubview(self.lblTitle)
 
-		self.lblDuration = UILabel(frame:CGRect(self.contentView.bounds.right - 32.0 - 8.0, (self.height - 14.0) * 0.5, 32.0, 14.0))
-		self.lblDuration.font = UIFont(name:"HelveticaNeue-Light", size:10.0)
-		self.lblDuration.textAlignment = .Right
-		self.lblDuration.textColor = UIColor.fromRGB(0x444444)
+		self.lblDuration = UILabel(frame:CGRect(width - 32.0 - margin, (height - 14.0) * 0.5, 32.0, 14.0))
 		self.lblDuration.isAccessibilityElement = false
+		self.lblDuration.font = UIFont(name:"HelveticaNeue-Light", size:10.0)
+		self.lblDuration.textColor = UIColor.fromRGB(0x444444)
+		self.lblDuration.textAlignment = .Right
 		self.contentView.addSubview(self.lblDuration)
 
-		self.imgPlayback = UIImageView(frame:CGRect(8.0, (self.height - 20.0) * 0.5, 20.0, 20.0))
-		self.contentView.addSubview(self.imgPlayback)
+		self.ivPlayback = UIImageView(frame:CGRect(margin, (height - 20.0) * 0.5, 20.0, 20.0))
+		self.ivPlayback.isAccessibilityElement = false
+		self.contentView.addSubview(self.ivPlayback)
 	}
 
 	required init?(coder aDecoder: NSCoder)

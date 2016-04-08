@@ -235,6 +235,14 @@ extension AlbumsVC
 
 		tableView.deselectRowAtIndexPath(indexPath, animated:true)
 	}
+
+	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
+	{
+		let c = cell as! AlbumTableViewCell
+		c.coverView.frame = CGRect(5.0, (c.height - c.coverView.height) * 0.5, c.coverView.size)
+		c.lblAlbum.frame = CGRect(c.coverView.right + 10.0, c.coverView.y, c.width - c.coverView.right - 40.0, c.lblAlbum.height)
+		c.separator.frame = CGRect(0.0, c.height - c.separator.height, c.width, c.separator.height)
+	}
 	
 	override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
 	{

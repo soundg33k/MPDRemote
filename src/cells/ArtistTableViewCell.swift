@@ -42,27 +42,29 @@ final class ArtistTableViewCell : UITableViewCell
 		self.backgroundColor = UIColor.fromRGB(0xECECEC)
 		let width = UIScreen.mainScreen().bounds.width // for some reason frame.size always is 320x44
 		let height = CGFloat(58.0)
+		let coverWH = height - 10.0
 
-		self.coverView = UIImageView(frame:CGRect(5.0, (height - 48.0) * 0.5, 48.0, 48.0))
+		self.coverView = UIImageView(frame:CGRect(5.0, (height - coverWH) * 0.5, coverWH, coverWH))
+		self.coverView.isAccessibilityElement = false
 		self.contentView.addSubview(self.coverView)
 
 		self.lblArtist = TopAlignedLabel(frame:CGRect(self.coverView.right + 10.0, self.coverView.y, (width - self.coverView.right - 40.0), 40.0))
-		self.lblArtist.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
-		self.lblArtist.textAlignment = .Left
-		self.lblArtist.textColor = UIColor.fromRGB(0x444444)
-		self.lblArtist.numberOfLines = 2
 		self.lblArtist.isAccessibilityElement = false
+		self.lblArtist.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
+		self.lblArtist.textColor = UIColor.fromRGB(0x444444)
+		self.lblArtist.textAlignment = .Left
+		self.lblArtist.numberOfLines = 2
 		self.contentView.addSubview(self.lblArtist)
 
 		self.lblAlbums = TopAlignedLabel(frame:CGRect(self.coverView.right + 10.0, height - 18.0, 100.0, 18.0))
+		self.lblAlbums.isAccessibilityElement = false
 		self.lblAlbums.font = UIFont(name:"HelveticaNeue", size:13.0)
 		self.lblAlbums.textColor = UIColor.fromRGB(0x444444)
-		self.lblAlbums.isAccessibilityElement = false
 		self.contentView.addSubview(self.lblAlbums)
 
 		self.separator = UIView(frame:CGRect(0.0, height - 1.0, width, 1.0))
-		self.separator.backgroundColor = UIColor.fromRGB(0xCCCCCC)
 		self.separator.isAccessibilityElement = false
+		self.separator.backgroundColor = UIColor.fromRGB(0xCCCCCC)
 		self.contentView.addSubview(self.separator)
 	}
 	

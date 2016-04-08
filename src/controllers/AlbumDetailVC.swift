@@ -72,9 +72,9 @@ final class AlbumDetailVC : UIViewController
 
 		// Dummy tableview host, to create a nice shadow effect
 		let yOffset = CGFloat(64.0) // at this point the self.view.height doesn't include the navbar height, so there's an offset
-		let height = self.view.frame.height - self.headerView.frame.height - yOffset
-		let dummy = UIView(frame:CGRect(0.0, self.headerView.frame.bottom, self.view.frame.width, height))
-		dummy.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, self.view.frame.width + 4.0, 4.0)).CGPath
+		let height = self.view.height - self.headerView.height - yOffset
+		let dummy = UIView(frame:CGRect(0.0, self.headerView.bottom, self.view.width, height))
+		dummy.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, self.view.width + 4.0, 4.0)).CGPath
 		dummy.layer.shadowRadius = 3.0
 		dummy.layer.shadowOpacity = 1.0
 		dummy.layer.shadowColor = UIColor.blackColor().CGColor
@@ -274,24 +274,24 @@ extension AlbumDetailVC : UITableViewDataSource
 				{
 					if MPDPlayer.shared.status == .Paused
 					{
-						cell.imgPlayback.image = UIImage(named:"btn-play")
+						cell.ivPlayback.image = UIImage(named:"btn-play")
 					}
 					else
 					{
-						cell.imgPlayback.image = UIImage(named:"btn-pause")
+						cell.ivPlayback.image = UIImage(named:"btn-pause")
 					}
-					cell.imgPlayback.alpha = 1.0
+					cell.ivPlayback.alpha = 1.0
 					cell.lblTrack.alpha = 0.0
 				}
 				else
 				{
-					cell.imgPlayback.alpha = 0.0
+					cell.ivPlayback.alpha = 0.0
 					cell.lblTrack.alpha = 1.0
 				}
 			}
 			else
 			{
-				cell.imgPlayback.alpha = 0.0
+				cell.ivPlayback.alpha = 0.0
 				cell.lblTrack.alpha = 1.0
 			}
 
@@ -318,8 +318,11 @@ extension AlbumDetailVC : UITableViewDelegate
 	func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
 	{
 		let c = cell as! TrackTableViewCell
-		c.lblDuration.frame = CGRect(c.contentView.bounds.right - 32.0 - 8.0, (c.frame.height - 14.0) * 0.5, 32.0, 14.0)
-		c.lblTitle.frame = CGRect(c.lblTrack.frame.right + 8.0, (c.frame.height - 18.0) * 0.5, ((c.lblDuration.frame.left - 8.0) - (c.lblTrack.frame.right + 8.0)), 18.0)
+		let margin = CGFloat(8.0)
+		c.lblTrack.frame = CGRect(margin, (c.height - c.lblTrack.height) * 0.5, c.lblTrack.size)
+		c.lblTitle.frame = CGRect(c.lblTrack.right + margin, (c.height - c.lblTitle.height) * 0.5, ((c.lblDuration.left - margin) - (c.lblTrack.right + margin)), c.lblTitle.height)
+		c.lblDuration.frame = CGRect(c.right - c.lblDuration.width - margin, (c.height - c.lblDuration.height) * 0.5, c.lblDuration.size)
+		c.ivPlayback.frame = CGRect(margin, (c.height - c.ivPlayback.height) * 0.5, c.ivPlayback.size)
 	}
 
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
@@ -343,12 +346,12 @@ extension AlbumDetailVC : UITableViewDelegate
 				if MPDPlayer.shared.status == .Playing
 				{
 					let img = UIImage(named:"btn-play")
-					cell?.imgPlayback.image = img
+					cell?.ivPlayback.image = img
 				}
 				else
 				{
 					let img = UIImage(named:"btn-pause")
-					cell?.imgPlayback.image = img
+					cell?.ivPlayback.image = img
 				}
 				MPDPlayer.shared.togglePause()
 				return
