@@ -35,6 +35,10 @@ final class RootVC : MenuVC
 	private var collectionView: UICollectionView!
 	// Button in the navigationbar
 	private var titleView: UIButton! = nil
+	// Random button
+	private var btnRandom: UIButton! = nil
+	// Repeat button
+	private var btnRepeat: UIButton! = nil
 	// Detailed album view
 	private var albumDetailVC: AlbumDetailVC! = nil
 	// Should show the search view, flag
@@ -87,6 +91,29 @@ final class RootVC : MenuVC
 		self.titleView = UIButton(frame:CGRect(0.0, 0.0, 100.0, navigationBar.height))
 		self.titleView.addTarget(self, action:#selector(changeTypeAction(_:)), forControlEvents:.TouchUpInside)
 		self.navigationItem.titleView = self.titleView
+
+		// Random & repeat buttons
+		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
+		let imageRandom = UIImage(named:"btn-random")
+		self.btnRandom = UIButton(type:.Custom)
+		self.btnRandom.frame = CGRect((self.navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
+		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
+		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
+		self.btnRandom.selected = random
+		self.btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
+		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+		self.navigationController?.navigationBar.addSubview(self.btnRandom)
+
+		let loop = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat)
+		let imageRepeat = UIImage(named:"btn-repeat")
+		self.btnRepeat = UIButton(type:.Custom)
+		self.btnRepeat.frame = CGRect((self.navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
+		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
+		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
+		self.btnRepeat.selected = loop
+		self.btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
+		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
+		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
 
 		// Create collection view
 		let layout = UICollectionViewFlowLayout()
@@ -283,7 +310,7 @@ final class RootVC : MenuVC
 		if self._typeChoiceView.superview != nil
 		{
 			self.view.backgroundColor = UIColor.fromRGB(0xECECEC)
-			UIView.animateWithDuration(0.35, delay:0.0, usingSpringWithDamping:0.5, initialSpringVelocity:10.0, options:.CurveEaseOut, animations:{
+			UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
 				self.collectionView.y = self.collectionView.y - self._typeChoiceView.height
 			}, completion:{ finished in
 				self._typeChoiceView.removeFromSuperview()
@@ -294,10 +321,38 @@ final class RootVC : MenuVC
 			self.view.backgroundColor = UIColor.blackColor()
 			self._typeChoiceView.tableView.reloadData()
 			self.view.insertSubview(self._typeChoiceView, belowSubview:self.collectionView)
-			UIView.animateWithDuration(0.35, delay:0.0, usingSpringWithDamping:0.5, initialSpringVelocity:10.0, options:.CurveEaseOut, animations:{
+			UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
 				self.collectionView.y = self.collectionView.y + self._typeChoiceView.height
 			}, completion:nil)
 		}
+	}
+
+	func toggleRandomAction(sender: AnyObject?)
+	{
+		let prefs = NSUserDefaults.standardUserDefaults()
+		let random = !prefs.boolForKey(kNYXPrefRandom)
+
+		self.btnRandom.selected = random
+		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+
+		prefs.setBool(random, forKey:kNYXPrefRandom)
+		prefs.synchronize()
+
+		MPDPlayer.shared.setRandom(random)
+	}
+
+	func toggleRepeatAction(sender: AnyObject?)
+	{
+		let prefs = NSUserDefaults.standardUserDefaults()
+		let loop = !prefs.boolForKey(kNYXPrefRepeat)
+
+		self.btnRepeat.selected = loop
+		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
+
+		prefs.setBool(loop, forKey:kNYXPrefRepeat)
+		prefs.synchronize()
+
+		MPDPlayer.shared.setRepeat(loop)
 	}
 
 	// MARK: - Private

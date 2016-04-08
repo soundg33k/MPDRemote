@@ -38,10 +38,6 @@ final class AlbumDetailVC : UIViewController
 	private var tableView: UITableView! = nil
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
-	// Random button
-	private var btnRandom: UIButton! = nil
-	// Repeat button
-	private var btnRepeat: UIButton! = nil
 
 	// MARK: - Initializers
 	init()
@@ -97,29 +93,6 @@ final class AlbumDetailVC : UIViewController
 		self.tableView.tableFooterView = UIView()
 		dummy.addSubview(self.tableView)
 
-		// Random & repeat buttons
-		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
-		let imageRandom = UIImage(named:"btn-random")
-		self.btnRandom = UIButton(type:.Custom)
-		self.btnRandom.frame = CGRect((self.navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
-		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
-		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
-		self.btnRandom.selected = random
-		self.btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
-		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
-		self.navigationController?.navigationBar.addSubview(self.btnRandom)
-
-		let loop = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat)
-		let imageRepeat = UIImage(named:"btn-repeat")
-		self.btnRepeat = UIButton(type:.Custom)
-		self.btnRepeat.frame = CGRect((self.navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
-		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
-		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
-		self.btnRepeat.selected = loop
-		self.btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
-		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
-		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
-
 		// Notif for frame changes
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
@@ -139,10 +112,6 @@ final class AlbumDetailVC : UIViewController
 
 		// Update header
 		self._updateHeader()
-
-		// Buttons display
-		self.btnRandom.alpha = 1.0
-		self.btnRepeat.alpha = 1.0
 
 		// Get songs list if needed
 		let album = self._currentAlbum()
@@ -171,10 +140,6 @@ final class AlbumDetailVC : UIViewController
 		navigationBar.layer.shadowPath = nil
 		navigationBar.layer.shadowRadius = 0.0
 		navigationBar.layer.shadowOpacity = 0.0
-
-		// Buttons display
-		self.btnRandom.alpha = 0.0
-		self.btnRepeat.alpha = 0.0
 	}
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
@@ -185,35 +150,6 @@ final class AlbumDetailVC : UIViewController
 	override func preferredStatusBarStyle() -> UIStatusBarStyle
 	{
 		return .LightContent
-	}
-
-	// MARK: - Buttons actions
-	func toggleRandomAction(sender: AnyObject?)
-	{
-		let prefs = NSUserDefaults.standardUserDefaults()
-		let random = !prefs.boolForKey(kNYXPrefRandom)
-
-		self.btnRandom.selected = random
-		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
-
-		prefs.setBool(random, forKey:kNYXPrefRandom)
-		prefs.synchronize()
-
-		MPDPlayer.shared.setRandom(random)
-	}
-
-	func toggleRepeatAction(sender: AnyObject?)
-	{
-		let prefs = NSUserDefaults.standardUserDefaults()
-		let loop = !prefs.boolForKey(kNYXPrefRepeat)
-
-		self.btnRepeat.selected = loop
-		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
-
-		prefs.setBool(loop, forKey:kNYXPrefRepeat)
-		prefs.synchronize()
-
-		MPDPlayer.shared.setRepeat(loop)
 	}
 
 	// MARK: - Notifications
