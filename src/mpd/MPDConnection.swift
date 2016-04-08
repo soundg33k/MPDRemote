@@ -503,6 +503,51 @@ final class MPDConnection
 		}
 	}
 
+	func getAlbumsForGenre(genre: Genre)
+	{
+		if (!mpd_search_db_tags(self._connection, MPD_TAG_ALBUM))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+		if (!mpd_search_commit(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+
+		var p = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+		if p == nil
+		{
+			Logger.dlog("no albums?")
+			return
+		}
+
+		repeat
+		{
+			let m = p.memory
+			let albumName = NSString(bytes:m.value, length:Int(strlen(m.value)), encoding:NSUTF8StringEncoding) as! String
+			if let album = self.delegate?.albumMatchingName!(albumName)
+			{
+				album.genre = genre.name
+				genre.albums.append(album)
+			}
+			mpd_return_pair(self._connection, p)
+			p = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+		} while p != nil
+
+		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return
+		}
+	}
+
 	func playAlbum(album: Album, random: Bool, loop: Bool)
 	{
 		if let songs = album.songs

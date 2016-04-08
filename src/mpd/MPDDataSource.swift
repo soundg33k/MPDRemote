@@ -169,6 +169,22 @@ final class MPDDataSource
 		}
 	}
 
+	func getSongsForAlbums(albums: [Album], callback: () -> Void)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			for album in albums
+			{
+				album.songs = self._mpdConnection.getSongsForAlbum(album)
+			}
+			callback()
+		}
+	}
+
 	func getMetadatasForAlbum(album: Album, callback: () -> Void)
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
@@ -191,6 +207,19 @@ final class MPDDataSource
 
 		dispatch_async(self._queue) {
 			self._mpdConnection.getAlbumForGenre(genre)
+			callback()
+		}
+	}
+
+	func getAlbumsForGenre(genre: Genre, callback: () -> Void)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			self._mpdConnection.getAlbumsForGenre(genre)
 			callback()
 		}
 	}

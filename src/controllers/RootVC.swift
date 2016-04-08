@@ -225,19 +225,34 @@ final class RootVC : MenuVC
 	// MARK: - Gestures
 	func doubleTap(gest: UITapGestureRecognizer)
 	{
-		// TODO: support more than just albums
-		if self._displayType != .Albums
+		if gest.state != .Ended
 		{
 			return
 		}
 
-		if (gest.state == .Ended)
+		if let indexPath = self.collectionView.indexPathForItemAtPoint(gest.locationInView(self.collectionView))
 		{
-			let point = gest.locationInView(self.collectionView)
-			if let indexPath = self.collectionView.indexPathForItemAtPoint(point)
+			switch self._displayType
 			{
-				let album = self.searching ? self.searchResults[indexPath.row] : MPDDataSource.shared.albums[indexPath.row]
-				MPDPlayer.shared.playAlbum(album as! Album, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
+				case .Albums:
+					let album = self.searching ? self.searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
+					MPDPlayer.shared.playAlbum(album, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
+				case .Artists:
+					let artist = self.searching ? self.searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
+					MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
+						MPDDataSource.shared.getSongsForAlbums(artist.albums, callback: {
+							let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
+							MPDPlayer.shared.playTracks(ar, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
+						})
+					})
+				case .Genres:
+					let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
+					MPDDataSource.shared.getAlbumsForGenre(genre, callback:{
+						MPDDataSource.shared.getSongsForAlbums(genre.albums, callback: {
+							let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
+							MPDPlayer.shared.playTracks(ar, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
+						})
+					})
 			}
 		}
 	}
