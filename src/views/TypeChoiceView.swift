@@ -41,14 +41,14 @@ final class TypeChoiceView : UIView
 	override init(frame: CGRect)
 	{
 		super.init(frame:frame)
-		self.backgroundColor = UIColor.blackColor()
+		self.backgroundColor = UIColor.fromRGB(0x131313)
 
 		// TableView
 		self.tableView = UITableView(frame:CGRect(CGPointZero, frame.size), style:.Plain)
 		self.tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.type")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
-		self.tableView.backgroundColor = UIColor.blackColor()
+		self.tableView.backgroundColor = UIColor.fromRGB(0x131313)
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
 		self.tableView.scrollEnabled = false
@@ -75,7 +75,7 @@ extension TypeChoiceView : UITableViewDataSource
 	{
 		let cell = tableView.dequeueReusableCellWithIdentifier("io.whine.mpdremote.cell.type", forIndexPath:indexPath)
 		cell.selectionStyle = .None
-		cell.backgroundColor = UIColor.blackColor()
+		cell.backgroundColor = UIColor.fromRGB(0x131313)
 		cell.textLabel?.textAlignment = .Center
 		var title = ""
 		var selected = false
@@ -102,7 +102,7 @@ extension TypeChoiceView : UITableViewDataSource
 		else
 		{
 			cell.textLabel?.font = UIFont(name:"HelveticaNeue", size:13.0)
-			cell.textLabel?.textColor = UIColor.whiteColor()
+			cell.textLabel?.textColor = UIColor.fromRGB(0xECECEC)
 		}
 		return cell
 	}
@@ -116,11 +116,11 @@ extension TypeChoiceView : UITableViewDelegate
 		switch (indexPath.row)
 		{
 			case 0:
-				self.delegate?.didSelectType(DisplayType.Albums)
+				self.delegate?.didSelectType(.Albums)
 			case 1:
-				self.delegate?.didSelectType(DisplayType.Artists)
+				self.delegate?.didSelectType(.Artists)
 			case 2:
-				self.delegate?.didSelectType(DisplayType.Genres)
+				self.delegate?.didSelectType(.Genres)
 			default:
 				break
 		}

@@ -61,7 +61,7 @@ final class RootVC : MenuVC
 	{
 		super.viewDidLoad()
 		self.automaticallyAdjustsScrollViewInsets = false
-		self.view.backgroundColor = UIColor.blackColor()
+		self.view.backgroundColor = UIColor.fromRGB(0x131313)
 
 		// Customize navbar
 		let headerColor = UIColor.whiteColor()

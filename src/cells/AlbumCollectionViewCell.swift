@@ -31,14 +31,18 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 	// Album name
 	private(set) var label: UILabel! = nil
 	// Original image set
-	var image: UIImage? {
-		didSet {
+	var image: UIImage?
+	{
+		didSet
+		{
 			self.imageView.image = self.image
 		}
 	}
 	// Flag to indicate that the cell is being long pressed
-	var longPressed: Bool = false {
-		didSet {
+	var longPressed: Bool = false
+	{
+		didSet
+		{
 			if self.longPressed
 			{
 				self.imageView.layer.borderWidth = 0.5
@@ -68,14 +72,13 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 		self.backgroundColor = UIColor.fromRGB(0xECECEC)
 		self.isAccessibilityElement = true
 
-		self.imageView = UIImageView(frame:CGRect(0.0, 0.0, frame.width, frame.height - 20.0))
+		self.imageView = UIImageView(frame:CGRect(CGPointZero, frame.width, frame.height - 20.0))
 		self.imageView.isAccessibilityElement = false
-		self.imageView.backgroundColor = UIColor.lightGrayColor()
 		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).CGColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
 
-		self.label = UILabel(frame:CGRect(2.0, self.imageView.frame.bottom, frame.width - 4.0, 20.0))
+		self.label = UILabel(frame:CGRect(0.0, self.imageView.bottom, frame.width, 20.0))
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
 		self.label.textAlignment = .Center
@@ -89,6 +92,7 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 		fatalError("init(coder:) has not been implemented")
 	}
 
+	// MARK: - Overrides
 	override var selected: Bool
 	{
 		didSet
