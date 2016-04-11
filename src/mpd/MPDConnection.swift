@@ -380,7 +380,10 @@ final class MPDConnection
 		var song = mpd_recv_song(self._connection)
 		while song != nil
 		{
-			list.append(self._trackFromMPDSongObject(song))
+			if let track = self._trackFromMPDSongObject(song)
+			{
+				list.append(track)
+			}
 			song = mpd_recv_song(self._connection)
 		}
 
@@ -637,14 +640,20 @@ final class MPDConnection
 		}
 
 		let elapsed = mpd_status_get_elapsed_time(status)
-		let track = self._trackFromMPDSongObject(song)
+		guard let track = self._trackFromMPDSongObject(song) else
+		{
+			return nil
+		}
 		let state = self._statusFromMPDStateObject(mpd_status_get_state(status))
 		let tmp = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0)
-		let albumName = NSString(bytes:tmp, length:Int(strlen(tmp)), encoding:NSUTF8StringEncoding) as! String
-		if let album = self.delegate?.albumMatchingName!(albumName)
+		if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmp), length:Int(strlen(tmp)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
 		{
-			return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state.rawValue]
+			if let album = self.delegate?.albumMatchingName!(name)
+			{
+				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state.rawValue]
+			}
 		}
+
 		Logger.dlog("[!] No matching album found.")
 		return nil
 	}
@@ -653,32 +662,48 @@ final class MPDConnection
 	private func _getErrorMessageForConnection(connection: COpaquePointer) -> String
 	{
 		let err = mpd_connection_get_error_message(self._connection)
-		let msg = NSString(bytes:err, length:Int(strlen(err)), encoding:NSUTF8StringEncoding) as! String
-		return msg
+		if let msg = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(err), length:Int(strlen(err)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
+		{
+			return msg
+		}
+		return "NO ERROR MESSAGE"
 	}
 
-	private func _trackFromMPDSongObject(song: COpaquePointer) -> Track
+	private func _trackFromMPDSongObject(song: COpaquePointer) -> Track?
 	{
 		// title
 		var tmp = mpd_song_get_tag(song, MPD_TAG_TITLE, 0)
-		let title = NSString(bytes:tmp, length:Int(strlen(tmp)), encoding:NSUTF8StringEncoding) as! String
+		guard let title = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmp), length:Int(strlen(tmp)), freeWhenDone:false), encoding:NSUTF8StringEncoding) else
+		{
+			return nil
+		}
 		// artist
 		tmp = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0)
-		let artist = NSString(bytes:tmp, length:Int(strlen(tmp)), encoding:NSUTF8StringEncoding) as! String
+		guard let artist = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmp), length:Int(strlen(tmp)), freeWhenDone:false), encoding:NSUTF8StringEncoding) else
+		{
+			return nil
+		}
 		// track number
 		tmp = mpd_song_get_tag(song, MPD_TAG_TRACK, 0)
-		var trackNumber = NSString(bytes:tmp, length:Int(strlen(tmp)), encoding:NSUTF8StringEncoding) as! String
+		guard var trackNumber = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmp), length:Int(strlen(tmp)), freeWhenDone:false), encoding:NSUTF8StringEncoding) else
+		{
+			return nil
+		}
 		trackNumber = trackNumber.componentsSeparatedByString("/").first!
 		// duration
 		let duration = mpd_song_get_duration(song)
 		// uri
 		tmp = mpd_song_get_uri(song)
-		let uri = NSString(bytes:tmp, length:Int(strlen(tmp)), encoding:NSUTF8StringEncoding) as! String
+		guard let uri = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmp), length:Int(strlen(tmp)), freeWhenDone:false), encoding:NSUTF8StringEncoding) else
+		{
+			return nil
+		}
 		// Position in the queue
 		let pos = mpd_song_get_pos(song)
 
 		// create track
-		let track = Track(title:title, artist:artist, duration:Duration(seconds:UInt(duration)), trackNumber:Int(trackNumber)!, uri:uri)
+		let trackNumInt = Int(trackNumber) ?? 1
+		let track = Track(title:title, artist:artist, duration:Duration(seconds:UInt(duration)), trackNumber:trackNumInt, uri:uri)
 		track.position = pos
 		return track
 	}
