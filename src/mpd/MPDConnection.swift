@@ -103,7 +103,7 @@ final class MPDConnection
 		self.connected = false
 	}
 
-	// MARK: - Public
+	// MARK: - Get infos about tracks / albums / etc…
 	func getListForDisplayType(displayType: DisplayType) -> [AnyObject]
 	{
 		let tagType = self._mpdTagTypeFromDisplayType(displayType)
@@ -380,7 +380,7 @@ final class MPDConnection
 		var song = mpd_recv_song(self._connection)
 		while song != nil
 		{
-			list.append(self._trackFromSongObject(song))
+			list.append(self._trackFromMPDSongObject(song))
 			song = mpd_recv_song(self._connection)
 		}
 
@@ -495,6 +495,7 @@ final class MPDConnection
 		return metadatas
 	}
 
+	// MARK: - Play / Queue
 	func playAlbum(album: Album, random: Bool, loop: Bool)
 	{
 		if let songs = album.songs
@@ -505,7 +506,6 @@ final class MPDConnection
 		{
 			if let songs = self.getSongsForAlbum(album)
 			{
-				album.songs = songs
 				self.playTracks(songs, random:random, loop:loop)
 			}
 		}
@@ -520,6 +520,7 @@ final class MPDConnection
 		}
 
 		self.setRandom(random)
+		self.setRepeat(loop)
 
 		for track in tracks
 		{
@@ -530,7 +531,7 @@ final class MPDConnection
 			}
 		}
 
-		if !mpd_run_play_pos(self._connection, 0)
+		if !mpd_run_play_pos(self._connection, random ? arc4random_uniform(UInt32(tracks.count)) : 0)
 		{
 			Logger.dlog(self._getErrorMessageForConnection(self._connection))
 		}
@@ -553,7 +554,6 @@ final class MPDConnection
 		{
 			if let tracks = self.getSongsForAlbum(album)
 			{
-				album.songs = tracks
 				for track in tracks
 				{
 					if !mpd_run_add(self._connection, track.uri)
@@ -566,64 +566,9 @@ final class MPDConnection
 		}
 	}
 
-	func getPlayerInfos() -> [String: AnyObject]?
-	{
-		let song = mpd_run_current_song(self._connection)
-		if song == nil
-		{
-			//Logger.dlog("[!] No current song.")
-			return nil
-		}
-
-		let status = mpd_run_status(self._connection)
-		if status == nil
-		{
-			Logger.dlog("[!] No status.")
-			return nil
-		}
-
-		let elapsed = mpd_status_get_elapsed_time(status)
-		let track = self._trackFromSongObject(song)
-		let state = self._stateFromStateObject(mpd_status_get_state(status))
-		let tmp = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0)
-		let albumName = NSString(bytes:tmp, length:Int(strlen(tmp)), encoding:NSUTF8StringEncoding) as! String
-		if let album = self.delegate?.albumMatchingName!(albumName)
-		{
-			return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state.rawValue]
-		}
-		Logger.dlog("[!] No matching album found.")
-		return nil
-	}
-
-	/*func pausePlayback() -> Bool
-	{
-		return mpd_run_pause(self._connection, true)
-	}
-
-	func runPlayback() -> Bool
-	{
-		return mpd_run_play(self._connection)
-	}*/
-
 	func togglePause() -> Bool
 	{
 		return mpd_run_toggle_pause(self._connection)
-	}
-
-	func setRandom(random: Bool)
-	{
-		if !mpd_run_random(self._connection, random)
-		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
-		}
-	}
-
-	func setRepeat(loop: Bool)
-	{
-		if !mpd_run_repeat(self._connection, loop)
-		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
-		}
 	}
 
 	func nextTrack()
@@ -642,6 +587,22 @@ final class MPDConnection
 		}
 	}
 
+	func setRandom(random: Bool)
+	{
+		if !mpd_run_random(self._connection, random)
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+		}
+	}
+
+	func setRepeat(loop: Bool)
+	{
+		if !mpd_run_repeat(self._connection, loop)
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+		}
+	}
+
 	func setTrackPosition(position: Int, trackPosition: UInt32)
 	{
 		if !mpd_run_seek_pos(self._connection, trackPosition, UInt32(position))
@@ -650,6 +611,7 @@ final class MPDConnection
 		}
 	}
 
+	// MARK: - Player status
 	func getStatus()
 	{
 		let ret = mpd_run_status(self._connection)
@@ -657,6 +619,34 @@ final class MPDConnection
 		{
 			Logger.dlog(self._getErrorMessageForConnection(self._connection))
 		}
+	}
+
+	func getPlayerInfos() -> [String: AnyObject]?
+	{
+		let song = mpd_run_current_song(self._connection)
+		if song == nil
+		{
+			return nil
+		}
+
+		let status = mpd_run_status(self._connection)
+		if status == nil
+		{
+			Logger.dlog("[!] No status.")
+			return nil
+		}
+
+		let elapsed = mpd_status_get_elapsed_time(status)
+		let track = self._trackFromMPDSongObject(song)
+		let state = self._statusFromMPDStateObject(mpd_status_get_state(status))
+		let tmp = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0)
+		let albumName = NSString(bytes:tmp, length:Int(strlen(tmp)), encoding:NSUTF8StringEncoding) as! String
+		if let album = self.delegate?.albumMatchingName!(albumName)
+		{
+			return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state.rawValue]
+		}
+		Logger.dlog("[!] No matching album found.")
+		return nil
 	}
 
 	// MARK: - Private
@@ -667,7 +657,7 @@ final class MPDConnection
 		return msg
 	}
 
-	private func _trackFromSongObject(song: COpaquePointer) -> Track
+	private func _trackFromMPDSongObject(song: COpaquePointer) -> Track
 	{
 		// title
 		var tmp = mpd_song_get_tag(song, MPD_TAG_TITLE, 0)
@@ -686,14 +676,14 @@ final class MPDConnection
 		let uri = NSString(bytes:tmp, length:Int(strlen(tmp)), encoding:NSUTF8StringEncoding) as! String
 		// Position in the queue
 		let pos = mpd_song_get_pos(song)
-		
+
 		// create track
 		let track = Track(title:title, artist:artist, duration:Duration(seconds:UInt(duration)), trackNumber:Int(trackNumber)!, uri:uri)
 		track.position = pos
 		return track
 	}
 
-	private func _stateFromStateObject(state: mpd_state) -> PlayerStatus
+	private func _statusFromMPDStateObject(state: mpd_state) -> PlayerStatus
 	{
 		switch state
 		{
