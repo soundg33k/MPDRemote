@@ -179,7 +179,7 @@ extension AlbumsVC
 			}
 			else
 			{
-				MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
+				MPDDataSource.shared.getPathForAlbum(album, callback: {
 					self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
 						let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 						dispatch_async(dispatch_get_main_queue()) {

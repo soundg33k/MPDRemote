@@ -160,7 +160,7 @@ final class MiniPlayerView : UIView
 			}
 			else
 			{
-				MPDDataSource.shared.findCoverPathForAlbum(album, callback:{
+				MPDDataSource.shared.getPathForAlbum(album, callback:{
 					let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {

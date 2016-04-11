@@ -85,23 +85,17 @@ final class MPDDataSource
 		return ret
 	}
 
-	func fill(type: DisplayType, callback: () -> Void)
+	func getListForDisplayType(displayType: DisplayType, callback: () -> Void)
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
 		{
 			return
 		}
 
-		/*dispatch_async(self._queue, {
-			let list = self._mpdConnection.getAlbumsList()
-			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
-			self.albums = list.sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
-			callback()
-		})*/
 		dispatch_async(self._queue) {
-			let list = self._mpdConnection.getListForType(type)
+			let list = self._mpdConnection.getListForDisplayType(displayType)
 			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
-			switch (type)
+			switch (displayType)
 			{
 				case .Albums:
 					self.albums = (list as! [Album]).sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
@@ -110,6 +104,51 @@ final class MPDDataSource
 				case .Artists:
 					self.artists = (list as! [Artist]).sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
 			}
+			callback()
+		}
+	}
+
+	func getAlbumForGenre(genre: Genre, callback: () -> Void)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			if let album = self._mpdConnection.getAlbumForGenre(genre)
+			{
+				genre.albums.append(album)
+			}
+			callback()
+		}
+	}
+
+	func getAlbumsForGenre(genre: Genre, callback: () -> Void)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			let albums = self._mpdConnection.getAlbumsForGenre(genre)
+			genre.albums = albums
+			callback()
+		}
+	}
+
+	func getAlbumsForArtist(artist: Artist, callback: () -> Void)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			let list = self._mpdConnection.getAlbumsForArtist(artist)
+			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
+			artist.albums = list.sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
 			callback()
 		}
 	}
@@ -128,7 +167,7 @@ final class MPDDataSource
 		}
 	}
 
-	func getAlbumsForArtist(artist: Artist, callback: () -> Void)
+	func getPathForAlbum(album: Album, callback: () -> Void)
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
 		{
@@ -136,22 +175,7 @@ final class MPDDataSource
 		}
 
 		dispatch_async(self._queue) {
-			self._mpdConnection.getAlbumsForArtist(artist)
-			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
-			artist.albums.sortInPlace({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
-			callback()
-		}
-	}
-
-	func findCoverPathForAlbum(album: Album, callback: () -> Void)
-	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
-		{
-			return
-		}
-
-		dispatch_async(self._queue) {
-			self._mpdConnection.findCoverForAlbum(album)
+			album.path = self._mpdConnection.getPathForAlbum(album)
 			callback()
 		}
 	}
@@ -193,33 +217,19 @@ final class MPDDataSource
 		}
 
 		dispatch_async(self._queue) {
-			self._mpdConnection.getMetadatasForAlbum(album)
-			callback()
-		}
-	}
-
-	func getAlbumForGenre(genre: Genre, callback: () -> Void)
-	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
-		{
-			return
-		}
-
-		dispatch_async(self._queue) {
-			self._mpdConnection.getAlbumForGenre(genre)
-			callback()
-		}
-	}
-
-	func getAlbumsForGenre(genre: Genre, callback: () -> Void)
-	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
-		{
-			return
-		}
-
-		dispatch_async(self._queue) {
-			self._mpdConnection.getAlbumsForGenre(genre)
+			let metadatas = self._mpdConnection.getMetadatasForAlbum(album)
+			if let artist = metadatas["artist"] as! String?
+			{
+				album.artist = artist
+			}
+			if let year = metadatas["year"] as! String?
+			{
+				album.year = year
+			}
+			if let genre = metadatas["genre"] as! String?
+			{
+				album.genre = genre
+			}
 			callback()
 		}
 	}

@@ -156,9 +156,9 @@ final class RootVC : MenuVC
 					if self._displayType != .Albums
 					{
 						// Always fetch the albums list
-						MPDDataSource.shared.fill(.Albums, callback:{})
+						MPDDataSource.shared.getListForDisplayType(.Albums, callback:{})
 					}
-					MPDDataSource.shared.fill(self._displayType, callback:{
+					MPDDataSource.shared.getListForDisplayType(self._displayType, callback:{
 						dispatch_async(dispatch_get_main_queue()) {
 							self.collectionView.reloadData()
 							self._updateNavigationTitle()
@@ -575,7 +575,7 @@ extension RootVC : UICollectionViewDataSource
 			}
 			else
 			{
-				MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
+				MPDDataSource.shared.getPathForAlbum(album, callback: {
 					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
 							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
@@ -637,7 +637,7 @@ extension RootVC : UICollectionViewDataSource
 				}
 				else
 				{
-					MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
+					MPDDataSource.shared.getPathForAlbum(album, callback: {
 						self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
 							dispatch_async(dispatch_get_main_queue()) {
 								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
@@ -718,7 +718,7 @@ extension RootVC : UICollectionViewDataSource
 					}
 					else
 					{
-						MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
+						MPDDataSource.shared.getPathForAlbum(album, callback: {
 							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 								dispatch_async(dispatch_get_main_queue()) {
@@ -965,7 +965,7 @@ extension RootVC : TypeChoiceViewDelegate
 		NSUserDefaults.standardUserDefaults().synchronize()
 
 		// Refresh view
-		MPDDataSource.shared.fill(type, callback:{
+		MPDDataSource.shared.getListForDisplayType(type, callback:{
 			dispatch_async(dispatch_get_main_queue()) {
 				self.collectionView.reloadData()
 				self._updateNavigationTitle()

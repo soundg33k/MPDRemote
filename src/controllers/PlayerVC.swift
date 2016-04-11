@@ -217,7 +217,7 @@ final class PlayerVC : UIViewController
 			}
 			else
 			{
-				MPDDataSource.shared.findCoverPathForAlbum(album, callback: {
+				MPDDataSource.shared.getPathForAlbum(album, callback: {
 					let op = DownloadCoverOperation(album:album, cropSize:self.coverView.size)
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
