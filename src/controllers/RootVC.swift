@@ -904,6 +904,8 @@ extension RootVC : UISearchBarDelegate
 		self.searchBarVisible = false
 		self.searching = false
 		self.searchResults.removeAll()
+		searchBar.text = ""
+		searchBar.resignFirstResponder()
 		self._showNavigationBar(animated:true)
 		self.collectionView.reloadData()
 	}
@@ -921,11 +923,6 @@ extension RootVC : UISearchBarDelegate
 
 	func searchBar(searchBar: UISearchBar, textDidChange searchText: String)
 	{
-		/*if MPDDataSource.shared.albums.count > 0
-		{
-			self.searchResults = MPDDataSource.shared.albums.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
-			self.collectionView.reloadData()
-		}*/
 		switch self._displayType
 		{
 			case .Albums:
