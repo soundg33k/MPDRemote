@@ -160,7 +160,7 @@ final class AlbumHeaderView : UIView
 		if let tracks = album.songs
 		{
 			stra += "\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n"
-			let total = tracks.map({$0.duration}).reduce(Duration(seconds:0)){$0 + $1}
+			let total = tracks.reduce(Duration(seconds:0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
 			stra += "\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")\n"
 		}

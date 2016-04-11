@@ -223,7 +223,7 @@ final class AlbumDetailVC : UIViewController
 		let album = self._currentAlbum()
 		if let tracks = album.songs
 		{
-			let total = tracks.map({$0.duration}).reduce(Duration(seconds:0)){$0 + $1}
+			let total = tracks.reduce(Duration(seconds:0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
 			let attrs = NSMutableAttributedString(string:"\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
 			attrs.appendAttributedString(NSAttributedString(string:"\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
