@@ -78,7 +78,6 @@ final class ServerVC : MenuVC
 
 		// TableView
 		self.tableView = UITableView(frame:CGRect(0.0, 0.0, self.view.frame.width, self.view.frame.height - 64.0), style:.Grouped)
-		self.tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.server")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
 		self.tableView.rowHeight = 44.0
@@ -270,11 +269,6 @@ extension ServerVC : UITableViewDataSource
 
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		/*if section == 0
-		{
-			return 4
-		}
-		return 3*/
 		return 4
 	}
 
@@ -282,161 +276,203 @@ extension ServerVC : UITableViewDataSource
 	{
 		let section = indexPath.section
 		let row = indexPath.row
-		let cell = tableView.dequeueReusableCellWithIdentifier("io.whine.mpdremote.cell.server", forIndexPath:indexPath)
-		cell.selectionStyle = .None
-
-		if section == 0
+		let cellIdentifier = "\(section):\(row)"
+		if let cell2 = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
 		{
-			if row == 0
+			if section == 0
 			{
-				cell.textLabel?.text = NYXLocalizedString("lbl_server_name")
-				if self.tfMPDName == nil
+				if row == 0
 				{
-					self.tfMPDName = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell.frame.height))
-					self.tfMPDName.backgroundColor = cell.backgroundColor
+					if let server = self.mpdServer
+					{
+						self.tfMPDName.text = server.name
+					}
+				}
+				else if row == 1
+				{
+					if let server = self.mpdServer
+					{
+						self.tfMPDHostname.text = server.hostname
+					}
+				}
+				else if row == 2
+				{
+					if let server = self.mpdServer
+					{
+						self.tfMPDPort.text = String(server.port)
+					}
+				}
+				else if row == 3
+				{
+					if let server = self.mpdServer
+					{
+						self.tfMPDPassword.text = server.password
+					}
+				}
+			}
+			else if section == 1
+			{
+				if row == 0
+				{
+					if let server = self.webServer
+					{
+						self.tfWEBHostname.text = server.hostname
+					}
+				}
+				else if row == 1
+				{
+					if let server = self.webServer
+					{
+						self.tfWEBPort.text = String(server.port)
+					}
+				}
+				else if row == 2
+				{
+					if let server = self.webServer
+					{
+						self.tfWEBCoverName.text = server.coverName
+					}
+				}
+			}
+			return cell2
+		}
+		else
+		{
+			let cell2 = UITableViewCell(style:.Default, reuseIdentifier:cellIdentifier)
+			cell2.selectionStyle = .None
+
+			if section == 0
+			{
+				if row == 0
+				{
+					cell2.textLabel?.text = NYXLocalizedString("lbl_server_name")
+					self.tfMPDName = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell2.frame.height))
+					self.tfMPDName.backgroundColor = cell2.backgroundColor
 					self.tfMPDName.placeholder = NYXLocalizedString("lbl_server_defaultname")
 					self.tfMPDName.keyboardType = .Default
 					self.tfMPDName.returnKeyType = .Continue
 					self.tfMPDName.autocorrectionType = .No
 					self.tfMPDName.autocapitalizationType = .None
 					self.tfMPDName.delegate = self
-					cell.addSubview(self.tfMPDName)
+					cell2.addSubview(self.tfMPDName)
+					if let server = self.mpdServer
+					{
+						self.tfMPDName.text = server.name
+					}
 				}
-				if let server = self.mpdServer
+				else if row == 1
 				{
-					self.tfMPDName.text = server.name
-				}
-			}
-			else if row == 1
-			{
-				cell.textLabel?.text = NYXLocalizedString("lbl_server_host")
-				if self.tfMPDHostname == nil
-				{
-					self.tfMPDHostname = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell.frame.height))
-					self.tfMPDHostname.backgroundColor = cell.backgroundColor
+					cell2.textLabel?.text = NYXLocalizedString("lbl_server_host")
+					self.tfMPDHostname = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell2.frame.height))
+					self.tfMPDHostname.backgroundColor = cell2.backgroundColor
 					self.tfMPDHostname.placeholder = "127.0.0.1"
 					self.tfMPDHostname.keyboardType = .URL
 					self.tfMPDHostname.returnKeyType = .Continue
 					self.tfMPDHostname.autocorrectionType = .No
 					self.tfMPDHostname.autocapitalizationType = .None
 					self.tfMPDHostname.delegate = self
-					cell.addSubview(self.tfMPDHostname)
+					cell2.addSubview(self.tfMPDHostname)
+					if let server = self.mpdServer
+					{
+						self.tfMPDHostname.text = server.hostname
+					}
 				}
-				if let server = self.mpdServer
+				else if row == 2
 				{
-					self.tfMPDHostname.text = server.hostname
-				}
-			}
-			else if row == 2
-			{
-				cell.textLabel?.text = NYXLocalizedString("lbl_server_port")
-				if self.tfMPDPort == nil
-				{
-					self.tfMPDPort = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell.frame.height))
-					self.tfMPDPort.backgroundColor = cell.backgroundColor
+					cell2.textLabel?.text = NYXLocalizedString("lbl_server_port")
+					self.tfMPDPort = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell2.frame.height))
+					self.tfMPDPort.backgroundColor = cell2.backgroundColor
 					self.tfMPDPort.placeholder = "6600"
 					self.tfMPDPort.keyboardType = .NumberPad
 					self.tfMPDPort.autocorrectionType = .No
 					self.tfMPDPort.delegate = self
-					cell.addSubview(self.tfMPDPort)
+					cell2.addSubview(self.tfMPDPort)
+					if let server = self.mpdServer
+					{
+						self.tfMPDPort.text = String(server.port)
+					}
 				}
-				if let server = self.mpdServer
+				else if row == 3
 				{
-					self.tfMPDPort.text = String(server.port)
-				}
-			}
-			else if row == 3
-			{
-				cell.textLabel?.text = NYXLocalizedString("lbl_server_password")
-				if self.tfMPDPassword == nil
-				{
-					self.tfMPDPassword = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell.frame.height))
-					self.tfMPDPassword.backgroundColor = cell.backgroundColor
+					cell2.textLabel?.text = NYXLocalizedString("lbl_server_password")
+					self.tfMPDPassword = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell2.frame.height))
+					self.tfMPDPassword.backgroundColor = cell2.backgroundColor
 					self.tfMPDPassword.placeholder = NYXLocalizedString("lbl_optional")
 					self.tfMPDPassword.keyboardType = .Default
 					self.tfMPDPassword.returnKeyType = .Done
 					self.tfMPDPassword.autocorrectionType = .No
 					self.tfMPDPassword.autocapitalizationType = .None
 					self.tfMPDPassword.delegate = self
-					cell.addSubview(self.tfMPDPassword)
-				}
-				if let server = self.mpdServer
-				{
-					self.tfMPDPassword.text = server.password
+					cell2.addSubview(self.tfMPDPassword)
+					if let server = self.mpdServer
+					{
+						self.tfMPDPassword.text = server.password
+					}
 				}
 			}
-		}
-		else if section == 1
-		{
-			if row == 0
+			else if section == 1
 			{
-				cell.textLabel?.text = NYXLocalizedString("lbl_server_coverurl")
-				if self.tfWEBHostname == nil
+				if row == 0
 				{
-					self.tfWEBHostname = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell.frame.height))
-					self.tfWEBHostname.backgroundColor = cell.backgroundColor
+					cell2.textLabel?.text = NYXLocalizedString("lbl_server_coverurl")
+					self.tfWEBHostname = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell2.frame.height))
+					self.tfWEBHostname.backgroundColor = cell2.backgroundColor
 					self.tfWEBHostname.placeholder = "http://127.0.0.1"
 					self.tfWEBHostname.keyboardType = .URL
 					self.tfWEBHostname.returnKeyType = .Continue
 					self.tfWEBHostname.autocorrectionType = .No
 					self.tfWEBHostname.autocapitalizationType = .None
 					self.tfWEBHostname.delegate = self
-					cell.addSubview(self.tfWEBHostname)
+					cell2.addSubview(self.tfWEBHostname)
+					if let server = self.webServer
+					{
+						self.tfWEBHostname.text = server.hostname
+					}
 				}
-				if let server = self.webServer
+				else if row == 1
 				{
-					self.tfWEBHostname.text = server.hostname
-				}
-			}
-			else if row == 1
-			{
-				cell.textLabel?.text = NYXLocalizedString("lbl_server_port")
-				if self.tfWEBPort == nil
-				{
-					self.tfWEBPort = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell.frame.height))
-					self.tfWEBPort.backgroundColor = cell.backgroundColor
+					cell2.textLabel?.text = NYXLocalizedString("lbl_server_port")
+					self.tfWEBPort = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell2.frame.height))
+					self.tfWEBPort.backgroundColor = cell2.backgroundColor
 					self.tfWEBPort.text = "80"
 					self.tfWEBPort.keyboardType = .NumberPad
 					self.tfWEBPort.autocorrectionType = .No
 					self.tfWEBPort.delegate = self
-					cell.addSubview(self.tfWEBPort)
+					cell2.addSubview(self.tfWEBPort)
+					if let server = self.webServer
+					{
+						self.tfWEBPort.text = String(server.port)
+					}
 				}
-				if let server = self.webServer
+				else if row == 2
 				{
-					self.tfWEBPort.text = String(server.port)
-				}
-			}
-			else if row == 2
-			{
-				cell.textLabel?.text = NYXLocalizedString("lbl_server_covername")
-				if self.tfWEBCoverName == nil
-				{
-					self.tfWEBCoverName = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell.frame.height))
-					self.tfWEBCoverName.backgroundColor = cell.backgroundColor
+					cell2.textLabel?.text = NYXLocalizedString("lbl_server_covername")
+					self.tfWEBCoverName = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell2.frame.height))
+					self.tfWEBCoverName.backgroundColor = cell2.backgroundColor
 					self.tfWEBCoverName.text = "cover.jpg"
 					self.tfWEBCoverName.keyboardType = .Default
 					self.tfWEBCoverName.returnKeyType = .Done
 					self.tfWEBCoverName.autocorrectionType = .No
 					self.tfWEBCoverName.autocapitalizationType = .None
 					self.tfWEBCoverName.delegate = self
-					cell.addSubview(self.tfWEBCoverName)
+					cell2.addSubview(self.tfWEBCoverName)
+					if let server = self.webServer
+					{
+						self.tfWEBCoverName.text = server.coverName
+					}
 				}
-				if let server = self.webServer
+				else if row == 3
 				{
-					self.tfWEBCoverName.text = server.coverName
+					cell2.textLabel?.text = NYXLocalizedString("lbl_server_coverclearcache")
+					cell2.textLabel?.textAlignment = .Center
+					cell2.textLabel?.textColor = UIColor.redColor()
+					cell2.textLabel?.font = UIFont.boldSystemFontOfSize(15.0)
+					cell2.selectionStyle = .Default
 				}
 			}
-			else if row == 3
-			{
-				cell.selectionStyle = .Default
-				cell.textLabel?.text = NYXLocalizedString("lbl_server_coverclearcache")
-				cell.textLabel?.textAlignment = .Center
-				cell.textLabel?.textColor = UIColor.redColor()
-				cell.textLabel?.font = UIFont.boldSystemFontOfSize(15.0)
-			}
-		}
 
-		return cell
+			return cell2
+		}
 	}
 
 	func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
@@ -502,9 +538,13 @@ extension ServerVC : UITextFieldDelegate
 		}
 		else if textField === self.tfWEBHostname
 		{
-			self.tfWEBCoverName.resignFirstResponder()
+			self.tfWEBPort.becomeFirstResponder()
 		}
-		else if textField === self.tfWEBCoverName
+		else if textField === self.tfWEBPort
+		{
+			self.tfWEBCoverName.becomeFirstResponder()
+		}
+		else
 		{
 			textField.resignFirstResponder()
 		}
