@@ -33,6 +33,8 @@ final class RootVC : MenuVC
 	// MARK: - Private properties
 	// Albums view
 	private var collectionView: UICollectionView!
+	// Search bar
+	private var searchBar: UISearchBar! = nil
 	// Button in the navigationbar
 	private var titleView: UIButton! = nil
 	// Random button
@@ -78,14 +80,14 @@ final class RootVC : MenuVC
 		let searchView = UIView(frame:CGRect(0.0, 0.0, navigationBar.width, 64.0))
 		searchView.backgroundColor = navigationBar.barTintColor
 		self.navigationController?.view.insertSubview(searchView, belowSubview:navigationBar)
-		let sb = UISearchBar(frame:navigationBar.frame)
-		sb.searchBarStyle = .Minimal
-		sb.barTintColor = searchView.backgroundColor
-		sb.tintColor = navigationBar.tintColor
-		(sb.valueForKey("searchField") as? UITextField)?.textColor = headerColor
-		sb.showsCancelButton = true
-		sb.delegate = self
-		searchView.addSubview(sb)
+		self.searchBar = UISearchBar(frame:navigationBar.frame)
+		self.searchBar.searchBarStyle = .Minimal
+		self.searchBar.barTintColor = searchView.backgroundColor
+		self.searchBar.tintColor = navigationBar.tintColor
+		(self.searchBar.valueForKey("searchField") as? UITextField)?.textColor = headerColor
+		self.searchBar.showsCancelButton = true
+		self.searchBar.delegate = self
+		searchView.addSubview(self.searchBar)
 
 		// Navigation bar title
 		self.titleView = UIButton(frame:CGRect(0.0, 0.0, 100.0, navigationBar.height))
@@ -512,6 +514,12 @@ extension RootVC : UICollectionViewDataSource
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.mainScreen().scale
 
+		// Sanity check
+		if self.searching && indexPath.row >= self.searchResults.count
+		{
+			return cell
+		}
+
 		switch self._displayType
 		{
 			case .Albums:
@@ -888,6 +896,7 @@ extension RootVC : UIScrollViewDelegate
 			self.searchBarVisible = true
 			let bar = (self.navigationController?.navigationBar)!
 			bar.y = -48.0
+			self.searchBar.becomeFirstResponder()
 		}
 		else
 		{
@@ -901,12 +910,12 @@ extension RootVC : UISearchBarDelegate
 {
 	func searchBarCancelButtonClicked(searchBar: UISearchBar)
 	{
-		self.searchBarVisible = false
-		self.searching = false
 		self.searchResults.removeAll()
+		self.searching = false
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
 		self._showNavigationBar(animated:true)
+		self.searchBarVisible = false
 		self.collectionView.reloadData()
 	}
 
