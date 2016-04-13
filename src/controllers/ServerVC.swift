@@ -21,6 +21,7 @@
 
 
 import UIKit
+import MultipeerConnectivity
 
 
 final class ServerVC : MenuVC
@@ -47,6 +48,8 @@ final class ServerVC : MenuVC
 	private var webServer: WEBServer?
 	// Indicate that the keyboard is visible, flag
 	private var _keyboardVisible = false
+	// Bonjour
+	//private var serviceBrowser: MCNearbyServiceBrowser!
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -77,7 +80,7 @@ final class ServerVC : MenuVC
 		self.navigationItem.titleView = titleView
 
 		// TableView
-		self.tableView = UITableView(frame:CGRect(0.0, 0.0, self.view.frame.width, self.view.frame.height - 64.0), style:.Grouped)
+		self.tableView = UITableView(frame:CGRect(0.0, 0.0, self.view.width, self.view.height - 64.0), style:.Grouped)
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
 		self.tableView.rowHeight = 44.0
@@ -91,6 +94,19 @@ final class ServerVC : MenuVC
 	override func viewWillAppear(animated: Bool)
 	{
 		super.viewWillAppear(animated)
+
+		/*let myPeerId = MCPeerID(displayName:"MPDRemote browser")
+		self.serviceBrowser = MCNearbyServiceBrowser(peer:myPeerId, serviceType:"mpd")
+		self.serviceBrowser.delegate = self
+		self.serviceBrowser.startBrowsingForPeers()*/
+		/*let session = MCSession(peer:myPeerId, securityIdentity:nil, encryptionPreference:.None)
+		session.delegate = self
+		let browserViewController = MCBrowserViewController(browser:self.serviceBrowser, session:session)
+		browserViewController.delegate = self
+		self.presentViewController(browserViewController, animated:true, completion: {
+			Logger.dlog("???")
+			self.serviceBrowser.startBrowsingForPeers()
+		})*/
 
 		if let mpdServerAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefMPDServer)
 		{
@@ -119,6 +135,11 @@ final class ServerVC : MenuVC
 		self.tableView.reloadData()
 	}
 
+	override func viewWillDisappear(animated: Bool)
+	{
+		super.viewWillDisappear(animated)
+	}
+
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
 	{
 		return .Portrait
@@ -136,12 +157,9 @@ final class ServerVC : MenuVC
 
 		// Check MPD server name (optional)
 		var serverName = NYXLocalizedString("lbl_server_defaultname")
-		if let strName = self.tfMPDName.text
+		if let strName = self.tfMPDName.text where strName.length > 0
 		{
-			if strName.length > 0
-			{
-				serverName = strName
-			}
+			serverName = strName
 		}
 
 		// Check MPD hostname / ip
@@ -156,7 +174,7 @@ final class ServerVC : MenuVC
 		}
 
 		// Check MPD port
-		var port: UInt16 = 6600
+		var port = UInt16(6600)
 		if let strPort = self.tfMPDPort.text, p = UInt16(strPort)
 		{
 			port = p
@@ -164,12 +182,9 @@ final class ServerVC : MenuVC
 
 		// Check MPD password (optional)
 		var password = ""
-		if let strPassword = self.tfMPDPassword.text
+		if let strPassword = self.tfMPDPassword.text where strPassword.length > 0
 		{
-			if strPassword.length > 0
-			{
-				password = strPassword
-			}
+			password = strPassword
 		}
 
 		let mpdServer = password.length > 0 ? MPDServer(name:serverName, hostname:ip, port:port, password:password) : MPDServer(name:serverName, hostname:ip, port:port)
@@ -192,32 +207,24 @@ final class ServerVC : MenuVC
 		cnn.disconnect()
 
 		// Check web URL (optional)
-		if let strURL = self.tfWEBHostname.text
+		if let strURL = self.tfWEBHostname.text where strURL.length > 0
 		{
-			if strURL.length > 0
+			var port = UInt16(80)
+			if let strPort = self.tfWEBPort.text, p = UInt16(strPort)
 			{
-				var port: UInt16 = 80
-				if let strPort = self.tfWEBPort.text, p = UInt16(strPort)
-				{
-					port = p
-				}
+				port = p
+			}
 
-				let webServer = WEBServer(hostname:strURL, port:port)
-				if let coverName = self.tfWEBCoverName.text
-				{
-					if coverName.length > 0
-					{
-						webServer.coverName = coverName
-					}
-				}
-				self.webServer = webServer
-				let serverAsData = NSKeyedArchiver.archivedDataWithRootObject(webServer)
-				NSUserDefaults.standardUserDefaults().setObject(serverAsData, forKey:kNYXPrefWEBServer)
-			}
-			else
+			let webServer = WEBServer(hostname:strURL, port:port)
+			var coverName = "cover.jpg"
+			if let cn = self.tfWEBCoverName.text where cn.length > 0
 			{
-				NSUserDefaults.standardUserDefaults().removeObjectForKey(kNYXPrefWEBServer)
+				coverName = cn
 			}
+			webServer.coverName = coverName
+			self.webServer = webServer
+			let serverAsData = NSKeyedArchiver.archivedDataWithRootObject(webServer)
+			NSUserDefaults.standardUserDefaults().setObject(serverAsData, forKey:kNYXPrefWEBServer)
 		}
 		else
 		{
@@ -551,3 +558,65 @@ extension ServerVC : UITextFieldDelegate
 		return true
 	}
 }
+
+/*
+// MARK: - MCSessionDelegate
+extension ServerVC : MCSessionDelegate
+{
+	func session(session: MCSession, didReceiveData data: NSData, fromPeer peerID: MCPeerID)
+	{
+		Logger.dlog("\(data)")
+	}
+	func session(session: MCSession, peer peerID: MCPeerID, didChangeState state: MCSessionState)
+	{
+		Logger.dlog("\(state)")
+	}
+	func session(session: MCSession, didReceiveStream stream: NSInputStream, withName streamName: String, fromPeer peerID: MCPeerID)
+	{
+		Logger.dlog("\(streamName)")
+	}
+	func session(session: MCSession, didReceiveCertificate certificate: [AnyObject]?, fromPeer peerID: MCPeerID, certificateHandler: (Bool) -> Void)
+	{
+		Logger.dlog("\(certificate)")
+	}
+	func session(session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, withProgress progress: NSProgress)
+	{
+		Logger.dlog("\(resourceName)")
+	}
+	func session(session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, atURL localURL: NSURL, withError error: NSError?)
+	{
+		Logger.dlog("\(error)")
+	}
+}
+
+// MARK: - MCBrowserViewControllerDelegate
+extension ServerVC : MCBrowserViewControllerDelegate
+{
+	func browserViewControllerDidFinish(browserViewController: MCBrowserViewController)
+	{
+		Logger.dlog("browserViewControllerDidFinish")
+	}
+	func browserViewControllerWasCancelled(browserViewController: MCBrowserViewController)
+	{
+		Logger.dlog("browserViewControllerWasCancelled")
+	}
+}
+
+// MARK: - MCNearbyServiceBrowserDelegate
+extension ServerVC : MCNearbyServiceBrowserDelegate
+{
+	func browser(browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: NSError)
+	{
+		Logger.alog("didNotStartBrowsingForPeers: \(error)")
+	}
+
+	func browser(browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?)
+	{
+		Logger.alog("foundPeer: \(peerID)")
+	}
+
+	func browser(browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID)
+	{
+		Logger.alog("lostPeer")
+	}
+}*/

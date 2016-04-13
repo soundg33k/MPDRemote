@@ -249,18 +249,7 @@ final class PlayerVC : UIViewController
 			}
 		}
 
-		if MPDPlayer.shared.status == .Paused
-		{
-			self.btnPlay.setImage(UIImage(named:"btn-play")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
-			self.btnPlay.setImage(UIImage(named:"btn-play")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
-			self.btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
-		}
-		else
-		{
-			self.btnPlay.setImage(UIImage(named:"btn-pause")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
-			self.btnPlay.setImage(UIImage(named:"btn-pause")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
-			self.btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
-		}
+		self._updatePlayPauseButton()
 	}
 
 	override func viewWillDisappear(animated: Bool)
@@ -356,11 +345,7 @@ final class PlayerVC : UIViewController
 	// MARK: - Notifications
 	func playingTrackNotification(aNotification: NSNotification?)
 	{
-		guard let elapsed = aNotification?.userInfo![kPlayerElapsedKey] as? Int else
-		{
-			return
-		}
-		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track else
+		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track, let elapsed = aNotification?.userInfo![kPlayerElapsedKey] as? Int else
 		{
 			return
 		}
@@ -379,11 +364,7 @@ final class PlayerVC : UIViewController
 
 	func playingTrackChangedNotification(aNotification: NSNotification?)
 	{
-		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track else
-		{
-			return
-		}
-		guard let album = aNotification?.userInfo![kPlayerAlbumKey] as? Album else
+		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track, let album = aNotification?.userInfo![kPlayerAlbumKey] as? Album else
 		{
 			return
 		}
@@ -394,6 +375,12 @@ final class PlayerVC : UIViewController
 	}
 
 	func playerStatusChangedNotification(aNotification: NSNotification?)
+	{
+		self._updatePlayPauseButton()
+	}
+
+	// MARK: - Private
+	private func _updatePlayPauseButton()
 	{
 		if MPDPlayer.shared.status == .Paused
 		{
