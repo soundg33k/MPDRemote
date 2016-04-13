@@ -122,8 +122,7 @@ final class MiniPlayerView : UIView
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackNotification(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 
-		let w = UIApplication.sharedApplication().keyWindow!
-		w.addSubview(self)
+		APP_DELEGATE().window?.addSubview(self)
 	}
 
 	required init?(coder aDecoder: NSCoder)

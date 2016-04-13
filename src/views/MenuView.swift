@@ -201,6 +201,11 @@ extension MenuView : UITableViewDelegate
 		}
 		self.menuDelegate?.menuViewShouldClose(self)
 		APP_DELEGATE().window!.rootViewController = newTopViewController
+
+		if newTopViewController === APP_DELEGATE().homeVC
+		{
+			APP_DELEGATE().window?.bringSubviewToFront(MiniPlayerView.shared)
+		}
 	}
 
 	func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
