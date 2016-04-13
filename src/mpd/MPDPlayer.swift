@@ -209,6 +209,19 @@ final class MPDPlayer : NSObject
 		}
 	}
 
+	// MARK: - Volume
+	func setVolume(volume: Int)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			self._mpdConnection.setVolume(UInt32(volume))
+		}
+	}
+
 	// MARK: - Private
 	private func _startTimer(interval: Double)
 	{

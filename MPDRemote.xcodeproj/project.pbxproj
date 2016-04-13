@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E13A2221CBD4A8000AEEE2B /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E13A2211CBD4A8000AEEE2B /* MultipeerConnectivity.framework */; };
 		1E2B80BE1C7EF97300D2273F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2B80B21C7EF97300D2273F /* LaunchScreen.storyboard */; };
 		1E2B80C81C7EF98B00D2273F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E2B80C71C7EF98B00D2273F /* Assets.xcassets */; };
 		1E3424361C948E8D009F6BF8 /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3424351C948E8D009F6BF8 /* Duration.swift */; };
@@ -60,6 +61,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1E13A2211CBD4A8000AEEE2B /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		1E19ACEA1C7DCC2D00E602FB /* MPDRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MPDRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E2B80B31C7EF97300D2273F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E2B80B41C7EF97300D2273F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E13A2221CBD4A8000AEEE2B /* MultipeerConnectivity.framework in Frameworks */,
 				1E5656101C9092D40049C02D /* libmpdclient.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -176,12 +179,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E13A2231CBD4A8800AEEE2B /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1E13A2211CBD4A8000AEEE2B /* MultipeerConnectivity.framework */,
+			);
+			name = frameworks;
+			sourceTree = "<group>";
+		};
 		1E19ACE11C7DCC2D00E602FB = {
 			isa = PBXGroup;
 			children = (
 				1E56536D1C908A310049C02D /* src */,
 				1E2B80B11C7EF97300D2273F /* rsrc */,
 				1E3424341C948B4C009F6BF8 /* external */,
+				1E13A2231CBD4A8800AEEE2B /* frameworks */,
 				1E19ACEB1C7DCC2D00E602FB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -659,7 +671,7 @@
 					"$(PROJECT_DIR)/external/mpdclient-src",
 				);
 				OTHER_SWIFT_FLAGS = "-D NYX_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free;
+				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free2;
 				PRODUCT_NAME = MPDRemote;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
@@ -691,7 +703,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/external/mpdclient-src",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free;
+				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free2;
 				PRODUCT_NAME = MPDRemote;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";

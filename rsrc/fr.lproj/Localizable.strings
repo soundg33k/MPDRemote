@@ -11,6 +11,8 @@
 "lbl_pause" = "Mettre en pause";
 "lbl_next_track" = "Piste suivante";
 "lbl_previous_track" = "Piste précédente";
+"lbl_volume" = "Volume";
+"lbl_track_position" = "Position de la piste";
 "lbl_random_enable" = "Activer l'aléatoire";
 "lbl_random_disable" = "Désactiver l'aléatoire";
 "lbl_repeat_enable" = "Activer la lecture en boucle";

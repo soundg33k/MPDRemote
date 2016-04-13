@@ -78,6 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 			kNYXPrefCoverSize : NSKeyedArchiver.archivedDataWithRootObject(NSValue(CGSize:CGSize(width, width))),
 			kNYXPrefRandom : false,
 			kNYXPrefRepeat : false,
+			kNYXPrefVolume : 100,
 			kNYXPrefDisplayType : DisplayType.Albums.rawValue,
 		]
 

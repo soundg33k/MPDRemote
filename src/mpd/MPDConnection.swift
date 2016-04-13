@@ -614,6 +614,14 @@ final class MPDConnection
 		}
 	}
 
+	func setVolume(volume: UInt32)
+	{
+		if !mpd_run_set_volume(self._connection, volume)
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+		}
+	}
+
 	// MARK: - Player status
 	func getStatus()
 	{

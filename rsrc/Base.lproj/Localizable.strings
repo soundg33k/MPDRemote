@@ -11,6 +11,8 @@
 "lbl_pause" = "Pause";
 "lbl_next_track" = "Next track";
 "lbl_previous_track" = "Previous track";
+"lbl_volume" = "Volume";
+"lbl_track_position" = "Track position";
 "lbl_random_enable" = "Enable random";
 "lbl_random_disable" = "Disable random";
 "lbl_repeat_enable" = "Enable repeat";

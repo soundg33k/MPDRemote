@@ -32,6 +32,7 @@ public let kNYXPrefWEBServer = "kNYXPrefWEBServer"
 public let kNYXPrefCoverSize = "kNYXPrefCoverSize"
 public let kNYXPrefRandom = "kNYXPrefRandom"
 public let kNYXPrefRepeat = "kNYXPrefRepeat"
+public let kNYXPrefVolume = "kNYXPrefVolume"
 public let kNYXPrefDisplayType = "kNYXPrefDisplayType"
 
 /* Notifications names */

@@ -45,11 +45,13 @@ final class PlayerVC : UIViewController
 	// Repeat button
 	private var btnRepeat: UIButton! = nil
 	// Progress bar
-	private var slider: UISlider! = nil
+	private var sliderPosition: UISlider! = nil
 	// Track title
 	private var lblElapsedDuration: UILabel! = nil
 	// Track artist name
 	private var lblRemainingDuration: UILabel! = nil
+	// Volume control
+	private var sliderVolume: UISlider! = nil
 
 	// MARK: - UIViewController
 	override func loadView()
@@ -88,7 +90,7 @@ final class PlayerVC : UIViewController
 		
 		// Cover view
 		let width = self.view.width - 2 * 32.0
-		self.coverView = UIImageView(frame:CGRect(32.0, self.lblAlbumName.bottom + 32.0, width, width))
+		self.coverView = UIImageView(frame:CGRect(32.0, self.lblAlbumName.bottom + 24.0, width, width))
 		self.coverView.image = UIImage(named:"default-cover")
 		self.coverView.userInteractionEnabled = true
 		blurEffectView.addSubview(self.coverView)
@@ -101,16 +103,38 @@ final class PlayerVC : UIViewController
 		motionEffect.minimumRelativeValue = 20.0
 		motionEffect.maximumRelativeValue = -20.0
 		self.coverView.addMotionEffect(motionEffect)
-		
+
+		// Elapsed duration
+		self.lblElapsedDuration = UILabel(frame:CGRect(self.coverView.x, self.coverView.bottom + 8.0, 40.0, 16.0))
+		self.lblElapsedDuration.font = UIFont.systemFontOfSize(12.0)
+		self.lblElapsedDuration.textAlignment = .Left
+		self.lblElapsedDuration.textColor = UIColor.whiteColor()
+		blurEffectView.addSubview(self.lblElapsedDuration)
+
+		// Remaining duration
+		self.lblRemainingDuration = UILabel(frame:CGRect(self.coverView.right - 40.0, self.coverView.bottom + 8.0, 40.0, 16.0))
+		self.lblRemainingDuration.font = self.lblElapsedDuration.font
+		self.lblRemainingDuration.textAlignment = .Right
+		self.lblRemainingDuration.textColor = UIColor.whiteColor()
+		blurEffectView.addSubview(self.lblRemainingDuration)
+
+		// Position slider
+		UISlider.appearance().setThumbImage(UIImage(named:"slider-thumb"), forState:.Normal)
+		self.sliderPosition = UISlider(frame:CGRect(self.coverView.x, self.lblElapsedDuration.bottom, self.coverView.width, 16.0))
+		self.sliderPosition.tintColor = UIColor.fromRGB(kNYXAppColor)
+		self.sliderPosition.minimumValue = 0.0
+		self.sliderPosition.addTarget(self, action:#selector(changeTrackPositionAction(_:)), forControlEvents:.TouchUpInside)
+		blurEffectView.addSubview(self.sliderPosition)
+
 		// Play button
 		self.btnPlay = UIButton(type:.Custom)
-		self.btnPlay.frame = CGRect((self.view.width - 44.0) * 0.5, self.coverView.bottom + 10.0, 44.0, 44.0)
+		self.btnPlay.frame = CGRect((self.view.width - 44.0) * 0.5, self.sliderPosition.bottom + 16.0, 44.0, 44.0)
 		self.btnPlay.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.togglePause), forControlEvents:.TouchUpInside)
 		blurEffectView.addSubview(self.btnPlay)
 		
 		// Next button
 		self.btnNext = UIButton(type:.Custom)
-		self.btnNext.frame = CGRect(self.coverView.right - 44.0, self.coverView.bottom + 10.0, 44.0, 44.0)
+		self.btnNext.frame = CGRect(self.coverView.right - 44.0, self.sliderPosition.bottom + 16.0, 44.0, 44.0)
 		self.btnNext.setImage(UIImage(named:"btn-next")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
 		self.btnNext.setImage(UIImage(named:"btn-next")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
 		self.btnNext.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.requestNextTrack), forControlEvents:.TouchUpInside)
@@ -119,39 +143,34 @@ final class PlayerVC : UIViewController
 		
 		// Previous button
 		self.btnPrevious = UIButton(type:.Custom)
-		self.btnPrevious.frame = CGRect(self.coverView.x, self.coverView.bottom + 10.0, 44.0, 44.0)
+		self.btnPrevious.frame = CGRect(self.coverView.x, self.sliderPosition.bottom + 16.0, 44.0, 44.0)
 		self.btnPrevious.setImage(UIImage(named:"btn-previous")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
 		self.btnPrevious.setImage(UIImage(named:"btn-previous")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
 		self.btnPrevious.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.requestPreviousTrack), forControlEvents:.TouchUpInside)
 		self.btnPrevious.accessibilityLabel = NYXLocalizedString("lbl_previous_track")
 		blurEffectView.addSubview(self.btnPrevious)
-		
-		// Slider
-		self.slider = UISlider(frame:CGRect(self.coverView.x, self.btnNext.bottom + 32.0, self.coverView.width, 10.0))
-		self.slider.tintColor = UIColor.fromRGB(kNYXAppColor)
-		self.slider.minimumValue = 0.0
-		self.slider.addTarget(self, action:#selector(changeTrackPositionAction(_:)), forControlEvents:.TouchUpInside)
-		blurEffectView.addSubview(self.slider)
 
-		// Elapsed duration
-		self.lblElapsedDuration = UILabel(frame:CGRect(self.slider.x, self.slider.bottom + 20.0, 44.0, 18.0))
-		self.lblElapsedDuration.font = UIFont.systemFontOfSize(13.0)
-		self.lblElapsedDuration.textAlignment = .Left
-		self.lblElapsedDuration.textColor = UIColor.whiteColor()
-		blurEffectView.addSubview(self.lblElapsedDuration)
+		// Volume slider
+		let ivLo = UIImageView(frame:CGRect(self.coverView.x, self.btnPrevious.bottom + 12.0, 16.0, 16.0))
+		ivLo.image = UIImage(named:"img-volume-lo")?.imageTintedWithColor(UIColor.whiteColor())
+		blurEffectView.addSubview(ivLo)
+		let ivHi = UIImageView(frame:CGRect(self.coverView.right - 16.0, self.btnPrevious.bottom + 12.0, 16.0, 16.0))
+		ivHi.image = UIImage(named:"img-volume-hi")?.imageTintedWithColor(UIColor.whiteColor())
+		blurEffectView.addSubview(ivHi)
+		self.sliderVolume = UISlider(frame:CGRect(self.sliderPosition.x, ivHi.bottom + 4.0, self.sliderPosition.width, 16.0))
+		self.sliderVolume.tintColor = UIColor.fromRGB(kNYXAppColor)
+		self.sliderVolume.minimumValue = 0.0
+		self.sliderVolume.maximumValue = 100.0
+		self.sliderVolume.value = Float(NSUserDefaults.standardUserDefaults().integerForKey(kNYXPrefVolume))
+		self.sliderVolume.addTarget(self, action:#selector(changeVolumeAction(_:)), forControlEvents:.TouchUpInside)
+		self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(Int(self.sliderVolume.value))%"
+		blurEffectView.addSubview(self.sliderVolume)
 
-		// Remaining duration
-		self.lblRemainingDuration = UILabel(frame:CGRect(self.slider.right - 44.0, self.slider.bottom + 20.0, 44.0, 18.0))
-		self.lblRemainingDuration.font = self.lblElapsedDuration.font
-		self.lblRemainingDuration.textAlignment = .Right
-		self.lblRemainingDuration.textColor = UIColor.whiteColor()
-		blurEffectView.addSubview(self.lblRemainingDuration)
-		
 		// Random/repeat buttons
 		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
 		let imageRandom = UIImage(named:"btn-random")
 		self.btnRandom = UIButton(type:.Custom)
-		self.btnRandom.frame = CGRect(32.0, self.view.height - 44.0, 44.0, 44.0)
+		self.btnRandom.frame = CGRect(self.coverView.x - 12.0, self.view.height - 44.0, 44.0, 44.0)
 		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
 		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
 		self.btnRandom.selected = random
@@ -162,7 +181,7 @@ final class PlayerVC : UIViewController
 		let loop = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat)
 		let imageRepeat = UIImage(named:"btn-repeat")
 		self.btnRepeat = UIButton(type:.Custom)
-		self.btnRepeat.frame = CGRect(self.view.width - 32.0 - 44.0, self.view.height - 44.0, 44.0, 44.0)
+		self.btnRepeat.frame = CGRect(self.coverView.right - 44.0 + 12.0, self.view.height - 44.0, 44.0, 44.0)
 		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
 		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
 		self.btnRepeat.selected = loop
@@ -201,7 +220,7 @@ final class PlayerVC : UIViewController
 			self.lblTrackTitle.text = track.title
 			self.lblTrackArtist.text = track.artist
 			self.lblAlbumName.text = album.name
-			self.slider.maximumValue = Float(track.duration.seconds)
+			self.sliderPosition.maximumValue = Float(track.duration.seconds)
 			let iv = self.view as? UIImageView
 
 			if album.path != nil
@@ -319,8 +338,19 @@ final class PlayerVC : UIViewController
 	{
 		if let track = MPDPlayer.shared.currentTrack
 		{
-			MPDPlayer.shared.setTrackPosition(Int(self.slider.value), trackPosition:track.position)
+			MPDPlayer.shared.setTrackPosition(Int(self.sliderPosition.value), trackPosition:track.position)
 		}
+	}
+
+	func changeVolumeAction(sender: UISlider?)
+	{
+		let volume = Int(ceil(self.sliderVolume.value))
+		let prefs = NSUserDefaults.standardUserDefaults()
+		prefs.setInteger(volume, forKey:kNYXPrefVolume)
+		prefs.synchronize()
+		self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
+
+		MPDPlayer.shared.setVolume(volume)
 	}
 
 	// MARK: - Notifications
@@ -335,9 +365,10 @@ final class PlayerVC : UIViewController
 			return
 		}
 
-		if !self.slider.selected && !self.slider.highlighted
+		if !self.sliderPosition.selected && !self.sliderPosition.highlighted
 		{
-			self.slider.setValue(Float(elapsed), animated:true)
+			self.sliderPosition.setValue(Float(elapsed), animated:true)
+			self.sliderPosition.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((self.sliderPosition.value * 100.0) / self.sliderPosition.maximumValue))%"
 		}
 
 		let elapsedDuration = Duration(seconds:UInt(elapsed))
@@ -359,7 +390,7 @@ final class PlayerVC : UIViewController
 		self.lblTrackTitle.text = track.title
 		self.lblTrackArtist.text = track.artist
 		self.lblAlbumName.text = album.name
-		self.slider.maximumValue = Float(track.duration.seconds)
+		self.sliderPosition.maximumValue = Float(track.duration.seconds)
 	}
 
 	func playerStatusChangedNotification(aNotification: NSNotification?)
