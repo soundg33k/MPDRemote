@@ -167,28 +167,28 @@ final class PlayerVC : UIViewController
 		blurEffectView.addSubview(self.sliderVolume)
 
 		// Random/repeat buttons
-		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
-		let imageRandom = UIImage(named:"btn-random")
-		self.btnRandom = UIButton(type:.Custom)
-		self.btnRandom.frame = CGRect(self.coverView.x - 12.0, self.view.height - 44.0, 44.0, 44.0)
-		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
-		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
-		self.btnRandom.selected = random
-		self.btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
-		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
-		blurEffectView.addSubview(self.btnRandom)
-		
 		let loop = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat)
 		let imageRepeat = UIImage(named:"btn-repeat")
 		self.btnRepeat = UIButton(type:.Custom)
-		self.btnRepeat.frame = CGRect(self.coverView.right - 44.0 + 12.0, self.view.height - 44.0, 44.0, 44.0)
+		self.btnRepeat.frame = CGRect(self.coverView.x - 12.0, self.view.height - 44.0, 44.0, 44.0)
 		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
 		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
 		self.btnRepeat.selected = loop
 		self.btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
 		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 		blurEffectView.addSubview(self.btnRepeat)
-		
+
+		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
+		let imageRandom = UIImage(named:"btn-random")
+		self.btnRandom = UIButton(type:.Custom)
+		self.btnRandom.frame = CGRect(self.coverView.right - 44.0 + 12.0, self.view.height - 44.0, 44.0, 44.0)
+		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
+		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
+		self.btnRandom.selected = random
+		self.btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
+		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+		blurEffectView.addSubview(self.btnRandom)
+
 		// Single tap on the image view to hide the view controller
 		let singleTap = UITapGestureRecognizer(target:self, action:#selector(singleTap(_:)))
 		singleTap.numberOfTapsRequired = 1
