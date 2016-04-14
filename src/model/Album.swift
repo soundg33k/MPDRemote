@@ -44,8 +44,7 @@ final class Album : NSObject
 	lazy var localCoverURL: NSURL? = {
 		guard let cachesDirectoryURL = NSFileManager().URLsForDirectory(.CachesDirectory, inDomains:.UserDomainMask).last else {return nil}
 		guard let coverDirectoryPath = NSUserDefaults.standardUserDefaults().stringForKey(kNYXPrefDirectoryCovers) else {return nil}
-		let coverURL = cachesDirectoryURL.URLByAppendingPathComponent(coverDirectoryPath, isDirectory:true).URLByAppendingPathComponent(self.name.md5() + ".jpg")
-		return coverURL
+		return cachesDirectoryURL.URLByAppendingPathComponent(coverDirectoryPath, isDirectory:true).URLByAppendingPathComponent(self.name.md5() + ".jpg")
 	}()
 
 	// MARK: - Initializers
