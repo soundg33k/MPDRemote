@@ -41,7 +41,9 @@
 
 "lbl_section_home" = "Accueil";
 "lbl_section_server" = "Serveur";
+"lbl_section_stats" = "Stats";
 "lbl_section_settings" = "Réglages";
+"lbl_section_database" = "Base de données";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";
@@ -49,6 +51,12 @@
 "lbl_genres" = "Genres";
 "lbl_artist" = "Artiste";
 "lbl_artists" = "Artistes";
+"lbl_song" = "Chanson";
+"lbl_songs" = "Chansons";
+"lbl_total_playtime" = "Durée totale";
+"lbl_server_uptime" = "Uptime";
+"lbl_server_playtime" = "Durée jouée";
+"lbl_server_lastdbupdate" = "Dernière MàJ";
 
 /* accessibility */
 "vo_displaymenu" = "Afficher le menu de navigation";

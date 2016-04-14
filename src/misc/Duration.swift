@@ -46,6 +46,28 @@ struct Duration
 		let tmp = self.minutesRepresentation()
 		return "\(tmp.minutes)\(delim)\(tmp.seconds < 10 ? "0" : "")\(tmp.seconds)"
 	}
+
+	func hoursRepresentation() -> (hours: UInt, minutes: UInt, seconds: UInt)
+	{
+		var s = self.seconds
+		let hours = s / 3600
+		s -= hours * 3600
+		let minutes = s / 60
+		s -= minutes * 60
+		return (hours, minutes, s)
+	}
+
+	func daysRepresentation() -> (days: UInt, hours: UInt, minutes: UInt, seconds: UInt)
+	{
+		var s = self.seconds
+		let days = s / 86400
+		s -= days * 86400
+		let hours = s / 3600
+		s -= hours * 3600
+		let minutes = s / 60
+		s -= minutes * 60
+		return (days, hours, minutes, s)
+	}
 }
 
 // MARK: - Comparisons

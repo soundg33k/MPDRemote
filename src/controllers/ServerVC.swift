@@ -27,6 +27,7 @@ import MultipeerConnectivity
 final class ServerVC : MenuVC
 {
 	// MARK: - Private properties
+	// Tableview
 	private var tableView: UITableView!
 	// MPD Server name
 	private var tfMPDName: UITextField!
@@ -284,7 +285,7 @@ extension ServerVC : UITableViewDataSource
 		let section = indexPath.section
 		let row = indexPath.row
 		let cellIdentifier = "\(section):\(row)"
-		if let cell2 = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
+		if let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
 		{
 			if section == 0
 			{
@@ -341,27 +342,28 @@ extension ServerVC : UITableViewDataSource
 					}
 				}
 			}
-			return cell2
+			return cell
 		}
 		else
 		{
-			let cell2 = UITableViewCell(style:.Default, reuseIdentifier:cellIdentifier)
-			cell2.selectionStyle = .None
+			let cell = UITableViewCell(style:.Default, reuseIdentifier:cellIdentifier)
+			cell.selectionStyle = .None
 
 			if section == 0
 			{
 				if row == 0
 				{
-					cell2.textLabel?.text = NYXLocalizedString("lbl_server_name")
-					self.tfMPDName = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell2.frame.height))
-					self.tfMPDName.backgroundColor = cell2.backgroundColor
+					cell.textLabel?.text = NYXLocalizedString("lbl_server_name")
+					self.tfMPDName = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell.frame.height))
+					self.tfMPDName.backgroundColor = cell.backgroundColor
+					self.tfMPDName.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:14.0)
 					self.tfMPDName.placeholder = NYXLocalizedString("lbl_server_defaultname")
 					self.tfMPDName.keyboardType = .Default
 					self.tfMPDName.returnKeyType = .Continue
 					self.tfMPDName.autocorrectionType = .No
 					self.tfMPDName.autocapitalizationType = .None
 					self.tfMPDName.delegate = self
-					cell2.addSubview(self.tfMPDName)
+					cell.addSubview(self.tfMPDName)
 					if let server = self.mpdServer
 					{
 						self.tfMPDName.text = server.name
@@ -369,16 +371,17 @@ extension ServerVC : UITableViewDataSource
 				}
 				else if row == 1
 				{
-					cell2.textLabel?.text = NYXLocalizedString("lbl_server_host")
-					self.tfMPDHostname = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell2.frame.height))
-					self.tfMPDHostname.backgroundColor = cell2.backgroundColor
+					cell.textLabel?.text = NYXLocalizedString("lbl_server_host")
+					self.tfMPDHostname = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell.frame.height))
+					self.tfMPDHostname.backgroundColor = cell.backgroundColor
+					self.tfMPDHostname.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:14.0)
 					self.tfMPDHostname.placeholder = "127.0.0.1"
 					self.tfMPDHostname.keyboardType = .URL
 					self.tfMPDHostname.returnKeyType = .Continue
 					self.tfMPDHostname.autocorrectionType = .No
 					self.tfMPDHostname.autocapitalizationType = .None
 					self.tfMPDHostname.delegate = self
-					cell2.addSubview(self.tfMPDHostname)
+					cell.addSubview(self.tfMPDHostname)
 					if let server = self.mpdServer
 					{
 						self.tfMPDHostname.text = server.hostname
@@ -386,14 +389,15 @@ extension ServerVC : UITableViewDataSource
 				}
 				else if row == 2
 				{
-					cell2.textLabel?.text = NYXLocalizedString("lbl_server_port")
-					self.tfMPDPort = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell2.frame.height))
-					self.tfMPDPort.backgroundColor = cell2.backgroundColor
+					cell.textLabel?.text = NYXLocalizedString("lbl_server_port")
+					self.tfMPDPort = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell.frame.height))
+					self.tfMPDPort.backgroundColor = cell.backgroundColor
+					self.tfMPDPort.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:14.0)
 					self.tfMPDPort.placeholder = "6600"
 					self.tfMPDPort.keyboardType = .NumberPad
 					self.tfMPDPort.autocorrectionType = .No
 					self.tfMPDPort.delegate = self
-					cell2.addSubview(self.tfMPDPort)
+					cell.addSubview(self.tfMPDPort)
 					if let server = self.mpdServer
 					{
 						self.tfMPDPort.text = String(server.port)
@@ -401,16 +405,17 @@ extension ServerVC : UITableViewDataSource
 				}
 				else if row == 3
 				{
-					cell2.textLabel?.text = NYXLocalizedString("lbl_server_password")
-					self.tfMPDPassword = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell2.frame.height))
-					self.tfMPDPassword.backgroundColor = cell2.backgroundColor
+					cell.textLabel?.text = NYXLocalizedString("lbl_server_password")
+					self.tfMPDPassword = UITextField(frame:CGRect(110.0, 0.0, self.view.frame.width - 120.0, cell.frame.height))
+					self.tfMPDPassword.backgroundColor = cell.backgroundColor
+					self.tfMPDPassword.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:14.0)
 					self.tfMPDPassword.placeholder = NYXLocalizedString("lbl_optional")
 					self.tfMPDPassword.keyboardType = .Default
 					self.tfMPDPassword.returnKeyType = .Done
 					self.tfMPDPassword.autocorrectionType = .No
 					self.tfMPDPassword.autocapitalizationType = .None
 					self.tfMPDPassword.delegate = self
-					cell2.addSubview(self.tfMPDPassword)
+					cell.addSubview(self.tfMPDPassword)
 					if let server = self.mpdServer
 					{
 						self.tfMPDPassword.text = server.password
@@ -421,16 +426,17 @@ extension ServerVC : UITableViewDataSource
 			{
 				if row == 0
 				{
-					cell2.textLabel?.text = NYXLocalizedString("lbl_server_coverurl")
-					self.tfWEBHostname = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell2.frame.height))
-					self.tfWEBHostname.backgroundColor = cell2.backgroundColor
+					cell.textLabel?.text = NYXLocalizedString("lbl_server_coverurl")
+					self.tfWEBHostname = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell.frame.height))
+					self.tfWEBHostname.backgroundColor = cell.backgroundColor
+					self.tfWEBHostname.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:14.0)
 					self.tfWEBHostname.placeholder = "http://127.0.0.1"
 					self.tfWEBHostname.keyboardType = .URL
 					self.tfWEBHostname.returnKeyType = .Continue
 					self.tfWEBHostname.autocorrectionType = .No
 					self.tfWEBHostname.autocapitalizationType = .None
 					self.tfWEBHostname.delegate = self
-					cell2.addSubview(self.tfWEBHostname)
+					cell.addSubview(self.tfWEBHostname)
 					if let server = self.webServer
 					{
 						self.tfWEBHostname.text = server.hostname
@@ -438,14 +444,15 @@ extension ServerVC : UITableViewDataSource
 				}
 				else if row == 1
 				{
-					cell2.textLabel?.text = NYXLocalizedString("lbl_server_port")
-					self.tfWEBPort = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell2.frame.height))
-					self.tfWEBPort.backgroundColor = cell2.backgroundColor
+					cell.textLabel?.text = NYXLocalizedString("lbl_server_port")
+					self.tfWEBPort = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell.frame.height))
+					self.tfWEBPort.backgroundColor = cell.backgroundColor
+					self.tfWEBPort.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:14.0)
 					self.tfWEBPort.text = "80"
 					self.tfWEBPort.keyboardType = .NumberPad
 					self.tfWEBPort.autocorrectionType = .No
 					self.tfWEBPort.delegate = self
-					cell2.addSubview(self.tfWEBPort)
+					cell.addSubview(self.tfWEBPort)
 					if let server = self.webServer
 					{
 						self.tfWEBPort.text = String(server.port)
@@ -453,16 +460,17 @@ extension ServerVC : UITableViewDataSource
 				}
 				else if row == 2
 				{
-					cell2.textLabel?.text = NYXLocalizedString("lbl_server_covername")
-					self.tfWEBCoverName = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell2.frame.height))
-					self.tfWEBCoverName.backgroundColor = cell2.backgroundColor
+					cell.textLabel?.text = NYXLocalizedString("lbl_server_covername")
+					self.tfWEBCoverName = UITextField(frame:CGRect(140.0, 0.0, self.view.frame.width - 150.0, cell.frame.height))
+					self.tfWEBCoverName.backgroundColor = cell.backgroundColor
+					self.tfWEBCoverName.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:14.0)
 					self.tfWEBCoverName.text = "cover.jpg"
 					self.tfWEBCoverName.keyboardType = .Default
 					self.tfWEBCoverName.returnKeyType = .Done
 					self.tfWEBCoverName.autocorrectionType = .No
 					self.tfWEBCoverName.autocapitalizationType = .None
 					self.tfWEBCoverName.delegate = self
-					cell2.addSubview(self.tfWEBCoverName)
+					cell.addSubview(self.tfWEBCoverName)
 					if let server = self.webServer
 					{
 						self.tfWEBCoverName.text = server.coverName
@@ -470,15 +478,15 @@ extension ServerVC : UITableViewDataSource
 				}
 				else if row == 3
 				{
-					cell2.textLabel?.text = NYXLocalizedString("lbl_server_coverclearcache")
-					cell2.textLabel?.textAlignment = .Center
-					cell2.textLabel?.textColor = UIColor.redColor()
-					cell2.textLabel?.font = UIFont.boldSystemFontOfSize(15.0)
-					cell2.selectionStyle = .Default
+					cell.textLabel?.text = NYXLocalizedString("lbl_server_coverclearcache")
+					cell.textLabel?.textAlignment = .Center
+					cell.textLabel?.textColor = UIColor.redColor()
+					cell.textLabel?.font = UIFont.boldSystemFontOfSize(16.0)
+					cell.selectionStyle = .Default
 				}
 			}
 
-			return cell2
+			return cell
 		}
 	}
 

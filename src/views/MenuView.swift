@@ -24,7 +24,7 @@ import UIKit
 
 
 private var __startX = CGFloat(0.0)
-private let __numberOfRows = 2
+private let __numberOfRows = 3
 
 
 protocol MenuViewDelegate : class
@@ -170,8 +170,10 @@ extension MenuView : UITableViewDataSource
 				title = NYXLocalizedString("lbl_section_server")
 				cell.imageView?.image = UIImage(named:"img-server")
 				selected = (APP_DELEGATE().window!.rootViewController === APP_DELEGATE().serverVC)
-			case __numberOfRows:
-				break
+			case 2:
+				title = NYXLocalizedString("lbl_section_stats")
+				cell.imageView?.image = UIImage(named:"img-stats")
+				selected = (APP_DELEGATE().window!.rootViewController === APP_DELEGATE().statsVC)
 			default:
 				break
 		}
@@ -194,6 +196,8 @@ extension MenuView : UITableViewDelegate
 				newTopViewController = APP_DELEGATE().homeVC
 			case 1:
 				newTopViewController = APP_DELEGATE().serverVC
+			case 2:
+				newTopViewController = APP_DELEGATE().statsVC
 			case __numberOfRows:
 				return
 			default:

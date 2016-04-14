@@ -234,6 +234,19 @@ final class MPDDataSource
 		}
 	}
 
+	func getStats(callback: ([String : String]) -> Void)
+	{
+		if self._mpdConnection == nil || !self._mpdConnection.connected
+		{
+			return
+		}
+
+		dispatch_async(self._queue) {
+			let stats = self._mpdConnection.getStats()
+			callback(stats)
+		}
+	}
+
 	// MARK: - Private
 	private func _startTimer(interval: Double)
 	{

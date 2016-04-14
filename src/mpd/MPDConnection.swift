@@ -453,7 +453,7 @@ final class MPDConnection
 			{
 				l = 4
 			}
-			if let year = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmpDate.memory.value), length:Int(strlen(tmpDate.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
+			if let year = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmpDate.memory.value), length:l, freeWhenDone:false), encoding:NSUTF8StringEncoding)
 			{
 				metadatas["year"] = year
 			}
@@ -664,6 +664,27 @@ final class MPDConnection
 
 		Logger.dlog("[!] No matching album found.")
 		return nil
+	}
+
+	// MARK: - Stats
+	func getStats() -> [String : String]
+	{
+		let ret = mpd_run_stats(self._connection)
+		if ret == nil
+		{
+			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			return [:]
+		}
+
+		let nalbums = mpd_stats_get_number_of_albums(ret)
+		let nartists = mpd_stats_get_number_of_artists(ret)
+		let nsongs = mpd_stats_get_number_of_songs(ret)
+		let dbplaytime = mpd_stats_get_db_play_time(ret)
+		let mpduptime = mpd_stats_get_uptime(ret)
+		let mpdplaytime = mpd_stats_get_play_time(ret)
+		let mpddbupdate = mpd_stats_get_db_update_time(ret)
+
+		return ["albums" : String(nalbums), "artists" : String(nartists), "songs" : String(nsongs), "dbplaytime" : String(dbplaytime), "mpduptime" : String(mpduptime), "mpdplaytime" : String(mpdplaytime), "mpddbupdate" : String(mpddbupdate)]
 	}
 
 	// MARK: - Private

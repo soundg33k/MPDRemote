@@ -41,6 +41,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	private(set) lazy var playerVC: PlayerVC = {
 		return PlayerVC()
 	}()
+	// Stats VC
+	private(set) lazy var statsVC: UIViewController = {
+		return NYXNavigationController(rootViewController:StatsVC())
+	}()
 
 	// MARK: - UIApplicationDelegate
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool

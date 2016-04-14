@@ -572,7 +572,7 @@ extension RootVC : UICollectionViewDataSource
 			cell.image = UIImage(named:"default-cover")
 			if album.path != nil
 			{
-				self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
+				self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
 					dispatch_async(dispatch_get_main_queue()) {
 						if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
 						{
@@ -584,7 +584,7 @@ extension RootVC : UICollectionViewDataSource
 			else
 			{
 				MPDDataSource.shared.getPathForAlbum(album, callback: {
-					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
+					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
 							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
 							{
@@ -634,7 +634,7 @@ extension RootVC : UICollectionViewDataSource
 				cell.image = UIImage(named:"default-cover")
 				if album.path != nil
 				{
-					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
+					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
 							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
 							{
@@ -646,7 +646,7 @@ extension RootVC : UICollectionViewDataSource
 				else
 				{
 					MPDDataSource.shared.getPathForAlbum(album, callback: {
-						self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (thumbnail: UIImage) in
+						self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
 							dispatch_async(dispatch_get_main_queue()) {
 								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
 								{
@@ -714,7 +714,7 @@ extension RootVC : UICollectionViewDataSource
 					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+						self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
 							let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 							dispatch_async(dispatch_get_main_queue()) {
 								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
@@ -727,7 +727,7 @@ extension RootVC : UICollectionViewDataSource
 					else
 					{
 						MPDDataSource.shared.getPathForAlbum(album, callback: {
-							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 								dispatch_async(dispatch_get_main_queue()) {
 									if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
@@ -759,7 +759,7 @@ extension RootVC : UICollectionViewDataSource
 		cell.image = UIImage.fromString(string, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor:UIColor.whiteColor(), backgroundColor:UIColor.fromRGB(string.djb2()), maxSize:cell.imageView.size)
 	}
 
-	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(thumbnail: UIImage) -> Void)
+	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(cover: UIImage, thumbnail: UIImage) -> Void)
 	{
 		let downloadOperation = DownloadCoverOperation(album:album, cropSize:cropSize)
 		let key = album.name + album.year
@@ -772,7 +772,7 @@ extension RootVC : UICollectionViewDataSource
 					self._downloadOperations.removeValueForKey(key)
 				}
 			}
-			callback(thumbnail:thumbnail)
+			callback(cover:cover, thumbnail:thumbnail)
 		}
 		self._downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
@@ -1003,6 +1003,28 @@ extension RootVC
 			{
 				MPDPlayer.shared.playAlbum(randomAlbum, random:false, loop:false)
 			}
+
+			// Briefly display cover of album
+			let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
+			let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
+			MPDDataSource.shared.getPathForAlbum(randomAlbum, callback: {
+				self._downloadCoverForAlbum(randomAlbum, cropSize:cropSize.CGSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
+					let size = CGSize(self.view.width - 64.0, self.view.width - 64.0)
+					let cropped = cover.imageCroppedToFitSize(size)
+					dispatch_async(dispatch_get_main_queue()) {
+						let iv = UIImageView(frame:CGRect((self.view.width - 64.0) * 0.5, (self.view.height - 64.0) * 0.5, 64.0, 64.0))
+						iv.image = cropped
+						iv.alpha = 0.0
+						self.view.addSubview(iv)
+						UIView.animateWithDuration(1.0, delay:0.0, options:.CurveEaseIn, animations:{
+							iv.frame = CGRect((self.view.width - size.width) * 0.5, (self.view.height - size.height) * 0.5, size)
+							iv.alpha = 1.0
+						}, completion:{ finished in
+							iv.removeFromSuperview()
+						})
+					}
+				})
+			})
 		}
 	}
 }
