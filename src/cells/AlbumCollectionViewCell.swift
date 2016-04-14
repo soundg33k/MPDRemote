@@ -45,6 +45,7 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 		{
 			if self.longPressed
 			{
+				self.label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
 				self.imageView.layer.borderWidth = 0.5
 				if let img = self.image
 				{
@@ -59,6 +60,7 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 			}
 			else
 			{
+				self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
 				self.imageView.layer.borderWidth = 0.0
 				self.imageView.image = self.image
 			}
@@ -99,12 +101,13 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 		{
 			if self.selected
 			{
+				self.label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
 				self.imageView.layer.borderWidth = 0.5
 			}
 			else
 			{
+				self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
 				self.imageView.layer.borderWidth = 0.0
-				self.imageView.image = self.image
 			}
 		}
 	}
@@ -115,12 +118,13 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 		{
 			if self.highlighted
 			{
+				self.label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
 				self.imageView.layer.borderWidth = 0.5
 			}
 			else
 			{
+				self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
 				self.imageView.layer.borderWidth = 0.0
-				self.imageView.image = self.image
 			}
 		}
 	}
