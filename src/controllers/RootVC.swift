@@ -391,7 +391,7 @@ final class RootVC : MenuVC
 	{
 		if self._typeChoiceView == nil
 		{
-			self._typeChoiceView = TypeChoiceView(frame:CGRect(0.0, 0.0, self.collectionView.width, 96.0))
+			self._typeChoiceView = TypeChoiceView(frame:CGRect(0.0, 0.0, self.collectionView.width, 132.0))
 			self._typeChoiceView.delegate = self
 		}
 
@@ -1005,8 +1005,8 @@ extension RootVC : TypeChoiceViewDelegate
 		// Refresh view
 		MPDDataSource.shared.getListForDisplayType(type, callback:{
 			dispatch_async(dispatch_get_main_queue()) {
+				self.collectionView.setContentOffset(CGPointZero, animated:true)
 				self.collectionView.reloadData()
-				self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow:0, inSection:0), atScrollPosition:.Top, animated:true)
 				self._updateNavigationTitle()
 			}
 		})

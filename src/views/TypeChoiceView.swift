@@ -53,7 +53,7 @@ final class TypeChoiceView : UIView
 		self.tableView.scrollsToTop = false
 		self.tableView.scrollEnabled = false
 		self.tableView.separatorStyle = .None
-		self.tableView.rowHeight = 32.0
+		self.tableView.rowHeight = 44.0
 		self.addSubview(self.tableView)
 	}
 
@@ -96,12 +96,12 @@ extension TypeChoiceView : UITableViewDataSource
 		cell.textLabel?.text = title
 		if selected
 		{
-			cell.textLabel?.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
+			cell.textLabel?.font = UIFont(name:"HelveticaNeue-Medium", size:16.0)
 			cell.textLabel?.textColor = UIColor.fromRGB(0xCC0000)
 		}
 		else
 		{
-			cell.textLabel?.font = UIFont(name:"HelveticaNeue", size:13.0)
+			cell.textLabel?.font = UIFont(name:"HelveticaNeue", size:15.0)
 			cell.textLabel?.textColor = UIColor.fromRGB(0xECECEC)
 		}
 		return cell
