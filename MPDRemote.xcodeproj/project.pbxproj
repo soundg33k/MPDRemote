@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E0FE7F21CC0EF19002C717B /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0FE7F11CC0EF19002C717B /* ImageCache.swift */; };
 		1E13A2221CBD4A8000AEEE2B /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E13A2211CBD4A8000AEEE2B /* MultipeerConnectivity.framework */; };
 		1E2B80BE1C7EF97300D2273F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2B80B21C7EF97300D2273F /* LaunchScreen.storyboard */; };
 		1E2B80C81C7EF98B00D2273F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E2B80C71C7EF98B00D2273F /* Assets.xcassets */; };
@@ -62,6 +63,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1E0FE7F11CC0EF19002C717B /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		1E13A2211CBD4A8000AEEE2B /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		1E19ACEA1C7DCC2D00E602FB /* MPDRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MPDRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E2B80B31C7EF97300D2273F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -351,6 +353,7 @@
 				1E4CD4371C96CB9A00785FD2 /* CoreImageUtilities.swift */,
 				1E5653841C908A310049C02D /* CountedObject.swift */,
 				1E3424351C948E8D009F6BF8 /* Duration.swift */,
+				1E0FE7F11CC0EF19002C717B /* ImageCache.swift */,
 				1E5653851C908A310049C02D /* KawaiiColors.swift */,
 				1E5653861C908A310049C02D /* Logger.swift */,
 				1E5653871C908A310049C02D /* MathUtilities.swift */,
@@ -511,6 +514,7 @@
 				1E5653A51C908A310049C02D /* UIDevice+Extensions.swift in Sources */,
 				1E5653B11C908A310049C02D /* MPDDataSource.swift in Sources */,
 				1E4CD4381C96CB9A00785FD2 /* CoreImageUtilities.swift in Sources */,
+				1E0FE7F21CC0EF19002C717B /* ImageCache.swift in Sources */,
 				1E5653AF1C908A310049C02D /* Track.swift in Sources */,
 				1EB93AA21CB3FC7900EA5339 /* ArtistsVC.swift in Sources */,
 				1E56539E1C908A310049C02D /* ServerVC.swift in Sources */,

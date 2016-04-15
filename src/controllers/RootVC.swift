@@ -194,14 +194,11 @@ final class RootVC : MenuVC
 		}
 
 		// Deselect cell
-		if self.albumDetailVC != nil
+		if let idxs = self.collectionView.indexPathsForSelectedItems()
 		{
-			if let idxs = self.collectionView.indexPathsForSelectedItems()
+			for indexPath in idxs
 			{
-				for indexPath in idxs
-				{
-					self.collectionView.deselectItemAtIndexPath(indexPath, animated:true)
-				}
+				self.collectionView.deselectItemAtIndexPath(indexPath, animated:true)
 			}
 		}
 	}
@@ -447,20 +444,25 @@ final class RootVC : MenuVC
 	}
 
 	// MARK: - Private
-	private func _showNavigationBar(animated animated: Bool)
+	private func _showNavigationBar(animated animated: Bool = true)
 	{
+		self.searchBar.endEditing(true)
 		let bar = (self.navigationController?.navigationBar)!
 		UIView.animateWithDuration(animated ? 0.35 : 0.0, delay:0.0, options:.CurveEaseOut, animations:{
 			bar.y = 20.0
-		}, completion:nil)
+		}, completion:{ finished in
+			self.searchBarVisible = false
+		})
 	}
 
-	private func _hideNavigationBar(animated animated: Bool)
+	private func _hideNavigationBar(animated animated: Bool = true)
 	{
 		let bar = (self.navigationController?.navigationBar)!
 		UIView.animateWithDuration(animated ? 0.35 : 0.0, delay:0.0, options:.CurveEaseOut, animations:{
 			bar.y = -48.0
-		}, completion:nil)
+		}, completion:{ finished in
+			self.searchBarVisible = true
+		})
 	}
 
 	private func _updateNavigationTitle()
@@ -555,6 +557,13 @@ extension RootVC : UICollectionViewDataSource
 			return
 		}
 
+		// If image is in cache, bail out quickly
+		if let cachedImage = ImageCache.shared[album.name]
+		{
+			cell.image = cachedImage
+			return
+		}
+
 		// Get local URL for cover
 		guard let coverURL = album.localCoverURL else
 		{
@@ -566,6 +575,7 @@ extension RootVC : UICollectionViewDataSource
 		if let cover = UIImage.loadFromURL(coverURL)
 		{
 			cell.image = cover
+			ImageCache.shared[album.name] = cover
 		}
 		else
 		{
@@ -625,9 +635,17 @@ extension RootVC : UICollectionViewDataSource
 				return
 			}
 
+			// If image is in cache, bail out quickly
+			if let cachedImage = ImageCache.shared[album.name]
+			{
+				cell.image = cachedImage
+				return
+			}
+
 			if let cover = UIImage.loadFromURL(coverURL)
 			{
 				cell.image = cover
+				ImageCache.shared[album.name] = cover
 			}
 			else
 			{
@@ -703,9 +721,17 @@ extension RootVC : UICollectionViewDataSource
 					return
 				}
 
+				// If image is in cache, bail out quickly
+				if let cachedImage = ImageCache.shared[album.name]
+				{
+					cell.image = cachedImage
+					return
+				}
+
 				if let cover = UIImage.loadFromURL(coverURL)
 				{
 					cell.image = cover
+					ImageCache.shared[album.name] = cover
 				}
 				else
 				{
@@ -915,8 +941,14 @@ extension RootVC : UISearchBarDelegate
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
 		self._showNavigationBar(animated:true)
-		self.searchBarVisible = false
+		//self.searchBarVisible = false
 		self.collectionView.reloadData()
+	}
+
+	func searchBarSearchButtonClicked(searchBar: UISearchBar)
+	{
+		self.collectionView.reloadData()
+		self.searchBar.endEditing(true)
 	}
 
 	func searchBarTextDidBeginEditing(searchBar: UISearchBar)
@@ -926,8 +958,8 @@ extension RootVC : UISearchBarDelegate
 
 	func searchBarTextDidEndEditing(searchBar: UISearchBar)
 	{
-		self.searching = false
-		self.searchResults.removeAll()
+		//self.searching = false
+		//self.searchResults.removeAll()
 	}
 
 	func searchBar(searchBar: UISearchBar, textDidChange searchText: String)
@@ -974,6 +1006,7 @@ extension RootVC : TypeChoiceViewDelegate
 		MPDDataSource.shared.getListForDisplayType(type, callback:{
 			dispatch_async(dispatch_get_main_queue()) {
 				self.collectionView.reloadData()
+				self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow:0, inSection:0), atScrollPosition:.Top, animated:true)
 				self._updateNavigationTitle()
 			}
 		})
