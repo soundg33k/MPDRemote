@@ -12,6 +12,7 @@ There's no persistence layer apart from cover caching.
 - Shake to play a random album
 - Add album / artist / genre to play queue
 - VoiceOver compliant
+- Automatically find mpd server with Zeroconf
 - English and French localized
 
 ### TODO
