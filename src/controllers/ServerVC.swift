@@ -21,7 +21,6 @@
 
 
 import UIKit
-import MultipeerConnectivity
 
 
 final class ServerVC : MenuVC
@@ -49,8 +48,6 @@ final class ServerVC : MenuVC
 	private var webServer: WEBServer?
 	// Indicate that the keyboard is visible, flag
 	private var _keyboardVisible = false
-	// Bonjour
-	//private var serviceBrowser: MCNearbyServiceBrowser!
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -95,19 +92,6 @@ final class ServerVC : MenuVC
 	override func viewWillAppear(animated: Bool)
 	{
 		super.viewWillAppear(animated)
-
-		/*let myPeerId = MCPeerID(displayName:"MPDRemote browser")
-		self.serviceBrowser = MCNearbyServiceBrowser(peer:myPeerId, serviceType:"mpd")
-		self.serviceBrowser.delegate = self
-		self.serviceBrowser.startBrowsingForPeers()*/
-		/*let session = MCSession(peer:myPeerId, securityIdentity:nil, encryptionPreference:.None)
-		session.delegate = self
-		let browserViewController = MCBrowserViewController(browser:self.serviceBrowser, session:session)
-		browserViewController.delegate = self
-		self.presentViewController(browserViewController, animated:true, completion: {
-			Logger.dlog("???")
-			self.serviceBrowser.startBrowsingForPeers()
-		})*/
 
 		if let mpdServerAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefMPDServer)
 		{
@@ -566,65 +550,3 @@ extension ServerVC : UITextFieldDelegate
 		return true
 	}
 }
-
-/*
-// MARK: - MCSessionDelegate
-extension ServerVC : MCSessionDelegate
-{
-	func session(session: MCSession, didReceiveData data: NSData, fromPeer peerID: MCPeerID)
-	{
-		Logger.dlog("\(data)")
-	}
-	func session(session: MCSession, peer peerID: MCPeerID, didChangeState state: MCSessionState)
-	{
-		Logger.dlog("\(state)")
-	}
-	func session(session: MCSession, didReceiveStream stream: NSInputStream, withName streamName: String, fromPeer peerID: MCPeerID)
-	{
-		Logger.dlog("\(streamName)")
-	}
-	func session(session: MCSession, didReceiveCertificate certificate: [AnyObject]?, fromPeer peerID: MCPeerID, certificateHandler: (Bool) -> Void)
-	{
-		Logger.dlog("\(certificate)")
-	}
-	func session(session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, withProgress progress: NSProgress)
-	{
-		Logger.dlog("\(resourceName)")
-	}
-	func session(session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, atURL localURL: NSURL, withError error: NSError?)
-	{
-		Logger.dlog("\(error)")
-	}
-}
-
-// MARK: - MCBrowserViewControllerDelegate
-extension ServerVC : MCBrowserViewControllerDelegate
-{
-	func browserViewControllerDidFinish(browserViewController: MCBrowserViewController)
-	{
-		Logger.dlog("browserViewControllerDidFinish")
-	}
-	func browserViewControllerWasCancelled(browserViewController: MCBrowserViewController)
-	{
-		Logger.dlog("browserViewControllerWasCancelled")
-	}
-}
-
-// MARK: - MCNearbyServiceBrowserDelegate
-extension ServerVC : MCNearbyServiceBrowserDelegate
-{
-	func browser(browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: NSError)
-	{
-		Logger.alog("didNotStartBrowsingForPeers: \(error)")
-	}
-
-	func browser(browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?)
-	{
-		Logger.alog("foundPeer: \(peerID)")
-	}
-
-	func browser(browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID)
-	{
-		Logger.alog("lostPeer")
-	}
-}*/
