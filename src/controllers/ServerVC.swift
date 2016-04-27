@@ -48,6 +48,10 @@ final class ServerVC : MenuVC
 	private var webServer: WEBServer?
 	// Indicate that the keyboard is visible, flag
 	private var _keyboardVisible = false
+	// Zeroconf browser
+	private var serviceBrowser: NSNetServiceBrowser!
+	// List of ZC servers found
+	private var zcList = [NSNetService]()
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -103,6 +107,10 @@ final class ServerVC : MenuVC
 		else
 		{
 			Logger.dlog("[+] No MPD server registered yet.")
+
+			self.serviceBrowser = NSNetServiceBrowser()
+			self.serviceBrowser.delegate = self
+			self.serviceBrowser.searchForServicesOfType("_mpd._tcp.", inDomain:"")
 		}
 
 		if let webServerAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer)
@@ -123,6 +131,13 @@ final class ServerVC : MenuVC
 	override func viewWillDisappear(animated: Bool)
 	{
 		super.viewWillDisappear(animated)
+
+		// Stop zeroconf
+		self.zcList.removeAll()
+		if let s = self.serviceBrowser
+		{
+			s.stop()
+		}
 	}
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
@@ -248,6 +263,17 @@ final class ServerVC : MenuVC
 		let keyboardFrame = self.view.convertRect(rawFrame, fromView:nil)
 		self.tableView.frame = CGRect(self.tableView.frame.origin, self.tableView.frame.width, self.tableView.frame.height + keyboardFrame.height)
 		self._keyboardVisible = false
+	}
+
+	// MARK: - Private
+	func _resolvZeroconfServices()
+	{
+		if zcList.count > 0
+		{
+			let service = self.zcList[0]
+			service.delegate = self
+			service.resolveWithTimeout(5)
+		}
 	}
 }
 
@@ -548,5 +574,94 @@ extension ServerVC : UITextFieldDelegate
 			textField.resignFirstResponder()
 		}
 		return true
+	}
+}
+
+// MARK: - NSNetServiceBrowserDelegate
+extension ServerVC : NSNetServiceBrowserDelegate
+{
+	func netServiceBrowserWillSearch(browser: NSNetServiceBrowser)
+	{
+		print("netServiceBrowserWillSearch")
+	}
+	func netServiceBrowserDidStopSearch(browser: NSNetServiceBrowser)
+	{
+		print("netServiceBrowserDidStopSearch")
+	}
+	func netServiceBrowser(browser: NSNetServiceBrowser, didNotSearch errorDict: [String : NSNumber])
+	{
+		print("didNotSearch : \(errorDict)")
+	}
+	func netServiceBrowser(browser: NSNetServiceBrowser, didFindService service: NSNetService, moreComing: Bool)
+	{
+		print("didFindService")
+		zcList.append(service)
+		if !moreComing
+		{
+			self._resolvZeroconfServices()
+		}
+		
+	}
+	func netServiceBrowser(browser: NSNetServiceBrowser, didRemoveService service: NSNetService, moreComing: Bool)
+	{
+		print("didRemoveService")
+	}
+}
+
+// MARK: - NSNetServiceDelegate
+extension ServerVC : NSNetServiceDelegate
+{
+	func netServiceDidResolveAddress(sender: NSNetService)
+	{
+		print("netServiceDidResolveAddress: \(sender.name)")
+		
+		guard let addresses = sender.addresses else {return}
+		
+		var found = false
+		var tmpIP = ""
+		for addressBytes in addresses where found == false
+		{
+			let inetAddressPointer = UnsafePointer<sockaddr_in>(addressBytes.bytes)
+			var inetAddress = inetAddressPointer.memory
+			if inetAddress.sin_family == sa_family_t(AF_INET)
+			{
+				let ipStringBuffer = UnsafeMutablePointer<Int8>.alloc(Int(INET6_ADDRSTRLEN))
+				let ipString = inet_ntop(Int32(inetAddress.sin_family), &inetAddress.sin_addr, ipStringBuffer, UInt32(INET6_ADDRSTRLEN))
+				if let ip = String.fromCString(ipString)
+				{
+					tmpIP = ip
+					found = true
+				}
+				ipStringBuffer.dealloc(Int(INET6_ADDRSTRLEN))
+			}
+			else if inetAddress.sin_family == sa_family_t(AF_INET6)
+			{
+				let inetAddressPointer6 = UnsafePointer<sockaddr_in6>(addressBytes.bytes)
+				var inetAddress6 = inetAddressPointer6.memory
+				let ipStringBuffer = UnsafeMutablePointer<Int8>.alloc(Int(INET6_ADDRSTRLEN))
+				let ipString = inet_ntop(Int32(inetAddress6.sin6_family), &inetAddress6.sin6_addr, ipStringBuffer, UInt32(INET6_ADDRSTRLEN))
+				if let ip = String.fromCString(ipString)
+				{
+					tmpIP = ip
+					found = true
+				}
+				ipStringBuffer.dealloc(Int(INET6_ADDRSTRLEN))
+			}
+
+			if found
+			{
+				self.tfMPDName.text = sender.name
+				self.tfMPDPort.text = String(sender.port)
+				self.tfMPDHostname.text = tmpIP
+			}
+		}
+	}
+	func netService(sender: NSNetService, didNotResolve errorDict: [String : NSNumber])
+	{
+		print("didNotResolve \(sender)")
+	}
+	func netServiceDidStop(sender: NSNetService)
+	{
+		print("netServiceDidStop \(sender.name)")
 	}
 }
