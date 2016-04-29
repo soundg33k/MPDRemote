@@ -268,9 +268,8 @@ final class ServerVC : MenuVC
 	// MARK: - Private
 	func _resolvZeroconfServices()
 	{
-		if zcList.count > 0
+		if let service = self.zcList[safe:0]
 		{
-			let service = self.zcList[0]
 			service.delegate = self
 			service.resolveWithTimeout(5)
 		}
