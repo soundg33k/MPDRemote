@@ -131,6 +131,16 @@ extension ArtistsVC
 		cell.separator.hidden = false
 		cell.accessoryType = .DisclosureIndicator
 		cell.accessibilityLabel = "\(artist.name), \(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercaseString : NYXLocalizedString("lbl_album").lowercaseString)"
+
+		// No server for covers
+		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
+		{
+			let bgColor = UIColor.fromRGB(artist.name.djb2())
+			let fontColor = bgColor.inverseColor()
+			cell.coverView.image = UIImage.fromString(artist.name, font:UIFont(name:"Chalkduster", size:14.0)!, fontColor:fontColor, backgroundColor:bgColor, maxSize:cell.coverView.size)
+			return cell
+		}
+
 		if artist.albums.count > 0
 		{
 			cell.lblAlbums.text = "\(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercaseString : NYXLocalizedString("lbl_album").lowercaseString)"

@@ -133,6 +133,15 @@ extension AlbumsVC
 		cell.accessoryType = .DisclosureIndicator
 		cell.accessibilityLabel = "\(album.name)"
 
+		// No server for covers
+		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
+		{
+			let bgColor = UIColor.fromRGB(album.name.djb2())
+			let fontColor = bgColor.inverseColor()
+			cell.coverView.image = UIImage.fromString(album.name, font:UIFont(name:"Chalkduster", size:16.0)!, fontColor:fontColor, backgroundColor:bgColor, maxSize:cell.coverView.size)
+			return cell
+		}
+
 		// No cover, abort
 		if !album.hasCover
 		{

@@ -782,7 +782,9 @@ extension RootVC : UICollectionViewDataSource
 
 	private func _configureCellWithString(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, string: String)
 	{
-		cell.image = UIImage.fromString(string, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor:UIColor.whiteColor(), backgroundColor:UIColor.fromRGB(string.djb2()), maxSize:cell.imageView.size)
+		let bgColor = UIColor.fromRGB(string.djb2())
+		let fontColor = bgColor.inverseColor()
+		cell.image = UIImage.fromString(string, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor:fontColor, backgroundColor:bgColor, maxSize:cell.imageView.size)
 	}
 
 	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(cover: UIImage, thumbnail: UIImage) -> Void)

@@ -38,6 +38,13 @@ extension UIColor
 		return UIColor.fromRGBA(RGB, alpha:1.0)
 	}
 
+	func inverseColor() -> UIColor
+	{
+		var r: CGFloat = 0.0, g: CGFloat = 0.0, b: CGFloat = 0.0, a: CGFloat = 0.0
+		self.getRed(&r, green:&g, blue:&b, alpha:&a)
+		return UIColor(red:1.0 - r, green:1.0 - g, blue:1.0 - b, alpha:1.0)
+	}
+
 	func isBlackOrWhite() -> Bool
 	{
 		var r: CGFloat = 0.0, g: CGFloat = 0.0, b: CGFloat = 0.0, a: CGFloat = 0.0
