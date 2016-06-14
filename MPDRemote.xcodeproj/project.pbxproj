@@ -64,6 +64,7 @@
 		4355DCB41D0EB0750000232D /* Tappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCB31D0EB0750000232D /* Tappable.swift */; };
 		4355DCB61D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCB51D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift */; };
 		4355DCBC1D0EC7490000232D /* Swippable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCBB1D0EC7490000232D /* Swippable.swift */; };
+		43EA923B1D100C380074389A /* main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43EA92391D100C380074389A /* main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -176,6 +177,7 @@
 		4355DCB31D0EB0750000232D /* Tappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Tappable.swift; path = protocols/Tappable.swift; sourceTree = "<group>"; };
 		4355DCB51D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIGestureRecognizer+Extensions.swift"; sourceTree = "<group>"; };
 		4355DCBB1D0EC7490000232D /* Swippable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Swippable.swift; path = protocols/Swippable.swift; sourceTree = "<group>"; };
+		43EA923A1D100C380074389A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,6 +284,7 @@
 				1E2B80B41C7EF97300D2273F /* Info.plist */,
 				1ECD00E11C7F5B4E0074BE29 /* bridgingheader.h */,
 				1E79F7DF1C84B22E002F1D52 /* Localizable.strings */,
+				43EA92391D100C380074389A /* main.storyboard */,
 			);
 			path = rsrc;
 			sourceTree = "<group>";
@@ -489,6 +492,7 @@
 				1E2B80C81C7EF98B00D2273F /* Assets.xcassets in Resources */,
 				1E79F7E11C84B22E002F1D52 /* Localizable.strings in Resources */,
 				1E2B80BE1C7EF97300D2273F /* LaunchScreen.storyboard in Resources */,
+				43EA923B1D100C380074389A /* main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,6 +594,14 @@
 				1E79F7E31C84B265002F1D52 /* fr */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		43EA92391D100C380074389A /* main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				43EA923A1D100C380074389A /* Base */,
+			);
+			name = main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

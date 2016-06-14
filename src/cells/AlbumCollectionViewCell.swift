@@ -91,7 +91,24 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		fatalError("init(coder:) has not been implemented")
+		//fatalError("init(coder:) has not been implemented")
+		super.init(coder:aDecoder)
+		self.backgroundColor = UIColor.fromRGB(0xECECEC)
+		self.isAccessibilityElement = true
+
+		self.imageView = UIImageView(frame:CGRect(CGPointZero, frame.width, frame.height - 20.0))
+		self.imageView.isAccessibilityElement = false
+		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).CGColor
+		self.image = nil
+		self.contentView.addSubview(self.imageView)
+
+		self.label = UILabel(frame:CGRect(0.0, self.imageView.bottom, frame.width, 20.0))
+		self.label.isAccessibilityElement = false
+		self.label.backgroundColor = self.backgroundColor
+		self.label.textAlignment = .Center
+		self.label.textColor = UIColor.fromRGB(0x444444)
+		self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+		self.contentView.addSubview(self.label)
 	}
 
 	// MARK: - Overrides

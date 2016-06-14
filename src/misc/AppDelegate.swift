@@ -59,10 +59,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		self.operationQueue = NSOperationQueue()
 		self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
 
-		self.homeVC = UIDevice.isPhone() ? NYXNavigationController(rootViewController:RootVC()) : UIViewController()
+		/*self.homeVC = UIDevice.isPhone() ? NYXNavigationController(rootViewController:RootVC()) : UIViewController()
 		self.window = UIWindow()
 		self.window?.rootViewController = self.homeVC
-		self.window?.makeKeyAndVisible()
+		self.window?.makeKeyAndVisible()*/
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:kNYXNotificationMiniPlayerShouldExpand, object:nil)
 

@@ -50,7 +50,14 @@ class MenuVC : UIViewController
 
 	required init?(coder aDecoder: NSCoder)
 	{
-	    fatalError("init(coder:) has not been implemented")
+		//fatalError("init(coder:) has not been implemented")
+		super.init(coder:aDecoder)
+
+		// Hamburger button
+		let image = UIImage(named:"btn-hamb")
+		let b = UIBarButtonItem(image:image?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), style:.Plain, target:self, action:#selector(showLeftViewAction(_:)))
+		b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
+		self.navigationItem.leftBarButtonItem = b
 	}
 
 	// MARK : UIViewController

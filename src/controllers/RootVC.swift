@@ -32,7 +32,7 @@ final class RootVC : MenuVC
 {
 	// MARK: - Private properties
 	// Albums view
-	private var collectionView: UICollectionView!
+	@IBOutlet private var collectionView: UICollectionView!
 	// Search bar
 	private var searchBar: UISearchBar! = nil
 	// Button in the navigationbar
@@ -62,19 +62,19 @@ final class RootVC : MenuVC
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		self.automaticallyAdjustsScrollViewInsets = false
-		self.view.backgroundColor = UIColor.fromRGB(0x131313)
+		//self.automaticallyAdjustsScrollViewInsets = false
+		//self.view.backgroundColor = UIColor.fromRGB(0x131313)
 
 		// Customize navbar
 		let headerColor = UIColor.whiteColor()
 		let navigationBar = (self.navigationController?.navigationBar)!
-		navigationBar.barTintColor = UIColor.fromRGB(kNYXAppColor)
+		/*navigationBar.barTintColor = UIColor.fromRGB(kNYXAppColor)
 		navigationBar.tintColor = headerColor
 		navigationBar.translucent = false
 		navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : headerColor]
 		navigationBar.setBackgroundImage(UIImage(), forBarPosition:.Any, barMetrics:.Default)
-		navigationBar.shadowImage = UIImage()
-		self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
+		navigationBar.shadowImage = UIImage()*/
+		//self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
 
 		// Searchbar
 		let searchView = UIView(frame:CGRect(0.0, 0.0, navigationBar.width, 64.0))
@@ -118,14 +118,15 @@ final class RootVC : MenuVC
 		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
 
 		// Create collection view
-		let layout = UICollectionViewFlowLayout()
+		/*let layout = UICollectionViewFlowLayout()
 		self.collectionView = UICollectionView(frame:CGRect(0.0, 0.0, self.view.width, self.view.height - 64.0), collectionViewLayout:layout)
 		self.collectionView.dataSource = self
 		self.collectionView.delegate = self
 		self.collectionView.registerClass(AlbumCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
 		self.collectionView.backgroundColor = UIColor.fromRGB(0xECECEC)
 		self.collectionView.scrollsToTop = true
-		self.view.addSubview(self.collectionView)
+		self.view.addSubview(self.collectionView)*/
+		self.collectionView.registerClass(AlbumCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
 
 		// Longpress
 		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(longPress(_:)))
@@ -219,6 +220,16 @@ final class RootVC : MenuVC
 	override func preferredStatusBarStyle() -> UIStatusBarStyle
 	{
 		return .LightContent
+	}
+
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+	{
+		if segue.identifier == "albumstodetail"
+		{
+			let vc = segue.destinationViewController as! AlbumDetailVC
+			vc.albums = self.searching ? self.searchResults as! [Album] : MPDDataSource.shared.albums
+			vc.selectedIndex = self.collectionView.indexPathsForSelectedItems()![0].row
+		}
 	}
 
 	// MARK: - Gestures
@@ -830,7 +841,7 @@ extension RootVC : UICollectionViewDelegate
 		{
 			case .Albums:
 				// Create detail VC
-				if self.albumDetailVC == nil
+				/*if self.albumDetailVC == nil
 				{
 					self.albumDetailVC = AlbumDetailVC()
 				}
@@ -838,7 +849,8 @@ extension RootVC : UICollectionViewDelegate
 				// Set data according to search state
 				self.albumDetailVC.selectedIndex = indexPath.row
 				self.albumDetailVC.albums = self.searching ? self.searchResults as! [Album] : MPDDataSource.shared.albums
-				self.navigationController?.pushViewController(self.albumDetailVC, animated:true)
+				self.navigationController?.pushViewController(self.albumDetailVC, animated:true)*/
+				self.performSegueWithIdentifier("albumstodetail", sender: self)
 			case .Genres:
 				// Set data according to search state
 				let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
@@ -884,6 +896,7 @@ extension RootVC : UICollectionViewDelegateFlowLayout
 	func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
 	{
 		let w = ceil((collectionView.width / CGFloat(__columns)) - (2 * __sideSpan))
+		Logger.dlog("\(collectionView.width) -> \(w)")
 		return CGSize(w, w + 20.0)
 	}
 
