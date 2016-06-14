@@ -60,6 +60,10 @@
 		1EB93AA61CB4113300EA5339 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB93AA51CB4113300EA5339 /* Artist.swift */; };
 		1EDF75571CB54DB40071818E /* AlbumsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF75561CB54DB40071818E /* AlbumsVC.swift */; };
 		1EDF75591CB54E130071818E /* AlbumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF75581CB54E130071818E /* AlbumTableViewCell.swift */; };
+		4334E51B1D0ED5C5004553A3 /* InteractableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */; };
+		4355DCB41D0EB0750000232D /* Tappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCB31D0EB0750000232D /* Tappable.swift */; };
+		4355DCB61D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCB51D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift */; };
+		4355DCBC1D0EC7490000232D /* Swippable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCBB1D0EC7490000232D /* Swippable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -168,6 +172,10 @@
 		1ECD00E11C7F5B4E0074BE29 /* bridgingheader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bridgingheader.h; sourceTree = "<group>"; };
 		1EDF75561CB54DB40071818E /* AlbumsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsVC.swift; sourceTree = "<group>"; };
 		1EDF75581CB54E130071818E /* AlbumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTableViewCell.swift; sourceTree = "<group>"; };
+		4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InteractableImageView.swift; sourceTree = "<group>"; };
+		4355DCB31D0EB0750000232D /* Tappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Tappable.swift; path = protocols/Tappable.swift; sourceTree = "<group>"; };
+		4355DCB51D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIGestureRecognizer+Extensions.swift"; sourceTree = "<group>"; };
+		4355DCBB1D0EC7490000232D /* Swippable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Swippable.swift; path = protocols/Swippable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -296,6 +304,7 @@
 				1E5653881C908A310049C02D /* model */,
 				1E56538B1C908A310049C02D /* mpd */,
 				1E5653901C908A310049C02D /* operations */,
+				4355DCB21D0EB04A0000232D /* protocols */,
 				1E5653921C908A310049C02D /* views */,
 			);
 			path = src;
@@ -338,6 +347,7 @@
 				1E56537C1C908A310049C02D /* String+Extensions.swift */,
 				1E56537D1C908A310049C02D /* UIColor+Extensions.swift */,
 				1E56537E1C908A310049C02D /* UIDevice+Extensions.swift */,
+				4355DCB51D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift */,
 				1E56537F1C908A310049C02D /* UIImage+Extensions.swift */,
 				1E5E45C81C92D20C00B3CB02 /* UIView+Extensions.swift */,
 			);
@@ -397,12 +407,22 @@
 			children = (
 				1E5653931C908A310049C02D /* AlbumHeaderView.swift */,
 				1E5653941C908A310049C02D /* HeaderScrollView.swift */,
+				4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */,
 				1E5653951C908A310049C02D /* MenuView.swift */,
 				1E5653961C908A310049C02D /* MiniPlayerView.swift */,
 				1E5653971C908A310049C02D /* TopAlignedLabel.swift */,
 				1EB93A9F1CB3A82700EA5339 /* TypeChoiceView.swift */,
 			);
 			path = views;
+			sourceTree = "<group>";
+		};
+		4355DCB21D0EB04A0000232D /* protocols */ = {
+			isa = PBXGroup;
+			children = (
+				4355DCBB1D0EC7490000232D /* Swippable.swift */,
+				4355DCB31D0EB0750000232D /* Tappable.swift */,
+			);
+			name = protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -511,8 +531,10 @@
 				1E5653B01C908A310049C02D /* MPDConnection.swift in Sources */,
 				1E5E45C91C92D20C00B3CB02 /* UIView+Extensions.swift in Sources */,
 				1E5653981C908A310049C02D /* AlbumCollectionViewCell.swift in Sources */,
+				4355DCB61D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift in Sources */,
 				1E5653A51C908A310049C02D /* UIDevice+Extensions.swift in Sources */,
 				1E5653B11C908A310049C02D /* MPDDataSource.swift in Sources */,
+				4334E51B1D0ED5C5004553A3 /* InteractableImageView.swift in Sources */,
 				1E4CD4381C96CB9A00785FD2 /* CoreImageUtilities.swift in Sources */,
 				1E0FE7F21CC0EF19002C717B /* ImageCache.swift in Sources */,
 				1E5653AF1C908A310049C02D /* Track.swift in Sources */,
@@ -521,6 +543,7 @@
 				1EDF75571CB54DB40071818E /* AlbumsVC.swift in Sources */,
 				1E5653B91C908A310049C02D /* TopAlignedLabel.swift in Sources */,
 				1E5653A91C908A310049C02D /* Common.swift in Sources */,
+				4355DCB41D0EB0750000232D /* Tappable.swift in Sources */,
 				1E5653A01C908A310049C02D /* CGPoint+Extensions.swift in Sources */,
 				1E5653A81C908A310049C02D /* BitmapContext.swift in Sources */,
 				1E56539F1C908A310049C02D /* Array+Extensions.swift in Sources */,
@@ -528,6 +551,7 @@
 				1E5653AE1C908A310049C02D /* Album.swift in Sources */,
 				1EB93AA41CB4077600EA5339 /* ArtistTableViewCell.swift in Sources */,
 				1E86D3DF1CB7B5C10001E203 /* WEBServer.swift in Sources */,
+				4355DCBC1D0EC7490000232D /* Swippable.swift in Sources */,
 				1E5653A11C908A310049C02D /* CGRect+Extensions.swift in Sources */,
 				1E5653AA1C908A310049C02D /* CountedObject.swift in Sources */,
 				1E5653B31C908A310049C02D /* MPDServer.swift in Sources */,

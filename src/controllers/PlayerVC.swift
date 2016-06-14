@@ -23,11 +23,11 @@
 import UIKit
 
 
-final class PlayerVC : UIViewController
+final class PlayerVC : UIViewController, InteractableImageViewDelegate
 {
 	// MARK: - Private properties
 	// Cover view
-	private var coverView: UIImageView! = nil
+	private var coverView: InteractableImageView! = nil
 	// Track title
 	private var lblTrackTitle: UILabel! = nil
 	// Track artist name
@@ -90,9 +90,13 @@ final class PlayerVC : UIViewController
 		
 		// Cover view
 		let width = self.view.width - 2 * 32.0
-		self.coverView = UIImageView(frame:CGRect(32.0, self.lblAlbumName.bottom + 24.0, width, width))
+		self.coverView = InteractableImageView(frame:CGRect(32.0, self.lblAlbumName.bottom + 24.0, width, width))
 		self.coverView.image = UIImage(named:"default-cover")
 		self.coverView.userInteractionEnabled = true
+		self.coverView.makeTappable()
+		self.coverView.makeLeftSwippable()
+		self.coverView.makeRightSwippable()
+		self.coverView.delegate = self
 		blurEffectView.addSubview(self.coverView)
 		// Useless motion effect
 		var motionEffect = UIInterpolatingMotionEffect(keyPath:"center.x", type:.TiltAlongHorizontalAxis)
@@ -188,23 +192,6 @@ final class PlayerVC : UIViewController
 		self.btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
 		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 		blurEffectView.addSubview(self.btnRandom)
-
-		// Single tap on the image view to hide the view controller
-		let singleTap = UITapGestureRecognizer(target:self, action:#selector(singleTap(_:)))
-		singleTap.numberOfTapsRequired = 1
-		singleTap.numberOfTouchesRequired = 1
-		self.coverView.addGestureRecognizer(singleTap)
-
-		// Swipe for previous / next tracks
-		let swipeLeft = UISwipeGestureRecognizer(target:self, action:#selector(swipeLeft(_:)))
-		swipeLeft.direction = .Left
-		swipeLeft.numberOfTouchesRequired = 1
-		self.coverView.addGestureRecognizer(swipeLeft)
-
-		let swipeRight = UISwipeGestureRecognizer(target:self, action:#selector(swipeRight(_:)))
-		swipeRight.direction = .Right
-		swipeRight.numberOfTouchesRequired = 1
-		self.coverView.addGestureRecognizer(swipeRight)
 	}
 
 	override func viewWillAppear(animated: Bool)
@@ -276,20 +263,18 @@ final class PlayerVC : UIViewController
 		return .Portrait
 	}
 
-	// MARK: - Gestures
-	func singleTap(gest: UITapGestureRecognizer)
+	// MARK: - InteractableImageViewDelegate
+	func didTap()
 	{
 		self.dismissViewControllerAnimated(true, completion:nil)
 		MiniPlayerView.shared.stayHidden = false
 		MiniPlayerView.shared.show()
 	}
-
-	func swipeLeft(gest: UISwipeGestureRecognizer)
+	func didSwipeLeft()
 	{
 		MPDPlayer.shared.requestNextTrack()
 	}
-
-	func swipeRight(gest: UISwipeGestureRecognizer)
+	func didSwipeRight()
 	{
 		MPDPlayer.shared.requestPreviousTrack()
 	}

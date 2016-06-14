@@ -26,7 +26,7 @@ import UIKit
 public let playerViewHeight = CGFloat(44.0)
 
 
-final class MiniPlayerView : UIView
+final class MiniPlayerView : UIView, PTappable
 {
 	// MARK: - Public properties
 	// Singletion instance
@@ -114,10 +114,7 @@ final class MiniPlayerView : UIView
 		self.addSubview(self.progressView)
 
 		// Single tap to request full player view
-		let tap = UITapGestureRecognizer(target:self, action:#selector(singleTap(_:)))
-		tap.numberOfTapsRequired = 1
-		tap.numberOfTouchesRequired = 1
-		self.addGestureRecognizer(tap)
+		self.makeTappable()
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackNotification(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
@@ -212,8 +209,8 @@ final class MiniPlayerView : UIView
 		MPDPlayer.shared.togglePause()
 	}
 
-	// MARK: - Gestures
-	func singleTap(gest: UITapGestureRecognizer)
+	// MARK: - PTappable
+	func didTap()
 	{
 		NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerShouldExpand, object:nil)
 	}
