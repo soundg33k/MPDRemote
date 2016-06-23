@@ -65,13 +65,13 @@ final class ArtistsVC : UITableViewController
 	{
 		super.viewWillAppear(animated)
 
-		MPDDataSource.shared.getArtistsForGenre(genre, callback:{ (artists: [Artist]) in
+		MPDDataSource.shared.getArtistsForGenre(genre) { (artists: [Artist]) in
 			self.artists = artists
 			dispatch_async(dispatch_get_main_queue()) {
 				self.tableView.reloadData()
 				self._updateNavigationTitle()
 			}
-		})
+		}
 	}
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
@@ -171,7 +171,7 @@ extension ArtistsVC
 					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+						_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue()) { (thumbnail: UIImage) in
 							let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 							dispatch_async(dispatch_get_main_queue()) {
 								if let c = self.tableView.cellForRowAtIndexPath(indexPath) as? ArtistTableViewCell
@@ -179,12 +179,12 @@ extension ArtistsVC
 									c.coverView.image = cropped
 								}
 							}
-						})
+						}
 					}
 					else
 					{
-						MPDDataSource.shared.getPathForAlbum(album, callback: {
-							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+						MPDDataSource.shared.getPathForAlbum(album) {
+							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue()) { (thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 								dispatch_async(dispatch_get_main_queue()) {
 									if let c = self.tableView.cellForRowAtIndexPath(indexPath) as? ArtistTableViewCell
@@ -192,22 +192,22 @@ extension ArtistsVC
 										c.coverView.image = cropped
 									}
 								}
-							})
-						})
+							}
+						}
 					}
 				}
 			}
 		}
 		else
 		{
-			MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
+			MPDDataSource.shared.getAlbumsForArtist(artist) {
 				dispatch_async(dispatch_get_main_queue()) {
 					if let _ = self.tableView.cellForRowAtIndexPath(indexPath) as? ArtistTableViewCell
 					{
 						self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation:.None)
 					}
 				}
-			})
+			}
 		}
 		return cell
 	}

@@ -103,12 +103,12 @@ final class AlbumDetailVC : UIViewController
 		let album = _currentAlbum()
 		if album.songs == nil
 		{
-			MPDDataSource.shared.getSongsForAlbum(album, callback: {
+			MPDDataSource.shared.getSongsForAlbum(album) {
 				dispatch_async(dispatch_get_main_queue()) {
 					self._updateNavigationTitle()
 					self.tableView.reloadData()
 				}
-			})
+			}
 		}
 		else
 		{
@@ -177,11 +177,11 @@ final class AlbumDetailVC : UIViewController
 	{
 		if let nextAlbum = _nextAlbum()
 		{
-			MPDDataSource.shared.getMetadatasForAlbum(nextAlbum, callback:{})
+			MPDDataSource.shared.getMetadatasForAlbum(nextAlbum) {}
 		}
 		if let previousAlbum = _previousAlbum()
 		{
-			MPDDataSource.shared.getMetadatasForAlbum(previousAlbum, callback:{})
+			MPDDataSource.shared.getMetadatasForAlbum(previousAlbum) {}
 		}
 	}
 
@@ -196,11 +196,11 @@ final class AlbumDetailVC : UIViewController
 		// Don't have all the metadatas
 		if album.artist.length == 0
 		{
-			MPDDataSource.shared.getMetadatasForAlbum(album, callback: {
+			MPDDataSource.shared.getMetadatasForAlbum(album) {
 				dispatch_async(dispatch_get_main_queue()) {
 					self._updateHeader()
 				}
-			})
+			}
 		}
 	}
 
@@ -361,14 +361,14 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 			let album = _currentAlbum()
 			if album.songs == nil
 			{
-				MPDDataSource.shared.getSongsForAlbum(album, callback:{
+				MPDDataSource.shared.getSongsForAlbum(album) {
 					dispatch_async(dispatch_get_main_queue()) {
 						self._updateHeader()
 						self._updateNavigationTitle()
 						self.tableView.reloadData()
 						self.headerView.itemChanged()
 					}
-				})
+				}
 			}
 			else
 			{
@@ -392,14 +392,14 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 			let album = _currentAlbum()
 			if album.songs == nil
 			{
-				MPDDataSource.shared.getSongsForAlbum(album, callback:{
+				MPDDataSource.shared.getSongsForAlbum(album) {
 					dispatch_async(dispatch_get_main_queue()) {
 						self._updateHeader()
 						self._updateNavigationTitle()
 						self.tableView.reloadData()
 						self.headerView.itemChanged()
 					}
-				})
+				}
 			}
 			else
 			{

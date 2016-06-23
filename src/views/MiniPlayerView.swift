@@ -156,7 +156,7 @@ final class MiniPlayerView : UIView, PTappable
 			}
 			else
 			{
-				MPDDataSource.shared.getPathForAlbum(album, callback:{
+				MPDDataSource.shared.getPathForAlbum(album) {
 					let op = CoverOperation(album:album, cropSize:cropSize.CGSizeValue())
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
@@ -164,7 +164,7 @@ final class MiniPlayerView : UIView, PTappable
 						}
 					}
 					APP_DELEGATE().operationQueue.addOperation(op)
-				})
+				}
 			}
 		}
 	}
@@ -236,9 +236,9 @@ final class MiniPlayerView : UIView, PTappable
 			}
 
 			let ratio = width / CGFloat(track.duration.seconds)
-			UIView.animateWithDuration(0.5, animations:{
+			UIView.animateWithDuration(0.5) {
 				self.progressView.width = ratio * CGFloat(elapsed)
-			})
+			}
 			accessibleView.accessibilityLabel = "\(track.title) \(NYXLocalizedString("lbl_by")) \(track.artist)\n\((100 * elapsed) / Int(track.duration.seconds))% \(NYXLocalizedString("lbl_played"))"
 		}
 	}

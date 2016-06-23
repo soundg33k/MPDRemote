@@ -142,7 +142,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			}
 			else
 			{
-				MPDDataSource.shared.getPathForAlbum(album, callback: {
+				MPDDataSource.shared.getPathForAlbum(album) {
 					let op = CoverOperation(album:album, cropSize:self.coverView.size)
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
@@ -151,7 +151,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 						}
 					}
 					APP_DELEGATE().operationQueue.addOperation(op)
-				})
+				}
 			}
 		}
 

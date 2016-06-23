@@ -66,12 +66,12 @@ final class AlbumsVC : UITableViewController
 
 		if artist.albums.count <= 0
 		{
-			MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
+			MPDDataSource.shared.getAlbumsForArtist(artist) {
 				dispatch_async(dispatch_get_main_queue()) {
 					self.tableView.reloadData()
 					self._updateNavigationTitle()
 				}
-			})
+			}
 		}
 
 		_updateNavigationTitle()
@@ -169,7 +169,7 @@ extension AlbumsVC
 			let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+				_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue()) { (thumbnail: UIImage) in
 					let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 					dispatch_async(dispatch_get_main_queue()) {
 						if let c = self.tableView.cellForRowAtIndexPath(indexPath) as? AlbumTableViewCell
@@ -177,12 +177,12 @@ extension AlbumsVC
 							c.coverView.image = cropped
 						}
 					}
-				})
+				}
 			}
 			else
 			{
-				MPDDataSource.shared.getPathForAlbum(album, callback: {
-					self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+				MPDDataSource.shared.getPathForAlbum(album) {
+					self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue()) { (thumbnail: UIImage) in
 						let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 						dispatch_async(dispatch_get_main_queue()) {
 							if let c = self.tableView.cellForRowAtIndexPath(indexPath) as? AlbumTableViewCell
@@ -190,8 +190,8 @@ extension AlbumsVC
 								c.coverView.image = cropped
 							}
 						}
-					})
-				})
+					}
+				}
 			}
 		}
 

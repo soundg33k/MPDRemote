@@ -148,14 +148,14 @@ final class RootVC : MenuVC
 					if _displayType != .Albums
 					{
 						// Always fetch the albums list
-						MPDDataSource.shared.getListForDisplayType(.Albums, callback:{})
+						MPDDataSource.shared.getListForDisplayType(.Albums) {}
 					}
-					MPDDataSource.shared.getListForDisplayType(_displayType, callback:{
+					MPDDataSource.shared.getListForDisplayType(_displayType) {
 						dispatch_async(dispatch_get_main_queue()) {
 							self.collectionView.reloadData()
 							self._updateNavigationTitle()
 						}
-					})
+					}
 
 					// Player
 					MPDPlayer.shared.server = server
@@ -252,20 +252,20 @@ final class RootVC : MenuVC
 					MPDPlayer.shared.playAlbum(album, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
 				case .Artists:
 					let artist = searching ? searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
-					MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
-						MPDDataSource.shared.getSongsForAlbums(artist.albums, callback: {
+					MPDDataSource.shared.getAlbumsForArtist(artist) {
+						MPDDataSource.shared.getSongsForAlbums(artist.albums) {
 							let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
 							MPDPlayer.shared.playTracks(ar, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
-						})
-					})
+						}
+					}
 				case .Genres:
 					let genre = searching ? searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
-					MPDDataSource.shared.getAlbumsForGenre(genre, callback:{
-						MPDDataSource.shared.getSongsForAlbums(genre.albums, callback: {
+					MPDDataSource.shared.getAlbumsForGenre(genre) {
+						MPDDataSource.shared.getSongsForAlbums(genre.albums) {
 							let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
 							MPDPlayer.shared.playTracks(ar, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
-						})
-					})
+						}
+					}
 			}
 		}
 	}
@@ -321,36 +321,36 @@ final class RootVC : MenuVC
 				case .Artists:
 					let artist = searching ? searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
 					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.Default) { (action) in
-						MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
-							MPDDataSource.shared.getSongsForAlbums(artist.albums, callback: {
+						MPDDataSource.shared.getAlbumsForArtist(artist) {
+							MPDDataSource.shared.getSongsForAlbums(artist.albums) {
 								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
 								MPDPlayer.shared.playTracks(ar, random:false, loop:false)
-							})
-						})
+							}
+						}
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.Default) { (action) in
-						MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
-							MPDDataSource.shared.getSongsForAlbums(artist.albums, callback: {
+						MPDDataSource.shared.getAlbumsForArtist(artist) {
+							MPDDataSource.shared.getSongsForAlbums(artist.albums) {
 								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
 								MPDPlayer.shared.playTracks(ar, random:true, loop:false)
-							})
-						})
+							}
+						}
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.Default) { (action) in
-						MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
+						MPDDataSource.shared.getAlbumsForArtist(artist) {
 							for album in artist.albums
 							{
 								MPDPlayer.shared.addAlbumToQueue(album)
 							}
-						})
+						}
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
@@ -359,36 +359,36 @@ final class RootVC : MenuVC
 				case .Genres:
 					let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
 					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.Default) { (action) in
-						MPDDataSource.shared.getAlbumsForGenre(genre, callback:{
-							MPDDataSource.shared.getSongsForAlbums(genre.albums, callback: {
+						MPDDataSource.shared.getAlbumsForGenre(genre) {
+							MPDDataSource.shared.getSongsForAlbums(genre.albums) {
 								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
 								MPDPlayer.shared.playTracks(ar, random:false, loop:false)
-							})
-						})
+							}
+						}
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.Default) { (action) in
-						MPDDataSource.shared.getAlbumsForGenre(genre, callback:{
-							MPDDataSource.shared.getSongsForAlbums(genre.albums, callback: {
+						MPDDataSource.shared.getAlbumsForGenre(genre) {
+							MPDDataSource.shared.getSongsForAlbums(genre.albums) {
 								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
 								MPDPlayer.shared.playTracks(ar, random:true, loop:false)
-							})
-						})
+							}
+						}
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.Default) { (action) in
-						MPDDataSource.shared.getAlbumsForGenre(genre, callback:{
+						MPDDataSource.shared.getAlbumsForGenre(genre) {
 							for album in genre.albums
 							{
 								MPDPlayer.shared.addAlbumToQueue(album)
 							}
-						})
+						}
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
@@ -586,27 +586,27 @@ extension RootVC : UICollectionViewDataSource
 		{
 			if album.path != nil
 			{
-				_downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
+				_downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 					dispatch_async(dispatch_get_main_queue()) {
 						if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 						{
 							c.image = thumbnail
 						}
 					}
-				})
+				}
 			}
 			else
 			{
-				MPDDataSource.shared.getPathForAlbum(album, callback: {
-					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
+				MPDDataSource.shared.getPathForAlbum(album) {
+					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
 							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 							{
 								c.image = thumbnail
 							}
 						}
-					})
-				})
+					}
+				}
 			}
 		}
 	}
@@ -649,40 +649,40 @@ extension RootVC : UICollectionViewDataSource
 				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 				if album.path != nil
 				{
-					_downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
+					_downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
 							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 							{
 								c.image = thumbnail
 							}
 						}
-					})
+					}
 				}
 				else
 				{
-					MPDDataSource.shared.getPathForAlbum(album, callback: {
-						self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
+					MPDDataSource.shared.getPathForAlbum(album) {
+						self._downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 							dispatch_async(dispatch_get_main_queue()) {
 								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 								{
 									c.image = thumbnail
 								}
 							}
-						})
-					})
+						}
+					}
 				}
 			}
 		}
 		else
 		{
-			MPDDataSource.shared.getAlbumForGenre(genre, callback: {
+			MPDDataSource.shared.getAlbumForGenre(genre) {
 				dispatch_async(dispatch_get_main_queue()) {
 					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 					{
 						self.collectionView.reloadItemsAtIndexPaths([indexPath])
 					}
 				}
-			})
+			}
 			return
 		}
 	}
@@ -728,7 +728,7 @@ extension RootVC : UICollectionViewDataSource
 					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
+						_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue()) { (cover: UIImage, thumbnail: UIImage) in
 							let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 							dispatch_async(dispatch_get_main_queue()) {
 								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
@@ -736,12 +736,12 @@ extension RootVC : UICollectionViewDataSource
 									c.image = cropped
 								}
 							}
-						})
+						}
 					}
 					else
 					{
-						MPDDataSource.shared.getPathForAlbum(album, callback: {
-							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
+						MPDDataSource.shared.getPathForAlbum(album) {
+							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue()) { (cover: UIImage, thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 								dispatch_async(dispatch_get_main_queue()) {
 									if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
@@ -749,22 +749,22 @@ extension RootVC : UICollectionViewDataSource
 										c.image = cropped
 									}
 								}
-							})
-						})
+							}
+						}
 					}
 				}
 			}
 		}
 		else
 		{
-			MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
+			MPDDataSource.shared.getAlbumsForArtist(artist) {
 				dispatch_async(dispatch_get_main_queue()) {
 					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 					{
 						self.collectionView.reloadItemsAtIndexPaths([indexPath])
 					}
 				}
-			})
+			}
 		}
 	}
 
@@ -956,13 +956,13 @@ extension RootVC : TypeChoiceViewDelegate
 		NSUserDefaults.standardUserDefaults().synchronize()
 
 		// Refresh view
-		MPDDataSource.shared.getListForDisplayType(type, callback:{
+		MPDDataSource.shared.getListForDisplayType(type) {
 			dispatch_async(dispatch_get_main_queue()) {
 				self.collectionView.setContentOffset(CGPointZero, animated:true)
 				self.collectionView.reloadData()
 				self._updateNavigationTitle()
 			}
-		})
+		}
 	}
 }
 
@@ -981,9 +981,9 @@ extension RootVC
 			let randomAlbum = MPDDataSource.shared.albums.randomItem()
 			if randomAlbum.songs == nil
 			{
-				MPDDataSource.shared.getSongsForAlbum(randomAlbum, callback:{
+				MPDDataSource.shared.getSongsForAlbum(randomAlbum) {
 					MPDPlayer.shared.playAlbum(randomAlbum, random:false, loop:false)
-				})
+				}
 			}
 			else
 			{
@@ -993,7 +993,7 @@ extension RootVC
 			// Briefly display cover of album
 			let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
-			MPDDataSource.shared.getPathForAlbum(randomAlbum, callback: {
+			MPDDataSource.shared.getPathForAlbum(randomAlbum) {
 				self._downloadCoverForAlbum(randomAlbum, cropSize:cropSize.CGSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
 					let size = CGSize(self.view.width - 64.0, self.view.width - 64.0)
 					let cropped = cover.imageCroppedToFitSize(size)
@@ -1010,7 +1010,7 @@ extension RootVC
 						})
 					}
 				})
-			})
+			}
 		}
 	}
 }
