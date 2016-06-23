@@ -131,7 +131,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 
 			if album.path != nil
 			{
-				let op = DownloadCoverOperation(album:album, cropSize:self.coverView.size)
+				let op = CoverOperation(album:album, cropSize:self.coverView.size)
 				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 					dispatch_async(dispatch_get_main_queue()) {
 						self.coverView.image = cover
@@ -143,7 +143,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			else
 			{
 				MPDDataSource.shared.getPathForAlbum(album, callback: {
-					let op = DownloadCoverOperation(album:album, cropSize:self.coverView.size)
+					let op = CoverOperation(album:album, cropSize:self.coverView.size)
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
 							self.coverView.image = cover

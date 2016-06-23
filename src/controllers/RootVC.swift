@@ -561,21 +561,6 @@ extension RootVC : UICollectionViewDataSource
 		cell.label.text = album.name
 		cell.accessibilityLabel = album.name
 
-		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
-		{
-			//self._configureCellWithString(cell, indexPath:indexPath, string:album.name)
-			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
-			return
-		}
-
-		// No cover, abort
-		if !album.hasCover
-		{
-			//cell.image = UIImage(named:"default-cover")
-			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
-			return
-		}
-
 		// If image is in cache, bail out quickly
 		if let cachedImage = ImageCache.shared[album.name]
 		{
@@ -587,7 +572,6 @@ extension RootVC : UICollectionViewDataSource
 		guard let coverURL = album.localCoverURL else
 		{
 			Logger.alog("[!] No cover URL for \(album)") // should not happen
-			//cell.image = UIImage(named:"default-cover")
 			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
 			return
 		}
@@ -599,7 +583,6 @@ extension RootVC : UICollectionViewDataSource
 		}
 		else
 		{
-			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
 			if album.path != nil
 			{
 				self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
@@ -634,18 +617,16 @@ extension RootVC : UICollectionViewDataSource
 
 		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
 		{
-			//self._configureCellWithString(cell, indexPath:indexPath, string:genre.name)
 			cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 			return
 		}
 
 		if let album = genre.albums.first
 		{
-			// No cover, abort
-			if !album.hasCover
+			// If image is in cache, bail out quickly
+			if let cachedImage = ImageCache.shared[album.name]
 			{
-				//cell.image = UIImage(named:"default-cover")
-				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
+				cell.image = cachedImage
 				return
 			}
 
@@ -653,15 +634,7 @@ extension RootVC : UICollectionViewDataSource
 			guard let coverURL = album.localCoverURL else
 			{
 				Logger.alog("[!] No cover URL for \(album)") // should not happen
-				//cell.image = UIImage(named:"default-cover")
 				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
-				return
-			}
-
-			// If image is in cache, bail out quickly
-			if let cachedImage = ImageCache.shared[album.name]
-			{
-				cell.image = cachedImage
 				return
 			}
 
@@ -672,7 +645,6 @@ extension RootVC : UICollectionViewDataSource
 			}
 			else
 			{
-				//cell.image = UIImage(named:"default-cover")
 				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 				if album.path != nil
 				{
@@ -702,8 +674,6 @@ extension RootVC : UICollectionViewDataSource
 		}
 		else
 		{
-			//cell.image = UIImage(named:"default-cover")
-			cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 			MPDDataSource.shared.getAlbumForGenre(genre, callback: {
 				dispatch_async(dispatch_get_main_queue()) {
 					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
@@ -723,7 +693,6 @@ extension RootVC : UICollectionViewDataSource
 
 		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
 		{
-			//self._configureCellWithString(cell, indexPath:indexPath, string:artist.name)
 			cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
 			return
 		}
@@ -732,11 +701,10 @@ extension RootVC : UICollectionViewDataSource
 		{
 			if let album = artist.albums.first
 			{
-				// No cover, abort
-				if !album.hasCover
+				// If image is in cache, bail out quickly
+				if let cachedImage = ImageCache.shared[album.name]
 				{
-					//cell.image = UIImage(named:"default-cover")
-					cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
+					cell.image = cachedImage
 					return
 				}
 
@@ -744,15 +712,7 @@ extension RootVC : UICollectionViewDataSource
 				guard let coverURL = album.localCoverURL else
 				{
 					Logger.alog("[!] No cover URL for \(album)") // should not happen
-					//cell.image = UIImage(named:"default-cover")
 					cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
-					return
-				}
-
-				// If image is in cache, bail out quickly
-				if let cachedImage = ImageCache.shared[album.name]
-				{
-					cell.image = cachedImage
 					return
 				}
 
@@ -763,8 +723,6 @@ extension RootVC : UICollectionViewDataSource
 				}
 				else
 				{
-					//cell.image = UIImage(named:"default-cover")
-					cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
 					let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
 					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 					if album.path != nil
@@ -811,7 +769,7 @@ extension RootVC : UICollectionViewDataSource
 
 	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(cover: UIImage, thumbnail: UIImage) -> Void)
 	{
-		let downloadOperation = DownloadCoverOperation(album:album, cropSize:cropSize)
+		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
 		let key = album.name + album.year
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
@@ -876,7 +834,7 @@ extension RootVC : UICollectionViewDelegate
 		// Remove download cover operation if still in queue
 		let album = src[indexPath.row]
 		let key = album.name + album.year
-		if let op = self._downloadOperations[key] as! DownloadCoverOperation?
+		if let op = self._downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
 			self._downloadOperations.removeValueForKey(key)

@@ -38,8 +38,6 @@ final class Album
 	var path: String? = nil
 	// Album tracks
 	var songs: [Track]? = nil
-	// Flag to indicate if the album has an associated cover
-	var hasCover = true
 	// Local URL for the cover
 	lazy var localCoverURL: NSURL? = {
 		guard let cachesDirectoryURL = NSFileManager().URLsForDirectory(.CachesDirectory, inDomains:.UserDomainMask).last else {return nil}

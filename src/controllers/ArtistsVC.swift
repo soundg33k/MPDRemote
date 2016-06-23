@@ -144,13 +144,6 @@ extension ArtistsVC
 			cell.lblAlbums.text = "\(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercaseString : NYXLocalizedString("lbl_album").lowercaseString)"
 			if let album = artist.albums.first
 			{
-				// No cover, abort
-				if !album.hasCover
-				{
-					cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
-					return cell
-				}
-
 				// Get local URL for cover
 				guard let coverURL = album.localCoverURL else
 				{
@@ -221,7 +214,7 @@ extension ArtistsVC
 
 	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(thumbnail: UIImage) -> Void)
 	{
-		let downloadOperation = DownloadCoverOperation(album:album, cropSize:cropSize)
+		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
 		let key = album.name + album.year
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
@@ -263,7 +256,7 @@ extension ArtistsVC
 		let artist = self.artists[indexPath.row]
 		guard let album = artist.albums.first else {return}
 		let key = album.name + album.year
-		if let op = self._downloadOperations[key] as! DownloadCoverOperation?
+		if let op = self._downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
 			self._downloadOperations.removeValueForKey(key)

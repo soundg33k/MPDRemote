@@ -42,6 +42,6 @@ private func _generateCoverFromString(string: String, size: CGSize) -> UIImage?
 {
 	let backgroundColor = UIColor.fromRGB(string.djb2())
 	let fontColor = backgroundColor.invertedColor()
-	let cover = UIImage.fromString(string, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor:fontColor, backgroundColor:backgroundColor, maxSize:size)
+	let cover = UIImage.fromString(string, font:UIFont(name:"Chalkduster", size:size.width / 4.0)!, fontColor:fontColor, backgroundColor:backgroundColor, maxSize:size)
 	return cover
 }

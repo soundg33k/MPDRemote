@@ -1,4 +1,4 @@
-// DownloadCoverOperation.swift
+// CoverOperation.swift
 // Copyright (c) 2016 Nyx0uf ( https://mpdremote.whine.io )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class DownloadCoverOperation : NSOperation
+final class CoverOperation : NSOperation
 {
 	// MARK: - Private properties
 	// isFinished override
@@ -92,12 +92,14 @@ final class DownloadCoverOperation : NSOperation
 		guard let serverAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) else
 		{
 			Logger.alog("[!] No WEB server configured.")
+			self.generateCover()
 			self.finished = true
 			return
 		}
 		guard let server = NSKeyedUnarchiver.unarchiveObjectWithData(serverAsData) as! WEBServer? else
 		{
 			Logger.alog("[!] No WEB server configured.")
+			self.generateCover()
 			self.finished = true
 			return
 		}
@@ -105,6 +107,7 @@ final class DownloadCoverOperation : NSOperation
 		if server.hostname.length <= 0 || server.coverName.length <= 0
 		{
 			Logger.alog("[!] No web server configured, can't download covers.")
+			self.generateCover()
 			self.finished = true
 			return
 		}
@@ -126,22 +129,34 @@ final class DownloadCoverOperation : NSOperation
 	{
 		guard let cover = UIImage(data:self.incomingData) else
 		{
-			self.album.hasCover = false
 			return
 		}
 		guard let thumbnail = cover.imageCroppedToFitSize(self.cropSize) else
 		{
-			self.album.hasCover = false
 			return
 		}
 		guard let saveURL = self.album.localCoverURL else
 		{
-			self.album.hasCover = false
 			return
 		}
 		UIImageJPEGRepresentation(thumbnail, 0.7)?.writeToURL(saveURL, atomically:true)
-		self.album.hasCover = true
 
+		if let cpl = self.cplBlock
+		{
+			cpl(cover, thumbnail)
+		}
+	}
+
+	private func generateCover()
+	{
+		let width = UIScreen.mainScreen().bounds.width - 64.0
+		guard let cover = generateCoverForAlbum(album, size:CGSize(width, width)) else {return}
+		guard let thumbnail = cover.imageCroppedToFitSize(self.cropSize) else {return}
+		guard let saveURL = self.album.localCoverURL else
+		{
+			return
+		}
+		UIImageJPEGRepresentation(thumbnail, 0.7)?.writeToURL(saveURL, atomically:true)
 		if let cpl = self.cplBlock
 		{
 			cpl(cover, thumbnail)
@@ -150,7 +165,7 @@ final class DownloadCoverOperation : NSOperation
 }
 
 // MARK: - NSURLSessionDelegate
-extension DownloadCoverOperation : NSURLSessionDelegate
+extension CoverOperation : NSURLSessionDelegate
 {
 	func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void)
 	{

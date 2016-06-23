@@ -133,15 +133,6 @@ final class MiniPlayerView : UIView, PTappable
 		self.lblTitle.text = track.title
 		self.lblArtist.text = track.artist
 
-		if album.hasCover == false
-		{
-			guard let image = generateCoverForAlbum(album, size: self.imageView.size) else {return}
-			let x = KawaiiColors(image:image)
-			x.analyze()
-			self.imageView.image = image
-			return
-		}
-
 		guard let url = album.localCoverURL else {return}
 		if let image = UIImage(contentsOfFile:url.path!)
 		{
@@ -156,7 +147,7 @@ final class MiniPlayerView : UIView, PTappable
 			let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
+				let op = CoverOperation(album:album, cropSize:cropSize.CGSizeValue())
 				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 					dispatch_async(dispatch_get_main_queue()) {
 						self.setInfoFromTrack(track, ofAlbum:album)
@@ -167,7 +158,7 @@ final class MiniPlayerView : UIView, PTappable
 			else
 			{
 				MPDDataSource.shared.getPathForAlbum(album, callback:{
-					let op = DownloadCoverOperation(album:album, cropSize:cropSize.CGSizeValue())
+					let op = CoverOperation(album:album, cropSize:cropSize.CGSizeValue())
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
 							self.setInfoFromTrack(track, ofAlbum:album)

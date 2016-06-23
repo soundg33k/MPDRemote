@@ -142,13 +142,6 @@ extension AlbumsVC
 			return cell
 		}
 
-		// No cover, abort
-		if !album.hasCover
-		{
-			cell.coverView.image = generateCoverForAlbum(album, size: cell.coverView.size)
-			return cell
-		}
-
 		// Get local URL for cover
 		guard let coverURL = album.localCoverURL else
 		{
@@ -207,7 +200,7 @@ extension AlbumsVC
 
 	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(thumbnail: UIImage) -> Void)
 	{
-		let downloadOperation = DownloadCoverOperation(album:album, cropSize:cropSize)
+		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
 		let key = album.name + album.year
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
@@ -250,7 +243,7 @@ extension AlbumsVC
 		// Remove download cover operation if still in queue
 		let album = self.artist.albums[indexPath.row]
 		let key = album.name + album.year
-		if let op = self._downloadOperations[key] as! DownloadCoverOperation?
+		if let op = self._downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
 			self._downloadOperations.removeValueForKey(key)
