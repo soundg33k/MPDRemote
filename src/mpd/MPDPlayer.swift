@@ -32,7 +32,7 @@ enum PlayerStatus : Int
 }
 
 
-final class MPDPlayer : NSObject
+final class MPDPlayer
 {
 	// MARK: - Public properties
 	// Singletion instance
@@ -55,7 +55,7 @@ final class MPDPlayer : NSObject
 	private var _timer: dispatch_source_t!
 
 	// MARK: - Initializers
-	override init()
+	init()
 	{
 		self._queue = dispatch_queue_create("io.whine.mpdremote.queue.player", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_DEFAULT, 0))
 	}
@@ -120,7 +120,7 @@ final class MPDPlayer : NSObject
 	}
 
 	// MARK: - Pausing
-	func togglePause()
+	@objc func togglePause()
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
 		{
@@ -172,7 +172,7 @@ final class MPDPlayer : NSObject
 	}
 
 	// MARK: - Tracks navigation
-	func requestNextTrack()
+	@objc func requestNextTrack()
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
 		{
@@ -184,7 +184,7 @@ final class MPDPlayer : NSObject
 		}
 	}
 
-	func requestPreviousTrack()
+	@objc func requestPreviousTrack()
 	{
 		if self._mpdConnection == nil || !self._mpdConnection.connected
 		{
@@ -273,7 +273,7 @@ final class MPDPlayer : NSObject
 
 extension MPDPlayer : MPDConnectionDelegate
 {
-	@objc func albumMatchingName(name: String) -> Album?
+	func albumMatchingName(name: String) -> Album?
 	{
 		let albums = MPDDataSource.shared.albums
 		return albums.filter({$0.name == name}).first

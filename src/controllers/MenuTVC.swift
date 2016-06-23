@@ -1,4 +1,4 @@
-// MenuVC.swift
+// MenuTVC.swift
 // Copyright (c) 2016 Nyx0uf ( https://mpdremote.whine.io )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,7 +28,7 @@ private let MENU_MIN_X = (-(MENU_WIDTH) - 2.0)
 private var __startX = CGFloat(0.0)
 
 
-class MenuVC : UIViewController
+class MenuTVC : UITableViewController
 {
 	// MARK: - Properties
 	// Menu
@@ -125,7 +125,7 @@ class MenuVC : UIViewController
 }
 
 // MARK: - MenuViewDelegate
-extension MenuVC : MenuViewDelegate
+extension MenuTVC : MenuViewDelegate
 {
 	func menuViewShouldClose(menuView: UIView)
 	{
@@ -146,7 +146,7 @@ extension MenuVC : MenuViewDelegate
 }
 
 // MARK: - UIGestureRecognizerDelegate
-extension MenuVC : UIGestureRecognizerDelegate
+extension MenuTVC : UIGestureRecognizerDelegate
 {
 	func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool
 	{

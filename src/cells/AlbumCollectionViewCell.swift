@@ -54,8 +54,9 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 					filter.setDefaults()
 					filter.setValue(ciimg, forKey:kCIInputImageKey)
 					guard let result = filter.valueForKey(kCIOutputImageKey) as! CIImage? else {return}
-					let imgRef = CoreImageUtilities.shared.hwContext.createCGImage(result, fromRect:result.extent)
-					self.imageView.image = UIImage(CGImage:imgRef)
+					//let imgRef = CoreImageUtilities.shared.hwContext.createCGImage(result, fromRect:result.extent)
+					//self.imageView.image = UIImage(CGImage:imgRef)
+					self.imageView.image = UIImage(CIImage:result)
 				}
 			}
 			else
@@ -91,7 +92,6 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		//fatalError("init(coder:) has not been implemented")
 		super.init(coder:aDecoder)
 		self.backgroundColor = UIColor.fromRGB(0xECECEC)
 		self.isAccessibilityElement = true

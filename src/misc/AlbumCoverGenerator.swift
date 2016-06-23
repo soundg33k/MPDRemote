@@ -1,4 +1,4 @@
-// Artist.swift
+// AlbumCoverGenerator.swift
 // Copyright (c) 2016 Nyx0uf ( https://mpdremote.whine.io )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,34 +20,28 @@
 // THE SOFTWARE.
 
 
-import Foundation
+import UIKit
 
 
-final class Artist
+func generateCoverForAlbum(album: Album, size: CGSize) -> UIImage?
 {
-	// MARK: - Properties
-	// Artist name
-	var name: String
-	// Albums list reference
-	var albums = [Album]()
-
-	// MARK: - Initializers
-	init(name: String)
-	{
-		self.name = name
-	}
+	return _generateCoverFromString(album.name, size: size)
 }
 
-extension Artist : CustomStringConvertible
+func generateCoverForGenre(genre: Genre, size: CGSize) -> UIImage?
 {
-	var description:String
-	{
-		return "Name: <\(self.name)>\nNumber of albums: <\(self.albums.count)>"
-	}
+	return _generateCoverFromString(genre.name, size: size)
 }
 
-// MARK: - Operators
-func == (lhs: Artist, rhs: Artist) -> Bool
+func generateCoverForArtist(artist: Artist, size: CGSize) -> UIImage?
 {
-	return (lhs.name == rhs.name)
+	return _generateCoverFromString(artist.name, size: size)
+}
+
+private func _generateCoverFromString(string: String, size: CGSize) -> UIImage?
+{
+	let backgroundColor = UIColor.fromRGB(string.djb2())
+	let fontColor = backgroundColor.invertedColor()
+	let cover = UIImage.fromString(string, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor:fontColor, backgroundColor:backgroundColor, maxSize:size)
+	return cover
 }

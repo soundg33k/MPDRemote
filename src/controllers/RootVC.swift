@@ -33,6 +33,7 @@ final class RootVC : MenuVC
 	// MARK: - Private properties
 	// Albums view
 	@IBOutlet private var collectionView: UICollectionView!
+	@IBOutlet private var topConstraint: NSLayoutConstraint!
 	// Search bar
 	private var searchBar: UISearchBar! = nil
 	// Button in the navigationbar
@@ -41,8 +42,6 @@ final class RootVC : MenuVC
 	private var btnRandom: UIButton! = nil
 	// Repeat button
 	private var btnRepeat: UIButton! = nil
-	// Detailed album view
-	private var albumDetailVC: AlbumDetailVC! = nil
 	// Should show the search view, flag
 	private var searchBarVisible = false
 	// Is currently searching, flag
@@ -62,19 +61,12 @@ final class RootVC : MenuVC
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		//self.automaticallyAdjustsScrollViewInsets = false
-		//self.view.backgroundColor = UIColor.fromRGB(0x131313)
+		// Remove back button label
+		self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
 
 		// Customize navbar
 		let headerColor = UIColor.whiteColor()
 		let navigationBar = (self.navigationController?.navigationBar)!
-		/*navigationBar.barTintColor = UIColor.fromRGB(kNYXAppColor)
-		navigationBar.tintColor = headerColor
-		navigationBar.translucent = false
-		navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : headerColor]
-		navigationBar.setBackgroundImage(UIImage(), forBarPosition:.Any, barMetrics:.Default)
-		navigationBar.shadowImage = UIImage()*/
-		//self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
 
 		// Searchbar
 		let searchView = UIView(frame:CGRect(0.0, 0.0, navigationBar.width, 64.0))
@@ -94,7 +86,7 @@ final class RootVC : MenuVC
 		self.titleView.addTarget(self, action:#selector(changeTypeAction(_:)), forControlEvents:.TouchUpInside)
 		self.navigationItem.titleView = self.titleView
 
-		// Random & repeat buttons
+		// Random button
 		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
 		let imageRandom = UIImage(named:"btn-random")
 		self.btnRandom = UIButton(type:.Custom)
@@ -106,6 +98,7 @@ final class RootVC : MenuVC
 		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 		self.navigationController?.navigationBar.addSubview(self.btnRandom)
 
+		// Repeat button
 		let loop = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat)
 		let imageRepeat = UIImage(named:"btn-repeat")
 		self.btnRepeat = UIButton(type:.Custom)
@@ -118,15 +111,10 @@ final class RootVC : MenuVC
 		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
 
 		// Create collection view
-		/*let layout = UICollectionViewFlowLayout()
-		self.collectionView = UICollectionView(frame:CGRect(0.0, 0.0, self.view.width, self.view.height - 64.0), collectionViewLayout:layout)
-		self.collectionView.dataSource = self
-		self.collectionView.delegate = self
 		self.collectionView.registerClass(AlbumCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
-		self.collectionView.backgroundColor = UIColor.fromRGB(0xECECEC)
-		self.collectionView.scrollsToTop = true
-		self.view.addSubview(self.collectionView)*/
-		self.collectionView.registerClass(AlbumCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
+		(self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
+		let w = ceil((/*collectionView.width*/UIScreen.mainScreen().bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
+		(self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
 
 		// Longpress
 		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(longPress(_:)))
@@ -224,11 +212,25 @@ final class RootVC : MenuVC
 
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
 	{
-		if segue.identifier == "albumstodetail"
+		if segue.identifier == "root-albums-to-detail-album"
 		{
 			let vc = segue.destinationViewController as! AlbumDetailVC
 			vc.albums = self.searching ? self.searchResults as! [Album] : MPDDataSource.shared.albums
 			vc.selectedIndex = self.collectionView.indexPathsForSelectedItems()![0].row
+		}
+		else if segue.identifier == "root-genres-to-artists"
+		{
+			let row = self.collectionView.indexPathsForSelectedItems()![0].row
+			let genre = self.searching ? self.searchResults[row] as! Genre : MPDDataSource.shared.genres[row]
+			let vc = segue.destinationViewController as! ArtistsVC
+			vc.genre = genre
+		}
+		else if segue.identifier == "root-artists-to-albums"
+		{
+			let row = self.collectionView.indexPathsForSelectedItems()![0].row
+			let artist = self.searching ? self.searchResults[row] as! Artist : MPDDataSource.shared.artists[row]
+			let vc = segue.destinationViewController as! AlbumsVC
+			vc.artist = artist
 		}
 	}
 
@@ -410,7 +412,8 @@ final class RootVC : MenuVC
 		{
 			self.view.backgroundColor = UIColor.fromRGB(0xECECEC)
 			UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
-				self.collectionView.y = self.collectionView.y - self._typeChoiceView.height
+				self.topConstraint.constant = 0.0;
+				self.collectionView.layoutIfNeeded()
 			}, completion:{ finished in
 				self._typeChoiceView.removeFromSuperview()
 			})
@@ -420,8 +423,11 @@ final class RootVC : MenuVC
 			self.view.backgroundColor = UIColor.blackColor()
 			self._typeChoiceView.tableView.reloadData()
 			self.view.insertSubview(self._typeChoiceView, belowSubview:self.collectionView)
+			self.topConstraint.constant = self._typeChoiceView.height;
+
 			UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
-				self.collectionView.y = self.collectionView.y + self._typeChoiceView.height
+				self.topConstraint.constant = 132.0;
+				self.collectionView.layoutIfNeeded()
 			}, completion:nil)
 		}
 	}
@@ -557,14 +563,16 @@ extension RootVC : UICollectionViewDataSource
 
 		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
 		{
-			self._configureCellWithString(cell, indexPath:indexPath, string:album.name)
+			//self._configureCellWithString(cell, indexPath:indexPath, string:album.name)
+			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
 			return
 		}
 
 		// No cover, abort
 		if !album.hasCover
 		{
-			cell.image = UIImage(named:"default-cover")
+			//cell.image = UIImage(named:"default-cover")
+			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
 			return
 		}
 
@@ -579,7 +587,8 @@ extension RootVC : UICollectionViewDataSource
 		guard let coverURL = album.localCoverURL else
 		{
 			Logger.alog("[!] No cover URL for \(album)") // should not happen
-			cell.image = UIImage(named:"default-cover")
+			//cell.image = UIImage(named:"default-cover")
+			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
 			return
 		}
 
@@ -590,7 +599,7 @@ extension RootVC : UICollectionViewDataSource
 		}
 		else
 		{
-			cell.image = UIImage(named:"default-cover")
+			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
 			if album.path != nil
 			{
 				self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
@@ -625,7 +634,8 @@ extension RootVC : UICollectionViewDataSource
 
 		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
 		{
-			self._configureCellWithString(cell, indexPath:indexPath, string:genre.name)
+			//self._configureCellWithString(cell, indexPath:indexPath, string:genre.name)
+			cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 			return
 		}
 
@@ -634,7 +644,8 @@ extension RootVC : UICollectionViewDataSource
 			// No cover, abort
 			if !album.hasCover
 			{
-				cell.image = UIImage(named:"default-cover")
+				//cell.image = UIImage(named:"default-cover")
+				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 				return
 			}
 
@@ -642,7 +653,8 @@ extension RootVC : UICollectionViewDataSource
 			guard let coverURL = album.localCoverURL else
 			{
 				Logger.alog("[!] No cover URL for \(album)") // should not happen
-				cell.image = UIImage(named:"default-cover")
+				//cell.image = UIImage(named:"default-cover")
+				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 				return
 			}
 
@@ -660,7 +672,8 @@ extension RootVC : UICollectionViewDataSource
 			}
 			else
 			{
-				cell.image = UIImage(named:"default-cover")
+				//cell.image = UIImage(named:"default-cover")
+				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 				if album.path != nil
 				{
 					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
@@ -689,7 +702,8 @@ extension RootVC : UICollectionViewDataSource
 		}
 		else
 		{
-			cell.image = UIImage(named:"default-cover")
+			//cell.image = UIImage(named:"default-cover")
+			cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 			MPDDataSource.shared.getAlbumForGenre(genre, callback: {
 				dispatch_async(dispatch_get_main_queue()) {
 					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
@@ -709,7 +723,8 @@ extension RootVC : UICollectionViewDataSource
 
 		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
 		{
-			self._configureCellWithString(cell, indexPath:indexPath, string:artist.name)
+			//self._configureCellWithString(cell, indexPath:indexPath, string:artist.name)
+			cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
 			return
 		}
 
@@ -720,7 +735,8 @@ extension RootVC : UICollectionViewDataSource
 				// No cover, abort
 				if !album.hasCover
 				{
-					cell.image = UIImage(named:"default-cover")
+					//cell.image = UIImage(named:"default-cover")
+					cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
 					return
 				}
 
@@ -728,7 +744,8 @@ extension RootVC : UICollectionViewDataSource
 				guard let coverURL = album.localCoverURL else
 				{
 					Logger.alog("[!] No cover URL for \(album)") // should not happen
-					cell.image = UIImage(named:"default-cover")
+					//cell.image = UIImage(named:"default-cover")
+					cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
 					return
 				}
 
@@ -746,7 +763,8 @@ extension RootVC : UICollectionViewDataSource
 				}
 				else
 				{
-					cell.image = UIImage(named:"default-cover")
+					//cell.image = UIImage(named:"default-cover")
+					cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
 					let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
 					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 					if album.path != nil
@@ -791,13 +809,6 @@ extension RootVC : UICollectionViewDataSource
 		}
 	}
 
-	private func _configureCellWithString(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, string: String)
-	{
-		let bgColor = UIColor.fromRGB(string.djb2())
-		let fontColor = bgColor.inverseColor()
-		cell.image = UIImage.fromString(string, font:UIFont(name:"Chalkduster", size:32.0)!, fontColor:fontColor, backgroundColor:bgColor, maxSize:cell.imageView.size)
-	}
-
 	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(cover: UIImage, thumbnail: UIImage) -> Void)
 	{
 		let downloadOperation = DownloadCoverOperation(album:album, cropSize:cropSize)
@@ -840,27 +851,11 @@ extension RootVC : UICollectionViewDelegate
 		switch self._displayType
 		{
 			case .Albums:
-				// Create detail VC
-				/*if self.albumDetailVC == nil
-				{
-					self.albumDetailVC = AlbumDetailVC()
-				}
-
-				// Set data according to search state
-				self.albumDetailVC.selectedIndex = indexPath.row
-				self.albumDetailVC.albums = self.searching ? self.searchResults as! [Album] : MPDDataSource.shared.albums
-				self.navigationController?.pushViewController(self.albumDetailVC, animated:true)*/
-				self.performSegueWithIdentifier("albumstodetail", sender: self)
+				self.performSegueWithIdentifier("root-albums-to-detail-album", sender: self)
 			case .Genres:
-				// Set data according to search state
-				let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
-				let artistsVC = ArtistsVC(genre:genre)
-				self.navigationController?.pushViewController(artistsVC, animated:true)
+				self.performSegueWithIdentifier("root-genres-to-artists", sender: self)
 			case .Artists:
-				// Set data according to search state
-				let artist = self.searching ? self.searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
-				let albumsVC = AlbumsVC(artist:artist)
-				self.navigationController?.pushViewController(albumsVC, animated:true)
+				self.performSegueWithIdentifier("root-artists-to-albums", sender: self)
 		}
 	}
 
@@ -887,22 +882,6 @@ extension RootVC : UICollectionViewDelegate
 			self._downloadOperations.removeValueForKey(key)
 			Logger.dlog("[+] Cancelling \(op)")
 		}
-	}
-}
-
-// MARK: - UICollectionViewDelegateFlowLayout
-extension RootVC : UICollectionViewDelegateFlowLayout
-{
-	func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
-	{
-		let w = ceil((collectionView.width / CGFloat(__columns)) - (2 * __sideSpan))
-		Logger.dlog("\(collectionView.width) -> \(w)")
-		return CGSize(w, w + 20.0)
-	}
-
-	func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets
-	{
-		return __insets
 	}
 }
 

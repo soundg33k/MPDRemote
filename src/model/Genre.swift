@@ -23,7 +23,7 @@
 import Foundation
 
 
-final class Genre : NSObject
+final class Genre
 {
 	// MARK: - Properties
 	// Artist name
@@ -36,9 +36,11 @@ final class Genre : NSObject
 	{
 		self.name = name
 	}
-	
-	// MARK: - Debugging
-	override var description: String
+}
+
+extension Genre : CustomStringConvertible
+{
+	var description:String
 	{
 		return "Name: <\(self.name)>\nNumber of albums: <\(self.albums.count)>"
 	}

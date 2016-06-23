@@ -42,7 +42,7 @@ final class HeaderScrollView : UIScrollView
 	// Previous or next album view
 	private(set) var sideView: AlbumHeaderView! = nil
 	// Size of the cover
-	private(set) var coverWidth = CGFloat(0.0)
+	var coverWidth = CGFloat(0.0)
 
 	// MARK: - Private properties
 	// Scroll direction changed, flag
@@ -83,7 +83,37 @@ final class HeaderScrollView : UIScrollView
 
 	required init?(coder aDecoder: NSCoder)
 	{
-	    fatalError("init(coder:) has not been implemented")
+		super.init(coder: aDecoder)
+
+		//self.coverWidth = self.frame.height
+		self.scrollEnabled = true
+		self.bounces = true
+		self.alwaysBounceHorizontal = true
+		self.alwaysBounceVertical = false
+		self.showsHorizontalScrollIndicator = false
+		self.showsVerticalScrollIndicator = false
+		self.scrollsToTop = false
+		self.delegate = self
+		//self.backgroundColor = UIColor.fromRGB(0xECECEC)
+
+		self.mainView = AlbumHeaderView(frame:CGRect(0.0, 0.0, self.frame.size))
+		self.mainView.coverSize = CGSize(self.coverWidth, self.coverWidth)
+		self.addSubview(self.mainView)
+
+		self.sideView = AlbumHeaderView(frame:CGRect(self.frame.width, 0.0, self.frame.size))
+		self.sideView.coverSize = CGSize(self.coverWidth, self.coverWidth)
+		self.addSubview(self.sideView)
+
+		self.contentSize = frame.size
+	}
+
+	override func layoutSubviews()
+	{
+		super.layoutSubviews()
+		self.mainView.frame = CGRect(0.0, 0.0, self.frame.width, frame.height)
+		self.sideView.frame = CGRect(frame.size.width, 0.0, frame.size)
+		self.mainView.coverSize = CGSize(self.coverWidth, self.coverWidth)
+		self.sideView.coverSize = CGSize(self.coverWidth, self.coverWidth)
 	}
 
 	// MARK: - Public

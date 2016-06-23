@@ -1,0 +1,135 @@
+
+/* Class = "UILabel"; text = "Playtime"; ObjectID = "1G3-eE-pFm"; */
+"1G3-eE-pFm.text" = "Durée jouée";
+
+/* Class = "UIViewController"; title = "AlbumDetailVC"; ObjectID = "1y3-hN-RBL"; */
+"1y3-hN-RBL.title" = "AlbumDetailVC";
+
+/* Class = "UILabel"; text = "Port"; ObjectID = "2ao-o6-wkn"; */
+"2ao-o6-wkn.text" = "Port";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "4ry-AI-fUe"; */
+"4ry-AI-fUe.text" = "Label";
+
+/* Class = "UITableViewSection"; headerTitle = "Database"; ObjectID = "5iW-fB-5Rx"; */
+"5iW-fB-5Rx.headerTitle" = "Base de données (MPD)";
+
+/* Class = "UILabel"; text = "Password"; ObjectID = "6te-SE-qr4"; */
+"6te-SE-qr4.text" = "Mot de passe";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "7YR-Gq-hae"; */
+"7YR-Gq-hae.text" = "Label";
+
+/* Class = "UINavigationItem"; title = "Albums"; ObjectID = "DR9-ge-WFR"; */
+"DR9-ge-WFR.title" = "Albums";
+
+/* Class = "UILabel"; text = "Clear cache"; ObjectID = "F6M-My-INM"; */
+"F6M-My-INM.text" = "Vider le cache";
+
+/* Class = "UITableViewController"; title = "StatsVC"; ObjectID = "Fvb-CB-r9W"; */
+"Fvb-CB-r9W.title" = "StatsVC";
+
+/* Class = "UITextField"; placeholder = "Optional"; ObjectID = "Gvp-BY-hz5"; */
+"Gvp-BY-hz5.placeholder" = "Optionnel";
+
+/* Class = "UINavigationController"; title = "StatsNVC"; ObjectID = "HOA-mK-H1v"; */
+"HOA-mK-H1v.title" = "StatsNVC";
+
+/* Class = "UILabel"; text = "Albums"; ObjectID = "Juq-MW-b0C"; */
+"Juq-MW-b0C.text" = "Albums";
+
+/* Class = "UINavigationController"; title = "Root Navigation Controller"; ObjectID = "Lmo-Om-6fy"; */
+"Lmo-Om-6fy.title" = "Root Navigation Controller";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Lof-rW-A7h"; */
+"Lof-rW-A7h.text" = "Label";
+
+/* Class = "UIViewController"; title = "RootVC"; ObjectID = "MXU-2Q-4s8"; */
+"MXU-2Q-4s8.title" = "RootVC";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "O1d-fl-8IY"; */
+"O1d-fl-8IY.text" = "Label";
+
+/* Class = "UILabel"; text = "Songs"; ObjectID = "Oyz-mY-KbA"; */
+"Oyz-mY-KbA.text" = "Chansons";
+
+/* Class = "UILabel"; text = "Port"; ObjectID = "PM6-Ma-bBD"; */
+"PM6-Ma-bBD.text" = "Port";
+
+/* Class = "UILabel"; text = "Last update"; ObjectID = "PSe-2I-OS0"; */
+"PSe-2I-OS0.text" = "Dernière MàJ";
+
+/* Class = "UITextField"; text = "6600"; ObjectID = "Ula-DK-VZW"; */
+"Ula-DK-VZW.text" = "6600";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Vux-AT-wta"; */
+"Vux-AT-wta.text" = "Label";
+
+/* Class = "UILabel"; text = "Artists"; ObjectID = "XUi-Ym-ZAB"; */
+"XUi-Ym-ZAB.text" = "Artistes";
+
+/* Class = "UITableViewController"; title = "Albums List"; ObjectID = "XWH-xY-wRL"; */
+"XWH-xY-wRL.title" = "Albums List";
+
+/* Class = "UITableViewSection"; headerTitle = "Cover Art"; ObjectID = "Yha-Fg-8zY"; */
+"Yha-Fg-8zY.headerTitle" = "Couverture";
+
+/* Class = "UITableViewSection"; headerTitle = "MPD server"; ObjectID = "aWW-5w-gEN"; */
+"aWW-5w-gEN.headerTitle" = "Serveur MPD";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "cwk-gK-Ena"; */
+"cwk-gK-Ena.text" = "Label";
+
+/* Class = "UILabel"; text = "Server"; ObjectID = "d0t-xH-tXU"; */
+"d0t-xH-tXU.text" = "Serveur";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "d3q-Fe-anC"; */
+"d3q-Fe-anC.text" = "Nom";
+
+/* Class = "UITableViewSection"; headerTitle = "Server"; ObjectID = "eA3-Oe-mUU"; */
+"eA3-Oe-mUU.headerTitle" = "Serveur (MPD)";
+
+/* Class = "UILabel"; text = "Cover name"; ObjectID = "gJ7-Re-faL"; */
+"gJ7-Re-faL.text" = "Nom fichier";
+
+/* Class = "UIBarButtonItem"; title = " "; ObjectID = "hL1-M9-Bsn"; */
+"hL1-M9-Bsn.title" = " ";
+
+/* Class = "UITableViewController"; title = "ServerVC"; ObjectID = "hWt-7D-M48"; */
+"hWt-7D-M48.title" = "ServerVC";
+
+/* Class = "UITextField"; placeholder = "mpd.local"; ObjectID = "hgY-GW-OCq"; */
+"hgY-GW-OCq.placeholder" = "mpd.local";
+
+/* Class = "UITextField"; placeholder = "My MPD Server"; ObjectID = "laC-TR-fsQ"; */
+"laC-TR-fsQ.placeholder" = "Mon serveur MPD";
+
+/* Class = "UITextField"; text = "cover.jpg"; ObjectID = "m3s-av-gfi"; */
+"m3s-av-gfi.text" = "cover.jpg";
+
+/* Class = "UINavigationController"; title = "ServerNVC"; ObjectID = "nzF-sE-6Iy"; */
+"nzF-sE-6Iy.title" = "ServerNVC";
+
+/* Class = "UILabel"; text = "Uptime"; ObjectID = "pyw-dE-T1f"; */
+"pyw-dE-T1f.text" = "Uptime";
+
+/* Class = "UILabel"; text = "Playtime"; ObjectID = "r2V-K7-HS1"; */
+"r2V-K7-HS1.text" = "Durée totale";
+
+/* Class = "UILabel"; text = "URL"; ObjectID = "t9F-ho-Idh"; */
+"t9F-ho-Idh.text" = "URL";
+
+/* Class = "UITextField"; placeholder = "http://mpd.local"; ObjectID = "wKp-Ef-iOp"; */
+"wKp-Ef-iOp.placeholder" = "http://mpd.local";
+
+/* Class = "UITextField"; text = "8080"; ObjectID = "wRg-oi-9dh"; */
+"wRg-oi-9dh.text" = "8080";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "ysF-Bl-UWW"; */
+"ysF-Bl-UWW.text" = "Label";
+
+/* Class = "UIButton"; accessibilityLabel = "Next track"; ObjectID = "uvF-2h-IoX"; */
+"uvF-2h-IoX.accessibilityLabel" = "Piste suivante";
+
+/* Class = "UIButton"; accessibilityLabel = "Previous track"; ObjectID = "qc6-Xc-sQp"; */
+"qc6-Xc-sQp.accessibilityLabel" = "Piste précédente";

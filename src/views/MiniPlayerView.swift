@@ -71,7 +71,7 @@ final class MiniPlayerView : UIView, PTappable
 		self.addSubview(blurEffectView)
 
 		self.imageView = UIImageView(frame:CGRect(0.0, 0.0, frame.height, frame.height))
-		self.imageView.image = UIImage(named:"default-cover")
+		//self.imageView.image = UIImage(named:"default-cover")
 		blurEffectView.contentView.addSubview(self.imageView)
 
 		// Vibrancy over the play/pause button
@@ -132,6 +132,16 @@ final class MiniPlayerView : UIView, PTappable
 	{
 		self.lblTitle.text = track.title
 		self.lblArtist.text = track.artist
+
+		if album.hasCover == false
+		{
+			guard let image = generateCoverForAlbum(album, size: self.imageView.size) else {return}
+			let x = KawaiiColors(image:image)
+			x.analyze()
+			self.imageView.image = image
+			return
+		}
+
 		guard let url = album.localCoverURL else {return}
 		if let image = UIImage(contentsOfFile:url.path!)
 		{

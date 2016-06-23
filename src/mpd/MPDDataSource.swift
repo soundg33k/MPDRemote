@@ -272,7 +272,7 @@ final class MPDDataSource
 
 extension MPDDataSource : MPDConnectionDelegate
 {
-	@objc func albumMatchingName(name: String) -> Album?
+	func albumMatchingName(name: String) -> Album?
 	{
 		let albums = MPDDataSource.shared.albums
 		return albums.filter({$0.name == name}).first
