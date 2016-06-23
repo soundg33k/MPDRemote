@@ -86,7 +86,7 @@ final class AlbumHeaderView : UIView
 
 	required init?(coder aDecoder: NSCoder)
 	{
-	    fatalError("init(coder:) has not been implemented")
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	// MARK: - Drawing
@@ -123,12 +123,14 @@ final class AlbumHeaderView : UIView
 			}
 			else
 			{
-				image = UIImage(named:"default-cover")
+				let coverSize = NSKeyedUnarchiver.unarchiveObjectWithData(NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!) as! NSValue
+				image = generateCoverForAlbum(album, size: coverSize.CGSizeValue())
 			}
 		}
 		else
 		{
-			image = UIImage(named:"default-cover")
+			let coverSize = NSKeyedUnarchiver.unarchiveObjectWithData(NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!) as! NSValue
+			image = generateCoverForAlbum(album, size: coverSize.CGSizeValue())
 		}
 		self.image = image
 
@@ -137,9 +139,13 @@ final class AlbumHeaderView : UIView
 		x.analyze()
 		self.backgroundColor = x.edgeColor
 		self.lblTitle.textColor = x.primaryColor
+		self.lblTitle.backgroundColor = self.backgroundColor
 		self.lblArtist.textColor = x.secondaryColor
+		self.lblArtist.backgroundColor = self.backgroundColor
 		self.lblGenre.textColor = x.thirdColor
+		self.lblGenre.backgroundColor = self.backgroundColor
 		self.lblYear.textColor = x.thirdColor
+		self.lblYear.backgroundColor = self.backgroundColor
 
 		self.setNeedsDisplay()
 

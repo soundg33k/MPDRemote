@@ -24,9 +24,9 @@ import MPDCLIENT
 import UIKit
 
 
-@objc protocol MPDConnectionDelegate : class
+protocol MPDConnectionDelegate : class
 {
-	optional func albumMatchingName(name: String) -> Album?
+	func albumMatchingName(name: String) -> Album?
 }
 
 
@@ -209,7 +209,7 @@ final class MPDConnection
 		{
 			if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(pair.memory.value), length:Int(strlen(pair.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
 			{
-				if let album = self.delegate?.albumMatchingName!(name)
+				if let album = self.delegate?.albumMatchingName(name)
 				{
 					list.append(album)
 				}
@@ -252,7 +252,7 @@ final class MPDConnection
 		{
 			if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(pair.memory.value), length:Int(strlen(pair.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
 			{
-				if let album = self.delegate?.albumMatchingName!(name)
+				if let album = self.delegate?.albumMatchingName(name)
 				{
 					list.append(album)
 				}
@@ -656,7 +656,7 @@ final class MPDConnection
 		let tmp = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0)
 		if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmp), length:Int(strlen(tmp)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
 		{
-			if let album = self.delegate?.albumMatchingName!(name)
+			if let album = self.delegate?.albumMatchingName(name)
 			{
 				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state.rawValue]
 			}

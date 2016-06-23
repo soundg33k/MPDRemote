@@ -50,7 +50,12 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
+<<<<<<< HEAD
       allowLocationSimulation = "YES">
+=======
+      allowLocationSimulation = "YES"
+      language = "fr">
+>>>>>>> storyboarding
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference

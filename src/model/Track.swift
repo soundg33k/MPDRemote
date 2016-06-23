@@ -23,7 +23,7 @@
 import Foundation
 
 
-final class Track : NSObject
+final class Track
 {
 	// MARK: - Properties
 	// Track title
@@ -48,9 +48,11 @@ final class Track : NSObject
 		self.trackNumber = trackNumber
 		self.uri = uri
 	}
+}
 
-	// MARK: - Debugging
-	override var description: String
+extension Track : CustomStringConvertible
+{
+	var description:String
 	{
 		return "Title: <\(self.title)>\nArtist: <\(self.artist)>\nDuration: <\(self.duration)>\nTrack: <\(self.trackNumber)>\nURI: <\(self.uri)>\nPosition: <\(self.position)>"
 	}
@@ -60,4 +62,9 @@ final class Track : NSObject
 func == (lhs: Track, rhs: Track) -> Bool
 {
 	return (lhs.title == rhs.title) && (lhs.artist == rhs.artist) && (lhs.duration == rhs.duration) && (lhs.trackNumber == rhs.trackNumber) && (lhs.uri == rhs.uri)
+}
+
+func != (lhs: Track, rhs: Track) -> Bool
+{
+	return !(lhs == rhs)
 }

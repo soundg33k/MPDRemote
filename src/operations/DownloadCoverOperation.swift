@@ -196,4 +196,9 @@ extension DownloadCoverOperation : NSURLSessionDelegate
 		self.processData()
 		self.finished = true
 	}
+
+	func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void)
+	{
+		completionHandler(.UseCredential, NSURLCredential(forTrust: challenge.protectionSpace.serverTrust!))
+	}
 }

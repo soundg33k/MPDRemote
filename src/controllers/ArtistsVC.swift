@@ -27,7 +27,7 @@ final class ArtistsVC : UITableViewController
 {
 	// MARK: - Private properties
 	// Selected genre
-	private let genre: Genre
+	var genre: Genre! = nil
 	// List of artists
 	private var artists = [Artist]()
 	// Label in the navigationbar
@@ -36,29 +36,19 @@ final class ArtistsVC : UITableViewController
 	private var _downloadOperations = [String : NSOperation]()
 
 	// MARK: - Initializers
-	init(genre: Genre)
-	{
-		self.genre = genre
-		super.init(nibName:nil, bundle:nil)
-	}
-
 	required init?(coder aDecoder: NSCoder)
 	{
-		fatalError("init(coder:) has not been implemented")
+		super.init(coder:aDecoder)
 	}
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		self.automaticallyAdjustsScrollViewInsets = false
 		// Remove back button label
 		self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
 
 		// Tableview
-		self.tableView.registerClass(ArtistTableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.artist")
-		self.tableView.backgroundColor = UIColor.fromRGB(0xECECEC)
-		self.tableView.separatorStyle = .None
 		self.tableView.tableFooterView = UIView()
 
 		// Navigation bar title
@@ -67,6 +57,7 @@ final class ArtistsVC : UITableViewController
 		self.titleView.textAlignment = .Center
 		self.titleView.isAccessibilityElement = false
 		self.titleView.textColor = self.navigationController?.navigationBar.tintColor
+		self.titleView.backgroundColor = self.navigationController?.navigationBar.barTintColor
 		self.navigationItem.titleView = self.titleView
 	}
 
@@ -91,6 +82,15 @@ final class ArtistsVC : UITableViewController
 	override func preferredStatusBarStyle() -> UIStatusBarStyle
 	{
 		return .LightContent
+	}
+
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+	{
+		if segue.identifier == "artists-to-albums"
+		{
+			let vc = segue.destinationViewController as! AlbumsVC
+			vc.artist = self.artists[self.tableView.indexPathForSelectedRow!.row]
+		}
 	}
 
 	// MARK: - Private
@@ -135,9 +135,7 @@ extension ArtistsVC
 		// No server for covers
 		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
 		{
-			let bgColor = UIColor.fromRGB(artist.name.djb2())
-			let fontColor = bgColor.inverseColor()
-			cell.coverView.image = UIImage.fromString(artist.name, font:UIFont(name:"Chalkduster", size:14.0)!, fontColor:fontColor, backgroundColor:bgColor, maxSize:cell.coverView.size)
+			cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
 			return cell
 		}
 
@@ -149,7 +147,7 @@ extension ArtistsVC
 				// No cover, abort
 				if !album.hasCover
 				{
-					cell.coverView.image = UIImage(named:"default-cover")
+					cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
 					return cell
 				}
 
@@ -157,7 +155,7 @@ extension ArtistsVC
 				guard let coverURL = album.localCoverURL else
 				{
 					Logger.alog("[!] No cover URL for \(album)") // should not happen
-					cell.coverView.image = UIImage(named:"default-cover")
+					cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
 					return cell
 				}
 
@@ -175,7 +173,7 @@ extension ArtistsVC
 				}
 				else
 				{
-					cell.coverView.image = UIImage(named:"default-cover")
+					cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
 					let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
 					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 					if album.path != nil
@@ -251,18 +249,7 @@ extension ArtistsVC
 			return
 		}
 
-		let vc = AlbumsVC(artist:self.artists[indexPath.row])
-		self.navigationController?.pushViewController(vc, animated:true)
-		tableView.deselectRowAtIndexPath(indexPath, animated:true)
-	}
-
-	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
-	{
-		let c = cell as! ArtistTableViewCell
-		c.coverView.frame = CGRect(5.0, (c.height - c.coverView.height) * 0.5, c.coverView.size)
-		c.lblArtist.frame = CGRect(c.coverView.right + 10.0, c.coverView.y, c.width - c.coverView.right - 40.0, c.lblArtist.height)
-		c.lblAlbums.frame = CGRect(c.lblArtist.x, c.height - c.lblAlbums.height, c.lblAlbums.size)
-		c.separator.frame = CGRect(0.0, c.height - c.separator.height, c.width, c.separator.height)
+		self.performSegueWithIdentifier("artists-to-albums", sender: self)
 	}
 
 	override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)

@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class Album : NSObject
+final class Album
 {
 	// MARK: - Properties
 	// Album name
@@ -59,9 +59,11 @@ final class Album : NSObject
 
 		self.artist = artist
 	}
+}
 
-	// MARK: - Debugging
-	override var description: String
+extension Album : CustomStringConvertible
+{
+	var description:String
 	{
 		return "Name: <\(self.name)>\nArtist: <\(self.artist)>\nGenre: <\(self.genre)>\nYear: <\(self.year)>\nPath: <\(self.path)>"
 	}

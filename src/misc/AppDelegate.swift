@@ -35,15 +35,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	private(set) var homeVC: UIViewController! = nil
 	// Server configuration VC
 	private(set) lazy var serverVC: UIViewController = {
-		return NYXNavigationController(rootViewController:ServerVC())
+		let sb = UIStoryboard(name: "main", bundle: nil)
+		let vc = sb.instantiateViewControllerWithIdentifier("ServerNVC")
+		return vc
 	}()
 	// Player VC
 	private(set) lazy var playerVC: PlayerVC = {
-		return PlayerVC()
+		let sb = UIStoryboard(name: "main", bundle: nil)
+		let vc = sb.instantiateViewControllerWithIdentifier("PlayerVC")
+		return vc as! PlayerVC
 	}()
 	// Stats VC
 	private(set) lazy var statsVC: UIViewController = {
-		return NYXNavigationController(rootViewController:StatsVC())
+		let sb = UIStoryboard(name: "main", bundle: nil)
+		let vc = sb.instantiateViewControllerWithIdentifier("StatsNVC")
+		return vc
 	}()
 
 	// MARK: - UIApplicationDelegate
@@ -59,10 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		self.operationQueue = NSOperationQueue()
 		self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
 
-		self.homeVC = UIDevice.isPhone() ? NYXNavigationController(rootViewController:RootVC()) : UIViewController()
-		self.window = UIWindow()
-		self.window?.rootViewController = self.homeVC
-		self.window?.makeKeyAndVisible()
+		self.homeVC = self.window?.rootViewController
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:kNYXNotificationMiniPlayerShouldExpand, object:nil)
 

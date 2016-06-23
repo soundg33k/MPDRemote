@@ -33,28 +33,26 @@ final class AlbumDetailVC : UIViewController
 
 	// MARK: - Private properties
 	// Header view (cover + album name, artist)
-	private var headerView: HeaderScrollView! = nil
+	@IBOutlet private var headerView: HeaderScrollView! = nil
+	// Header height constraint
+	@IBOutlet private var headerHeightConstraint: NSLayoutConstraint! = nil
+	// Dummy view for shadow
+	@IBOutlet private var dummyView: UIView! = nil
 	// Tableview for song list
-	private var tableView: UITableView! = nil
+	@IBOutlet private var tableView: UITableView! = nil
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 
 	// MARK: - Initializers
-	init()
-	{
-		super.init(nibName:nil, bundle:nil)
-	}
-
 	required init?(coder aDecoder: NSCoder)
 	{
-	    fatalError("init(coder:) has not been implemented")
+		super.init(coder:aDecoder)
 	}
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		self.automaticallyAdjustsScrollViewInsets = false
 
 		// Navigation bar title
 		self.titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
@@ -62,36 +60,24 @@ final class AlbumDetailVC : UIViewController
 		self.titleView.textAlignment = .Center
 		self.titleView.isAccessibilityElement = false
 		self.titleView.textColor = self.navigationController?.navigationBar.tintColor
+		self.titleView.backgroundColor = self.navigationController?.navigationBar.barTintColor
 		self.navigationItem.titleView = self.titleView
 
 		// Album header view
 		let coverSize = NSKeyedUnarchiver.unarchiveObjectWithData(NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!) as! NSValue
-		self.headerView = HeaderScrollView(frame:CGRect(CGPointZero, self.view.width, coverSize.CGSizeValue().height))
+		self.headerView.coverWidth = coverSize.CGSizeValue().width
+		self.headerHeightConstraint.constant = coverSize.CGSizeValue().height
 		self.headerView.navDelegate = self
-		self.view.addSubview(self.headerView)
 
 		// Dummy tableview host, to create a nice shadow effect
-		let yOffset = CGFloat(64.0) // at this point the self.view.height doesn't include the navbar height, so there's an offset
-		let height = self.view.height - self.headerView.height - yOffset
-		let dummy = UIView(frame:CGRect(0.0, self.headerView.bottom, self.view.width, height))
-		dummy.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, self.view.width + 4.0, 4.0)).CGPath
-		dummy.layer.shadowRadius = 3.0
-		dummy.layer.shadowOpacity = 1.0
-		dummy.layer.shadowColor = UIColor.blackColor().CGColor
-		dummy.layer.masksToBounds = false
-		self.view.addSubview(dummy)
+		dummyView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, self.view.width + 4.0, 4.0)).CGPath
+		dummyView.layer.shadowRadius = 3.0
+		dummyView.layer.shadowOpacity = 1.0
+		dummyView.layer.shadowColor = UIColor.blackColor().CGColor
+		dummyView.layer.masksToBounds = false
 
 		// Tableview
-		self.tableView = UITableView(frame:dummy.bounds, style:.Plain)
-		self.tableView.registerClass(TrackTableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.track")
-		self.tableView.dataSource = self
-		self.tableView.delegate = self
-		self.tableView.backgroundColor = UIColor.fromRGB(0xECECEC)
-		self.tableView.separatorInset = UIEdgeInsets(top:0.0, left:8.0, bottom:0.0, right:8.0)
-		self.tableView.separatorColor = UIColor.fromRGB(0xCCCCCC)
-		self.tableView.rowHeight = 44.0
 		self.tableView.tableFooterView = UIView()
-		dummy.addSubview(self.tableView)
 
 		// Notif for frame changes
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
@@ -315,16 +301,6 @@ extension AlbumDetailVC : UITableViewDataSource
 // MARK: - UITableViewDelegate
 extension AlbumDetailVC : UITableViewDelegate
 {
-	func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
-	{
-		let c = cell as! TrackTableViewCell
-		let margin = CGFloat(8.0)
-		c.lblTrack.frame = CGRect(margin, (c.height - c.lblTrack.height) * 0.5, c.lblTrack.size)
-		c.lblTitle.frame = CGRect(c.lblTrack.right + margin, (c.height - c.lblTitle.height) * 0.5, ((c.lblDuration.left - margin) - (c.lblTrack.right + margin)), c.lblTitle.height)
-		c.lblDuration.frame = CGRect(c.right - c.lblDuration.width - margin, (c.height - c.lblDuration.height) * 0.5, c.lblDuration.size)
-		c.ivPlayback.frame = CGRect(margin, (c.height - c.ivPlayback.height) * 0.5, c.ivPlayback.size)
-	}
-
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
 	{
 		tableView.deselectRowAtIndexPath(indexPath, animated:true)
