@@ -336,30 +336,30 @@
                                             <exclude reference="RrV-dE-rsX"/>
                                         </mask>
                                         <mask key="constraints">
-                                            <exclude reference="Jul-WC-Zdc"/>
-                                            <exclude reference="yLg-8i-bJj"/>
                                             <exclude reference="MIt-eN-95R"/>
                                             <exclude reference="MR4-an-6D4"/>
                                             <exclude reference="qfc-FL-XTO"/>
-                                            <exclude reference="6hv-Iu-wEJ"/>
-                                            <exclude reference="w80-PC-ke8"/>
+                                            <exclude reference="cAi-x0-MoI"/>
+                                            <exclude reference="wcO-iD-ri1"/>
+                                            <exclude reference="xph-gN-fZD"/>
                                             <exclude reference="aEh-HE-fiM"/>
                                             <exclude reference="mCl-0N-Bpm"/>
+                                            <exclude reference="bCe-qP-Nm1"/>
+                                            <exclude reference="u12-ND-CYW"/>
+                                            <exclude reference="CKP-OA-5Fu"/>
+                                            <exclude reference="rJZ-PM-JKg"/>
+                                            <exclude reference="6hv-Iu-wEJ"/>
+                                            <exclude reference="w80-PC-ke8"/>
+                                            <exclude reference="NQE-EB-VBJ"/>
+                                            <exclude reference="WVC-S4-YnZ"/>
+                                            <exclude reference="Jul-WC-Zdc"/>
+                                            <exclude reference="yLg-8i-bJj"/>
                                             <exclude reference="7Pz-Sz-NXe"/>
                                             <exclude reference="G4h-6q-kU5"/>
                                             <exclude reference="Pgp-Ew-mxW"/>
                                             <exclude reference="vnt-Kv-YYU"/>
-                                            <exclude reference="cAi-x0-MoI"/>
-                                            <exclude reference="wcO-iD-ri1"/>
-                                            <exclude reference="xph-gN-fZD"/>
-                                            <exclude reference="NQE-EB-VBJ"/>
-                                            <exclude reference="WVC-S4-YnZ"/>
                                             <exclude reference="hHJ-BM-7ws"/>
                                             <exclude reference="ll0-we-QiZ"/>
-                                            <exclude reference="CKP-OA-5Fu"/>
-                                            <exclude reference="rJZ-PM-JKg"/>
-                                            <exclude reference="bCe-qP-Nm1"/>
-                                            <exclude reference="u12-ND-CYW"/>
                                         </mask>
                                     </variation>
                                     <variation key="heightClass=regular">
@@ -373,19 +373,19 @@
                                             <include reference="RrV-dE-rsX"/>
                                         </mask>
                                         <mask key="constraints">
-                                            <include reference="Jul-WC-Zdc"/>
-                                            <include reference="yLg-8i-bJj"/>
                                             <include reference="MIt-eN-95R"/>
                                             <include reference="MR4-an-6D4"/>
                                             <include reference="qfc-FL-XTO"/>
-                                            <include reference="6hv-Iu-wEJ"/>
-                                            <include reference="w80-PC-ke8"/>
                                             <include reference="aEh-HE-fiM"/>
                                             <include reference="mCl-0N-Bpm"/>
-                                            <include reference="7Pz-Sz-NXe"/>
-                                            <include reference="G4h-6q-kU5"/>
+                                            <include reference="6hv-Iu-wEJ"/>
+                                            <include reference="w80-PC-ke8"/>
                                             <include reference="NQE-EB-VBJ"/>
                                             <include reference="WVC-S4-YnZ"/>
+                                            <include reference="Jul-WC-Zdc"/>
+                                            <include reference="yLg-8i-bJj"/>
+                                            <include reference="7Pz-Sz-NXe"/>
+                                            <include reference="G4h-6q-kU5"/>
                                         </mask>
                                     </variation>
                                     <variation key="heightClass=regular-widthClass=compact">
@@ -396,17 +396,17 @@
                                             <include reference="uo6-J8-SKh"/>
                                         </mask>
                                         <mask key="constraints">
-                                            <include reference="Pgp-Ew-mxW"/>
-                                            <include reference="vnt-Kv-YYU"/>
                                             <include reference="cAi-x0-MoI"/>
                                             <include reference="wcO-iD-ri1"/>
                                             <include reference="xph-gN-fZD"/>
-                                            <include reference="hHJ-BM-7ws"/>
-                                            <include reference="ll0-we-QiZ"/>
-                                            <include reference="CKP-OA-5Fu"/>
-                                            <include reference="rJZ-PM-JKg"/>
                                             <include reference="bCe-qP-Nm1"/>
                                             <include reference="u12-ND-CYW"/>
+                                            <include reference="CKP-OA-5Fu"/>
+                                            <include reference="rJZ-PM-JKg"/>
+                                            <include reference="Pgp-Ew-mxW"/>
+                                            <include reference="vnt-Kv-YYU"/>
+                                            <include reference="hHJ-BM-7ws"/>
+                                            <include reference="ll0-we-QiZ"/>
                                         </mask>
                                     </variation>
                                 </view>
@@ -606,7 +606,7 @@
                                                                 <constraint firstAttribute="height" constant="14" id="g5s-3B-WJO"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="10"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9Kh-Vh-VT3">
@@ -1568,13 +1568,13 @@
         </scene>
     </scenes>
     <resources>
-        <image name="btn-next" width="32" height="32"/>
-        <image name="btn-play" width="32" height="32"/>
-        <image name="btn-previous" width="32" height="32"/>
+        <image name="btn-next" width="436" height="436"/>
+        <image name="btn-play" width="357" height="357"/>
+        <image name="btn-previous" width="436" height="436"/>
         <image name="btn-random" width="20" height="20"/>
         <image name="btn-repeat" width="20" height="20"/>
-        <image name="img-volume-hi" width="32" height="32"/>
-        <image name="img-volume-lo" width="32" height="32"/>
+        <image name="img-volume-hi" width="16" height="16"/>
+        <image name="img-volume-lo" width="16" height="16"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="NP2-1J-4Qz"/>

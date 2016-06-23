@@ -33,6 +33,7 @@ final class RootVC : MenuVC
 	// MARK: - Private properties
 	// Albums view
 	@IBOutlet private var collectionView: UICollectionView!
+	// Top constraint for collection view
 	@IBOutlet private var topConstraint: NSLayoutConstraint!
 	// Search bar
 	private var searchBar: UISearchBar! = nil
@@ -62,72 +63,72 @@ final class RootVC : MenuVC
 	{
 		super.viewDidLoad()
 		// Remove back button label
-		self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
+		navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
 
 		// Customize navbar
 		let headerColor = UIColor.whiteColor()
-		let navigationBar = (self.navigationController?.navigationBar)!
+		let navigationBar = (navigationController?.navigationBar)!
 
 		// Searchbar
 		let searchView = UIView(frame:CGRect(0.0, 0.0, navigationBar.width, 64.0))
 		searchView.backgroundColor = navigationBar.barTintColor
-		self.navigationController?.view.insertSubview(searchView, belowSubview:navigationBar)
-		self.searchBar = UISearchBar(frame:navigationBar.frame)
-		self.searchBar.searchBarStyle = .Minimal
-		self.searchBar.barTintColor = searchView.backgroundColor
-		self.searchBar.tintColor = navigationBar.tintColor
-		(self.searchBar.valueForKey("searchField") as? UITextField)?.textColor = headerColor
-		self.searchBar.showsCancelButton = true
-		self.searchBar.delegate = self
-		searchView.addSubview(self.searchBar)
+		navigationController?.view.insertSubview(searchView, belowSubview:navigationBar)
+		searchBar = UISearchBar(frame:navigationBar.frame)
+		searchBar.searchBarStyle = .Minimal
+		searchBar.barTintColor = searchView.backgroundColor
+		searchBar.tintColor = navigationBar.tintColor
+		(searchBar.valueForKey("searchField") as? UITextField)?.textColor = headerColor
+		searchBar.showsCancelButton = true
+		searchBar.delegate = self
+		searchView.addSubview(searchBar)
 
 		// Navigation bar title
-		self.titleView = UIButton(frame:CGRect(0.0, 0.0, 100.0, navigationBar.height))
-		self.titleView.addTarget(self, action:#selector(changeTypeAction(_:)), forControlEvents:.TouchUpInside)
-		self.navigationItem.titleView = self.titleView
+		titleView = UIButton(frame:CGRect(0.0, 0.0, 100.0, navigationBar.height))
+		titleView.addTarget(self, action:#selector(changeTypeAction(_:)), forControlEvents:.TouchUpInside)
+		navigationItem.titleView = titleView
 
 		// Random button
 		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
 		let imageRandom = UIImage(named:"btn-random")
-		self.btnRandom = UIButton(type:.Custom)
-		self.btnRandom.frame = CGRect((self.navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
-		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
-		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
-		self.btnRandom.selected = random
-		self.btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
-		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
-		self.navigationController?.navigationBar.addSubview(self.btnRandom)
+		btnRandom = UIButton(type:.Custom)
+		btnRandom.frame = CGRect((navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
+		btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
+		btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
+		btnRandom.selected = random
+		btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
+		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+		navigationController?.navigationBar.addSubview(btnRandom)
 
 		// Repeat button
 		let loop = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat)
 		let imageRepeat = UIImage(named:"btn-repeat")
-		self.btnRepeat = UIButton(type:.Custom)
-		self.btnRepeat.frame = CGRect((self.navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
-		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
-		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
-		self.btnRepeat.selected = loop
-		self.btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
-		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
-		self.navigationController?.navigationBar.addSubview(self.btnRepeat)
+		btnRepeat = UIButton(type:.Custom)
+		btnRepeat.frame = CGRect((navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
+		btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
+		btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
+		btnRepeat.selected = loop
+		btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
+		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
+		navigationController?.navigationBar.addSubview(btnRepeat)
 
 		// Create collection view
-		self.collectionView.registerClass(AlbumCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
-		(self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
+		collectionView.registerClass(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
+		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
 		let w = ceil((/*collectionView.width*/UIScreen.mainScreen().bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
-		(self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
+		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
 
 		// Longpress
 		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(longPress(_:)))
 		longPress.minimumPressDuration = 0.5
 		longPress.delaysTouchesBegan = true
-		self.collectionView.addGestureRecognizer(longPress)
+		collectionView.addGestureRecognizer(longPress)
 
 		// Double tap
 		let doubleTap = UITapGestureRecognizer(target:self, action:#selector(doubleTap(_:)))
 		doubleTap.numberOfTapsRequired = 2
 		doubleTap.numberOfTouchesRequired = 1
 		doubleTap.delaysTouchesBegan = true
-		self.collectionView.addGestureRecognizer(doubleTap)
+		collectionView.addGestureRecognizer(doubleTap)
 
 		_ = MiniPlayerView.shared.visible
 	}
@@ -144,12 +145,12 @@ final class RootVC : MenuVC
 					// Data source
 					MPDDataSource.shared.server = server
 					MPDDataSource.shared.initialize()
-					if self._displayType != .Albums
+					if _displayType != .Albums
 					{
 						// Always fetch the albums list
 						MPDDataSource.shared.getListForDisplayType(.Albums, callback:{})
 					}
-					MPDDataSource.shared.getListForDisplayType(self._displayType, callback:{
+					MPDDataSource.shared.getListForDisplayType(_displayType, callback:{
 						dispatch_async(dispatch_get_main_queue()) {
 							self.collectionView.reloadData()
 							self._updateNavigationTitle()
@@ -165,7 +166,7 @@ final class RootVC : MenuVC
 					let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_server_need_check"), preferredStyle:.Alert)
 					let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.Cancel, handler:nil)
 					alertController.addAction(cancelAction)
-					self.presentViewController(alertController, animated:true, completion:nil)
+					presentViewController(alertController, animated:true, completion:nil)
 				}
 			}
 			else
@@ -177,17 +178,17 @@ final class RootVC : MenuVC
 		}
 
 		// Since we are in search mode, show the bar
-		if self.searching
+		if searching
 		{
-			self._hideNavigationBar(animated:true)
+			_hideNavigationBar(animated:true)
 		}
 
 		// Deselect cell
-		if let idxs = self.collectionView.indexPathsForSelectedItems()
+		if let idxs = collectionView.indexPathsForSelectedItems()
 		{
 			for indexPath in idxs
 			{
-				self.collectionView.deselectItemAtIndexPath(indexPath, animated:true)
+				collectionView.deselectItemAtIndexPath(indexPath, animated:true)
 			}
 		}
 	}
@@ -197,7 +198,7 @@ final class RootVC : MenuVC
 		super.viewWillDisappear(animated)
 
 		APP_DELEGATE().operationQueue.cancelAllOperations()
-		self._downloadOperations.removeAll()
+		_downloadOperations.removeAll()
 	}
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
@@ -215,20 +216,20 @@ final class RootVC : MenuVC
 		if segue.identifier == "root-albums-to-detail-album"
 		{
 			let vc = segue.destinationViewController as! AlbumDetailVC
-			vc.albums = self.searching ? self.searchResults as! [Album] : MPDDataSource.shared.albums
-			vc.selectedIndex = self.collectionView.indexPathsForSelectedItems()![0].row
+			vc.albums = searching ? searchResults as! [Album] : MPDDataSource.shared.albums
+			vc.selectedIndex = collectionView.indexPathsForSelectedItems()![0].row
 		}
 		else if segue.identifier == "root-genres-to-artists"
 		{
-			let row = self.collectionView.indexPathsForSelectedItems()![0].row
-			let genre = self.searching ? self.searchResults[row] as! Genre : MPDDataSource.shared.genres[row]
+			let row = collectionView.indexPathsForSelectedItems()![0].row
+			let genre = searching ? searchResults[row] as! Genre : MPDDataSource.shared.genres[row]
 			let vc = segue.destinationViewController as! ArtistsVC
 			vc.genre = genre
 		}
 		else if segue.identifier == "root-artists-to-albums"
 		{
-			let row = self.collectionView.indexPathsForSelectedItems()![0].row
-			let artist = self.searching ? self.searchResults[row] as! Artist : MPDDataSource.shared.artists[row]
+			let row = collectionView.indexPathsForSelectedItems()![0].row
+			let artist = searching ? searchResults[row] as! Artist : MPDDataSource.shared.artists[row]
 			let vc = segue.destinationViewController as! AlbumsVC
 			vc.artist = artist
 		}
@@ -242,15 +243,15 @@ final class RootVC : MenuVC
 			return
 		}
 
-		if let indexPath = self.collectionView.indexPathForItemAtPoint(gest.locationInView(self.collectionView))
+		if let indexPath = collectionView.indexPathForItemAtPoint(gest.locationInView(collectionView))
 		{
-			switch self._displayType
+			switch _displayType
 			{
 				case .Albums:
-					let album = self.searching ? self.searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
+					let album = searching ? searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
 					MPDPlayer.shared.playAlbum(album, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
 				case .Artists:
-					let artist = self.searching ? self.searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
+					let artist = searching ? searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
 					MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
 						MPDDataSource.shared.getSongsForAlbums(artist.albums, callback: {
 							let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
@@ -258,7 +259,7 @@ final class RootVC : MenuVC
 						})
 					})
 				case .Genres:
-					let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
+					let genre = searching ? searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
 					MPDDataSource.shared.getAlbumsForGenre(genre, callback:{
 						MPDDataSource.shared.getSongsForAlbums(genre.albums, callback: {
 							let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
@@ -271,17 +272,17 @@ final class RootVC : MenuVC
 
 	func longPress(gest: UILongPressGestureRecognizer)
 	{
-		if self.longPressRecognized
+		if longPressRecognized
 		{
 			return
 		}
-		self.longPressRecognized = true
+		longPressRecognized = true
 
-		if let indexPath = self.collectionView.indexPathForItemAtPoint(gest.locationInView(self.collectionView))
+		if let indexPath = collectionView.indexPathForItemAtPoint(gest.locationInView(collectionView))
 		{
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
-			let cell = self.collectionView.cellForItemAtIndexPath(indexPath) as! AlbumCollectionViewCell
+			let cell = collectionView.cellForItemAtIndexPath(indexPath) as! RootCollectionViewCell
 			cell.longPressed = true
 
 			let alertController = UIAlertController(title:nil, message:nil, preferredStyle:.ActionSheet)
@@ -292,10 +293,10 @@ final class RootVC : MenuVC
 			}
 			alertController.addAction(cancelAction)
 
-			switch self._displayType
+			switch _displayType
 			{
 				case .Albums:
-					let album = self.searching ? self.searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
+					let album = searching ? searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
 					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.Default) { (action) in
 						MPDPlayer.shared.playAlbum(album, random:false, loop:false)
 						self.longPressRecognized = false
@@ -318,7 +319,7 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(addQueueAction)
 				case .Artists:
-					let artist = self.searching ? self.searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
+					let artist = searching ? searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
 					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.Default) { (action) in
 						MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
 							MPDDataSource.shared.getSongsForAlbums(artist.albums, callback: {
@@ -395,22 +396,22 @@ final class RootVC : MenuVC
 					alertController.addAction(addQueueAction)
 			}
 
-			self.presentViewController(alertController, animated:true, completion:nil)
+			presentViewController(alertController, animated:true, completion:nil)
 		}
 	}
 
 	// MARK: - Buttons actions
 	func changeTypeAction(sender: UIButton?)
 	{
-		if self._typeChoiceView == nil
+		if _typeChoiceView == nil
 		{
-			self._typeChoiceView = TypeChoiceView(frame:CGRect(0.0, 0.0, self.collectionView.width, 132.0))
-			self._typeChoiceView.delegate = self
+			_typeChoiceView = TypeChoiceView(frame:CGRect(0.0, 0.0, collectionView.width, 132.0))
+			_typeChoiceView.delegate = self
 		}
 
-		if self._typeChoiceView.superview != nil
+		if _typeChoiceView.superview != nil
 		{
-			self.view.backgroundColor = UIColor.fromRGB(0xECECEC)
+			view.backgroundColor = UIColor.fromRGB(0xECECEC)
 			UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
 				self.topConstraint.constant = 0.0;
 				self.collectionView.layoutIfNeeded()
@@ -420,10 +421,10 @@ final class RootVC : MenuVC
 		}
 		else
 		{
-			self.view.backgroundColor = UIColor.blackColor()
-			self._typeChoiceView.tableView.reloadData()
-			self.view.insertSubview(self._typeChoiceView, belowSubview:self.collectionView)
-			self.topConstraint.constant = self._typeChoiceView.height;
+			view.backgroundColor = UIColor.blackColor()
+			_typeChoiceView.tableView.reloadData()
+			view.insertSubview(_typeChoiceView, belowSubview:collectionView)
+			topConstraint.constant = _typeChoiceView.height;
 
 			UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
 				self.topConstraint.constant = 132.0;
@@ -437,8 +438,8 @@ final class RootVC : MenuVC
 		let prefs = NSUserDefaults.standardUserDefaults()
 		let random = !prefs.boolForKey(kNYXPrefRandom)
 
-		self.btnRandom.selected = random
-		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+		btnRandom.selected = random
+		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
 		prefs.setBool(random, forKey:kNYXPrefRandom)
 		prefs.synchronize()
@@ -451,8 +452,8 @@ final class RootVC : MenuVC
 		let prefs = NSUserDefaults.standardUserDefaults()
 		let loop = !prefs.boolForKey(kNYXPrefRepeat)
 
-		self.btnRepeat.selected = loop
-		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
+		btnRepeat.selected = loop
+		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
 		prefs.setBool(loop, forKey:kNYXPrefRepeat)
 		prefs.synchronize()
@@ -463,8 +464,8 @@ final class RootVC : MenuVC
 	// MARK: - Private
 	private func _showNavigationBar(animated animated: Bool = true)
 	{
-		self.searchBar.endEditing(true)
-		let bar = (self.navigationController?.navigationBar)!
+		searchBar.endEditing(true)
+		let bar = (navigationController?.navigationBar)!
 		UIView.animateWithDuration(animated ? 0.35 : 0.0, delay:0.0, options:.CurveEaseOut, animations:{
 			bar.y = 20.0
 		}, completion:{ finished in
@@ -474,7 +475,7 @@ final class RootVC : MenuVC
 
 	private func _hideNavigationBar(animated animated: Bool = true)
 	{
-		let bar = (self.navigationController?.navigationBar)!
+		let bar = (navigationController?.navigationBar)!
 		UIView.animateWithDuration(animated ? 0.35 : 0.0, delay:0.0, options:.CurveEaseOut, animations:{
 			bar.y = -48.0
 		}, completion:{ finished in
@@ -488,7 +489,7 @@ final class RootVC : MenuVC
 		p.alignment = .Center
 		p.lineBreakMode = .ByWordWrapping
 		var title = ""
-		switch self._displayType
+		switch _displayType
 		{
 			case .Albums:
 				let n = MPDDataSource.shared.albums.count
@@ -501,9 +502,9 @@ final class RootVC : MenuVC
 				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_artists") : NYXLocalizedString("lbl_artist"))"
 		}
 		let astr1 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.whiteColor(), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
-		self.titleView.setAttributedTitle(astr1, forState:.Normal)
+		titleView.setAttributedTitle(astr1, forState:.Normal)
 		let astr2 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
-		self.titleView.setAttributedTitle(astr2, forState:.Highlighted)
+		titleView.setAttributedTitle(astr2, forState:.Highlighted)
 	}
 }
 
@@ -512,11 +513,11 @@ extension RootVC : UICollectionViewDataSource
 {
 	func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
 	{
-		if self.searching
+		if searching
 		{
-			return self.searchResults.count
+			return searchResults.count
 		}
-		switch self._displayType
+		switch _displayType
 		{
 			case .Albums:
 				return MPDDataSource.shared.albums.count
@@ -529,33 +530,33 @@ extension RootVC : UICollectionViewDataSource
 
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
 	{
-		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("io.whine.mpdremote.cell.album", forIndexPath:indexPath) as! AlbumCollectionViewCell
+		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("io.whine.mpdremote.cell.album", forIndexPath:indexPath) as! RootCollectionViewCell
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.mainScreen().scale
 
 		// Sanity check
-		if self.searching && indexPath.row >= self.searchResults.count
+		if searching && indexPath.row >= searchResults.count
 		{
 			return cell
 		}
 
-		switch self._displayType
+		switch _displayType
 		{
 			case .Albums:
-				let album = self.searching ? self.searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
-				self._configureCellForAlbum(cell, indexPath:indexPath, album:album)
+				let album = searching ? searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
+				_configureCellForAlbum(cell, indexPath:indexPath, album:album)
 			case .Genres:
-				let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
-				self._configureCellForGenre(cell, indexPath:indexPath, genre:genre)
+				let genre = searching ? searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
+				_configureCellForGenre(cell, indexPath:indexPath, genre:genre)
 			case .Artists:
-				let artist = self.searching ? self.searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
-				self._configureCellForArtist(cell, indexPath:indexPath, artist:artist)
+				let artist = searching ? searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
+				_configureCellForArtist(cell, indexPath:indexPath, artist:artist)
 		}
 
 		return cell
 	}
 
-	private func _configureCellForAlbum(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, album: Album)
+	private func _configureCellForAlbum(cell: RootCollectionViewCell, indexPath: NSIndexPath, album: Album)
 	{
 		// Set title
 		cell.label.text = album.name
@@ -585,9 +586,9 @@ extension RootVC : UICollectionViewDataSource
 		{
 			if album.path != nil
 			{
-				self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
+				_downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
 					dispatch_async(dispatch_get_main_queue()) {
-						if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+						if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 						{
 							c.image = thumbnail
 						}
@@ -599,7 +600,7 @@ extension RootVC : UICollectionViewDataSource
 				MPDDataSource.shared.getPathForAlbum(album, callback: {
 					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
-							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 							{
 								c.image = thumbnail
 							}
@@ -610,7 +611,7 @@ extension RootVC : UICollectionViewDataSource
 		}
 	}
 
-	private func _configureCellForGenre(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, genre: Genre)
+	private func _configureCellForGenre(cell: RootCollectionViewCell, indexPath: NSIndexPath, genre: Genre)
 	{
 		cell.label.text = genre.name
 		cell.accessibilityLabel = genre.name
@@ -648,9 +649,9 @@ extension RootVC : UICollectionViewDataSource
 				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 				if album.path != nil
 				{
-					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
+					_downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
 						dispatch_async(dispatch_get_main_queue()) {
-							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+							if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 							{
 								c.image = thumbnail
 							}
@@ -662,7 +663,7 @@ extension RootVC : UICollectionViewDataSource
 					MPDDataSource.shared.getPathForAlbum(album, callback: {
 						self._downloadCoverForAlbum(album, cropSize:cell.imageView.size, callback:{ (cover: UIImage, thumbnail: UIImage) in
 							dispatch_async(dispatch_get_main_queue()) {
-								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 								{
 									c.image = thumbnail
 								}
@@ -676,7 +677,7 @@ extension RootVC : UICollectionViewDataSource
 		{
 			MPDDataSource.shared.getAlbumForGenre(genre, callback: {
 				dispatch_async(dispatch_get_main_queue()) {
-					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 					{
 						self.collectionView.reloadItemsAtIndexPaths([indexPath])
 					}
@@ -686,7 +687,7 @@ extension RootVC : UICollectionViewDataSource
 		}
 	}
 
-	private func _configureCellForArtist(cell: AlbumCollectionViewCell, indexPath: NSIndexPath, artist: Artist)
+	private func _configureCellForArtist(cell: RootCollectionViewCell, indexPath: NSIndexPath, artist: Artist)
 	{
 		cell.label.text = artist.name
 		cell.accessibilityLabel = artist.name
@@ -727,10 +728,10 @@ extension RootVC : UICollectionViewDataSource
 					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
+						_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
 							let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 							dispatch_async(dispatch_get_main_queue()) {
-								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+								if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 								{
 									c.image = cropped
 								}
@@ -743,7 +744,7 @@ extension RootVC : UICollectionViewDataSource
 							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 								dispatch_async(dispatch_get_main_queue()) {
-									if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+									if let c = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 									{
 										c.image = cropped
 									}
@@ -758,7 +759,7 @@ extension RootVC : UICollectionViewDataSource
 		{
 			MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
 				dispatch_async(dispatch_get_main_queue()) {
-					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? AlbumCollectionViewCell
+					if let _ = self.collectionView.cellForItemAtIndexPath(indexPath) as? RootCollectionViewCell
 					{
 						self.collectionView.reloadItemsAtIndexPaths([indexPath])
 					}
@@ -782,7 +783,7 @@ extension RootVC : UICollectionViewDataSource
 			}
 			callback(cover:cover, thumbnail:thumbnail)
 		}
-		self._downloadOperations[key] = downloadOperation
+		_downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
 }
@@ -793,39 +794,39 @@ extension RootVC : UICollectionViewDelegate
 	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
 	{
 		// If menu is visible ignore default behavior and hide it
-		if self.menuView.visible
+		if menuView.visible
 		{
 			collectionView.deselectItemAtIndexPath(indexPath, animated:false)
-			self.showLeftViewAction(nil)
+			showLeftViewAction(nil)
 			return
 		}
 
 		// Hide the searchbar
-		if self.searchBarVisible
+		if searchBarVisible
 		{
-			self._showNavigationBar(animated:true)
+			_showNavigationBar(animated:true)
 		}
 
-		switch self._displayType
+		switch _displayType
 		{
 			case .Albums:
-				self.performSegueWithIdentifier("root-albums-to-detail-album", sender: self)
+				performSegueWithIdentifier("root-albums-to-detail-album", sender: self)
 			case .Genres:
-				self.performSegueWithIdentifier("root-genres-to-artists", sender: self)
+				performSegueWithIdentifier("root-genres-to-artists", sender: self)
 			case .Artists:
-				self.performSegueWithIdentifier("root-artists-to-albums", sender: self)
+				performSegueWithIdentifier("root-artists-to-albums", sender: self)
 		}
 	}
 
 	func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath)
 	{
-		if self._displayType != .Albums
+		if _displayType != .Albums
 		{
 			return
 		}
 
 		// When searching things can go wrong, this prevent some crashes
-		let src = self.searching ? self.searchResults as! [Album] : MPDDataSource.shared.albums
+		let src = searching ? searchResults as! [Album] : MPDDataSource.shared.albums
 		if indexPath.row >= src.count
 		{
 			return
@@ -834,10 +835,10 @@ extension RootVC : UICollectionViewDelegate
 		// Remove download cover operation if still in queue
 		let album = src[indexPath.row]
 		let key = album.name + album.year
-		if let op = self._downloadOperations[key] as! CoverOperation?
+		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
-			self._downloadOperations.removeValueForKey(key)
+			_downloadOperations.removeValueForKey(key)
 			Logger.dlog("[+] Cancelling \(op)")
 		}
 	}
@@ -848,15 +849,15 @@ extension RootVC : UIScrollViewDelegate
 {
 	func scrollViewDidScroll(scrollView: UIScrollView)
 	{
-		if self.searchBarVisible
+		if searchBarVisible
 		{
 			if scrollView.contentOffset.y > 0.0
 			{
-				self._showNavigationBar(animated:true)
+				_showNavigationBar(animated:true)
 			}
 			return
 		}
-		let bar = (self.navigationController?.navigationBar)!
+		let bar = (navigationController?.navigationBar)!
 		if scrollView.contentOffset.y <= 0.0
 		{
 			bar.y = 20.0 + scrollView.contentOffset.y
@@ -871,14 +872,14 @@ extension RootVC : UIScrollViewDelegate
 	{
 		if scrollView.contentOffset.y <= -44.0
 		{
-			self.searchBarVisible = true
-			let bar = (self.navigationController?.navigationBar)!
+			searchBarVisible = true
+			let bar = (navigationController?.navigationBar)!
 			bar.y = -48.0
-			self.searchBar.becomeFirstResponder()
+			searchBar.becomeFirstResponder()
 		}
 		else
 		{
-			self.searchBarVisible = false
+			searchBarVisible = false
 		}
 	}
 }
@@ -888,53 +889,53 @@ extension RootVC : UISearchBarDelegate
 {
 	func searchBarCancelButtonClicked(searchBar: UISearchBar)
 	{
-		self.searchResults.removeAll()
-		self.searching = false
+		searchResults.removeAll()
+		searching = false
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
-		self._showNavigationBar(animated:true)
-		//self.searchBarVisible = false
-		self.collectionView.reloadData()
+		_showNavigationBar(animated:true)
+		//searchBarVisible = false
+		collectionView.reloadData()
 	}
 
 	func searchBarSearchButtonClicked(searchBar: UISearchBar)
 	{
-		self.collectionView.reloadData()
-		self.searchBar.endEditing(true)
+		collectionView.reloadData()
+		searchBar.endEditing(true)
 	}
 
 	func searchBarTextDidBeginEditing(searchBar: UISearchBar)
 	{
-		self.searching = true
+		searching = true
 	}
 
 	func searchBarTextDidEndEditing(searchBar: UISearchBar)
 	{
-		//self.searching = false
-		//self.searchResults.removeAll()
+		//searching = false
+		//searchResults.removeAll()
 	}
 
 	func searchBar(searchBar: UISearchBar, textDidChange searchText: String)
 	{
-		switch self._displayType
+		switch _displayType
 		{
 			case .Albums:
 				if MPDDataSource.shared.albums.count > 0
 				{
-					self.searchResults = MPDDataSource.shared.albums.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
+					searchResults = MPDDataSource.shared.albums.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
 				}
 			case .Genres:
 				if MPDDataSource.shared.genres.count > 0
 				{
-					self.searchResults = MPDDataSource.shared.genres.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
+					searchResults = MPDDataSource.shared.genres.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
 				}
 			case .Artists:
 				if MPDDataSource.shared.artists.count > 0
 				{
-					self.searchResults = MPDDataSource.shared.artists.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
+					searchResults = MPDDataSource.shared.artists.filter({$0.name.lowercaseString.containsString(searchText.lowercaseString)})
 				}
 		}
-		self.collectionView.reloadData()
+		collectionView.reloadData()
 	}
 }
 
@@ -944,12 +945,12 @@ extension RootVC : TypeChoiceViewDelegate
 	func didSelectType(type: DisplayType)
 	{
 		// Ignore if type did not change
-		self.changeTypeAction(nil)
-		if self._displayType == type
+		changeTypeAction(nil)
+		if _displayType == type
 		{
 			return
 		}
-		self._displayType = type
+		_displayType = type
 
 		NSUserDefaults.standardUserDefaults().setInteger(type.rawValue, forKey:kNYXPrefDisplayType)
 		NSUserDefaults.standardUserDefaults().synchronize()

@@ -98,7 +98,7 @@ public extension PUpSwippable where Self:UIView
 			}
 		}
 		gestureRecognizer.direction = .Up
-		self.addGestureRecognizer(gestureRecognizer);
+		addGestureRecognizer(gestureRecognizer);
 	}
 
 	func didSwipeUp()
@@ -126,7 +126,7 @@ public extension PDownSwippable where Self:UIView
 			}
 		}
 		gestureRecognizer.direction = .Down
-		self.addGestureRecognizer(gestureRecognizer);
+		addGestureRecognizer(gestureRecognizer);
 	}
 
 	func didSwipeDown()

@@ -27,11 +27,11 @@ extension UIDevice
 {
 	class func isPad() -> Bool
 	{
-		return self.currentDevice().userInterfaceIdiom == .Pad
+		return currentDevice().userInterfaceIdiom == .Pad
 	}
 
 	class func isPhone() -> Bool
 	{
-		return self.currentDevice().userInterfaceIdiom == .Phone
+		return currentDevice().userInterfaceIdiom == .Phone
 	}
 }

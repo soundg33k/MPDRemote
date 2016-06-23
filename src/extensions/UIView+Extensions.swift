@@ -28,62 +28,62 @@ extension UIView
 	// MARK: - Shortcuts
 	var x: CGFloat
 	{
-		get {return self.frame.origin.x}
-		set {self.frame.origin.x = newValue}
+		get {return frame.origin.x}
+		set {frame.origin.x = newValue}
 	}
 
 	var y: CGFloat
 	{
-		get {return self.frame.origin.y}
-		set {self.frame.origin.y = newValue}
+		get {return frame.origin.y}
+		set {frame.origin.y = newValue}
 	}
 
 	var width: CGFloat
 	{
-		get {return self.frame.width}
-		set {self.frame.size.width = newValue}
+		get {return frame.width}
+		set {frame.size.width = newValue}
 	}
 
 	var height: CGFloat
 	{
-		get {return self.frame.height}
-		set {self.frame.size.height = newValue}
+		get {return frame.height}
+		set {frame.size.height = newValue}
 	}
 
 	var origin: CGPoint
 	{
-		get {return self.frame.origin}
-		set {self.frame.origin = newValue}
+		get {return frame.origin}
+		set {frame.origin = newValue}
 	}
 
 	var size: CGSize
 	{
-		get {return self.frame.size}
-		set {self.frame.size = newValue}
+		get {return frame.size}
+		set {frame.size = newValue}
 	}
 
 	// MARK: - Edges
 	public var left: CGFloat
 	{
-		get {return self.origin.x}
-		set {self.origin.x = newValue}
+		get {return origin.x}
+		set {origin.x = newValue}
 	}
 
 	public var right: CGFloat
 	{
-		get {return self.x + self.width}
-		set {self.x = newValue - self.width}
+		get {return x + width}
+		set {x = newValue - width}
 	}
 
 	public var top: CGFloat
 	{
-		get {return self.y}
-		set {self.y = newValue}
+		get {return y}
+		set {y = newValue}
 	}
 
 	public var bottom: CGFloat
 	{
-		get {return self.y + self.height}
-		set {self.y = newValue - self.height}
+		get {return y + height}
+		set {y = newValue - height}
 	}
 }

@@ -85,30 +85,30 @@ final class KawaiiColors
 	{
 		// Find edge color
 		var imageColors = [CountedObject<UIColor>]()
-		self.edgeColor = self._findEdgeColor(&imageColors)
-		if self.edgeColor == nil
+		edgeColor = _findEdgeColor(&imageColors)
+		if edgeColor == nil
 		{
-			self.edgeColor = UIColor.whiteColor()
+			edgeColor = UIColor.whiteColor()
 		}
 
 		// Find other colors
-		self._findContrastingColors(imageColors)
+		_findContrastingColors(imageColors)
 
 		// Sanitize
-		let darkBackground = self.edgeColor.isDarkColor()
-		if self.primaryColor == nil
+		let darkBackground = edgeColor.isDarkColor()
+		if primaryColor == nil
 		{
-			self.primaryColor = darkBackground ? UIColor.whiteColor() : UIColor.blackColor()
+			primaryColor = darkBackground ? UIColor.whiteColor() : UIColor.blackColor()
 		}
 
-		if self.secondaryColor == nil
+		if secondaryColor == nil
 		{
-			self.secondaryColor = darkBackground ? UIColor.whiteColor() : UIColor.blackColor()
+			secondaryColor = darkBackground ? UIColor.whiteColor() : UIColor.blackColor()
 		}
 
-		if self.thirdColor == nil
+		if thirdColor == nil
 		{
-			self.thirdColor = darkBackground ? UIColor.whiteColor() : UIColor.blackColor()
+			thirdColor = darkBackground ? UIColor.whiteColor() : UIColor.blackColor()
 		}
 	}
 
@@ -116,7 +116,7 @@ final class KawaiiColors
 	private func _findEdgeColor(inout colors: [CountedObject<UIColor>]) -> UIColor?
 	{
 		// Get raw image pixels
-		let cgImage = self.image.CGImage
+		let cgImage = image.CGImage
 		let width = CGImageGetWidth(cgImage)
 		let height = CGImageGetHeight(cgImage)
 
@@ -129,12 +129,12 @@ final class KawaiiColors
 		}
 		let pixels = UnsafeMutablePointer<RGBAPixel>(data)
 
-		let pp = self.precision
+		let pp = precision
 		let scale = UInt8(256 / pp)
 		var rawImageColors: [[[UInt]]] = [[[UInt]]](count:pp, repeatedValue:[[UInt]](count:pp, repeatedValue:[UInt](count:pp, repeatedValue:0)))
 		var rawEdgeColors: [[[UInt]]] = [[[UInt]]](count:pp, repeatedValue:[[UInt]](count:pp, repeatedValue:[UInt](count:pp, repeatedValue:0)))
 
-		let edge = self.samplingEdge == .Left ? 0 : width - 1
+		let edge = samplingEdge == .Left ? 0 : width - 1
 		for y in 0 ..< height
 		{
 			for x in 0 ..< width
@@ -180,7 +180,7 @@ final class KawaiiColors
 		colors.sortInPlace { (c1: CountedObject<UIColor>, c2: CountedObject<UIColor>) -> Bool in
 			return c1.count > c2.count
 		}
-		self.dominantColor = colors.count > 0 ? colors[0].object : UIColor.blackColor()
+		dominantColor = colors.count > 0 ? colors[0].object : UIColor.blackColor()
 
 		if edgeColors.count > 0
 		{
@@ -222,7 +222,7 @@ final class KawaiiColors
 	private func _findContrastingColors(colors: [CountedObject<UIColor>])
 	{
 		var sortedColors = [CountedObject<UIColor>]()
-		let findDarkTextColor = !self.edgeColor.isDarkColor()
+		let findDarkTextColor = !edgeColor.isDarkColor()
 
 		for countedColor in colors
 		{
@@ -243,29 +243,29 @@ final class KawaiiColors
 		{
 			let curColor = curContainer.object
 
-			if self.primaryColor == nil
+			if primaryColor == nil
 			{
-				if curColor.isContrastingColor(self.edgeColor)
+				if curColor.isContrastingColor(edgeColor)
 				{
-					self.primaryColor = curColor
+					primaryColor = curColor
 				}
 			}
-			else if self.secondaryColor == nil
+			else if secondaryColor == nil
 			{
-				if !self.primaryColor.isDistinct(curColor) || !curColor.isContrastingColor(self.edgeColor)
+				if !primaryColor.isDistinct(curColor) || !curColor.isContrastingColor(edgeColor)
 				{
 					continue
 				}
-				self.secondaryColor = curColor
+				secondaryColor = curColor
 			}
-			else if self.thirdColor == nil
+			else if thirdColor == nil
 			{
-				if !self.secondaryColor.isDistinct(curColor) || !self.primaryColor.isDistinct(curColor) || !curColor.isContrastingColor(self.edgeColor)
+				if !secondaryColor.isDistinct(curColor) || !primaryColor.isDistinct(curColor) || !curColor.isContrastingColor(edgeColor)
 				{
 					continue
 				}
 
-				self.thirdColor = curColor
+				thirdColor = curColor
 				break
 			}
 		}

@@ -62,10 +62,10 @@ final class ServerVC : MenuTVC
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .Center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = self.navigationController?.navigationBar.tintColor
+		titleView.textColor = navigationController?.navigationBar.tintColor
 		titleView.text = NYXLocalizedString("lbl_header_server_cfg")
-		titleView.backgroundColor = self.navigationController?.navigationBar.barTintColor
-		self.navigationItem.titleView = titleView
+		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
+		navigationItem.titleView = titleView
 
 		// Keyboard appearance notifications
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(keyboardDidShowNotification(_:)), name:UIKeyboardDidShowNotification, object:nil)
@@ -80,23 +80,23 @@ final class ServerVC : MenuTVC
 		{
 			if let server = NSKeyedUnarchiver.unarchiveObjectWithData(mpdServerAsData) as! MPDServer?
 			{
-				self.mpdServer = server
+				mpdServer = server
 			}
 		}
 		else
 		{
 			Logger.dlog("[+] No MPD server registered yet.")
 
-			self.serviceBrowser = NSNetServiceBrowser()
-			self.serviceBrowser.delegate = self
-			self.serviceBrowser.searchForServicesOfType("_mpd._tcp.", inDomain:"")
+			serviceBrowser = NSNetServiceBrowser()
+			serviceBrowser.delegate = self
+			serviceBrowser.searchForServicesOfType("_mpd._tcp.", inDomain:"")
 		}
 
 		if let webServerAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer)
 		{
 			if let server = NSKeyedUnarchiver.unarchiveObjectWithData(webServerAsData) as! WEBServer?
 			{
-				self.webServer = server
+				webServer = server
 			}
 		}
 		else
@@ -104,7 +104,7 @@ final class ServerVC : MenuTVC
 			Logger.dlog("[+] No WEB server registered yet.")
 		}
 
-		self._updateFields()
+		_updateFields()
 	}
 
 	override func viewWillDisappear(animated: Bool)
@@ -112,8 +112,8 @@ final class ServerVC : MenuTVC
 		super.viewWillDisappear(animated)
 
 		// Stop zeroconf
-		self.zcList.removeAll()
-		if let s = self.serviceBrowser
+		zcList.removeAll()
+		if let s = serviceBrowser
 		{
 			s.stop()
 		}
@@ -132,36 +132,36 @@ final class ServerVC : MenuTVC
 	// MARK: - Buttons actions
 	@IBAction func validateSettingsAction(sender: AnyObject?)
 	{
-		self.view.endEditing(true)
+		view.endEditing(true)
 
 		// Check MPD server name (optional)
 		var serverName = NYXLocalizedString("lbl_server_defaultname")
-		if let strName = self.tfMPDName.text where strName.length > 0
+		if let strName = tfMPDName.text where strName.length > 0
 		{
 			serverName = strName
 		}
 
 		// Check MPD hostname / ip
-		guard let ip = self.tfMPDHostname.text where ip.length > 0 else
+		guard let ip = tfMPDHostname.text where ip.length > 0 else
 		{
 			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle:.Alert)
 			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.Cancel) { (action) in
 			}
 			alertController.addAction(cancelAction)
-			self.presentViewController(alertController, animated:true, completion:nil)
+			presentViewController(alertController, animated:true, completion:nil)
 			return
 		}
 
 		// Check MPD port
 		var port = UInt16(6600)
-		if let strPort = self.tfMPDPort.text, p = UInt16(strPort)
+		if let strPort = tfMPDPort.text, p = UInt16(strPort)
 		{
 			port = p
 		}
 
 		// Check MPD password (optional)
 		var password = ""
-		if let strPassword = self.tfMPDPassword.text where strPassword.length > 0
+		if let strPassword = tfMPDPassword.text where strPassword.length > 0
 		{
 			password = strPassword
 		}
@@ -181,22 +181,22 @@ final class ServerVC : MenuTVC
 			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.Cancel) { (action) in
 			}
 			alertController.addAction(cancelAction)
-			self.presentViewController(alertController, animated:true, completion:nil)
+			presentViewController(alertController, animated:true, completion:nil)
 		}
 		cnn.disconnect()
 
 		// Check web URL (optional)
-		if let strURL = self.tfWEBHostname.text where strURL.length > 0
+		if let strURL = tfWEBHostname.text where strURL.length > 0
 		{
 			var port = UInt16(80)
-			if let strPort = self.tfWEBPort.text, p = UInt16(strPort)
+			if let strPort = tfWEBPort.text, p = UInt16(strPort)
 			{
 				port = p
 			}
 
 			let webServer = WEBServer(hostname:strURL, port:port)
 			var coverName = "cover.jpg"
-			if let cn = self.tfWEBCoverName.text where cn.length > 0
+			if let cn = tfWEBCoverName.text where cn.length > 0
 			{
 				coverName = cn
 			}
@@ -216,7 +216,7 @@ final class ServerVC : MenuTVC
 	// MARK: - Notifications
 	func keyboardDidShowNotification(aNotification: NSNotification)
 	{
-		if self._keyboardVisible
+		if _keyboardVisible
 		{
 			return
 		}
@@ -224,14 +224,14 @@ final class ServerVC : MenuTVC
 		let info = aNotification.userInfo!
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
 		let rawFrame = value.CGRectValue
-		let keyboardFrame = self.view.convertRect(rawFrame, fromView:nil)
-		self.tableView.frame = CGRect(self.tableView.frame.origin, self.tableView.frame.width, self.tableView.frame.height - keyboardFrame.height)
-		self._keyboardVisible = true
+		let keyboardFrame = view.convertRect(rawFrame, fromView:nil)
+		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height - keyboardFrame.height)
+		_keyboardVisible = true
 	}
 
 	func keyboardDidHideNotification(aNotification: NSNotification)
 	{
-		if !self._keyboardVisible
+		if !_keyboardVisible
 		{
 			return
 		}
@@ -239,46 +239,46 @@ final class ServerVC : MenuTVC
 		let info = aNotification.userInfo!
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
 		let rawFrame = value.CGRectValue
-		let keyboardFrame = self.view.convertRect(rawFrame, fromView:nil)
-		self.tableView.frame = CGRect(self.tableView.frame.origin, self.tableView.frame.width, self.tableView.frame.height + keyboardFrame.height)
-		self._keyboardVisible = false
+		let keyboardFrame = view.convertRect(rawFrame, fromView:nil)
+		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height + keyboardFrame.height)
+		_keyboardVisible = false
 	}
 
 	// MARK: - Private
 	func _updateFields()
 	{
-		if let server = self.mpdServer
+		if let server = mpdServer
 		{
-			self.tfMPDName.text = server.name
-			self.tfMPDHostname.text = server.hostname
-			self.tfMPDPort.text = String(server.port)
-			self.tfMPDPassword.text = server.password
+			tfMPDName.text = server.name
+			tfMPDHostname.text = server.hostname
+			tfMPDPort.text = String(server.port)
+			tfMPDPassword.text = server.password
 		}
 		else
 		{
-			self.tfMPDName.text = ""
-			self.tfMPDHostname.text = ""
-			self.tfMPDPort.text = "6600"
-			self.tfMPDPassword.text = ""
+			tfMPDName.text = ""
+			tfMPDHostname.text = ""
+			tfMPDPort.text = "6600"
+			tfMPDPassword.text = ""
 		}
 
-		if let server = self.webServer
+		if let server = webServer
 		{
-			self.tfWEBHostname.text = server.hostname
-			self.tfWEBPort.text = String(server.port)
-			self.tfWEBCoverName.text = server.coverName
+			tfWEBHostname.text = server.hostname
+			tfWEBPort.text = String(server.port)
+			tfWEBCoverName.text = server.coverName
 		}
 		else
 		{
-			self.tfWEBHostname.text = ""
-			self.tfWEBPort.text = "8080"
-			self.tfWEBCoverName.text = "cover.jpg"
+			tfWEBHostname.text = ""
+			tfWEBPort.text = "8080"
+			tfWEBCoverName.text = "cover.jpg"
 		}
 	}
 
 	func _resolvZeroconfServices()
 	{
-		if let service = self.zcList[safe:0]
+		if let service = zcList[safe:0]
 		{
 			service.delegate = self
 			service.resolveWithTimeout(5)
@@ -314,7 +314,7 @@ extension ServerVC
 				}
 			}
 			alertController.addAction(okAction)
-			self.presentViewController(alertController, animated:true, completion:nil)
+			presentViewController(alertController, animated:true, completion:nil)
 		}
 		tableView.deselectRowAtIndexPath(indexPath, animated:true)
 	}
@@ -325,29 +325,29 @@ extension ServerVC : UITextFieldDelegate
 {
 	func textFieldShouldReturn(textField: UITextField) -> Bool
 	{
-		if textField === self.tfMPDName
+		if textField === tfMPDName
 		{
-			self.tfMPDHostname.becomeFirstResponder()
+			tfMPDHostname.becomeFirstResponder()
 		}
-		else if textField === self.tfMPDHostname
+		else if textField === tfMPDHostname
 		{
-			self.tfMPDPort.becomeFirstResponder()
+			tfMPDPort.becomeFirstResponder()
 		}
-		else if textField === self.tfMPDPort
+		else if textField === tfMPDPort
 		{
-			self.tfMPDPassword.becomeFirstResponder()
+			tfMPDPassword.becomeFirstResponder()
 		}
-		else if textField === self.tfMPDPassword
+		else if textField === tfMPDPassword
 		{
 			textField.resignFirstResponder()
 		}
-		else if textField === self.tfWEBHostname
+		else if textField === tfWEBHostname
 		{
-			self.tfWEBPort.becomeFirstResponder()
+			tfWEBPort.becomeFirstResponder()
 		}
-		else if textField === self.tfWEBPort
+		else if textField === tfWEBPort
 		{
-			self.tfWEBCoverName.becomeFirstResponder()
+			tfWEBCoverName.becomeFirstResponder()
 		}
 		else
 		{
@@ -378,7 +378,7 @@ extension ServerVC : NSNetServiceBrowserDelegate
 		zcList.append(service)
 		if !moreComing
 		{
-			self._resolvZeroconfServices()
+			_resolvZeroconfServices()
 		}
 		
 	}
@@ -430,9 +430,9 @@ extension ServerVC : NSNetServiceDelegate
 
 			if found
 			{
-				self.tfMPDName.text = sender.name
-				self.tfMPDPort.text = String(sender.port)
-				self.tfMPDHostname.text = tmpIP
+				tfMPDName.text = sender.name
+				tfMPDPort.text = String(sender.port)
+				tfMPDHostname.text = tmpIP
 			}
 		}
 	}

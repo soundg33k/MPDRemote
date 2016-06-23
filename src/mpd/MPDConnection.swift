@@ -67,55 +67,55 @@ final class MPDConnection
 	func connect() -> Bool
 	{
 		// Open connection
-		self._connection = mpd_connection_new(self.server.hostname, UInt32(self.server.port), self._timeout * 1000)
-		if mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS
+		_connection = mpd_connection_new(server.hostname, UInt32(server.port), _timeout * 1000)
+		if mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
-			self._connection = nil
+			Logger.dlog(_getErrorMessageForConnection(_connection))
+			_connection = nil
 			return false
 		}
 		// Keep alive
-		//mpd_connection_set_keepalive(self._connection, true)
+		//mpd_connection_set_keepalive(_connection, true)
 
 		// Set password if needed
-		if self.server.password.length > 0
+		if server.password.length > 0
 		{
-			if !mpd_run_password(self._connection, self.server.password)
+			if !mpd_run_password(_connection, server.password)
 			{
-				Logger.dlog(self._getErrorMessageForConnection(self._connection))
-				mpd_connection_free(self._connection)
-				self._connection = nil
+				Logger.dlog(_getErrorMessageForConnection(_connection))
+				mpd_connection_free(_connection)
+				_connection = nil
 				return false
 			}
 		}
 
-		self.connected = true
+		connected = true
 		return true
 	}
 
 	func disconnect()
 	{
-		if self._connection != nil
+		if _connection != nil
 		{
-			mpd_connection_free(self._connection)
-			self._connection = nil
+			mpd_connection_free(_connection)
+			_connection = nil
 		}
-		self.connected = false
+		connected = false
 	}
 
 	// MARK: - Get infos about tracks / albums / etc…
 	func getListForDisplayType(displayType: DisplayType) -> [AnyObject]
 	{
-		let tagType = self._mpdTagTypeFromDisplayType(displayType)
+		let tagType = _mpdTagTypeFromDisplayType(displayType)
 
 		var list = [AnyObject]()
-		if (!mpd_search_db_tags(self._connection, tagType) || !mpd_search_commit(self._connection))
+		if (!mpd_search_db_tags(_connection, tagType) || !mpd_search_commit(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
 
-		var pair = mpd_recv_pair_tag(self._connection, tagType)
+		var pair = mpd_recv_pair_tag(_connection, tagType)
 		while pair != nil
 		{
 			if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(pair.memory.value), length:Int(strlen(pair.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
@@ -131,13 +131,13 @@ final class MPDConnection
 				}
 			}
 
-			mpd_return_pair(self._connection, pair)
-			pair = mpd_recv_pair_tag(self._connection, tagType)
+			mpd_return_pair(_connection, pair)
+			pair = mpd_recv_pair_tag(_connection, tagType)
 		}
 
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 
 		return list
@@ -145,23 +145,23 @@ final class MPDConnection
 
 	func getAlbumForGenre(genre: Genre) -> Album?
 	{
-		if (!mpd_search_db_tags(self._connection, MPD_TAG_ALBUM))
+		if (!mpd_search_db_tags(_connection, MPD_TAG_ALBUM))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return nil
 		}
-		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
+		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return nil
 		}
-		if (!mpd_search_commit(self._connection))
+		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return nil
 		}
 
-		let pair = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+		let pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		if pair == nil
 		{
 			Logger.dlog("[!] No pair.")
@@ -171,14 +171,14 @@ final class MPDConnection
 		guard let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(pair.memory.value), length:Int(strlen(pair.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding) else
 		{
 			Logger.dlog("[!] Invalid name.")
-			mpd_return_pair(self._connection, pair)
+			mpd_return_pair(_connection, pair)
 			return nil
 		}
-		mpd_return_pair(self._connection, pair)
+		mpd_return_pair(_connection, pair)
 
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 
 		return Album(name:name)
@@ -188,40 +188,40 @@ final class MPDConnection
 	{
 		var list = [Album]()
 
-		if (!mpd_search_db_tags(self._connection, MPD_TAG_ALBUM))
+		if (!mpd_search_db_tags(_connection, MPD_TAG_ALBUM))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
-		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
+		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
-		if (!mpd_search_commit(self._connection))
+		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
 
-		var pair = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+		var pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		while pair != nil
 		{
 			if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(pair.memory.value), length:Int(strlen(pair.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
 			{
-				if let album = self.delegate?.albumMatchingName(name)
+				if let album = delegate?.albumMatchingName(name)
 				{
 					list.append(album)
 				}
 			}
 
-			mpd_return_pair(self._connection, pair)
-			pair = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+			mpd_return_pair(_connection, pair)
+			pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		}
 
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 
 		return list
@@ -231,40 +231,40 @@ final class MPDConnection
 	{
 		var list = [Album]()
 
-		if (!mpd_search_db_tags(self._connection, MPD_TAG_ALBUM))
+		if (!mpd_search_db_tags(_connection, MPD_TAG_ALBUM))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
-		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist.name))
+		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist.name))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
-		if (!mpd_search_commit(self._connection))
+		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
 
-		var pair = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+		var pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		while pair != nil
 		{
 			if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(pair.memory.value), length:Int(strlen(pair.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
 			{
-				if let album = self.delegate?.albumMatchingName(name)
+				if let album = delegate?.albumMatchingName(name)
 				{
 					list.append(album)
 				}
 			}
 
-			mpd_return_pair(self._connection, pair)
-			pair = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM)
+			mpd_return_pair(_connection, pair)
+			pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		}
 
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 
 		return list
@@ -274,23 +274,23 @@ final class MPDConnection
 	{
 		var list = [Artist]()
 
-		if (!mpd_search_db_tags(self._connection, MPD_TAG_ARTIST))
+		if (!mpd_search_db_tags(_connection, MPD_TAG_ARTIST))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
-		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
+		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
-		if (!mpd_search_commit(self._connection))
+		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return list
 		}
 
-		var pair = mpd_recv_pair_tag(self._connection, MPD_TAG_ARTIST)
+		var pair = mpd_recv_pair_tag(_connection, MPD_TAG_ARTIST)
 		while pair != nil
 		{
 			if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(pair.memory.value), length:Int(strlen(pair.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
@@ -298,13 +298,13 @@ final class MPDConnection
 				list.append(Artist(name:name))
 			}
 			
-			mpd_return_pair(self._connection, pair)
-			pair = mpd_recv_pair_tag(self._connection, MPD_TAG_ARTIST)
+			mpd_return_pair(_connection, pair)
+			pair = mpd_recv_pair_tag(_connection, MPD_TAG_ARTIST)
 		}
 
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 
 		return list
@@ -313,23 +313,23 @@ final class MPDConnection
 	func getPathForAlbum(album: Album) -> String?
 	{
 		var path: String? = nil
-		if (!mpd_search_db_songs(self._connection, true))
+		if (!mpd_search_db_songs(_connection, true))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return path
 		}
-		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name))
+		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return path
 		}
-		if (!mpd_search_commit(self._connection))
+		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return path
 		}
 
-		let song = mpd_recv_song(self._connection)
+		let song = mpd_recv_song(_connection)
 		if song != nil
 		{
 			let uri = mpd_song_get_uri(song)
@@ -342,9 +342,9 @@ final class MPDConnection
 			}
 		}
 
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 
 		return path
@@ -352,44 +352,44 @@ final class MPDConnection
 
 	func getSongsForAlbum(album: Album) -> [Track]?
 	{
-		if (!mpd_search_db_songs(self._connection, true))
+		if (!mpd_search_db_songs(_connection, true))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return nil
 		}
-		if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name))
+		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return nil
 		}
 		if album.artist.length > 0
 		{
-			if (!mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM_ARTIST, album.artist))
+			if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM_ARTIST, album.artist))
 			{
-				Logger.dlog(self._getErrorMessageForConnection(self._connection))
+				Logger.dlog(_getErrorMessageForConnection(_connection))
 				return nil
 			}
 		}
-		if (!mpd_search_commit(self._connection))
+		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return nil
 		}
 
 		var list = [Track]()
-		var song = mpd_recv_song(self._connection)
+		var song = mpd_recv_song(_connection)
 		while song != nil
 		{
-			if let track = self._trackFromMPDSongObject(song)
+			if let track = _trackFromMPDSongObject(song)
 			{
 				list.append(track)
 			}
-			song = mpd_recv_song(self._connection)
+			song = mpd_recv_song(_connection)
 		}
 
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 
 		return list
@@ -399,22 +399,22 @@ final class MPDConnection
 	{
 		var metadatas = [String : AnyObject]()
 		// Find album artist
-		if !mpd_search_db_tags(self._connection, MPD_TAG_ALBUM_ARTIST)
+		if !mpd_search_db_tags(_connection, MPD_TAG_ALBUM_ARTIST)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
-		if !mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name)
+		if !mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
-		if !mpd_search_commit(self._connection)
+		if !mpd_search_commit(_connection)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
-		let tmpArtist = mpd_recv_pair_tag(self._connection, MPD_TAG_ALBUM_ARTIST)
+		let tmpArtist = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM_ARTIST)
 		if tmpArtist != nil
 		{
 			if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmpArtist.memory.value), length:Int(strlen(tmpArtist.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
@@ -422,30 +422,30 @@ final class MPDConnection
 				metadatas["artist"] = name
 			}
 		}
-		mpd_return_pair(self._connection, tmpArtist)
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		mpd_return_pair(_connection, tmpArtist)
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
 
 		// Find album year
-		if !mpd_search_db_tags(self._connection, MPD_TAG_DATE)
+		if !mpd_search_db_tags(_connection, MPD_TAG_DATE)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
-		if !mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name)
+		if !mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
-		if !mpd_search_commit(self._connection)
+		if !mpd_search_commit(_connection)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
-		let tmpDate = mpd_recv_pair_tag(self._connection, MPD_TAG_DATE)
+		let tmpDate = mpd_recv_pair_tag(_connection, MPD_TAG_DATE)
 		if tmpDate != nil
 		{
 			var l = Int(strlen(tmpDate.memory.value))
@@ -458,30 +458,30 @@ final class MPDConnection
 				metadatas["year"] = year
 			}
 		}
-		mpd_return_pair(self._connection, tmpDate)
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		mpd_return_pair(_connection, tmpDate)
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
 
 		// Find album genre
-		if !mpd_search_db_tags(self._connection, MPD_TAG_GENRE)
+		if !mpd_search_db_tags(_connection, MPD_TAG_GENRE)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
-		if !mpd_search_add_tag_constraint(self._connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name)
+		if !mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
-		if !mpd_search_commit(self._connection)
+		if !mpd_search_commit(_connection)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return metadatas
 		}
-		let tmpGenre = mpd_recv_pair_tag(self._connection, MPD_TAG_GENRE)
+		let tmpGenre = mpd_recv_pair_tag(_connection, MPD_TAG_GENRE)
 		if tmpGenre != nil
 		{
 			if let genre = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmpGenre.memory.value), length:Int(strlen(tmpGenre.memory.value)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
@@ -489,10 +489,10 @@ final class MPDConnection
 				metadatas["genre"] = genre
 			}
 		}
-		mpd_return_pair(self._connection, tmpGenre)
-		if (mpd_connection_get_error(self._connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(self._connection))
+		mpd_return_pair(_connection, tmpGenre)
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 
 		return metadatas
@@ -503,40 +503,40 @@ final class MPDConnection
 	{
 		if let songs = album.songs
 		{
-			self.playTracks(songs, random:random, loop:loop)
+			playTracks(songs, random:random, loop:loop)
 		}
 		else
 		{
-			if let songs = self.getSongsForAlbum(album)
+			if let songs = getSongsForAlbum(album)
 			{
-				self.playTracks(songs, random:random, loop:loop)
+				playTracks(songs, random:random, loop:loop)
 			}
 		}
 	}
 
 	func playTracks(tracks: [Track], random: Bool, loop: Bool)
 	{
-		if !mpd_run_clear(self._connection)
+		if !mpd_run_clear(_connection)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return
 		}
 
-		self.setRandom(random)
-		self.setRepeat(loop)
+		setRandom(random)
+		setRepeat(loop)
 
 		for track in tracks
 		{
-			if !mpd_run_add(self._connection, track.uri)
+			if !mpd_run_add(_connection, track.uri)
 			{
-				Logger.dlog(self._getErrorMessageForConnection(self._connection))
+				Logger.dlog(_getErrorMessageForConnection(_connection))
 				return
 			}
 		}
 
-		if !mpd_run_play_pos(self._connection, random ? arc4random_uniform(UInt32(tracks.count)) : 0)
+		if !mpd_run_play_pos(_connection, random ? arc4random_uniform(UInt32(tracks.count)) : 0)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 	}
 	
@@ -546,22 +546,22 @@ final class MPDConnection
 		{
 			for track in tracks
 			{
-				if !mpd_run_add(self._connection, track.uri)
+				if !mpd_run_add(_connection, track.uri)
 				{
-					Logger.dlog(self._getErrorMessageForConnection(self._connection))
+					Logger.dlog(_getErrorMessageForConnection(_connection))
 					return
 				}
 			}
 		}
 		else
 		{
-			if let tracks = self.getSongsForAlbum(album)
+			if let tracks = getSongsForAlbum(album)
 			{
 				for track in tracks
 				{
-					if !mpd_run_add(self._connection, track.uri)
+					if !mpd_run_add(_connection, track.uri)
 					{
-						Logger.dlog(self._getErrorMessageForConnection(self._connection))
+						Logger.dlog(_getErrorMessageForConnection(_connection))
 						return
 					}
 				}
@@ -571,76 +571,76 @@ final class MPDConnection
 
 	func togglePause() -> Bool
 	{
-		return mpd_run_toggle_pause(self._connection)
+		return mpd_run_toggle_pause(_connection)
 	}
 
 	func nextTrack()
 	{
-		if !mpd_run_next(self._connection)
+		if !mpd_run_next(_connection)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 	}
 
 	func previousTrack()
 	{
-		if !mpd_run_previous(self._connection)
+		if !mpd_run_previous(_connection)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 	}
 
 	func setRandom(random: Bool)
 	{
-		if !mpd_run_random(self._connection, random)
+		if !mpd_run_random(_connection, random)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 	}
 
 	func setRepeat(loop: Bool)
 	{
-		if !mpd_run_repeat(self._connection, loop)
+		if !mpd_run_repeat(_connection, loop)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 	}
 
 	func setTrackPosition(position: Int, trackPosition: UInt32)
 	{
-		if !mpd_run_seek_pos(self._connection, trackPosition, UInt32(position))
+		if !mpd_run_seek_pos(_connection, trackPosition, UInt32(position))
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 	}
 
 	func setVolume(volume: UInt32)
 	{
-		if !mpd_run_set_volume(self._connection, volume)
+		if !mpd_run_set_volume(_connection, volume)
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 	}
 
 	// MARK: - Player status
 	func getStatus()
 	{
-		let ret = mpd_run_status(self._connection)
+		let ret = mpd_run_status(_connection)
 		if ret == nil
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 		}
 	}
 
 	func getPlayerInfos() -> [String: AnyObject]?
 	{
-		let song = mpd_run_current_song(self._connection)
+		let song = mpd_run_current_song(_connection)
 		if song == nil
 		{
 			return nil
 		}
 
-		let status = mpd_run_status(self._connection)
+		let status = mpd_run_status(_connection)
 		if status == nil
 		{
 			Logger.dlog("[!] No status.")
@@ -648,15 +648,15 @@ final class MPDConnection
 		}
 
 		let elapsed = mpd_status_get_elapsed_time(status)
-		guard let track = self._trackFromMPDSongObject(song) else
+		guard let track = _trackFromMPDSongObject(song) else
 		{
 			return nil
 		}
-		let state = self._statusFromMPDStateObject(mpd_status_get_state(status))
+		let state = _statusFromMPDStateObject(mpd_status_get_state(status))
 		let tmp = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0)
 		if let name = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(tmp), length:Int(strlen(tmp)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
 		{
-			if let album = self.delegate?.albumMatchingName(name)
+			if let album = delegate?.albumMatchingName(name)
 			{
 				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state.rawValue]
 			}
@@ -669,10 +669,10 @@ final class MPDConnection
 	// MARK: - Stats
 	func getStats() -> [String : String]
 	{
-		let ret = mpd_run_stats(self._connection)
+		let ret = mpd_run_stats(_connection)
 		if ret == nil
 		{
-			Logger.dlog(self._getErrorMessageForConnection(self._connection))
+			Logger.dlog(_getErrorMessageForConnection(_connection))
 			return [:]
 		}
 
@@ -690,7 +690,7 @@ final class MPDConnection
 	// MARK: - Private
 	private func _getErrorMessageForConnection(connection: COpaquePointer) -> String
 	{
-		let err = mpd_connection_get_error_message(self._connection)
+		let err = mpd_connection_get_error_message(_connection)
 		if let msg = String(data:NSData(bytesNoCopy:UnsafeMutablePointer<Void>(err), length:Int(strlen(err)), freeWhenDone:false), encoding:NSUTF8StringEncoding)
 		{
 			return msg

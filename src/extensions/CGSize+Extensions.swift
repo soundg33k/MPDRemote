@@ -34,7 +34,7 @@ extension CGSize
 
 	func ceil() -> CGSize
 	{
-		return CGSize(CoreGraphics.ceil(self.width), CoreGraphics.ceil(self.height))
+		return CGSize(CoreGraphics.ceil(width), CoreGraphics.ceil(height))
 	}
 }
 

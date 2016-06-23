@@ -64,53 +64,53 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 
 		// Slider track position
 		UISlider.appearance().setThumbImage(UIImage(named:"slider-thumb"), forState:.Normal)
-		self.sliderPosition.addTarget(self, action:#selector(changeTrackPositionAction(_:)), forControlEvents:.TouchUpInside)
+		sliderPosition.addTarget(self, action:#selector(changeTrackPositionAction(_:)), forControlEvents:.TouchUpInside)
 
 		// Slider volume
-		self.sliderVolume.value = Float(NSUserDefaults.standardUserDefaults().integerForKey(kNYXPrefVolume))
-		self.sliderVolume.addTarget(self, action:#selector(changeVolumeAction(_:)), forControlEvents:.TouchUpInside)
+		sliderVolume.value = Float(NSUserDefaults.standardUserDefaults().integerForKey(kNYXPrefVolume))
+		sliderVolume.addTarget(self, action:#selector(changeVolumeAction(_:)), forControlEvents:.TouchUpInside)
 		ivVolumeLo.image = UIImage(named:"img-volume-lo")?.imageTintedWithColor(UIColor.whiteColor())
 		ivVolumeHi.image = UIImage(named:"img-volume-hi")?.imageTintedWithColor(UIColor.whiteColor())
 
-		self.btnPlay.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.togglePause), forControlEvents:.TouchUpInside)
+		btnPlay.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.togglePause), forControlEvents:.TouchUpInside)
 
-		self.btnNext.setImage(UIImage(named:"btn-next")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
-		self.btnNext.setImage(UIImage(named:"btn-next")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
-		self.btnNext.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.requestNextTrack), forControlEvents:.TouchUpInside)
+		btnNext.setImage(UIImage(named:"btn-next")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
+		btnNext.setImage(UIImage(named:"btn-next")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
+		btnNext.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.requestNextTrack), forControlEvents:.TouchUpInside)
 
-		self.btnPrevious.setImage(UIImage(named:"btn-previous")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
-		self.btnPrevious.setImage(UIImage(named:"btn-previous")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
-		self.btnPrevious.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.requestPreviousTrack), forControlEvents:.TouchUpInside)
+		btnPrevious.setImage(UIImage(named:"btn-previous")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
+		btnPrevious.setImage(UIImage(named:"btn-previous")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
+		btnPrevious.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.requestPreviousTrack), forControlEvents:.TouchUpInside)
 
 		let loop = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat)
 		let imageRepeat = UIImage(named:"btn-repeat")
-		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
-		self.btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
-		self.btnRepeat.selected = loop
-		self.btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
-		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
+		btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
+		btnRepeat.setImage(imageRepeat?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
+		btnRepeat.selected = loop
+		btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), forControlEvents:.TouchUpInside)
+		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
 		let random = NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom)
 		let imageRandom = UIImage(named:"btn-random")
-		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
-		self.btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
-		self.btnRandom.selected = random
-		self.btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
-		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+		btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.imageWithRenderingMode(.AlwaysOriginal), forState:.Normal)
+		btnRandom.setImage(imageRandom?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), forState:.Selected)
+		btnRandom.selected = random
+		btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), forControlEvents:.TouchUpInside)
+		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		self.coverView.makeTappable()
-		self.coverView.makeLeftSwippable()
-		self.coverView.makeRightSwippable()
-		self.coverView.delegate = self
+		coverView.makeTappable()
+		coverView.makeLeftSwippable()
+		coverView.makeRightSwippable()
+		coverView.delegate = self
 		// Useless motion effect
 		var motionEffect = UIInterpolatingMotionEffect(keyPath:"center.x", type:.TiltAlongHorizontalAxis)
 		motionEffect.minimumRelativeValue = 20.0
 		motionEffect.maximumRelativeValue = -20.0
-		self.coverView.addMotionEffect(motionEffect)
+		coverView.addMotionEffect(motionEffect)
 		motionEffect = UIInterpolatingMotionEffect(keyPath:"center.y", type:.TiltAlongVerticalAxis)
 		motionEffect.minimumRelativeValue = 20.0
 		motionEffect.maximumRelativeValue = -20.0
-		self.coverView.addMotionEffect(motionEffect)
+		coverView.addMotionEffect(motionEffect)
 	}
 
 	override func viewWillAppear(animated: Bool)
@@ -123,15 +123,15 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 
 		if let track = MPDPlayer.shared.currentTrack, let album = MPDPlayer.shared.currentAlbum
 		{
-			self.lblTrackTitle.text = track.title
-			self.lblTrackArtist.text = track.artist
-			self.lblAlbumName.text = album.name
-			self.sliderPosition.maximumValue = Float(track.duration.seconds)
-			let iv = self.view as? UIImageView
+			lblTrackTitle.text = track.title
+			lblTrackArtist.text = track.artist
+			lblAlbumName.text = album.name
+			sliderPosition.maximumValue = Float(track.duration.seconds)
+			let iv = view as? UIImageView
 
 			if album.path != nil
 			{
-				let op = CoverOperation(album:album, cropSize:self.coverView.size)
+				let op = CoverOperation(album:album, cropSize:coverView.size)
 				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 					dispatch_async(dispatch_get_main_queue()) {
 						self.coverView.image = cover
@@ -155,7 +155,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			}
 		}
 
-		self._updatePlayPauseButton()
+		_updatePlayPauseButton()
 	}
 
 	override func viewWillDisappear(animated: Bool)
@@ -185,7 +185,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// MARK: - InteractableImageViewDelegate
 	func didTap()
 	{
-		self.dismissViewControllerAnimated(true, completion:nil)
+		dismissViewControllerAnimated(true, completion:nil)
 		MiniPlayerView.shared.stayHidden = false
 		MiniPlayerView.shared.show()
 	}
@@ -204,8 +204,8 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		let prefs = NSUserDefaults.standardUserDefaults()
 		let random = !prefs.boolForKey(kNYXPrefRandom)
 
-		self.btnRandom.selected = random
-		self.btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+		btnRandom.selected = random
+		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
 		prefs.setBool(random, forKey:kNYXPrefRandom)
 		prefs.synchronize()
@@ -218,8 +218,8 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		let prefs = NSUserDefaults.standardUserDefaults()
 		let loop = !prefs.boolForKey(kNYXPrefRepeat)
 
-		self.btnRepeat.selected = loop
-		self.btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
+		btnRepeat.selected = loop
+		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
 		prefs.setBool(loop, forKey:kNYXPrefRepeat)
 		prefs.synchronize()
@@ -231,17 +231,17 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		if let track = MPDPlayer.shared.currentTrack
 		{
-			MPDPlayer.shared.setTrackPosition(Int(self.sliderPosition.value), trackPosition:track.position)
+			MPDPlayer.shared.setTrackPosition(Int(sliderPosition.value), trackPosition:track.position)
 		}
 	}
 
 	func changeVolumeAction(sender: UISlider?)
 	{
-		let volume = Int(ceil(self.sliderVolume.value))
+		let volume = Int(ceil(sliderVolume.value))
 		let prefs = NSUserDefaults.standardUserDefaults()
 		prefs.setInteger(volume, forKey:kNYXPrefVolume)
 		prefs.synchronize()
-		self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
+		sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
 
 		MPDPlayer.shared.setVolume(volume)
 	}
@@ -254,16 +254,16 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			return
 		}
 
-		if !self.sliderPosition.selected && !self.sliderPosition.highlighted
+		if !sliderPosition.selected && !sliderPosition.highlighted
 		{
-			self.sliderPosition.setValue(Float(elapsed), animated:true)
-			self.sliderPosition.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((self.sliderPosition.value * 100.0) / self.sliderPosition.maximumValue))%"
+			sliderPosition.setValue(Float(elapsed), animated:true)
+			sliderPosition.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((sliderPosition.value * 100.0) / sliderPosition.maximumValue))%"
 		}
 
 		let elapsedDuration = Duration(seconds:UInt(elapsed))
 		let remainingDuration = track.duration - elapsedDuration
-		self.lblElapsedDuration.text = elapsedDuration.minutesRepresentationAsString()
-		self.lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
+		lblElapsedDuration.text = elapsedDuration.minutesRepresentationAsString()
+		lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
 	}
 
 	func playingTrackChangedNotification(aNotification: NSNotification?)
@@ -272,15 +272,15 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		{
 			return
 		}
-		self.lblTrackTitle.text = track.title
-		self.lblTrackArtist.text = track.artist
-		self.lblAlbumName.text = album.name
-		self.sliderPosition.maximumValue = Float(track.duration.seconds)
+		lblTrackTitle.text = track.title
+		lblTrackArtist.text = track.artist
+		lblAlbumName.text = album.name
+		sliderPosition.maximumValue = Float(track.duration.seconds)
 	}
 
 	func playerStatusChangedNotification(aNotification: NSNotification?)
 	{
-		self._updatePlayPauseButton()
+		_updatePlayPauseButton()
 	}
 
 	// MARK: - Private
@@ -288,15 +288,15 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		if MPDPlayer.shared.status == .Paused
 		{
-			self.btnPlay.setImage(UIImage(named:"btn-play")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
-			self.btnPlay.setImage(UIImage(named:"btn-play")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
-			self.btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
+			btnPlay.setImage(UIImage(named:"btn-play")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
+			btnPlay.setImage(UIImage(named:"btn-play")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
+			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 		}
 		else
 		{
-			self.btnPlay.setImage(UIImage(named:"btn-pause")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
-			self.btnPlay.setImage(UIImage(named:"btn-pause")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
-			self.btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
+			btnPlay.setImage(UIImage(named:"btn-pause")?.imageTintedWithColor(UIColor.whiteColor()), forState:.Normal)
+			btnPlay.setImage(UIImage(named:"btn-pause")?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), forState:.Highlighted)
+			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 	}
 }

@@ -51,7 +51,7 @@ final class CoverOperation : NSOperation
 	}
 	// Session
 	private var localURLSession: NSURLSession {
-		return NSURLSession(configuration:self.localURLSessionConfiguration, delegate:self, delegateQueue:nil)
+		return NSURLSession(configuration:localURLSessionConfiguration, delegate:self, delegateQueue:nil)
 	}
 
 	// MARK : Public properties
@@ -73,18 +73,18 @@ final class CoverOperation : NSOperation
 	override func start()
 	{
 		// Operation is cancelled, abort
-		if self.cancelled
+		if cancelled
 		{
 			Logger.dlog("[+] Cancelled !")
-			self.finished = true
+			finished = true
 			return
 		}
 
 		// No path for album, abort
-		guard let path = self.album.path else
+		guard let path = album.path else
 		{
 			Logger.alog("[!] No album art path defined.")
-			self.finished = true
+			finished = true
 			return
 		}
 
@@ -92,23 +92,23 @@ final class CoverOperation : NSOperation
 		guard let serverAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) else
 		{
 			Logger.alog("[!] No WEB server configured.")
-			self.generateCover()
-			self.finished = true
+			generateCover()
+			finished = true
 			return
 		}
 		guard let server = NSKeyedUnarchiver.unarchiveObjectWithData(serverAsData) as! WEBServer? else
 		{
 			Logger.alog("[!] No WEB server configured.")
-			self.generateCover()
-			self.finished = true
+			generateCover()
+			finished = true
 			return
 		}
 		// No cover stuff configured, abort
 		if server.hostname.length <= 0 || server.coverName.length <= 0
 		{
 			Logger.alog("[!] No web server configured, can't download covers.")
-			self.generateCover()
-			self.finished = true
+			generateCover()
+			finished = true
 			return
 		}
 
@@ -120,28 +120,28 @@ final class CoverOperation : NSOperation
 		let request = NSMutableURLRequest(URL:NSURL(string:urlAsString)!)
 		request.addValue("image/*", forHTTPHeaderField:"Accept")
 
-		self.sessionTask = self.localURLSession.dataTaskWithRequest(request)
-		self.sessionTask!.resume()
+		sessionTask = localURLSession.dataTaskWithRequest(request)
+		sessionTask!.resume()
 	}
 
 	// MARK: - Private
 	private func processData()
 	{
-		guard let cover = UIImage(data:self.incomingData) else
+		guard let cover = UIImage(data:incomingData) else
 		{
 			return
 		}
-		guard let thumbnail = cover.imageCroppedToFitSize(self.cropSize) else
+		guard let thumbnail = cover.imageCroppedToFitSize(cropSize) else
 		{
 			return
 		}
-		guard let saveURL = self.album.localCoverURL else
+		guard let saveURL = album.localCoverURL else
 		{
 			return
 		}
 		UIImageJPEGRepresentation(thumbnail, 0.7)?.writeToURL(saveURL, atomically:true)
 
-		if let cpl = self.cplBlock
+		if let cpl = cplBlock
 		{
 			cpl(cover, thumbnail)
 		}
@@ -151,13 +151,13 @@ final class CoverOperation : NSOperation
 	{
 		let width = UIScreen.mainScreen().bounds.width - 64.0
 		guard let cover = generateCoverForAlbum(album, size:CGSize(width, width)) else {return}
-		guard let thumbnail = cover.imageCroppedToFitSize(self.cropSize) else {return}
-		guard let saveURL = self.album.localCoverURL else
+		guard let thumbnail = cover.imageCroppedToFitSize(cropSize) else {return}
+		guard let saveURL = album.localCoverURL else
 		{
 			return
 		}
 		UIImageJPEGRepresentation(thumbnail, 0.7)?.writeToURL(saveURL, atomically:true)
-		if let cpl = self.cplBlock
+		if let cpl = cplBlock
 		{
 			cpl(cover, thumbnail)
 		}
@@ -169,11 +169,11 @@ extension CoverOperation : NSURLSessionDelegate
 {
 	func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void)
 	{
-		if self.cancelled
+		if cancelled
 		{
 			Logger.dlog("[+] Cancelled !")
-			self.sessionTask?.cancel()
-			self.finished = true
+			sessionTask?.cancel()
+			finished = true
 			return
 		}
 
@@ -182,34 +182,34 @@ extension CoverOperation : NSURLSessionDelegate
 
 	func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData)
 	{
-		if self.cancelled
+		if cancelled
 		{
 			Logger.dlog("[+] Cancelled !")
-			self.sessionTask?.cancel()
-			self.finished = true
+			sessionTask?.cancel()
+			finished = true
 			return
 		}
-		self.incomingData.appendData(data)
+		incomingData.appendData(data)
 	}
 
 	func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?)
 	{
-		if self.cancelled
+		if cancelled
 		{
 			Logger.dlog("[+] Cancelled !")
-			self.sessionTask?.cancel()
-			self.finished = true
+			sessionTask?.cancel()
+			finished = true
 			return
 		}
 
 		if error != nil
 		{
 			Logger.alog("[!] Failed to receive response: \(error?.localizedDescription)")
-			self.finished = true
+			finished = true
 			return
 		}
-		self.processData()
-		self.finished = true
+		processData()
+		finished = true
 	}
 
 	func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void)

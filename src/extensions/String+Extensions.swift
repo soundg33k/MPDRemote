@@ -28,18 +28,18 @@ extension String
 	// MARK: - String length
 	var length: Int
 	{
-		return self.characters.count
+		return characters.count
 	}
 
 	var range: NSRange
 	{
-		return NSRange(location:0, length:self.length)
+		return NSRange(location:0, length:length)
 	}
 
 	// MARK: - Base64 encode
 	func base64Encode() -> String
 	{
-		if let utf8str = self.dataUsingEncoding(NSUTF8StringEncoding)
+		if let utf8str = dataUsingEncoding(NSUTF8StringEncoding)
 		{
 			return utf8str.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
 		}
@@ -63,7 +63,7 @@ extension String
 	func md5() -> String
 	{
 		var digest = [UInt8](count:Int(CC_MD5_DIGEST_LENGTH), repeatedValue:0)
-		if let data = self.dataUsingEncoding(NSUTF8StringEncoding)
+		if let data = dataUsingEncoding(NSUTF8StringEncoding)
 		{
 			CC_MD5(data.bytes, CC_LONG(data.length), &digest)
 		}
@@ -78,7 +78,7 @@ extension String
 
 	func djb2() -> Int
 	{
-		return self.utf8.reduce(5381){($0 << 5) &+ $0 &+ Int($1)}
+		return utf8.reduce(5381){($0 << 5) &+ $0 &+ Int($1)}
 	}
 }
 

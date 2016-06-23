@@ -42,7 +42,7 @@ extension Genre : CustomStringConvertible
 {
 	var description:String
 	{
-		return "Name: <\(self.name)>\nNumber of albums: <\(self.albums.count)>"
+		return "Name: <\(name)>\nNumber of albums: <\(albums.count)>"
 	}
 }
 

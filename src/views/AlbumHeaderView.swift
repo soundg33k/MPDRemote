@@ -39,10 +39,10 @@ final class AlbumHeaderView : UIView
 	// Size of the cover
 	var coverSize: CGSize! {
 		didSet {
-			self.lblTitle.frame = CGRect(coverSize.width + 4.0, 4.0, self.width - (coverSize.width + 8.0), 40.0)
-			self.lblArtist.frame = CGRect(coverSize.width + 4.0, self.lblTitle.bottom + 4.0, self.width - (coverSize.width + 8.0), 18.0)
-			self.lblGenre.frame = CGRect(coverSize.width + 4.0, self.bounds.bottom - 20.0, 100.0, 16.0)
-			self.lblYear.frame = CGRect(self.bounds.right - 4.0 - 48.0, self.bounds.bottom - 20.0, 48.0, 16.0)
+			lblTitle.frame = CGRect(coverSize.width + 4.0, 4.0, width - (coverSize.width + 8.0), 40.0)
+			lblArtist.frame = CGRect(coverSize.width + 4.0, lblTitle.bottom + 4.0, width - (coverSize.width + 8.0), 18.0)
+			lblGenre.frame = CGRect(coverSize.width + 4.0, bounds.bottom - 20.0, 100.0, 16.0)
+			lblYear.frame = CGRect(bounds.right - 4.0 - 48.0, bounds.bottom - 20.0, 48.0, 16.0)
 		}
 	}
 
@@ -92,9 +92,9 @@ final class AlbumHeaderView : UIView
 	// MARK: - Drawing
 	override func drawRect(dirtyRect: CGRect)
 	{
-		guard let _ = self.image else {return}
-		let imageRect = CGRect(CGPointZero, self.coverSize)
-		self.image.drawInRect(imageRect, blendMode:.SourceAtop, alpha:1.0)
+		guard let _ = image else {return}
+		let imageRect = CGRect(CGPointZero, coverSize)
+		image.drawInRect(imageRect, blendMode:.SourceAtop, alpha:1.0)
 
 		let context = UIGraphicsGetCurrentContext()
 		CGContextSaveGState(context)
@@ -102,7 +102,7 @@ final class AlbumHeaderView : UIView
 
 		let startPoint = CGPoint(CGRectGetMinX(imageRect), CGRectGetMidY(imageRect))
 		let endPoint = CGPoint(CGRectGetMaxX(imageRect), CGRectGetMidY(imageRect))
-		let color = self.backgroundColor!
+		let color = backgroundColor!
 		let gradientColors: [CGColorRef] = [color.colorWithAlphaComponent(0.05).CGColor, color.colorWithAlphaComponent(0.75).CGColor, color.colorWithAlphaComponent(0.9).CGColor]
 		let locations: [CGFloat] = [0.0, 0.9, 1.0]
 		let gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), gradientColors, locations)
@@ -137,29 +137,29 @@ final class AlbumHeaderView : UIView
 		// Analyze colors
 		let x = KawaiiColors(image:image!, precision:8, samplingEdge:.Right)
 		x.analyze()
-		self.backgroundColor = x.edgeColor
-		self.lblTitle.textColor = x.primaryColor
-		self.lblTitle.backgroundColor = self.backgroundColor
-		self.lblArtist.textColor = x.secondaryColor
-		self.lblArtist.backgroundColor = self.backgroundColor
-		self.lblGenre.textColor = x.thirdColor
-		self.lblGenre.backgroundColor = self.backgroundColor
-		self.lblYear.textColor = x.thirdColor
-		self.lblYear.backgroundColor = self.backgroundColor
+		backgroundColor = x.edgeColor
+		lblTitle.textColor = x.primaryColor
+		lblTitle.backgroundColor = backgroundColor
+		lblArtist.textColor = x.secondaryColor
+		lblArtist.backgroundColor = backgroundColor
+		lblGenre.textColor = x.thirdColor
+		lblGenre.backgroundColor = backgroundColor
+		lblYear.textColor = x.thirdColor
+		lblYear.backgroundColor = backgroundColor
 
-		self.setNeedsDisplay()
+		setNeedsDisplay()
 
 		// Update frame for title / artist
 		let s = album.name as NSString
-		let width = self.frame.width - (self.coverSize.width + 8.0)
-		let r = s.boundingRectWithSize(CGSize(width, 40.0), options:.UsesLineFragmentOrigin, attributes:[NSFontAttributeName : self.lblTitle.font], context:nil)
-		self.lblTitle.frame = CGRect(self.coverSize.width + 4.0, 4.0, ceil(r.width), ceil(r.height))
-		self.lblArtist.frame = CGRect(self.coverSize.width + 4.0, self.lblTitle.bottom + 4.0, self.width - (self.coverSize.width + 8.0), 18.0)
+		let width = frame.width - (coverSize.width + 8.0)
+		let r = s.boundingRectWithSize(CGSize(width, 40.0), options:.UsesLineFragmentOrigin, attributes:[NSFontAttributeName : lblTitle.font], context:nil)
+		lblTitle.frame = CGRect(coverSize.width + 4.0, 4.0, ceil(r.width), ceil(r.height))
+		lblArtist.frame = CGRect(coverSize.width + 4.0, lblTitle.bottom + 4.0, width - (coverSize.width + 8.0), 18.0)
 
-		self.lblTitle.text = album.name
-		self.lblArtist.text = album.artist
-		self.lblGenre.text = album.genre
-		self.lblYear.text = album.year
+		lblTitle.text = album.name
+		lblArtist.text = album.artist
+		lblGenre.text = album.genre
+		lblYear.text = album.year
 
 		// Accessibility
 		var stra = "\(album.name) \(NYXLocalizedString("lbl_by")) \(album.artist)\n"
@@ -170,6 +170,6 @@ final class AlbumHeaderView : UIView
 			let minutes = total.seconds / 60
 			stra += "\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")\n"
 		}
-		self.accessibilityLabel = stra
+		accessibilityLabel = stra
 	}
 }

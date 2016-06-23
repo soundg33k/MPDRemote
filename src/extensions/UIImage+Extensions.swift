@@ -28,8 +28,8 @@ extension UIImage
 {
 	func imageCroppedToFitSize(fitSize: CGSize) -> UIImage?
 	{
-		let sourceWidth = self.size.width * self.scale
-		let sourceHeight = self.size.height * self.scale
+		let sourceWidth = size.width * scale
+		let sourceHeight = size.height * scale
 		let targetWidth = fitSize.width
 		let targetHeight = fitSize.height
 
@@ -64,8 +64,8 @@ extension UIImage
 
 		// Create scale-cropped image
 		UIGraphicsBeginImageContextWithOptions(destRect.size, false, 0.0) // 0.0 = scale for device's main screen
-		let sourceImg = CGImageCreateWithImageInRect(self.CGImage, sourceRect) // cropping happens here
-		var image = UIImage(CGImage:sourceImg!, scale:0.0, orientation:self.imageOrientation)
+		let sourceImg = CGImageCreateWithImageInRect(CGImage, sourceRect) // cropping happens here
+		var image = UIImage(CGImage:sourceImg!, scale:0.0, orientation:imageOrientation)
 		image.drawInRect(destRect) // the actual scaling happens here, and orientation is taken care of automatically
 		image = UIGraphicsGetImageFromCurrentImageContext()
 		UIGraphicsEndImageContext()
@@ -74,10 +74,10 @@ extension UIImage
 
 	func imageScaledToFitSize(fitSize: CGSize) -> UIImage?
 	{
-		guard let cgImage = self.CGImage else {return nil}
+		guard let cgImage = CGImage else {return nil}
 
-		let width = ceil(fitSize.width * self.scale)
-		let height = ceil(fitSize.height * self.scale)
+		let width = ceil(fitSize.width * scale)
+		let height = ceil(fitSize.height * scale)
 
 		let context = CGBitmapContextCreate(nil, Int(width), Int(width), CGImageGetBitsPerComponent(cgImage), CGImageGetBytesPerRow(cgImage), CGImageGetColorSpace(cgImage), CGImageGetBitmapInfo(cgImage).rawValue)
 		CGContextSetInterpolationQuality(context, .High)
@@ -93,17 +93,17 @@ extension UIImage
 
 	func imageTintedWithColor(color: UIColor, opacity: CGFloat = 0.0) -> UIImage?
 	{
-		UIGraphicsBeginImageContextWithOptions(self.size, false, 0.0)
+		UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
 
-		let rect = CGRect(0.0, 0.0, self.size.width, self.size.height)
+		let rect = CGRect(0.0, 0.0, size.width, size.height)
 		color.set()
 		UIRectFill(rect)
 
-		self.drawInRect(rect, blendMode:.DestinationIn, alpha:1.0)
+		drawInRect(rect, blendMode:.DestinationIn, alpha:1.0)
 
 		if (opacity > 0.0)
 		{
-			self.drawInRect(rect, blendMode:.SourceAtop, alpha:opacity)
+			drawInRect(rect, blendMode:.SourceAtop, alpha:opacity)
 		}
 		let image = UIGraphicsGetImageFromCurrentImageContext()
 		UIGraphicsEndImageContext()

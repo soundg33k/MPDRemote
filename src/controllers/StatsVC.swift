@@ -54,10 +54,10 @@ final class StatsVC : MenuTVC
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .Center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = self.navigationController?.navigationBar.tintColor
+		titleView.textColor = navigationController?.navigationBar.tintColor
 		titleView.text = NYXLocalizedString("lbl_section_stats")
-		titleView.backgroundColor = self.navigationController?.navigationBar.barTintColor
-		self.navigationItem.titleView = titleView
+		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
+		navigationItem.titleView = titleView
 	}
 
 	override func viewWillAppear(animated: Bool)
@@ -85,29 +85,29 @@ final class StatsVC : MenuTVC
 	// MARK: - Private
 	private func _updateLabels()
 	{
-		self.lblAlbums.text = self.stats["albums"] ?? "0"
+		lblAlbums.text = stats["albums"] ?? "0"
 
-		self.lblArtists.text = self.stats["artists"] ?? "0"
+		lblArtists.text = stats["artists"] ?? "0"
 
-		self.lblSongs.text = self.stats["songs"] ?? "0"
+		lblSongs.text = stats["songs"] ?? "0"
 
-		var seconds = UInt(self.stats["dbplaytime"] ?? "0")!
+		var seconds = UInt(stats["dbplaytime"] ?? "0")!
 		var duration = Duration(seconds:seconds)
-		self.lblDBPlaytime.text = self._formatDuration(duration)
+		lblDBPlaytime.text = _formatDuration(duration)
 
-		seconds = UInt(self.stats["mpduptime"] ?? "0")!
+		seconds = UInt(stats["mpduptime"] ?? "0")!
 		duration = Duration(seconds:seconds)
-		self.lblMPDUptime.text = self._formatDuration(duration)
+		lblMPDUptime.text = _formatDuration(duration)
 
-		seconds = UInt(self.stats["mpdplaytime"] ?? "0")!
+		seconds = UInt(stats["mpdplaytime"] ?? "0")!
 		duration = Duration(seconds:seconds)
-		self.lblMPDPlaytime.text = self._formatDuration(duration)
+		lblMPDPlaytime.text = _formatDuration(duration)
 
-		let tt = self.stats["mpddbupdate"] != nil ? NSTimeInterval(self.stats["mpddbupdate"]!) : NSTimeInterval(0)
+		let tt = stats["mpddbupdate"] != nil ? NSTimeInterval(stats["mpddbupdate"]!) : NSTimeInterval(0)
 		let df = NSDateFormatter()
 		df.dateFormat = "dd MMM yyyy, HH:mm"
 		let bla = df.stringFromDate(NSDate(timeIntervalSince1970:tt!))
-		self.lblMPDDBLastUpdate.text = bla
+		lblMPDDBLastUpdate.text = bla
 	}
 
 	private func _formatDuration(duration: Duration) -> String

@@ -56,16 +56,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
 	{
 		// Register default preferences
-		self._registerDefaultPreferences()
+		_registerDefaultPreferences()
 
 		// URL cache
 		NSURLCache.setSharedURLCache(NSURLCache(memoryCapacity:(4 * 1024 * 1024), diskCapacity:(32 * 1024 * 1024), diskPath:nil))
 
 		// Global operation queue
-		self.operationQueue = NSOperationQueue()
-		self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
+		operationQueue = NSOperationQueue()
+		operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
 
-		self.homeVC = self.window?.rootViewController
+		homeVC = window?.rootViewController
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:kNYXNotificationMiniPlayerShouldExpand, object:nil)
 
@@ -101,7 +101,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	// MARK: - Notifications
 	func miniPlayShouldExpandNotification(aNotification: NSNotification)
 	{
-		self.window?.rootViewController?.presentViewController(self.playerVC, animated:true, completion:nil)
+		window?.rootViewController?.presentViewController(playerVC, animated:true, completion:nil)
 		MiniPlayerView.shared.stayHidden = true
 		MiniPlayerView.shared.hide()
 	}

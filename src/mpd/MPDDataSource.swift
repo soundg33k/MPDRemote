@@ -55,44 +55,44 @@ final class MPDDataSource
 	func initialize() -> Bool
 	{
 		// Sanity check 1
-		if self._mpdConnection != nil
+		if _mpdConnection != nil
 		{
-			if self._mpdConnection.connected
+			if _mpdConnection.connected
 			{
 				return true
 			}
 		}
 
 		// Sanity check 2
-		guard let server = self.server else
+		guard let server = server else
 		{
 			Logger.dlog("[!] Server object is nil")
 			return false
 		}
 
 		// Connect
-		self._mpdConnection = MPDConnection(server:server)
-		let ret = self._mpdConnection.connect()
+		_mpdConnection = MPDConnection(server:server)
+		let ret = _mpdConnection.connect()
 		if ret
 		{
-			self._mpdConnection.delegate = self
-			self._startTimer(20.0)
+			_mpdConnection.delegate = self
+			_startTimer(20.0)
 		}
 		else
 		{
-			self._mpdConnection = nil
+			_mpdConnection = nil
 		}
 		return ret
 	}
 
 	func getListForDisplayType(displayType: DisplayType, callback: () -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			let list = self._mpdConnection.getListForDisplayType(displayType)
 			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
 			switch (displayType)
@@ -110,12 +110,12 @@ final class MPDDataSource
 
 	func getAlbumForGenre(genre: Genre, callback: () -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			if let album = self._mpdConnection.getAlbumForGenre(genre)
 			{
 				genre.albums.append(album)
@@ -126,12 +126,12 @@ final class MPDDataSource
 
 	func getAlbumsForGenre(genre: Genre, callback: () -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			let albums = self._mpdConnection.getAlbumsForGenre(genre)
 			genre.albums = albums
 			callback()
@@ -140,12 +140,12 @@ final class MPDDataSource
 
 	func getAlbumsForArtist(artist: Artist, callback: () -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			let list = self._mpdConnection.getAlbumsForArtist(artist)
 			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
 			artist.albums = list.sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)})
@@ -155,12 +155,12 @@ final class MPDDataSource
 
 	func getArtistsForGenre(genre: Genre, callback: ([Artist]) -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			let list = self._mpdConnection.getArtistsForGenre(genre)
 			let set = NSCharacterSet(charactersInString:".?!:;/+=-*'\"")
 			callback(list.sort({$0.name.stringByTrimmingCharactersInSet(set) < $1.name.stringByTrimmingCharactersInSet(set)}))
@@ -169,12 +169,12 @@ final class MPDDataSource
 
 	func getPathForAlbum(album: Album, callback: () -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			album.path = self._mpdConnection.getPathForAlbum(album)
 			callback()
 		}
@@ -182,12 +182,12 @@ final class MPDDataSource
 
 	func getSongsForAlbum(album: Album, callback: () -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			album.songs = self._mpdConnection.getSongsForAlbum(album)
 			callback()
 		}
@@ -195,12 +195,12 @@ final class MPDDataSource
 
 	func getSongsForAlbums(albums: [Album], callback: () -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			for album in albums
 			{
 				album.songs = self._mpdConnection.getSongsForAlbum(album)
@@ -211,12 +211,12 @@ final class MPDDataSource
 
 	func getMetadatasForAlbum(album: Album, callback: () -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			let metadatas = self._mpdConnection.getMetadatasForAlbum(album)
 			if let artist = metadatas["artist"] as! String?
 			{
@@ -236,12 +236,12 @@ final class MPDDataSource
 
 	func getStats(callback: ([String : String]) -> Void)
 	{
-		if self._mpdConnection == nil || !self._mpdConnection.connected
+		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(self._queue) {
+		dispatch_async(_queue) {
 			let stats = self._mpdConnection.getStats()
 			callback(stats)
 		}
@@ -250,23 +250,23 @@ final class MPDDataSource
 	// MARK: - Private
 	private func _startTimer(interval: Double)
 	{
-		self._timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self._queue)
-		dispatch_source_set_timer(self._timer, DISPATCH_TIME_NOW, UInt64(interval * Double(NSEC_PER_SEC)), UInt64(0.2 * Double(NSEC_PER_SEC))) // every interval seconds, with leeway of 0.2 second
-		dispatch_source_set_event_handler(self._timer) {
+		_timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _queue)
+		dispatch_source_set_timer(_timer, DISPATCH_TIME_NOW, UInt64(interval * Double(NSEC_PER_SEC)), UInt64(0.2 * Double(NSEC_PER_SEC))) // every interval seconds, with leeway of 0.2 second
+		dispatch_source_set_event_handler(_timer) {
 			self._playerStatus()
 		}
-		dispatch_resume(self._timer)
+		dispatch_resume(_timer)
 	}
 
 	private func _stopTimer()
 	{
-		dispatch_source_cancel(self._timer)
-		self._timer = nil
+		dispatch_source_cancel(_timer)
+		_timer = nil
 	}
 
 	private func _playerStatus()
 	{
-		self._mpdConnection.getStatus()
+		_mpdConnection.getStatus()
 	}
 }
 

@@ -44,13 +44,13 @@ final class ImageCache
 	{
 		get
 		{
-			return self._cache.objectForKey(key) as! UIImage?
+			return _cache.objectForKey(key) as! UIImage?
 		}
 		set (newValue)
 		{
 			if let img = newValue
 			{
-				self._cache.setObject(img, forKey:key)
+				_cache.setObject(img, forKey:key)
 			}
 		}
 	}

@@ -116,11 +116,11 @@ extension TypeChoiceView : UITableViewDelegate
 		switch (indexPath.row)
 		{
 			case 0:
-				self.delegate?.didSelectType(.Albums)
+				delegate?.didSelectType(.Albums)
 			case 1:
-				self.delegate?.didSelectType(.Artists)
+				delegate?.didSelectType(.Artists)
 			case 2:
-				self.delegate?.didSelectType(.Genres)
+				delegate?.didSelectType(.Genres)
 			default:
 				break
 		}

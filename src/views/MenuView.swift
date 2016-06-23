@@ -111,7 +111,7 @@ final class MenuView : UIView
 		switch (gest.state)
 		{
 			case .Began:
-				__startX = self.x
+				__startX = x
 			case .Changed:
 				let translationX = gest.translationInView(gest.view).x
 				var tmp = __startX + translationX
@@ -119,14 +119,14 @@ final class MenuView : UIView
 				{
 					tmp = 0.0
 				}
-				else if (translationX < -self.width)
+				else if (translationX < -width)
 				{
-					tmp = -self.width
+					tmp = -width
 				}
-				self.x = tmp
+				x = tmp
 			case .Ended:
-				let cmp = self.x
-				let limit = (self._menuMinX / 2.6)
+				let cmp = x
+				let limit = (_menuMinX / 2.6)
 				UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
 					self.x = (cmp >= limit) ? 0.0 : self._menuMinX
 				}, completion:{ finished in
@@ -203,7 +203,7 @@ extension MenuView : UITableViewDelegate
 			default:
 				break
 		}
-		self.menuDelegate?.menuViewShouldClose(self)
+		menuDelegate?.menuViewShouldClose(self)
 		APP_DELEGATE().window!.rootViewController = newTopViewController
 
 		if newTopViewController === APP_DELEGATE().homeVC
@@ -227,7 +227,7 @@ extension MenuView : UIGestureRecognizerDelegate
 {
 	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool
 	{
-		if (self.tableView.panGestureRecognizer === otherGestureRecognizer)
+		if (tableView.panGestureRecognizer === otherGestureRecognizer)
 		{
 			return false
 		}

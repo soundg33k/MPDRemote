@@ -32,31 +32,31 @@ class InteractableImageView : UIImageView, PTappable, PLeftSwippable, PRightSwip
 	// MARK: - PTappable
 	func didTap()
 	{
-		self.delegate?.didTap()
+		delegate?.didTap()
 	}
 
 	// MARK: - PLeftSwippable
 	func didSwipeLeft()
 	{
-		self.delegate?.didSwipeLeft()
+		delegate?.didSwipeLeft()
 	}
 
 	// MARK: - PRightSwippable
 	func didSwipeRight()
 	{
-		self.delegate?.didSwipeRight()
+		delegate?.didSwipeRight()
 	}
 
 	// MARK: - PUpSwippable
 	func didSwipeUp()
 	{
-		self.delegate?.didSwipeUp()
+		delegate?.didSwipeUp()
 	}
 
 	// MARK: - PDownSwippable
 	func didSwipeDown()
 	{
-		self.delegate?.didSwipeDown()
+		delegate?.didSwipeDown()
 	}
 }
 

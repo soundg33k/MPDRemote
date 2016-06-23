@@ -58,8 +58,8 @@ final class WEBServer : NSObject, NSCoding
 
 	func encodeWithCoder(coder: NSCoder)
 	{
-		coder.encodeObject(self.hostname, forKey:"hostname")
-		coder.encodeInteger(Int(self.port), forKey:"port")
-		coder.encodeObject(self.coverName, forKey:"covername")
+		coder.encodeObject(hostname, forKey:"hostname")
+		coder.encodeInteger(Int(port), forKey:"port")
+		coder.encodeObject(coverName, forKey:"covername")
 	}
 }

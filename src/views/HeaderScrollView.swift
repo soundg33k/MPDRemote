@@ -110,10 +110,10 @@ final class HeaderScrollView : UIScrollView
 	override func layoutSubviews()
 	{
 		super.layoutSubviews()
-		self.mainView.frame = CGRect(0.0, 0.0, self.frame.width, frame.height)
-		self.sideView.frame = CGRect(frame.size.width, 0.0, frame.size)
-		self.mainView.coverSize = CGSize(self.coverWidth, self.coverWidth)
-		self.sideView.coverSize = CGSize(self.coverWidth, self.coverWidth)
+		mainView.frame = CGRect(0.0, 0.0, frame.width, frame.height)
+		sideView.frame = CGRect(frame.size.width, 0.0, frame.size)
+		mainView.coverSize = CGSize(coverWidth, coverWidth)
+		sideView.coverSize = CGSize(coverWidth, coverWidth)
 	}
 
 	// MARK: - Public
@@ -123,17 +123,17 @@ final class HeaderScrollView : UIScrollView
 		animation.duration = 0.5
 		animation.type = kCATransitionPush
 		animation.timingFunction = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseInEaseOut)
-		if (self.fromLeft)
+		if (fromLeft)
 		{
 			animation.subtype = kCATransitionFromLeft
-			self.layer.addAnimation(animation, forKey:"io.whine.mpdremote.transition.left")
+			layer.addAnimation(animation, forKey:"io.whine.mpdremote.transition.left")
 		}
 		else
 		{
 			animation.subtype = kCATransitionFromRight
-			self.layer.addAnimation(animation, forKey:"io.whine.mpdremote.transition.right")
+			layer.addAnimation(animation, forKey:"io.whine.mpdremote.transition.right")
 		}
-		self.contentInset = UIEdgeInsetsZero
+		contentInset = UIEdgeInsetsZero
 	}
 }
 
@@ -142,7 +142,7 @@ extension HeaderScrollView : UIScrollViewDelegate
 {
 	func scrollViewWillBeginDragging(scrollView: UIScrollView)
 	{
-		self.directionChanged = true
+		directionChanged = true
 	}
 
 	func scrollViewDidScroll(scrollView: UIScrollView)
@@ -150,66 +150,66 @@ extension HeaderScrollView : UIScrollViewDelegate
 		let x = scrollView.contentOffset.x
 		if (x > 0.0) // Next
 		{
-			if self.directionChanged
+			if directionChanged
 			{
-				self.sideView.frame.x = self.frame.width
-				if let album = self.navDelegate?.requestNextAlbum()
+				sideView.frame.x = frame.width
+				if let album = navDelegate?.requestNextAlbum()
 				{
-					self.sideView.updateHeaderWithAlbum(album)
+					sideView.updateHeaderWithAlbum(album)
 				}
 				else
 				{
-					self.sideView.lblTitle.text = ""
-					self.sideView.lblArtist.text = ""
-					self.sideView.lblGenre.text = ""
-					self.sideView.lblYear.text = ""
+					sideView.lblTitle.text = ""
+					sideView.lblArtist.text = ""
+					sideView.lblGenre.text = ""
+					sideView.lblYear.text = ""
 				}
 			}
-			self.canDisplayNext = (self.sideView.lblTitle.text?.length > 0) && (x >= self.coverWidth)
+			canDisplayNext = (sideView.lblTitle.text?.length > 0) && (x >= coverWidth)
 		}
 		else // previous
 		{
-			if self.directionChanged
+			if directionChanged
 			{
-				self.sideView.frame.x = -self.frame.width
-				if let album = self.navDelegate?.requestPreviousAlbum()
+				sideView.frame.x = -frame.width
+				if let album = navDelegate?.requestPreviousAlbum()
 				{
-					self.sideView.updateHeaderWithAlbum(album)
+					sideView.updateHeaderWithAlbum(album)
 				}
 				else
 				{
-					self.sideView.lblTitle.text = ""
-					self.sideView.lblArtist.text = ""
-					self.sideView.lblGenre.text = ""
-					self.sideView.lblYear.text = ""
+					sideView.lblTitle.text = ""
+					sideView.lblArtist.text = ""
+					sideView.lblGenre.text = ""
+					sideView.lblYear.text = ""
 				}
 			}
-			self.canDisplayPrevious = (self.sideView.lblTitle.text?.length > 0) && (x <= -self.coverWidth)
+			canDisplayPrevious = (sideView.lblTitle.text?.length > 0) && (x <= -coverWidth)
 		}
-		self.directionChanged = false
+		directionChanged = false
 	}
 
 	func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool)
 	{
-		if scrollView.contentOffset.x >= self.coverWidth // next
+		if scrollView.contentOffset.x >= coverWidth // next
 		{
-			if self.canDisplayNext
+			if canDisplayNext
 			{
 				scrollView.contentInset = UIEdgeInsets(top:0.0, left:0.0, bottom:0.0, right:scrollView.frame.width)
-				self.fromLeft = false
-				if !(self.navDelegate?.shouldShowNextAlbum())!
+				fromLeft = false
+				if !(navDelegate?.shouldShowNextAlbum())!
 				{
 					scrollView.contentInset = UIEdgeInsetsZero
 				}
 			}
 		}
-		else if  scrollView.contentOffset.x <= -self.coverWidth // previous
+		else if  scrollView.contentOffset.x <= -coverWidth // previous
 		{
-			if self.canDisplayPrevious
+			if canDisplayPrevious
 			{
 				scrollView.contentInset = UIEdgeInsets(top:0.0, left:-scrollView.frame.width, bottom:0.0, right:0.0)
-				self.fromLeft = true
-				if !(self.navDelegate?.shouldShowPreviousAlbum())!
+				fromLeft = true
+				if !(navDelegate?.shouldShowPreviousAlbum())!
 				{
 					scrollView.contentInset = UIEdgeInsetsZero
 				}
@@ -219,16 +219,16 @@ extension HeaderScrollView : UIScrollViewDelegate
 
 	func scrollViewWillBeginDecelerating(scrollView: UIScrollView)
 	{
-		if scrollView.contentOffset.x >= self.coverWidth // next
+		if scrollView.contentOffset.x >= coverWidth // next
 		{
-			if self.canDisplayNext
+			if canDisplayNext
 			{
 				scrollView.setContentOffset(scrollView.contentOffset, animated:true)
 			}
 		}
-		else if  scrollView.contentOffset.x <= -self.coverWidth // previous
+		else if  scrollView.contentOffset.x <= -coverWidth // previous
 		{
-			if self.canDisplayPrevious
+			if canDisplayPrevious
 			{
 				scrollView.setContentOffset(scrollView.contentOffset, animated:true)
 			}

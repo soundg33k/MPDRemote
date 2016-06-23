@@ -63,6 +63,6 @@ extension Album : CustomStringConvertible
 {
 	var description:String
 	{
-		return "Name: <\(self.name)>\nArtist: <\(self.artist)>\nGenre: <\(self.genre)>\nYear: <\(self.year)>\nPath: <\(self.path)>"
+		return "Name: <\(name)>\nArtist: <\(artist)>\nGenre: <\(genre)>\nYear: <\(year)>\nPath: <\(path)>"
 	}
 }

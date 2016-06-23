@@ -53,15 +53,15 @@ class MenuTVC : UITableViewController
 	{
 		super.viewDidLoad()
 
-		self.menuView = MenuView(frame:CGRect(MENU_MIN_X, 64.0, MENU_WIDTH, self.view.height - 64.0))
-		self.menuView.menuDelegate = self
-		self.menuView.visible = false
-		self.navigationController!.view.addSubview(self.menuView)
+		menuView = MenuView(frame:CGRect(MENU_MIN_X, 64.0, MENU_WIDTH, view.height - 64.0))
+		menuView.menuDelegate = self
+		menuView.visible = false
+		navigationController!.view.addSubview(menuView)
 
-		self.panGestureMenu = UIScreenEdgePanGestureRecognizer(target:self, action:#selector(panFromEdge(_:)))
-		self.panGestureMenu.edges = .Left
-		self.panGestureMenu.delegate = self
-		self.view.addGestureRecognizer(self.panGestureMenu)
+		panGestureMenu = UIScreenEdgePanGestureRecognizer(target:self, action:#selector(panFromEdge(_:)))
+		panGestureMenu.edges = .Left
+		panGestureMenu.delegate = self
+		view.addGestureRecognizer(panGestureMenu)
 	}
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
@@ -94,7 +94,7 @@ class MenuTVC : UITableViewController
 		switch (gest.state)
 		{
 			case .Began:
-				__startX = self.menuView.frame.x
+				__startX = menuView.frame.x
 				break
 			case .Changed:
 				let translationX = gest.translationInView(view).x
@@ -103,13 +103,13 @@ class MenuTVC : UITableViewController
 				{
 					tmp = 0.0
 				}
-				else if (translationX < -self.menuView.frame.width)
+				else if (translationX < -menuView.frame.width)
 				{
-					tmp = -self.menuView.frame.width
+					tmp = -menuView.frame.width
 				}
-				self.menuView.frame.x = tmp
+				menuView.frame.x = tmp
 			case .Ended:
-				let cmp = self.menuView.frame.x
+				let cmp = menuView.frame.x
 				let limit = (MENU_MIN_X / 2.6)
 				UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
 					self.menuView.frame.x = (cmp >= limit) ? 0.0 : MENU_MIN_X
@@ -140,8 +140,8 @@ extension MenuTVC : MenuViewDelegate
 
 	func menuViewDidClose(menuView: UIView)
 	{
-		self.view.userInteractionEnabled = true
-		self.navigationItem.leftBarButtonItem?.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
+		view.userInteractionEnabled = true
+		navigationItem.leftBarButtonItem?.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 	}
 }
 
@@ -150,9 +150,9 @@ extension MenuTVC : UIGestureRecognizerDelegate
 {
 	func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool
 	{
-		if (gestureRecognizer === self.panGestureMenu)
+		if (gestureRecognizer === panGestureMenu)
 		{
-			if (self.menuView.visible)
+			if (menuView.visible)
 			{
 				return false
 			}

@@ -62,9 +62,9 @@ final class MPDServer : NSObject, NSCoding
 
 	func encodeWithCoder(coder: NSCoder)
 	{
-		coder.encodeObject(self.name, forKey:"name")
-		coder.encodeObject(self.hostname, forKey:"hostname")
-		coder.encodeInteger(Int(self.port), forKey:"port")
-		coder.encodeObject(self.password, forKey:"password")
+		coder.encodeObject(name, forKey:"name")
+		coder.encodeObject(hostname, forKey:"hostname")
+		coder.encodeInteger(Int(port), forKey:"port")
+		coder.encodeObject(password, forKey:"password")
 	}
 }

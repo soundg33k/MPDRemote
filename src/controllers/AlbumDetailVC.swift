@@ -55,29 +55,29 @@ final class AlbumDetailVC : UIViewController
 		super.viewDidLoad()
 
 		// Navigation bar title
-		self.titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
-		self.titleView.numberOfLines = 2
-		self.titleView.textAlignment = .Center
-		self.titleView.isAccessibilityElement = false
-		self.titleView.textColor = self.navigationController?.navigationBar.tintColor
-		self.titleView.backgroundColor = self.navigationController?.navigationBar.barTintColor
-		self.navigationItem.titleView = self.titleView
+		titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
+		titleView.numberOfLines = 2
+		titleView.textAlignment = .Center
+		titleView.isAccessibilityElement = false
+		titleView.textColor = navigationController?.navigationBar.tintColor
+		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
+		navigationItem.titleView = titleView
 
 		// Album header view
 		let coverSize = NSKeyedUnarchiver.unarchiveObjectWithData(NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!) as! NSValue
-		self.headerView.coverWidth = coverSize.CGSizeValue().width
-		self.headerHeightConstraint.constant = coverSize.CGSizeValue().height
-		self.headerView.navDelegate = self
+		headerView.coverWidth = coverSize.CGSizeValue().width
+		headerHeightConstraint.constant = coverSize.CGSizeValue().height
+		headerView.navDelegate = self
 
 		// Dummy tableview host, to create a nice shadow effect
-		dummyView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, self.view.width + 4.0, 4.0)).CGPath
+		dummyView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, view.width + 4.0, 4.0)).CGPath
 		dummyView.layer.shadowRadius = 3.0
 		dummyView.layer.shadowOpacity = 1.0
 		dummyView.layer.shadowColor = UIColor.blackColor().CGColor
 		dummyView.layer.masksToBounds = false
 
 		// Tableview
-		self.tableView.tableFooterView = UIView()
+		tableView.tableFooterView = UIView()
 
 		// Notif for frame changes
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
@@ -89,7 +89,7 @@ final class AlbumDetailVC : UIViewController
 		super.viewWillAppear(animated)
 
 		// Add navbar shadow
-		let navigationBar = self.navigationController!.navigationBar
+		let navigationBar = navigationController!.navigationBar
 		navigationBar.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).CGPath
 		navigationBar.layer.shadowRadius = 3.0
 		navigationBar.layer.shadowOpacity = 1.0
@@ -97,10 +97,10 @@ final class AlbumDetailVC : UIViewController
 		navigationBar.layer.masksToBounds = false
 
 		// Update header
-		self._updateHeader()
+		_updateHeader()
 
 		// Get songs list if needed
-		let album = self._currentAlbum()
+		let album = _currentAlbum()
 		if album.songs == nil
 		{
 			MPDDataSource.shared.getSongsForAlbum(album, callback: {
@@ -112,8 +112,8 @@ final class AlbumDetailVC : UIViewController
 		}
 		else
 		{
-			self._updateNavigationTitle()
-			self.tableView.reloadData()
+			_updateNavigationTitle()
+			tableView.reloadData()
 		}
 	}
 
@@ -122,7 +122,7 @@ final class AlbumDetailVC : UIViewController
 		super.viewWillDisappear(animated)
 
 		// Remove navbar shadow
-		let navigationBar = self.navigationController!.navigationBar
+		let navigationBar = navigationController!.navigationBar
 		navigationBar.layer.shadowPath = nil
 		navigationBar.layer.shadowRadius = 0.0
 		navigationBar.layer.shadowOpacity = 0.0
@@ -141,45 +141,45 @@ final class AlbumDetailVC : UIViewController
 	// MARK: - Notifications
 	func playingTrackChangedNotification(aNotification: NSNotification?)
 	{
-		self.tableView.reloadData()
+		tableView.reloadData()
 	}
 
 	func playerStatusChangedNotification(aNotification: NSNotification?)
 	{
-		self.tableView.reloadData()
+		tableView.reloadData()
 	}
 
 	// MARK: - Private
 	private func _nextAlbum() -> Album?
 	{
-		if self.selectedIndex < (self.albums.count - 1)
+		if selectedIndex < (albums.count - 1)
 		{
-			return self.albums[self.selectedIndex + 1]
+			return albums[selectedIndex + 1]
 		}
 		return nil
 	}
 
 	private func _previousAlbum() -> Album?
 	{
-		if self.selectedIndex > 0
+		if selectedIndex > 0
 		{
-			return self.albums[self.selectedIndex - 1]
+			return albums[selectedIndex - 1]
 		}
 		return nil
 	}
 
 	private func _currentAlbum() -> Album
 	{
-		return self.albums[self.selectedIndex]
+		return albums[selectedIndex]
 	}
 
 	private func _fetchMetadatasForSideAlbums()
 	{
-		if let nextAlbum = self._nextAlbum()
+		if let nextAlbum = _nextAlbum()
 		{
 			MPDDataSource.shared.getMetadatasForAlbum(nextAlbum, callback:{})
 		}
-		if let previousAlbum = self._previousAlbum()
+		if let previousAlbum = _previousAlbum()
 		{
 			MPDDataSource.shared.getMetadatasForAlbum(previousAlbum, callback:{})
 		}
@@ -188,7 +188,7 @@ final class AlbumDetailVC : UIViewController
 	private func _updateHeader()
 	{
 		// get current album
-		let album = self._currentAlbum()
+		let album = _currentAlbum()
 
 		// Update header view
 		self.headerView.mainView.updateHeaderWithAlbum(album)
@@ -206,14 +206,14 @@ final class AlbumDetailVC : UIViewController
 
 	private func _updateNavigationTitle()
 	{
-		let album = self._currentAlbum()
+		let album = _currentAlbum()
 		if let tracks = album.songs
 		{
 			let total = tracks.reduce(Duration(seconds:0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
 			let attrs = NSMutableAttributedString(string:"\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
 			attrs.appendAttributedString(NSAttributedString(string:"\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
-			self.titleView.attributedText = attrs
+			titleView.attributedText = attrs
 		}
 	}
 }
@@ -223,7 +223,7 @@ extension AlbumDetailVC : UITableViewDataSource
 {
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		if let tracks = self._currentAlbum().songs
+		if let tracks = _currentAlbum().songs
 		{
 			return tracks.count + 1 // dummy
 		}
@@ -234,7 +234,7 @@ extension AlbumDetailVC : UITableViewDataSource
 	{
 		let cell = tableView.dequeueReusableCellWithIdentifier("io.whine.mpdremote.cell.track", forIndexPath:indexPath) as! TrackTableViewCell
 
-		if let tracks = self._currentAlbum().songs
+		if let tracks = _currentAlbum().songs
 		{
 			// Dummy to let some space for the mini player
 			if indexPath.row == tracks.count
@@ -306,7 +306,7 @@ extension AlbumDetailVC : UITableViewDelegate
 		tableView.deselectRowAtIndexPath(indexPath, animated:true)
 
 		// Dummy cell
-		guard let tracks = self._currentAlbum().songs else {return}
+		guard let tracks = _currentAlbum().songs else {return}
 		if indexPath.row == tracks.count
 		{
 			return
@@ -344,21 +344,21 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 {
 	func requestNextAlbum() -> Album?
 	{
-		return self._nextAlbum()
+		return _nextAlbum()
 	}
 
 	func requestPreviousAlbum() -> Album?
 	{
-		return self._previousAlbum()
+		return _previousAlbum()
 	}
 
 	func shouldShowNextAlbum() -> Bool
 	{
-		if self.selectedIndex < (self.albums.count - 1)
+		if selectedIndex < (albums.count - 1)
 		{
-			self.selectedIndex += 1
+			selectedIndex += 1
 
-			let album = self._currentAlbum()
+			let album = _currentAlbum()
 			if album.songs == nil
 			{
 				MPDDataSource.shared.getSongsForAlbum(album, callback:{
@@ -372,10 +372,10 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 			}
 			else
 			{
-				self._updateHeader()
-				self._updateNavigationTitle()
-				self.tableView.reloadData()
-				self.headerView.itemChanged()
+				_updateHeader()
+				_updateNavigationTitle()
+				tableView.reloadData()
+				headerView.itemChanged()
 			}
 
 			return true
@@ -385,11 +385,11 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 
 	func shouldShowPreviousAlbum() -> Bool
 	{
-		if self.selectedIndex > 0
+		if selectedIndex > 0
 		{
-			self.selectedIndex -= 1
+			selectedIndex -= 1
 
-			let album = self._currentAlbum()
+			let album = _currentAlbum()
 			if album.songs == nil
 			{
 				MPDDataSource.shared.getSongsForAlbum(album, callback:{
@@ -403,10 +403,10 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 			}
 			else
 			{
-				self._updateHeader()
-				self._updateNavigationTitle()
-				self.tableView.reloadData()
-				self.headerView.itemChanged()
+				_updateHeader()
+				_updateNavigationTitle()
+				tableView.reloadData()
+				headerView.itemChanged()
 			}
 
 			return true

@@ -45,26 +45,26 @@ final class AlbumsVC : UITableViewController
 	{
 		super.viewDidLoad()
 		// Remove back button label
-		self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
+		navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
 
 		// Tableview
-		self.tableView.tableFooterView = UIView()
+		tableView.tableFooterView = UIView()
 
 		// Navigation bar title
-		self.titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
-		self.titleView.numberOfLines = 2
-		self.titleView.textAlignment = .Center
-		self.titleView.isAccessibilityElement = false
-		self.titleView.textColor = self.navigationController?.navigationBar.tintColor
-		self.titleView.backgroundColor = self.navigationController?.navigationBar.barTintColor
-		self.navigationItem.titleView = self.titleView
+		titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
+		titleView.numberOfLines = 2
+		titleView.textAlignment = .Center
+		titleView.isAccessibilityElement = false
+		titleView.textColor = navigationController?.navigationBar.tintColor
+		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
+		navigationItem.titleView = titleView
 	}
 
 	override func viewWillAppear(animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
-		if self.artist.albums.count <= 0
+		if artist.albums.count <= 0
 		{
 			MPDDataSource.shared.getAlbumsForArtist(artist, callback:{
 				dispatch_async(dispatch_get_main_queue()) {
@@ -74,7 +74,7 @@ final class AlbumsVC : UITableViewController
 			})
 		}
 
-		self._updateNavigationTitle()
+		_updateNavigationTitle()
 	}
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
@@ -92,17 +92,17 @@ final class AlbumsVC : UITableViewController
 		if segue.identifier == "albums-to-albumdetail"
 		{
 			let vc = segue.destinationViewController as! AlbumDetailVC
-			vc.selectedIndex = self.tableView.indexPathForSelectedRow!.row
-			vc.albums = self.artist.albums
+			vc.selectedIndex = tableView.indexPathForSelectedRow!.row
+			vc.albums = artist.albums
 		}
 	}
 
 	// MARK: - Private
 	private func _updateNavigationTitle()
 	{
-		let attrs = NSMutableAttributedString(string:self.artist.name + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
-		attrs.appendAttributedString(NSAttributedString(string:"\(self.artist.albums.count) \(self.artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercaseString : NYXLocalizedString("lbl_album").lowercaseString)", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
-		self.titleView.attributedText = attrs
+		let attrs = NSMutableAttributedString(string:artist.name + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
+		attrs.appendAttributedString(NSAttributedString(string:"\(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercaseString : NYXLocalizedString("lbl_album").lowercaseString)", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
+		titleView.attributedText = attrs
 	}
 }
 
@@ -111,7 +111,7 @@ extension AlbumsVC
 {
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		return self.artist.albums.count + 1 // dummy
+		return artist.albums.count + 1 // dummy
 	}
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
@@ -119,7 +119,7 @@ extension AlbumsVC
 		let cell = tableView.dequeueReusableCellWithIdentifier("io.whine.mpdremote.cell.album", forIndexPath:indexPath) as! AlbumTableViewCell
 
 		// Dummy to let some space for the mini player
-		if indexPath.row == self.artist.albums.count
+		if indexPath.row == artist.albums.count
 		{
 			cell.coverView.image = nil
 			cell.lblAlbum.text = ""
@@ -129,7 +129,7 @@ extension AlbumsVC
 			return cell
 		}
 
-		let album = self.artist.albums[indexPath.row]
+		let album = artist.albums[indexPath.row]
 		cell.lblAlbum.text = album.name
 		cell.separator.hidden = false
 		cell.accessoryType = .DisclosureIndicator
@@ -169,7 +169,7 @@ extension AlbumsVC
 			let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+				_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
 					let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 					dispatch_async(dispatch_get_main_queue()) {
 						if let c = self.tableView.cellForRowAtIndexPath(indexPath) as? AlbumTableViewCell
@@ -213,7 +213,7 @@ extension AlbumsVC
 			}
 			callback(thumbnail:thumbnail)
 		}
-		self._downloadOperations[key] = downloadOperation
+		_downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
 }
@@ -224,36 +224,36 @@ extension AlbumsVC
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
 	{
 		// Dummy, ignore
-		if indexPath.row == self.artist.albums.count
+		if indexPath.row == artist.albums.count
 		{
 			return
 		}
 
-		self.performSegueWithIdentifier("albums-to-albumdetail", sender: self)
+		performSegueWithIdentifier("albums-to-albumdetail", sender: self)
 	}
 	
 	override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
 	{
 		// Dummy, ignore
-		if indexPath.row == self.artist.albums.count
+		if indexPath.row == artist.albums.count
 		{
 			return
 		}
 
 		// Remove download cover operation if still in queue
-		let album = self.artist.albums[indexPath.row]
+		let album = artist.albums[indexPath.row]
 		let key = album.name + album.year
-		if let op = self._downloadOperations[key] as! CoverOperation?
+		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
-			self._downloadOperations.removeValueForKey(key)
+			_downloadOperations.removeValueForKey(key)
 			Logger.dlog("[+] Cancelling \(op)")
 		}
 	}
 
 	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
 	{
-		if indexPath.row == self.artist.albums.count
+		if indexPath.row == artist.albums.count
 		{
 			return 44.0 // dummy cell
 		}

@@ -38,18 +38,18 @@ struct Duration
 	// MARK: - Public
 	func minutesRepresentation() -> (minutes: UInt, seconds: UInt)
 	{
-		return (self.seconds / 60, self.seconds % 60)
+		return (seconds / 60, seconds % 60)
 	}
 
 	func minutesRepresentationAsString(delim: String = ":") -> String
 	{
-		let tmp = self.minutesRepresentation()
+		let tmp = minutesRepresentation()
 		return "\(tmp.minutes)\(delim)\(tmp.seconds < 10 ? "0" : "")\(tmp.seconds)"
 	}
 
 	func hoursRepresentation() -> (hours: UInt, minutes: UInt, seconds: UInt)
 	{
-		var s = self.seconds
+		var s = seconds
 		let hours = s / 3600
 		s -= hours * 3600
 		let minutes = s / 60
@@ -59,7 +59,7 @@ struct Duration
 
 	func daysRepresentation() -> (days: UInt, hours: UInt, minutes: UInt, seconds: UInt)
 	{
-		var s = self.seconds
+		var s = seconds
 		let days = s / 86400
 		s -= days * 86400
 		let hours = s / 3600
@@ -87,7 +87,7 @@ extension Duration : Hashable
 {
 	var hashValue: Int
 	{
-		return self.seconds.hashValue
+		return seconds.hashValue
 	}
 }
 
@@ -95,7 +95,7 @@ extension Duration : CustomStringConvertible
 {
 	var description: String
 	{
-		return String(self.seconds)
+		return String(seconds)
 	}
 }
 

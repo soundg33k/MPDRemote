@@ -71,7 +71,6 @@ final class MiniPlayerView : UIView, PTappable
 		self.addSubview(blurEffectView)
 
 		self.imageView = UIImageView(frame:CGRect(0.0, 0.0, frame.height, frame.height))
-		//self.imageView.image = UIImage(named:"default-cover")
 		blurEffectView.contentView.addSubview(self.imageView)
 
 		// Vibrancy over the play/pause button
@@ -130,16 +129,16 @@ final class MiniPlayerView : UIView, PTappable
 	// MARK: - Public
 	func setInfoFromTrack(track: Track, ofAlbum album: Album)
 	{
-		self.lblTitle.text = track.title
-		self.lblArtist.text = track.artist
+		lblTitle.text = track.title
+		lblArtist.text = track.artist
 
 		guard let url = album.localCoverURL else {return}
 		if let image = UIImage(contentsOfFile:url.path!)
 		{
 			let x = KawaiiColors(image:image)
 			x.analyze()
-			self.progressView.backgroundColor = x.dominantColor
-			self.imageView.image = image.imageScaledToFitSize(CGSize(self.imageView.width * UIScreen.mainScreen().scale, self.imageView.height * UIScreen.mainScreen().scale))
+			progressView.backgroundColor = x.dominantColor
+			imageView.image = image.imageScaledToFitSize(CGSize(imageView.width * UIScreen.mainScreen().scale, imageView.height * UIScreen.mainScreen().scale))
 		}
 		else
 		{
@@ -197,15 +196,15 @@ final class MiniPlayerView : UIView, PTappable
 	// MARK: - Buttons actions
 	func changePlaybackAction(sender: UIButton?)
 	{
-		if self.btnPlay.tag == PlayerStatus.Playing.rawValue
+		if btnPlay.tag == PlayerStatus.Playing.rawValue
 		{
-			self.btnPlay.setImage(UIImage(named:"btn-play")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
-			self.btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
+			btnPlay.setImage(UIImage(named:"btn-play")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 		}
 		else
 		{
-			self.btnPlay.setImage(UIImage(named:"btn-pause")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
-			self.btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
+			btnPlay.setImage(UIImage(named:"btn-pause")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 		MPDPlayer.shared.togglePause()
 	}
@@ -222,25 +221,25 @@ final class MiniPlayerView : UIView, PTappable
 		if let infos = aNotification.userInfo
 		{
 			// Player not visible and should be
-			if !self.visible && !self.stayHidden
+			if !visible && !stayHidden
 			{
-				self.show()
+				show()
 			}
 
 			let track = infos[kPlayerTrackKey] as! Track
 			let album = infos[kPlayerAlbumKey] as! Album
 			let elapsed = infos[kPlayerElapsedKey] as! Int
 
-			if track.title != self.lblTitle.text
+			if track.title != lblTitle.text
 			{
-				self.setInfoFromTrack(track, ofAlbum:album)
+				setInfoFromTrack(track, ofAlbum:album)
 			}
 
-			let ratio = self.width / CGFloat(track.duration.seconds)
+			let ratio = width / CGFloat(track.duration.seconds)
 			UIView.animateWithDuration(0.5, animations:{
 				self.progressView.width = ratio * CGFloat(elapsed)
 			})
-			self.accessibleView.accessibilityLabel = "\(track.title) \(NYXLocalizedString("lbl_by")) \(track.artist)\n\((100 * elapsed) / Int(track.duration.seconds))% \(NYXLocalizedString("lbl_played"))"
+			accessibleView.accessibilityLabel = "\(track.title) \(NYXLocalizedString("lbl_by")) \(track.artist)\n\((100 * elapsed) / Int(track.duration.seconds))% \(NYXLocalizedString("lbl_played"))"
 		}
 	}
 
@@ -251,15 +250,15 @@ final class MiniPlayerView : UIView, PTappable
 			let state = PlayerStatus(rawValue:infos[kPlayerStatusKey] as! Int)!
 			if state == .Playing
 			{
-				self.btnPlay.setImage(UIImage(named:"btn-pause")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
-				self.btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
+				btnPlay.setImage(UIImage(named:"btn-pause")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 			}
 			else
 			{
-				self.btnPlay.setImage(UIImage(named:"btn-play")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
-				self.btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
+				btnPlay.setImage(UIImage(named:"btn-play")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 			}
-			self.btnPlay.tag = state.rawValue
+			btnPlay.tag = state.rawValue
 		}
 	}
 }

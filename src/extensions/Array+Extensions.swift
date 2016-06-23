@@ -27,11 +27,11 @@ extension Array
 {
 	func randomItem() -> Element
 	{
-		return self[Int(arc4random_uniform(UInt32(self.count)))]
+		return self[Int(arc4random_uniform(UInt32(count)))]
 	}
 
 	subscript(safe idx: Int) -> Element?
 	{
-		return idx < self.endIndex ? self[idx] : nil
+		return idx < endIndex ? self[idx] : nil
 	}
 }

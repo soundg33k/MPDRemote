@@ -54,7 +54,7 @@ extension Track : CustomStringConvertible
 {
 	var description:String
 	{
-		return "Title: <\(self.title)>\nArtist: <\(self.artist)>\nDuration: <\(self.duration)>\nTrack: <\(self.trackNumber)>\nURI: <\(self.uri)>\nPosition: <\(self.position)>"
+		return "Title: <\(title)>\nArtist: <\(artist)>\nDuration: <\(duration)>\nTrack: <\(trackNumber)>\nURI: <\(uri)>\nPosition: <\(position)>"
 	}
 }
 

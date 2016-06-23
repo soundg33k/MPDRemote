@@ -120,6 +120,6 @@ extension UIGestureRecognizer
 
 	@objc func didInteractWithGestureRecognizer(sender:UIGestureRecognizer)
 	{
-		self.block(recognizer:sender)
+		block(recognizer:sender)
 	}
 }

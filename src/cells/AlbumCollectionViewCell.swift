@@ -1,4 +1,4 @@
-// AlbumCollectionViewCell.swift
+// RootCollectionViewCell.swift
 // Copyright (c) 2016 Nyx0uf ( https://mpdremote.whine.io )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class AlbumCollectionViewCell : UICollectionViewCell
+final class RootCollectionViewCell : UICollectionViewCell
 {
 	// MARK: - Properties
 	// Album cover
@@ -35,7 +35,7 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 	{
 		didSet
 		{
-			self.imageView.image = self.image
+			imageView.image = image
 		}
 	}
 	// Flag to indicate that the cell is being long pressed
@@ -43,27 +43,25 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 	{
 		didSet
 		{
-			if self.longPressed
+			if longPressed
 			{
-				self.label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
-				self.imageView.layer.borderWidth = 0.5
-				if let img = self.image
+				label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
+				imageView.layer.borderWidth = 0.5
+				if let img = image
 				{
 					guard let ciimg = CIImage(image:img) else {return}
 					guard let filter = CIFilter(name:"CIUnsharpMask") else {return}
 					filter.setDefaults()
 					filter.setValue(ciimg, forKey:kCIInputImageKey)
 					guard let result = filter.valueForKey(kCIOutputImageKey) as! CIImage? else {return}
-					//let imgRef = CoreImageUtilities.shared.hwContext.createCGImage(result, fromRect:result.extent)
-					//self.imageView.image = UIImage(CGImage:imgRef)
-					self.imageView.image = UIImage(CIImage:result)
+					imageView.image = UIImage(CIImage:result)
 				}
 			}
 			else
 			{
-				self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
-				self.imageView.layer.borderWidth = 0.0
-				self.imageView.image = self.image
+				label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+				imageView.layer.borderWidth = 0.0
+				imageView.image = image
 			}
 		}
 	}
@@ -116,15 +114,15 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 	{
 		didSet
 		{
-			if self.selected
+			if selected
 			{
-				self.label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
-				self.imageView.layer.borderWidth = 0.5
+				label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
+				imageView.layer.borderWidth = 0.5
 			}
 			else
 			{
-				self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
-				self.imageView.layer.borderWidth = 0.0
+				label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+				imageView.layer.borderWidth = 0.0
 			}
 		}
 	}
@@ -133,15 +131,15 @@ final class AlbumCollectionViewCell : UICollectionViewCell
 	{
 		didSet
 		{
-			if self.highlighted
+			if highlighted
 			{
-				self.label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
-				self.imageView.layer.borderWidth = 0.5
+				label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
+				imageView.layer.borderWidth = 0.5
 			}
 			else
 			{
-				self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
-				self.imageView.layer.borderWidth = 0.0
+				label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+				imageView.layer.borderWidth = 0.0
 			}
 		}
 	}

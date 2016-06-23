@@ -46,26 +46,26 @@ final class ArtistsVC : UITableViewController
 	{
 		super.viewDidLoad()
 		// Remove back button label
-		self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
+		navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
 
 		// Tableview
-		self.tableView.tableFooterView = UIView()
+		tableView.tableFooterView = UIView()
 
 		// Navigation bar title
-		self.titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
-		self.titleView.numberOfLines = 2
-		self.titleView.textAlignment = .Center
-		self.titleView.isAccessibilityElement = false
-		self.titleView.textColor = self.navigationController?.navigationBar.tintColor
-		self.titleView.backgroundColor = self.navigationController?.navigationBar.barTintColor
-		self.navigationItem.titleView = self.titleView
+		titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
+		titleView.numberOfLines = 2
+		titleView.textAlignment = .Center
+		titleView.isAccessibilityElement = false
+		titleView.textColor = navigationController?.navigationBar.tintColor
+		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
+		navigationItem.titleView = titleView
 	}
 
 	override func viewWillAppear(animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
-		MPDDataSource.shared.getArtistsForGenre(self.genre, callback:{ (artists: [Artist]) in
+		MPDDataSource.shared.getArtistsForGenre(genre, callback:{ (artists: [Artist]) in
 			self.artists = artists
 			dispatch_async(dispatch_get_main_queue()) {
 				self.tableView.reloadData()
@@ -89,16 +89,16 @@ final class ArtistsVC : UITableViewController
 		if segue.identifier == "artists-to-albums"
 		{
 			let vc = segue.destinationViewController as! AlbumsVC
-			vc.artist = self.artists[self.tableView.indexPathForSelectedRow!.row]
+			vc.artist = artists[tableView.indexPathForSelectedRow!.row]
 		}
 	}
 
 	// MARK: - Private
 	private func _updateNavigationTitle()
 	{
-		let attrs = NSMutableAttributedString(string:self.genre.name + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
-		attrs.appendAttributedString(NSAttributedString(string:"\(self.artists.count) \(self.artists.count > 1 ? NYXLocalizedString("lbl_artists").lowercaseString : NYXLocalizedString("lbl_artist").lowercaseString)", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
-		self.titleView.attributedText = attrs
+		let attrs = NSMutableAttributedString(string:genre.name + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
+		attrs.appendAttributedString(NSAttributedString(string:"\(artists.count) \(artists.count > 1 ? NYXLocalizedString("lbl_artists").lowercaseString : NYXLocalizedString("lbl_artist").lowercaseString)", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
+		titleView.attributedText = attrs
 	}
 }
 
@@ -107,7 +107,7 @@ extension ArtistsVC
 {
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		return self.artists.count + 1 // dummy
+		return artists.count + 1 // dummy
 	}
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
@@ -115,7 +115,7 @@ extension ArtistsVC
 		let cell = tableView.dequeueReusableCellWithIdentifier("io.whine.mpdremote.cell.artist", forIndexPath:indexPath) as! ArtistTableViewCell
 
 		// Dummy to let some space for the mini player
-		if indexPath.row == self.artists.count
+		if indexPath.row == artists.count
 		{
 			cell.lblArtist.text = ""
 			cell.lblAlbums.text = ""
@@ -126,7 +126,7 @@ extension ArtistsVC
 			return cell
 		}
 
-		let artist = self.artists[indexPath.row]
+		let artist = artists[indexPath.row]
 		cell.lblArtist.text = artist.name
 		cell.separator.hidden = false
 		cell.accessoryType = .DisclosureIndicator
@@ -171,7 +171,7 @@ extension ArtistsVC
 					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
+						_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue(), callback:{ (thumbnail: UIImage) in
 							let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 							dispatch_async(dispatch_get_main_queue()) {
 								if let c = self.tableView.cellForRowAtIndexPath(indexPath) as? ArtistTableViewCell
@@ -227,7 +227,7 @@ extension ArtistsVC
 			}
 			callback(thumbnail:thumbnail)
 		}
-		self._downloadOperations[key] = downloadOperation
+		_downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
 }
@@ -237,36 +237,36 @@ extension ArtistsVC
 {
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
 	{
-		if indexPath.row == self.artists.count
+		if indexPath.row == artists.count
 		{
 			return
 		}
 
-		self.performSegueWithIdentifier("artists-to-albums", sender: self)
+		performSegueWithIdentifier("artists-to-albums", sender: self)
 	}
 
 	override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
 	{
-		if indexPath.row == self.artists.count
+		if indexPath.row == artists.count
 		{
 			return
 		}
 
 		// Remove download cover operation if still in queue
-		let artist = self.artists[indexPath.row]
+		let artist = artists[indexPath.row]
 		guard let album = artist.albums.first else {return}
 		let key = album.name + album.year
-		if let op = self._downloadOperations[key] as! CoverOperation?
+		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
-			self._downloadOperations.removeValueForKey(key)
+			_downloadOperations.removeValueForKey(key)
 			Logger.dlog("[+] Cancelling \(op)")
 		}
 	}
 
 	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
 	{
-		if indexPath.row == self.artists.count
+		if indexPath.row == artists.count
 		{
 			return 44.0
 		}
