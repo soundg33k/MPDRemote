@@ -81,7 +81,7 @@ final class MiniPlayerView : UIView, PTappable
 
 		// Play / pause button
 		self.btnPlay = UIButton(type:.Custom)
-		self.btnPlay.frame = CGRect(0.0, 0.0, frame.height, frame.height)
+		self.btnPlay.frame = CGRect(6.0, 6.0, 32.0, 32.0)
 		self.btnPlay.setImage(UIImage(named:"btn-play"), forState:.Normal)
 		self.btnPlay.addTarget(self, action:#selector(MiniPlayerView.changePlaybackAction(_:)), forControlEvents:.TouchUpInside)
 		self.btnPlay.tag = PlayerStatus.Stopped.rawValue
