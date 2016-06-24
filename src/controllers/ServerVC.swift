@@ -47,9 +47,9 @@ final class ServerVC : MenuTVC
 	// Indicate that the keyboard is visible, flag
 	private var _keyboardVisible = false
 	// Zeroconf browser
-	private var serviceBrowser: NSNetServiceBrowser!
+	private var serviceBrowser: NetServiceBrowser!
 	// List of ZC servers found
-	private var zcList = [NSNetService]()
+	private var zcList = [NetService]()
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -60,7 +60,7 @@ final class ServerVC : MenuTVC
 		let titleView = UILabel(frame:CGRect(0.0, 0.0, 100.0, 44.0))
 		titleView.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
 		titleView.numberOfLines = 2
-		titleView.textAlignment = .Center
+		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
 		titleView.textColor = navigationController?.navigationBar.tintColor
 		titleView.text = NYXLocalizedString("lbl_header_server_cfg")
@@ -68,17 +68,17 @@ final class ServerVC : MenuTVC
 		navigationItem.titleView = titleView
 
 		// Keyboard appearance notifications
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(keyboardDidShowNotification(_:)), name:UIKeyboardDidShowNotification, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(keyboardDidHideNotification(_:)), name:UIKeyboardDidHideNotification, object:nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(keyboardDidShowNotification(_:)), name:NSNotification.Name.UIKeyboardDidShow, object:nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(keyboardDidHideNotification(_:)), name:NSNotification.Name.UIKeyboardDidHide, object:nil)
 	}
 
-	override func viewWillAppear(animated: Bool)
+	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
-		if let mpdServerAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefMPDServer)
+		if let mpdServerAsData = UserDefaults.standard().data(forKey: kNYXPrefMPDServer)
 		{
-			if let server = NSKeyedUnarchiver.unarchiveObjectWithData(mpdServerAsData) as! MPDServer?
+			if let server = NSKeyedUnarchiver.unarchiveObject(with: mpdServerAsData) as! MPDServer?
 			{
 				mpdServer = server
 			}
@@ -87,14 +87,14 @@ final class ServerVC : MenuTVC
 		{
 			Logger.dlog("[+] No MPD server registered yet.")
 
-			serviceBrowser = NSNetServiceBrowser()
+			serviceBrowser = NetServiceBrowser()
 			serviceBrowser.delegate = self
-			serviceBrowser.searchForServicesOfType("_mpd._tcp.", inDomain:"")
+			serviceBrowser.searchForServices(ofType: "_mpd._tcp.", inDomain:"")
 		}
 
-		if let webServerAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer)
+		if let webServerAsData = UserDefaults.standard().data(forKey: kNYXPrefWEBServer)
 		{
-			if let server = NSKeyedUnarchiver.unarchiveObjectWithData(webServerAsData) as! WEBServer?
+			if let server = NSKeyedUnarchiver.unarchiveObject(with: webServerAsData) as! WEBServer?
 			{
 				webServer = server
 			}
@@ -107,7 +107,7 @@ final class ServerVC : MenuTVC
 		_updateFields()
 	}
 
-	override func viewWillDisappear(animated: Bool)
+	override func viewWillDisappear(_ animated: Bool)
 	{
 		super.viewWillDisappear(animated)
 
@@ -121,16 +121,16 @@ final class ServerVC : MenuTVC
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
 	{
-		return .Portrait
+		return .portrait
 	}
 
 	override func preferredStatusBarStyle() -> UIStatusBarStyle
 	{
-		return .LightContent
+		return .lightContent
 	}
 
 	// MARK: - Buttons actions
-	@IBAction func validateSettingsAction(sender: AnyObject?)
+	@IBAction func validateSettingsAction(_ sender: AnyObject?)
 	{
 		view.endEditing(true)
 
@@ -144,11 +144,11 @@ final class ServerVC : MenuTVC
 		// Check MPD hostname / ip
 		guard let ip = tfMPDHostname.text where ip.length > 0 else
 		{
-			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle:.Alert)
-			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.Cancel) { (action) in
+			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle:.alert)
+			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.cancel) { (action) in
 			}
 			alertController.addAction(cancelAction)
-			presentViewController(alertController, animated:true, completion:nil)
+			present(alertController, animated:true, completion:nil)
 			return
 		}
 
@@ -171,17 +171,18 @@ final class ServerVC : MenuTVC
 		if cnn.connect()
 		{
 			self.mpdServer = mpdServer
-			let serverAsData = NSKeyedArchiver.archivedDataWithRootObject(mpdServer)
-			NSUserDefaults.standardUserDefaults().setObject(serverAsData, forKey:kNYXPrefMPDServer)
+			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: mpdServer)
+			UserDefaults.standard().set(serverAsData, forKey:kNYXPrefMPDServer)
+			UserDefaults.standard().set(76, forKey: "blabla")
 		}
 		else
 		{
-			NSUserDefaults.standardUserDefaults().removeObjectForKey(kNYXPrefMPDServer)
-			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle:.Alert)
-			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.Cancel) { (action) in
+			UserDefaults.standard().removeObject(forKey: kNYXPrefMPDServer)
+			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle:.alert)
+			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.cancel) { (action) in
 			}
 			alertController.addAction(cancelAction)
-			presentViewController(alertController, animated:true, completion:nil)
+			present(alertController, animated:true, completion:nil)
 		}
 		cnn.disconnect()
 
@@ -202,44 +203,44 @@ final class ServerVC : MenuTVC
 			}
 			webServer.coverName = coverName
 			self.webServer = webServer
-			let serverAsData = NSKeyedArchiver.archivedDataWithRootObject(webServer)
-			NSUserDefaults.standardUserDefaults().setObject(serverAsData, forKey:kNYXPrefWEBServer)
+			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: webServer)
+			UserDefaults.standard().set(serverAsData, forKey:kNYXPrefWEBServer)
 		}
 		else
 		{
-			NSUserDefaults.standardUserDefaults().removeObjectForKey(kNYXPrefWEBServer)
+			UserDefaults.standard().removeObject(forKey: kNYXPrefWEBServer)
 		}
 
-		NSUserDefaults.standardUserDefaults().synchronize()
+		UserDefaults.standard().synchronize()
 	}
 
 	// MARK: - Notifications
-	func keyboardDidShowNotification(aNotification: NSNotification)
+	func keyboardDidShowNotification(_ aNotification: Notification)
 	{
 		if _keyboardVisible
 		{
 			return
 		}
 
-		let info = aNotification.userInfo!
+		let info = (aNotification as NSNotification).userInfo!
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
-		let rawFrame = value.CGRectValue
-		let keyboardFrame = view.convertRect(rawFrame, fromView:nil)
+		let rawFrame = value.cgRectValue
+		let keyboardFrame = view.convert(rawFrame!, from:nil)
 		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height - keyboardFrame.height)
 		_keyboardVisible = true
 	}
 
-	func keyboardDidHideNotification(aNotification: NSNotification)
+	func keyboardDidHideNotification(_ aNotification: Notification)
 	{
 		if !_keyboardVisible
 		{
 			return
 		}
 
-		let info = aNotification.userInfo!
+		let info = (aNotification as NSNotification).userInfo!
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
-		let rawFrame = value.CGRectValue
-		let keyboardFrame = view.convertRect(rawFrame, fromView:nil)
+		let rawFrame = value.cgRectValue
+		let keyboardFrame = view.convert(rawFrame!, from:nil)
 		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height + keyboardFrame.height)
 		_keyboardVisible = false
 	}
@@ -278,10 +279,10 @@ final class ServerVC : MenuTVC
 
 	func _resolvZeroconfServices()
 	{
-		if let service = zcList[safe:0]
+		if let service = zcList.first
 		{
 			service.delegate = self
-			service.resolveWithTimeout(5)
+			service.resolve(withTimeout: 5)
 		}
 	}
 }
@@ -289,24 +290,24 @@ final class ServerVC : MenuTVC
 // MARK: - UITableViewDelegate
 extension ServerVC
 {
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
 		if indexPath.section == 1 && indexPath.row == 3
 		{
-			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_purge_cache_title"), message:NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle:.Alert)
-			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_cancel"), style:.Cancel) { (action) in
+			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_purge_cache_title"), message:NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle:.alert)
+			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_cancel"), style:.cancel) { (action) in
 			}
 			alertController.addAction(cancelAction)
-			let okAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.Destructive) { (action) in
-				let fileManager = NSFileManager()
-				let cachesDirectoryURL = fileManager.URLsForDirectory(.CachesDirectory, inDomains:.UserDomainMask).last!
-				let coversDirectoryName = NSUserDefaults.standardUserDefaults().stringForKey(kNYXPrefDirectoryCovers)!
-				let coversDirectoryURL = cachesDirectoryURL.URLByAppendingPathComponent(coversDirectoryName)
+			let okAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.destructive) { (action) in
+				let fileManager = FileManager()
+				let cachesDirectoryURL = fileManager.urlsForDirectory(.cachesDirectory, inDomains:.userDomainMask).last!
+				let coversDirectoryName = UserDefaults.standard().string(forKey: kNYXPrefDirectoryCovers)!
+				let coversDirectoryURL = try! cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
 				
 				do
 				{
-					try fileManager.removeItemAtURL(coversDirectoryURL)
-					try fileManager.createDirectoryAtURL(coversDirectoryURL, withIntermediateDirectories:true, attributes:nil)
+					try fileManager.removeItem(at: coversDirectoryURL)
+					try fileManager.createDirectory(at: coversDirectoryURL, withIntermediateDirectories:true, attributes:nil)
 				}
 				catch _
 				{
@@ -314,16 +315,16 @@ extension ServerVC
 				}
 			}
 			alertController.addAction(okAction)
-			presentViewController(alertController, animated:true, completion:nil)
+			present(alertController, animated:true, completion:nil)
 		}
-		tableView.deselectRowAtIndexPath(indexPath, animated:true)
+		tableView.deselectRow(at: indexPath, animated:true)
 	}
 }
 
 // MARK: - UITextFieldDelegate
 extension ServerVC : UITextFieldDelegate
 {
-	func textFieldShouldReturn(textField: UITextField) -> Bool
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool
 	{
 		if textField === tfMPDName
 		{
@@ -358,21 +359,21 @@ extension ServerVC : UITextFieldDelegate
 }
 
 // MARK: - NSNetServiceBrowserDelegate
-extension ServerVC : NSNetServiceBrowserDelegate
+extension ServerVC : NetServiceBrowserDelegate
 {
-	func netServiceBrowserWillSearch(browser: NSNetServiceBrowser)
+	func netServiceBrowserWillSearch(_ browser: NetServiceBrowser)
 	{
 		Logger.dlog("netServiceBrowserWillSearch")
 	}
-	func netServiceBrowserDidStopSearch(browser: NSNetServiceBrowser)
+	func netServiceBrowserDidStopSearch(_ browser: NetServiceBrowser)
 	{
 		Logger.dlog("netServiceBrowserDidStopSearch")
 	}
-	func netServiceBrowser(browser: NSNetServiceBrowser, didNotSearch errorDict: [String : NSNumber])
+	func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String : NSNumber])
 	{
 		Logger.dlog("didNotSearch : \(errorDict)")
 	}
-	func netServiceBrowser(browser: NSNetServiceBrowser, didFindService service: NSNetService, moreComing: Bool)
+	func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)
 	{
 		Logger.dlog("didFindService")
 		zcList.append(service)
@@ -382,16 +383,16 @@ extension ServerVC : NSNetServiceBrowserDelegate
 		}
 		
 	}
-	func netServiceBrowser(browser: NSNetServiceBrowser, didRemoveService service: NSNetService, moreComing: Bool)
+	func netServiceBrowser(_ browser: NetServiceBrowser, didRemove service: NetService, moreComing: Bool)
 	{
 		Logger.dlog("didRemoveService")
 	}
 }
 
 // MARK: - NSNetServiceDelegate
-extension ServerVC : NSNetServiceDelegate
+extension ServerVC : NetServiceDelegate
 {
-	func netServiceDidResolveAddress(sender: NSNetService)
+	func netServiceDidResolveAddress(_ sender: NetService)
 	{
 		Logger.dlog("netServiceDidResolveAddress: \(sender.name)")
 		
@@ -401,31 +402,31 @@ extension ServerVC : NSNetServiceDelegate
 		var tmpIP = ""
 		for addressBytes in addresses where found == false
 		{
-			let inetAddressPointer = UnsafePointer<sockaddr_in>(addressBytes.bytes)
-			var inetAddress = inetAddressPointer.memory
+			let inetAddressPointer = UnsafePointer<sockaddr_in>((addressBytes as NSData).bytes)
+			var inetAddress = inetAddressPointer.pointee
 			if inetAddress.sin_family == sa_family_t(AF_INET)
 			{
-				let ipStringBuffer = UnsafeMutablePointer<Int8>.alloc(Int(INET6_ADDRSTRLEN))
+				let ipStringBuffer = UnsafeMutablePointer<Int8>(allocatingCapacity: Int(INET6_ADDRSTRLEN))
 				let ipString = inet_ntop(Int32(inetAddress.sin_family), &inetAddress.sin_addr, ipStringBuffer, UInt32(INET6_ADDRSTRLEN))
-				if let ip = String.fromCString(ipString)
+				if let ip = String(validatingUTF8: ipString!)
 				{
 					tmpIP = ip
 					found = true
 				}
-				ipStringBuffer.dealloc(Int(INET6_ADDRSTRLEN))
+				ipStringBuffer.deallocateCapacity(Int(INET6_ADDRSTRLEN))
 			}
 			else if inetAddress.sin_family == sa_family_t(AF_INET6)
 			{
-				let inetAddressPointer6 = UnsafePointer<sockaddr_in6>(addressBytes.bytes)
-				var inetAddress6 = inetAddressPointer6.memory
-				let ipStringBuffer = UnsafeMutablePointer<Int8>.alloc(Int(INET6_ADDRSTRLEN))
+				let inetAddressPointer6 = UnsafePointer<sockaddr_in6>((addressBytes as NSData).bytes)
+				var inetAddress6 = inetAddressPointer6.pointee
+				let ipStringBuffer = UnsafeMutablePointer<Int8>(allocatingCapacity: Int(INET6_ADDRSTRLEN))
 				let ipString = inet_ntop(Int32(inetAddress6.sin6_family), &inetAddress6.sin6_addr, ipStringBuffer, UInt32(INET6_ADDRSTRLEN))
-				if let ip = String.fromCString(ipString)
+				if let ip = String(validatingUTF8: ipString!)
 				{
 					tmpIP = ip
 					found = true
 				}
-				ipStringBuffer.dealloc(Int(INET6_ADDRSTRLEN))
+				ipStringBuffer.deallocateCapacity(Int(INET6_ADDRSTRLEN))
 			}
 
 			if found
@@ -436,11 +437,11 @@ extension ServerVC : NSNetServiceDelegate
 			}
 		}
 	}
-	func netService(sender: NSNetService, didNotResolve errorDict: [String : NSNumber])
+	func netService(_ sender: NetService, didNotResolve errorDict: [String : NSNumber])
 	{
 		Logger.dlog("didNotResolve \(sender)")
 	}
-	func netServiceDidStop(sender: NSNetService)
+	func netServiceDidStop(_ sender: NetService)
 	{
 		Logger.dlog("netServiceDidStop \(sender.name)")
 	}

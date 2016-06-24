@@ -25,7 +25,7 @@ import UIKit
 
 protocol TypeChoiceViewDelegate : class
 {
-	func didSelectType(type: DisplayType)
+	func didSelectType(_ type: DisplayType)
 }
 
 
@@ -44,15 +44,15 @@ final class TypeChoiceView : UIView
 		self.backgroundColor = UIColor.fromRGB(0x131313)
 
 		// TableView
-		self.tableView = UITableView(frame:CGRect(CGPointZero, frame.size), style:.Plain)
-		self.tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.type")
+		self.tableView = UITableView(frame:CGRect(CGPoint.zero, frame.size), style:.plain)
+		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.type")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
 		self.tableView.backgroundColor = UIColor.fromRGB(0x131313)
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
-		self.tableView.scrollEnabled = false
-		self.tableView.separatorStyle = .None
+		self.tableView.isScrollEnabled = false
+		self.tableView.separatorStyle = .none
 		self.tableView.rowHeight = 44.0
 		self.addSubview(self.tableView)
 	}
@@ -66,30 +66,30 @@ final class TypeChoiceView : UIView
 // MARK: - UITableViewDelegate
 extension TypeChoiceView : UITableViewDataSource
 {
-	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
 		return 3
 	}
 
-	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCellWithIdentifier("io.whine.mpdremote.cell.type", forIndexPath:indexPath)
-		cell.selectionStyle = .None
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.type", for:indexPath)
+		cell.selectionStyle = .none
 		cell.backgroundColor = UIColor.fromRGB(0x131313)
-		cell.textLabel?.textAlignment = .Center
+		cell.textLabel?.textAlignment = .center
 		var title = ""
 		var selected = false
 		switch (indexPath.row)
 		{
 			case 0:
 				title = NYXLocalizedString("lbl_albums")
-				selected = NSUserDefaults.standardUserDefaults().integerForKey(kNYXPrefDisplayType) == DisplayType.Albums.rawValue
+				selected = UserDefaults.standard().integer(forKey: kNYXPrefDisplayType) == DisplayType.albums.rawValue
 			case 1:
 				title = NYXLocalizedString("lbl_artists")
-				selected = NSUserDefaults.standardUserDefaults().integerForKey(kNYXPrefDisplayType) == DisplayType.Artists.rawValue
+				selected = UserDefaults.standard().integer(forKey: kNYXPrefDisplayType) == DisplayType.artists.rawValue
 			case 2:
 				title = NYXLocalizedString("lbl_genres")
-				selected = NSUserDefaults.standardUserDefaults().integerForKey(kNYXPrefDisplayType) == DisplayType.Genres.rawValue
+				selected = UserDefaults.standard().integer(forKey: kNYXPrefDisplayType) == DisplayType.genres.rawValue
 			default:
 				break
 		}
@@ -111,30 +111,30 @@ extension TypeChoiceView : UITableViewDataSource
 // MARK: - UITableViewDelegate
 extension TypeChoiceView : UITableViewDelegate
 {
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
 		switch (indexPath.row)
 		{
 			case 0:
-				delegate?.didSelectType(.Albums)
+				delegate?.didSelectType(.albums)
 			case 1:
-				delegate?.didSelectType(.Artists)
+				delegate?.didSelectType(.artists)
 			case 2:
-				delegate?.didSelectType(.Genres)
+				delegate?.didSelectType(.genres)
 			default:
 				break
 		}
-		tableView.deselectRowAtIndexPath(indexPath, animated:false)
+		tableView.deselectRow(at: indexPath, animated:false)
 	}
 
-	func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
+	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
 	{
 		// lil bounce animation
-		let cellRect = tableView.rectForRowAtIndexPath(indexPath)
+		let cellRect = tableView.rectForRow(at: indexPath)
 
 		cell.frame = CGRect(cell.x, cell.y + tableView.height, cell.width, cell.height)
 
-		UIView.animateWithDuration(0.5, delay:0.1 * Double(indexPath.row), usingSpringWithDamping:0.8, initialSpringVelocity:10.0, options:.CurveEaseInOut, animations:{
+		UIView.animate(withDuration: 0.5, delay:0.1 * Double(indexPath.row), usingSpringWithDamping:0.8, initialSpringVelocity:10.0, options:UIViewAnimationOptions(), animations:{
 			cell.frame = cellRect
 		}, completion:nil)
 	}

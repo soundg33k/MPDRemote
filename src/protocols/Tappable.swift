@@ -38,7 +38,7 @@ public extension PTappable where Self:UIView
 		let gestureRecognizer = UITapGestureRecognizer { [unowned self] (recognizer) -> Void in
 			let tap = recognizer as! UITapGestureRecognizer
 
-			if tap.state == .Ended
+			if tap.state == .ended
 			{
 				self.didTap()
 			}

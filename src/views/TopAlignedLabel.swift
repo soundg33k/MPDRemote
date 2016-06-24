@@ -25,7 +25,7 @@ import UIKit
 
 final class TopAlignedLabel : UILabel
 {
-	override func drawTextInRect(rect: CGRect)
+	override func drawText(in rect: CGRect)
 	{
 		// If one line, we can just use the lineHeight, faster than querying sizeThatFits
 		let height = (numberOfLines == 1) ? ceil(font.lineHeight) : ceil(sizeThatFits(size).height)
@@ -36,6 +36,6 @@ final class TopAlignedLabel : UILabel
 			r.y = ((height - height) / 2.0) * -1.0
 		}
 
-		super.drawTextInRect(r)
+		super.drawText(in: r)
 	}
 }

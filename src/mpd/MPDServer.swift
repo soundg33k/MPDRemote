@@ -23,7 +23,7 @@
 import Foundation
 
 
-final class MPDServer : NSObject, NSCoding
+final class MPDServer : NSCoding
 {
 	// MARK: - Properties
 	// Server name
@@ -49,22 +49,27 @@ final class MPDServer : NSObject, NSCoding
 		self.password = password
 	}
 
+	class func def() -> MPDServer
+	{
+		return MPDServer(name:"default-debug", hostname:"127.0.0.1", port:6600)
+	}
+
 	// MARK: - NSCoding
 	required convenience init?(coder decoder: NSCoder)
 	{
-		guard let name = decoder.decodeObjectForKey("name") as? String,
-			let hostname = decoder.decodeObjectForKey("hostname") as? String,
-			let password = decoder.decodeObjectForKey("password") as? String
+		guard let name = decoder.decodeObject(forKey: "name") as? String,
+			let hostname = decoder.decodeObject(forKey: "hostname") as? String,
+			let password = decoder.decodeObject(forKey: "password") as? String
 			else { return nil }
 		
-		self.init(name:name, hostname:hostname, port:UInt16(decoder.decodeIntegerForKey("port")), password:password)
+		self.init(name:name, hostname:hostname, port:UInt16(decoder.decodeInteger(forKey: "port")), password:password)
 	}
 
-	func encodeWithCoder(coder: NSCoder)
+	func encode(with coder: NSCoder)
 	{
-		coder.encodeObject(name, forKey:"name")
-		coder.encodeObject(hostname, forKey:"hostname")
-		coder.encodeInteger(Int(port), forKey:"port")
-		coder.encodeObject(password, forKey:"password")
+		coder.encode(name, forKey:"name")
+		coder.encode(hostname, forKey:"hostname")
+		coder.encode(Int(port), forKey:"port")
+		coder.encode(password, forKey:"password")
 	}
 }

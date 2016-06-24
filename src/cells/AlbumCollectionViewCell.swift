@@ -53,8 +53,8 @@ final class RootCollectionViewCell : UICollectionViewCell
 					guard let filter = CIFilter(name:"CIUnsharpMask") else {return}
 					filter.setDefaults()
 					filter.setValue(ciimg, forKey:kCIInputImageKey)
-					guard let result = filter.valueForKey(kCIOutputImageKey) as! CIImage? else {return}
-					imageView.image = UIImage(CIImage:result)
+					guard let result = filter.value(forKey: kCIOutputImageKey) as! CIImage? else {return}
+					imageView.image = UIImage(ciImage:result)
 				}
 			}
 			else
@@ -73,16 +73,16 @@ final class RootCollectionViewCell : UICollectionViewCell
 		self.backgroundColor = UIColor.fromRGB(0xECECEC)
 		self.isAccessibilityElement = true
 
-		self.imageView = UIImageView(frame:CGRect(CGPointZero, frame.width, frame.height - 20.0))
+		self.imageView = UIImageView(frame:CGRect(CGPoint.zero, frame.width, frame.height - 20.0))
 		self.imageView.isAccessibilityElement = false
-		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).CGColor
+		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
 
 		self.label = UILabel(frame:CGRect(0.0, self.imageView.bottom, frame.width, 20.0))
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
-		self.label.textAlignment = .Center
+		self.label.textAlignment = .center
 		self.label.textColor = UIColor.fromRGB(0x444444)
 		self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
 		self.contentView.addSubview(self.label)
@@ -94,27 +94,27 @@ final class RootCollectionViewCell : UICollectionViewCell
 		self.backgroundColor = UIColor.fromRGB(0xECECEC)
 		self.isAccessibilityElement = true
 
-		self.imageView = UIImageView(frame:CGRect(CGPointZero, frame.width, frame.height - 20.0))
+		self.imageView = UIImageView(frame:CGRect(CGPoint.zero, frame.width, frame.height - 20.0))
 		self.imageView.isAccessibilityElement = false
-		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).CGColor
+		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
 
 		self.label = UILabel(frame:CGRect(0.0, self.imageView.bottom, frame.width, 20.0))
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
-		self.label.textAlignment = .Center
+		self.label.textAlignment = .center
 		self.label.textColor = UIColor.fromRGB(0x444444)
 		self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
 		self.contentView.addSubview(self.label)
 	}
 
 	// MARK: - Overrides
-	override var selected: Bool
+	override var isSelected: Bool
 	{
 		didSet
 		{
-			if selected
+			if isSelected
 			{
 				label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
 				imageView.layer.borderWidth = 0.5
@@ -127,11 +127,11 @@ final class RootCollectionViewCell : UICollectionViewCell
 		}
 	}
 
-	override var highlighted: Bool
+	override var isHighlighted: Bool
 	{
 		didSet
 		{
-			if highlighted
+			if isHighlighted
 			{
 				label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
 				imageView.layer.borderWidth = 0.5

@@ -38,17 +38,20 @@ final class Album
 	var path: String? = nil
 	// Album tracks
 	var songs: [Track]? = nil
+	//
+	var uuid: UUID
 	// Local URL for the cover
-	lazy var localCoverURL: NSURL? = {
-		guard let cachesDirectoryURL = NSFileManager().URLsForDirectory(.CachesDirectory, inDomains:.UserDomainMask).last else {return nil}
-		guard let coverDirectoryPath = NSUserDefaults.standardUserDefaults().stringForKey(kNYXPrefDirectoryCovers) else {return nil}
-		return cachesDirectoryURL.URLByAppendingPathComponent(coverDirectoryPath, isDirectory:true).URLByAppendingPathComponent(self.name.md5() + ".jpg")
+	lazy var localCoverURL: URL? = {
+		guard let cachesDirectoryURL = FileManager().urlsForDirectory(.cachesDirectory, inDomains:.userDomainMask).last else {return nil}
+		guard let coverDirectoryPath = UserDefaults.standard().string(forKey: kNYXPrefDirectoryCovers) else {return nil}
+		return try! cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory:true).appendingPathComponent(self.name.md5() + ".jpg")
 	}()
 
 	// MARK: - Initializers
 	init(name: String)
 	{
 		self.name = name
+		self.uuid = UUID()
 	}
 
 	convenience init(name: String, artist: String)
@@ -61,7 +64,7 @@ final class Album
 
 extension Album : CustomStringConvertible
 {
-	var description:String
+	var description: String
 	{
 		return "Name: <\(name)>\nArtist: <\(artist)>\nGenre: <\(genre)>\nYear: <\(year)>\nPath: <\(path)>"
 	}

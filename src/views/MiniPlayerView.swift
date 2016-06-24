@@ -30,7 +30,7 @@ final class MiniPlayerView : UIView, PTappable
 {
 	// MARK: - Public properties
 	// Singletion instance
-	static let shared = MiniPlayerView(frame:CGRect(0.0, (UIApplication.sharedApplication().keyWindow?.frame.height)! + playerViewHeight, (UIApplication.sharedApplication().keyWindow?.frame.width)!, playerViewHeight))
+	static let shared = MiniPlayerView(frame:CGRect(0.0, (UIApplication.shared().keyWindow?.frame.height)! + playerViewHeight, (UIApplication.shared().keyWindow?.frame.width)!, playerViewHeight))
 	// Visible flag
 	private(set) var visible = false
 	// Player should stay hidden, regardless of playback status
@@ -54,55 +54,55 @@ final class MiniPlayerView : UIView, PTappable
 	override init(frame: CGRect)
 	{
 		super.init(frame:frame)
-		self.backgroundColor = UIColor.clearColor()
+		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 
 		// Top shadow
-		self.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, frame.width + 4.0, 4.0)).CGPath
+		self.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, frame.width + 4.0, 4.0)).cgPath
 		self.layer.shadowRadius = 3.0
 		self.layer.shadowOpacity = 1.0
-		self.layer.shadowColor = UIColor.blackColor().CGColor
+		self.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
 		self.layer.masksToBounds = false
 		self.isAccessibilityElement = false
 
 		// Blur background
-		let blurEffect = UIBlurEffect(style:.Light)
+		let blurEffect = UIBlurEffect(style:.light)
 		let blurEffectView = UIVisualEffectView(effect:blurEffect)
-		blurEffectView.frame = CGRect(CGPointZero, frame.size)
+		blurEffectView.frame = CGRect(CGPoint.zero, frame.size)
 		self.addSubview(blurEffectView)
 
 		self.imageView = UIImageView(frame:CGRect(0.0, 0.0, frame.height, frame.height))
 		blurEffectView.contentView.addSubview(self.imageView)
 
 		// Vibrancy over the play/pause button
-		let vibrancyEffectView = UIVisualEffectView(effect:UIVibrancyEffect(forBlurEffect:blurEffect))
+		let vibrancyEffectView = UIVisualEffectView(effect:UIVibrancyEffect(blurEffect:blurEffect))
 		vibrancyEffectView.frame = CGRect(frame.right - frame.height, 0.0, 44.0, 44.0)
 		blurEffectView.contentView.addSubview(vibrancyEffectView)
 
 		// Play / pause button
-		self.btnPlay = UIButton(type:.Custom)
+		self.btnPlay = UIButton(type:.custom)
 		self.btnPlay.frame = CGRect(6.0, 6.0, 32.0, 32.0)
-		self.btnPlay.setImage(UIImage(named:"btn-play"), forState:.Normal)
-		self.btnPlay.addTarget(self, action:#selector(MiniPlayerView.changePlaybackAction(_:)), forControlEvents:.TouchUpInside)
-		self.btnPlay.tag = PlayerStatus.Stopped.rawValue
+		self.btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), for:UIControlState())
+		self.btnPlay.addTarget(self, action:#selector(MiniPlayerView.changePlaybackAction(_:)), for:.touchUpInside)
+		self.btnPlay.tag = PlayerStatus.stopped.rawValue
 		self.btnPlay.isAccessibilityElement = true
 		vibrancyEffectView.contentView.addSubview(self.btnPlay)
 
 		// Dummy accessibility view
 		self.accessibleView = UIView(frame:CGRect(self.imageView.right, 0.0, vibrancyEffectView.left - self.imageView.right, frame.height))
-		self.accessibleView.backgroundColor = UIColor.clearColor()
+		self.accessibleView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		self.accessibleView.isAccessibilityElement = true
 		blurEffectView.contentView.addSubview(self.accessibleView)
 
 		// Title
 		self.lblTitle = UILabel(frame:CGRect(self.imageView.right + 5.0, 2.0, ((vibrancyEffectView.left + 5.0) - (self.imageView.right + 5.0)), 18.0))
-		self.lblTitle.textAlignment = .Center
+		self.lblTitle.textAlignment = .center
 		self.lblTitle.font = UIFont(name:"GillSans-Bold", size:14.0)
 		self.lblTitle.isAccessibilityElement = false
 		blurEffectView.contentView.addSubview(self.lblTitle)
 
 		// Artist
 		self.lblArtist = UILabel(frame:CGRect(self.imageView.right + 5.0, self.lblTitle.bottom + 2.0, self.lblTitle.width, 16.0))
-		self.lblArtist.textAlignment = .Center
+		self.lblArtist.textAlignment = .center
 		self.lblArtist.font = UIFont(name:"GillSans", size:12.0)
 		self.lblArtist.isAccessibilityElement = false
 		blurEffectView.contentView.addSubview(self.lblArtist)
@@ -115,8 +115,8 @@ final class MiniPlayerView : UIView, PTappable
 		// Single tap to request full player view
 		self.makeTappable()
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackNotification(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(playingTrackNotification(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 
 		APP_DELEGATE().window?.addSubview(self)
 	}
@@ -127,7 +127,7 @@ final class MiniPlayerView : UIView, PTappable
 	}
 
 	// MARK: - Public
-	func setInfoFromTrack(track: Track, ofAlbum album: Album)
+	func setInfoFromTrack(_ track: Track, ofAlbum album: Album)
 	{
 		lblTitle.text = track.title
 		lblArtist.text = track.artist
@@ -138,17 +138,17 @@ final class MiniPlayerView : UIView, PTappable
 			let x = KawaiiColors(image:image)
 			x.analyze()
 			progressView.backgroundColor = x.dominantColor
-			imageView.image = image.imageScaledToFitSize(CGSize(imageView.width * UIScreen.mainScreen().scale, imageView.height * UIScreen.mainScreen().scale))
+			imageView.image = image.imageScaledToFitSize(CGSize(imageView.width * UIScreen.main().scale, imageView.height * UIScreen.main().scale))
 		}
 		else
 		{
-			let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
-			let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
+			let sizeAsData = UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!
+			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				let op = CoverOperation(album:album, cropSize:cropSize.CGSizeValue())
+				let op = CoverOperation(album:album, cropSize:cropSize.cgSizeValue())
 				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
-					dispatch_async(dispatch_get_main_queue()) {
+					DispatchQueue.main.async {
 						self.setInfoFromTrack(track, ofAlbum:album)
 					}
 				}
@@ -157,9 +157,9 @@ final class MiniPlayerView : UIView, PTappable
 			else
 			{
 				MPDDataSource.shared.getPathForAlbum(album) {
-					let op = CoverOperation(album:album, cropSize:cropSize.CGSizeValue())
+					let op = CoverOperation(album:album, cropSize:cropSize.cgSizeValue())
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
-						dispatch_async(dispatch_get_main_queue()) {
+						DispatchQueue.main.async {
 							self.setInfoFromTrack(track, ofAlbum:album)
 						}
 					}
@@ -169,41 +169,41 @@ final class MiniPlayerView : UIView, PTappable
 		}
 	}
 
-	func show(animated: Bool = true)
+	func show(_ animated: Bool = true)
 	{
-		NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerViewWillShow, object:nil)
-		let w = UIApplication.sharedApplication().keyWindow!
-		UIView.animateWithDuration(animated ? 0.35 : 0.0, delay:0.0, options:.CurveEaseInOut, animations:{
+		NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewWillShow), object:nil)
+		let w = UIApplication.shared().keyWindow!
+		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:UIViewAnimationOptions(), animations:{
 			self.y = w.frame.height - self.height
 		}, completion: { finished in
 			self.visible = true
-			NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerViewDidShow, object:nil)
+			NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewDidShow), object:nil)
 		})
 	}
 
-	func hide(animated: Bool = true)
+	func hide(_ animated: Bool = true)
 	{
-		NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerViewWillHide, object:nil)
-		let w = UIApplication.sharedApplication().keyWindow!
-		UIView.animateWithDuration(animated ? 0.35 : 0.0, delay:0.0, options:.CurveEaseInOut, animations:{
+		NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewWillHide), object:nil)
+		let w = UIApplication.shared().keyWindow!
+		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:UIViewAnimationOptions(), animations:{
 			self.y = w.frame.height + self.height
 		}, completion: { finished in
 			self.visible = false
-			NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerViewDidHide, object:nil)
+			NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewDidHide), object:nil)
 		})
 	}
 
 	// MARK: - Buttons actions
-	func changePlaybackAction(sender: UIButton?)
+	func changePlaybackAction(_ sender: UIButton?)
 	{
-		if btnPlay.tag == PlayerStatus.Playing.rawValue
+		if btnPlay.tag == PlayerStatus.playing.rawValue
 		{
-			btnPlay.setImage(UIImage(named:"btn-play")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+			btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate), for:UIControlState())
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 		}
 		else
 		{
-			btnPlay.setImage(UIImage(named:"btn-pause")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for:UIControlState())
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 		MPDPlayer.shared.togglePause()
@@ -212,11 +212,11 @@ final class MiniPlayerView : UIView, PTappable
 	// MARK: - PTappable
 	func didTap()
 	{
-		NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationMiniPlayerShouldExpand, object:nil)
+		NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerShouldExpand), object:nil)
 	}
 
 	// MARK: - Notifications
-	func playingTrackNotification(aNotification: NSNotification)
+	func playingTrackNotification(_ aNotification: Notification)
 	{
 		if let infos = aNotification.userInfo
 		{
@@ -236,26 +236,26 @@ final class MiniPlayerView : UIView, PTappable
 			}
 
 			let ratio = width / CGFloat(track.duration.seconds)
-			UIView.animateWithDuration(0.5) {
+			UIView.animate(withDuration: 0.5) {
 				self.progressView.width = ratio * CGFloat(elapsed)
 			}
 			accessibleView.accessibilityLabel = "\(track.title) \(NYXLocalizedString("lbl_by")) \(track.artist)\n\((100 * elapsed) / Int(track.duration.seconds))% \(NYXLocalizedString("lbl_played"))"
 		}
 	}
 
-	func playerStatusChangedNotification(aNotification: NSNotification)
+	func playerStatusChangedNotification(_ aNotification: Notification)
 	{
 		if let infos = aNotification.userInfo
 		{
 			let state = PlayerStatus(rawValue:infos[kPlayerStatusKey] as! Int)!
-			if state == .Playing
+			if state == .playing
 			{
-				btnPlay.setImage(UIImage(named:"btn-pause")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+				btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for:UIControlState())
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 			}
 			else
 			{
-				btnPlay.setImage(UIImage(named:"btn-play")?.imageWithRenderingMode(.AlwaysTemplate), forState:.Normal)
+				btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate), for:UIControlState())
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 			}
 			btnPlay.tag = state.rawValue

@@ -40,7 +40,7 @@ final class Artist
 
 extension Artist : CustomStringConvertible
 {
-	var description:String
+	var description: String
 	{
 		return "Name: <\(name)>\nNumber of albums: <\(albums.count)>"
 	}

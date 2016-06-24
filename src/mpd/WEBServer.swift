@@ -23,7 +23,7 @@
 import Foundation
 
 
-final class WEBServer : NSObject, NSCoding
+final class WEBServer : NSCoding
 {
 	// MARK: - Properties
 	// Server hostname
@@ -49,17 +49,17 @@ final class WEBServer : NSObject, NSCoding
 	// MARK: - NSCoding
 	required convenience init?(coder decoder: NSCoder)
 	{
-		guard let hostname = decoder.decodeObjectForKey("hostname") as? String,
-			let coverName = decoder.decodeObjectForKey("covername") as? String
+		guard let hostname = decoder.decodeObject(forKey: "hostname") as? String,
+			let coverName = decoder.decodeObject(forKey: "covername") as? String
 			else { return nil }
 
-		self.init(hostname:hostname, port:UInt16(decoder.decodeIntegerForKey("port")), coverName:coverName)
+		self.init(hostname:hostname, port:UInt16(decoder.decodeInteger(forKey: "port")), coverName:coverName)
 	}
 
-	func encodeWithCoder(coder: NSCoder)
+	func encode(with coder: NSCoder)
 	{
-		coder.encodeObject(hostname, forKey:"hostname")
-		coder.encodeInteger(Int(port), forKey:"port")
-		coder.encodeObject(coverName, forKey:"covername")
+		coder.encode(hostname, forKey:"hostname")
+		coder.encode(Int(port), forKey:"port")
+		coder.encode(coverName, forKey:"covername")
 	}
 }

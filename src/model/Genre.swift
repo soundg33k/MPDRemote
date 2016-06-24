@@ -40,7 +40,7 @@ final class Genre
 
 extension Genre : CustomStringConvertible
 {
-	var description:String
+	var description: String
 	{
 		return "Name: <\(name)>\nNumber of albums: <\(albums.count)>"
 	}

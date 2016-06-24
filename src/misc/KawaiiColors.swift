@@ -31,8 +31,8 @@ private let __defaultPrecision = Int(8) // 8 -> 256
 
 enum SamplingEdge
 {
-	case Left
-	case Right
+	case left
+	case right
 }
 
 
@@ -44,7 +44,7 @@ final class KawaiiColors
 	// Edge color precision
 	private(set) var precision = __defaultPrecision
 	// Sampling edge for background color
-	private(set) var samplingEdge = SamplingEdge.Right
+	private(set) var samplingEdge = SamplingEdge.right
 	// Most dominant color in the whole image
 	private(set) var dominantColor: UIColor! = nil
 	// Most dominant edge color
@@ -88,7 +88,7 @@ final class KawaiiColors
 		edgeColor = _findEdgeColor(&imageColors)
 		if edgeColor == nil
 		{
-			edgeColor = UIColor.whiteColor()
+			edgeColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
 		}
 
 		// Find other colors
@@ -98,48 +98,48 @@ final class KawaiiColors
 		let darkBackground = edgeColor.isDarkColor()
 		if primaryColor == nil
 		{
-			primaryColor = darkBackground ? UIColor.whiteColor() : UIColor.blackColor()
+			primaryColor = darkBackground ? #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		}
 
 		if secondaryColor == nil
 		{
-			secondaryColor = darkBackground ? UIColor.whiteColor() : UIColor.blackColor()
+			secondaryColor = darkBackground ? #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		}
 
 		if thirdColor == nil
 		{
-			thirdColor = darkBackground ? UIColor.whiteColor() : UIColor.blackColor()
+			thirdColor = darkBackground ? #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		}
 	}
 
 	// MARK: - Private
-	private func _findEdgeColor(inout colors: [CountedObject<UIColor>]) -> UIColor?
+	private func _findEdgeColor(_ colors: inout [CountedObject<UIColor>]) -> UIColor?
 	{
 		// Get raw image pixels
-		let cgImage = image.CGImage
-		let width = CGImageGetWidth(cgImage)
-		let height = CGImageGetHeight(cgImage)
+		let cgImage = image.cgImage
+		let width = cgImage?.width
+		let height = cgImage?.height
 
-		let bmContext = BitmapContext.RGBABitmapContext(width:width, height:height, withAlpha:false)
-		CGContextDrawImage(bmContext, CGRect(0.0, 0.0, CGFloat(width), CGFloat(height)), cgImage)
-		let data = CGBitmapContextGetData(bmContext)
+		let bmContext = BitmapContext.RGBABitmapContext(width:width!, height:height!, withAlpha:false)
+		bmContext?.draw(in: CGRect(0.0, 0.0, CGFloat(width!), CGFloat(height!)), image: cgImage!)
+		let data = bmContext?.data
 		if data == nil
 		{
 			return nil
 		}
-		let pixels = UnsafeMutablePointer<RGBAPixel>(data)
+		let pixels = UnsafeMutablePointer<RGBAPixel>(data)!
 
 		let pp = precision
 		let scale = UInt8(256 / pp)
-		var rawImageColors: [[[UInt]]] = [[[UInt]]](count:pp, repeatedValue:[[UInt]](count:pp, repeatedValue:[UInt](count:pp, repeatedValue:0)))
-		var rawEdgeColors: [[[UInt]]] = [[[UInt]]](count:pp, repeatedValue:[[UInt]](count:pp, repeatedValue:[UInt](count:pp, repeatedValue:0)))
+		var rawImageColors: [[[UInt]]] = [[[UInt]]](repeating: [[UInt]](repeating: [UInt](repeating: 0, count: pp), count: pp), count: pp)
+		var rawEdgeColors: [[[UInt]]] = [[[UInt]]](repeating: [[UInt]](repeating: [UInt](repeating: 0, count: pp), count: pp), count: pp)
 
-		let edge = samplingEdge == .Left ? 0 : width - 1
-		for y in 0 ..< height
+		let edge = samplingEdge == .left ? 0 : width! - 1
+		for y in 0 ..< height!
 		{
-			for x in 0 ..< width
+			for x in 0 ..< width!
 			{
-				let index = x + y * width
+				let index = x + y * width!
 				let pixel = pixels[index]
 				let r = pixel.r / scale
 				let g = pixel.g / scale
@@ -177,14 +177,14 @@ final class KawaiiColors
 				}
 			}
 		}
-		colors.sortInPlace { (c1: CountedObject<UIColor>, c2: CountedObject<UIColor>) -> Bool in
+		colors.sort { (c1: CountedObject<UIColor>, c2: CountedObject<UIColor>) -> Bool in
 			return c1.count > c2.count
 		}
-		dominantColor = colors.count > 0 ? colors[0].object : UIColor.blackColor()
+		dominantColor = colors.count > 0 ? colors[0].object : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 
 		if edgeColors.count > 0
 		{
-			edgeColors.sortInPlace { (c1: CountedObject<UIColor>, c2: CountedObject<UIColor>) -> Bool in
+			edgeColors.sort { (c1: CountedObject<UIColor>, c2: CountedObject<UIColor>) -> Bool in
 				return c1.count > c2.count
 			}
 
@@ -219,7 +219,7 @@ final class KawaiiColors
 		}
 	}
 
-	private func _findContrastingColors(colors: [CountedObject<UIColor>])
+	private func _findContrastingColors(_ colors: [CountedObject<UIColor>])
 	{
 		var sortedColors = [CountedObject<UIColor>]()
 		let findDarkTextColor = !edgeColor.isDarkColor()
@@ -235,7 +235,7 @@ final class KawaiiColors
 			}
 		}
 
-		sortedColors.sortInPlace { (c1: CountedObject<UIColor>, c2: CountedObject<UIColor>) -> Bool in
+		sortedColors.sort { (c1: CountedObject<UIColor>, c2: CountedObject<UIColor>) -> Bool in
 			return c1.count > c2.count
 		}
 

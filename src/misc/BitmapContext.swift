@@ -24,10 +24,10 @@ import UIKit
 
 
 // MARK: - Private
-private var _rgbToken: dispatch_once_t = 0
-private var _grayToken: dispatch_once_t = 0
-private var _rgbColorSpace: CGColorSpaceRef? = nil
-private var _grayColorSpace: CGColorSpaceRef? = nil
+private var _rgbToken: Int = 0
+private var _grayToken: Int = 0
+private var _rgbColorSpace: CGColorSpace? = nil
+private var _grayColorSpace: CGColorSpace? = nil
 
 // MARK: - Public constants
 public let kNYXNumberOfComponentsPerARBGPixel = 4
@@ -39,46 +39,46 @@ public let kNYXMaxPixelComponentValue = UInt8(255)
 
 final class BitmapContext
 {
-	// MARK: - RGB colorspace
-	class func RGBColorSpace() -> CGColorSpaceRef?
-	{
-		dispatch_once(&_rgbToken)
-		{
+	private static var __once1: () = {
+			_grayColorSpace = CGColorSpaceCreateDeviceGray()
+		}()
+	private static var __once: () = {
 			_rgbColorSpace = CGColorSpaceCreateDeviceRGB()
-		}
+		}()
+	// MARK: - RGB colorspace
+	class func RGBColorSpace() -> CGColorSpace?
+	{
+		_ = BitmapContext.__once
 		return _rgbColorSpace
 	}
 
 	// MARK: - Gray colorspace
-	class func GrayColorSpace() -> CGColorSpaceRef?
+	class func GrayColorSpace() -> CGColorSpace?
 	{
-		dispatch_once(&_grayToken)
-		{
-			_grayColorSpace = CGColorSpaceCreateDeviceGray()
-		}
+		_ = BitmapContext.__once1
 		return _grayColorSpace
 	}
 
 	// MARK: - ARGB bitmap context
-	class func ARGBBitmapContext(width width: Int, height: Int, withAlpha: Bool) -> CGContextRef?
+	class func ARGBBitmapContext(width: Int, height: Int, withAlpha: Bool) -> CGContext?
 	{
-		let alphaInfo = CGBitmapInfo(rawValue: withAlpha ? CGImageAlphaInfo.PremultipliedFirst.rawValue : CGImageAlphaInfo.NoneSkipFirst.rawValue)
-		let bmContext = CGBitmapContextCreate(nil, width, height, 8/*Bits per component*/, width * kNYXNumberOfComponentsPerARBGPixel/*Bytes per row*/, BitmapContext.RGBColorSpace(), alphaInfo.rawValue)
+		let alphaInfo = CGBitmapInfo(rawValue: withAlpha ? CGImageAlphaInfo.premultipliedFirst.rawValue : CGImageAlphaInfo.noneSkipFirst.rawValue)
+		let bmContext = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8/*Bits per component*/, bytesPerRow: width * kNYXNumberOfComponentsPerARBGPixel/*Bytes per row*/, space: BitmapContext.RGBColorSpace()!, bitmapInfo: alphaInfo.rawValue)
 		return bmContext
 	}
 
 	// MARK: - RGBA bitmap context
-	class func RGBABitmapContext(width width: Int, height: Int, withAlpha: Bool) -> CGContextRef?
+	class func RGBABitmapContext(width: Int, height: Int, withAlpha: Bool) -> CGContext?
 	{
-		let alphaInfo = CGBitmapInfo(rawValue: withAlpha ? CGImageAlphaInfo.PremultipliedLast.rawValue : CGImageAlphaInfo.NoneSkipLast.rawValue)
-		let bmContext = CGBitmapContextCreate(nil, width, height, 8/*Bits per component*/, width * kNYXNumberOfComponentsPerRGBAPixel/*Bytes per row*/, BitmapContext.RGBColorSpace(), alphaInfo.rawValue)
+		let alphaInfo = CGBitmapInfo(rawValue: withAlpha ? CGImageAlphaInfo.premultipliedLast.rawValue : CGImageAlphaInfo.noneSkipLast.rawValue)
+		let bmContext = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8/*Bits per component*/, bytesPerRow: width * kNYXNumberOfComponentsPerRGBAPixel/*Bytes per row*/, space: BitmapContext.RGBColorSpace()!, bitmapInfo: alphaInfo.rawValue)
 		return bmContext
 	}
 
 	// MARK: - Gray bitmap context
-	class func GrayBitmapContext(width width: Int, height: Int) -> CGContextRef?
+	class func GrayBitmapContext(width: Int, height: Int) -> CGContext?
 	{
-		let bmContext = CGBitmapContextCreate(nil, width, height, 8/*Bits per component*/, width * kNYXNumberOfComponentsPerGrayPixel/*Bytes per row*/, BitmapContext.GrayColorSpace(), CGImageAlphaInfo.None.rawValue)
+		let bmContext = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8/*Bits per component*/, bytesPerRow: width * kNYXNumberOfComponentsPerGrayPixel/*Bytes per row*/, space: BitmapContext.GrayColorSpace()!, bitmapInfo: CGImageAlphaInfo.none.rawValue)
 		return bmContext
 	}
 }

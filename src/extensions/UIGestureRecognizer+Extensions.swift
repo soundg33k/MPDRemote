@@ -35,12 +35,12 @@ private final class Wrapper<T>
 
 class Associator
 {
-	static private func wrap<T>(x: T) -> Wrapper<T>
+	static private func wrap<T>(_ x: T) -> Wrapper<T>
 	{
 		return Wrapper(x)
 	}
 
-	static func setAssociatedObject<T>(object: AnyObject, value: T, associativeKey: UnsafePointer<Void>, policy: objc_AssociationPolicy)
+	static func setAssociatedObject<T>(_ object: AnyObject, value: T, associativeKey: UnsafePointer<Void>, policy: objc_AssociationPolicy)
 	{
 		if let v: AnyObject = value as? AnyObject
 		{
@@ -52,7 +52,7 @@ class Associator
 		}
 	}
 
-	static func getAssociatedObject<T>(object: AnyObject, associativeKey: UnsafePointer<Void>) -> T?
+	static func getAssociatedObject<T>(_ object: AnyObject, associativeKey: UnsafePointer<Void>) -> T?
 	{
 		if let v = objc_getAssociatedObject(object, associativeKey) as? T
 		{
@@ -71,7 +71,7 @@ class Associator
 
 private class MultiDelegate : NSObject, UIGestureRecognizerDelegate
 {
-	@objc func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool
+	@objc func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool
 	{
 		return true
 	}
@@ -93,7 +93,7 @@ extension UIGestureRecognizer
 		}
 		set
 		{
-			Associator.setAssociatedObject(self, value:newValue, associativeKey:&PropertyKeys.blockKey, policy:.OBJC_ASSOCIATION_RETAIN)
+			Associator.setAssociatedObject(self, value:newValue, associativeKey:&PropertyKeys.blockKey, policy:objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
 		}
 	}
 
@@ -105,7 +105,7 @@ extension UIGestureRecognizer
 		}
 		set
 		{
-			Associator.setAssociatedObject(self, value:newValue, associativeKey:&PropertyKeys.multiDelegateKey, policy:.OBJC_ASSOCIATION_RETAIN)
+			Associator.setAssociatedObject(self, value:newValue, associativeKey:&PropertyKeys.multiDelegateKey, policy:objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
 		}
 	}
 
@@ -118,7 +118,7 @@ extension UIGestureRecognizer
 		self.addTarget(self, action:#selector(UIGestureRecognizer.didInteractWithGestureRecognizer(_:)))
 	}
 
-	@objc func didInteractWithGestureRecognizer(sender:UIGestureRecognizer)
+	@objc func didInteractWithGestureRecognizer(_ sender:UIGestureRecognizer)
 	{
 		block(recognizer:sender)
 	}

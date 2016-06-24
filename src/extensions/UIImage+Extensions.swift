@@ -26,7 +26,7 @@ import ImageIO
 
 extension UIImage
 {
-	func imageCroppedToFitSize(fitSize: CGSize) -> UIImage?
+	func imageCroppedToFitSize(_ fitSize: CGSize) -> UIImage?
 	{
 		let sourceWidth = size.width * scale
 		let sourceHeight = size.height * scale
@@ -56,78 +56,109 @@ extension UIImage
 		}
 		let scaleFactor = scaledHeight / sourceHeight
 
-		let destRect = CGRectIntegral(CGRect(CGPointZero, fitSize))
+		let destRect = CGRect(CGPoint.zero, fitSize).integral
 		// Crop center
 		let destX = CGFloat(round((scaledWidth - targetWidth) * 0.5))
 		let destY = CGFloat(round((scaledHeight - targetHeight) * 0.5))
-		let sourceRect = CGRectIntegral(CGRect(ceil(destX / scaleFactor), destY / scaleFactor, targetWidth / scaleFactor, targetHeight / scaleFactor))
+		let sourceRect = CGRect(ceil(destX / scaleFactor), destY / scaleFactor, targetWidth / scaleFactor, targetHeight / scaleFactor).integral
 
 		// Create scale-cropped image
-		UIGraphicsBeginImageContextWithOptions(destRect.size, false, 0.0) // 0.0 = scale for device's main screen
-		let sourceImg = CGImageCreateWithImageInRect(CGImage, sourceRect) // cropping happens here
-		var image = UIImage(CGImage:sourceImg!, scale:0.0, orientation:imageOrientation)
-		image.drawInRect(destRect) // the actual scaling happens here, and orientation is taken care of automatically
-		image = UIGraphicsGetImageFromCurrentImageContext()
-		UIGraphicsEndImageContext()
-		return image
+		if #available(iOS 10, *)
+		{
+			let renderer = UIGraphicsImageRenderer(size: destRect.size)
+			return renderer.image() { rendererContext in
+				let sourceImg = cgImage?.cropping(to: sourceRect) // cropping happens here
+				let image = UIImage(cgImage:sourceImg!, scale:0.0, orientation:imageOrientation)
+				image.draw(in: destRect) // the actual scaling happens here, and orientation is taken care of automatically
+			}
+		}
+		else
+		{
+			UIGraphicsBeginImageContextWithOptions(destRect.size, false, 0.0) // 0.0 = scale for device's main screen
+			let sourceImg = cgImage?.cropping(to: sourceRect) // cropping happens here
+			var image = UIImage(cgImage:sourceImg!, scale:0.0, orientation:imageOrientation)
+			image.draw(in: destRect) // the actual scaling happens here, and orientation is taken care of automatically
+			image = UIGraphicsGetImageFromCurrentImageContext()!
+			UIGraphicsEndImageContext()
+			return image
+		}
 	}
 
-	func imageScaledToFitSize(fitSize: CGSize) -> UIImage?
+	func imageScaledToFitSize(_ fitSize: CGSize) -> UIImage?
 	{
-		guard let cgImage = CGImage else {return nil}
+		guard let cgImage = cgImage else {return nil}
 
 		let width = ceil(fitSize.width * scale)
 		let height = ceil(fitSize.height * scale)
 
-		let context = CGBitmapContextCreate(nil, Int(width), Int(width), CGImageGetBitsPerComponent(cgImage), CGImageGetBytesPerRow(cgImage), CGImageGetColorSpace(cgImage), CGImageGetBitmapInfo(cgImage).rawValue)
-		CGContextSetInterpolationQuality(context, .High)
-		CGContextDrawImage(context, CGRect(CGPointZero, width, height), cgImage)
+		let context = CGContext(data: nil, width: Int(width), height: Int(width), bitsPerComponent: cgImage.bitsPerComponent, bytesPerRow: cgImage.bytesPerRow, space: cgImage.colorSpace!, bitmapInfo: cgImage.bitmapInfo.rawValue)
+		context!.interpolationQuality = .high
+		context?.draw(in: CGRect(CGPoint.zero, width, height), image: cgImage)
 
-		if let scaledImageRef = CGBitmapContextCreateImage(context)
+		if let scaledImageRef = context?.makeImage()
 		{
-			return UIImage(CGImage:scaledImageRef)
+			return UIImage(cgImage:scaledImageRef)
 		}
 
 		return nil
 	}
 
-	func imageTintedWithColor(color: UIColor, opacity: CGFloat = 0.0) -> UIImage?
+	func imageTintedWithColor(_ color: UIColor, opacity: CGFloat = 0.0) -> UIImage?
 	{
-		UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-
-		let rect = CGRect(0.0, 0.0, size.width, size.height)
-		color.set()
-		UIRectFill(rect)
-
-		drawInRect(rect, blendMode:.DestinationIn, alpha:1.0)
-
-		if (opacity > 0.0)
+		if #available(iOS 10, *)
 		{
-			drawInRect(rect, blendMode:.SourceAtop, alpha:opacity)
-		}
-		let image = UIGraphicsGetImageFromCurrentImageContext()
-		UIGraphicsEndImageContext()
+			let renderer = UIGraphicsImageRenderer(size: size)
+			return renderer.image() { rendererContext in
+				let rect = CGRect(0.0, 0.0, self.size.width, self.size.height)
+				color.set()
+				UIRectFill(rect)
 
-		return image
+				draw(in: rect, blendMode:.destinationIn, alpha:1.0)
+
+				if (opacity > 0.0)
+				{
+					draw(in: rect, blendMode:.sourceAtop, alpha:opacity)
+				}
+			}
+		}
+		else
+		{
+			UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+
+			let rect = CGRect(0.0, 0.0, size.width, size.height)
+			color.set()
+			UIRectFill(rect)
+
+			draw(in: rect, blendMode:.destinationIn, alpha:1.0)
+
+			if (opacity > 0.0)
+			{
+				draw(in: rect, blendMode:.sourceAtop, alpha:opacity)
+			}
+			let image = UIGraphicsGetImageFromCurrentImageContext()
+			UIGraphicsEndImageContext()
+			
+			return image
+		}
 	}
 
-	class func loadFromURL(URL: NSURL) -> UIImage?
+	class func loadFromURL(_ URL: Foundation.URL) -> UIImage?
 	{
 		guard let imageSource = CGImageSourceCreateWithURL(URL, nil) else {return nil}
 		guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, [kCGImageSourceShouldCache as String : true]) else {return nil}
-		let image = UIImage(CGImage:imageRef)
+		let image = UIImage(cgImage:imageRef)
 		return image
 	}
 
-	class func fromString(string: String, font: UIFont, fontColor: UIColor, backgroundColor: UIColor, maxSize: CGSize) -> UIImage?
+	class func fromString(_ string: String, font: UIFont, fontColor: UIColor, backgroundColor: UIColor, maxSize: CGSize) -> UIImage?
 	{
 		// Create an attributed string with string and font information
 		let paragraphStyle = NSMutableParagraphStyle()
-		paragraphStyle.lineBreakMode = .ByWordWrapping
-		paragraphStyle.alignment = .Center
+		paragraphStyle.lineBreakMode = .byWordWrapping
+		paragraphStyle.alignment = .center
 		let attributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : fontColor, NSParagraphStyleAttributeName : paragraphStyle]
-		let attrString = NSAttributedString(string:string, attributes:attributes)
-		let scale = UIScreen.mainScreen().scale
+		let attrString = AttributedString(string:string, attributes:attributes)
+		let scale = UIScreen.main().scale
 		let trueMaxSize = maxSize * scale
 
 		// Figure out how big an image we need
@@ -135,7 +166,7 @@ extension UIImage
 		var osef = CFRange(location:0, length:0)
 		let goodSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, osef, nil, trueMaxSize, &osef).ceil()
 		let rect = CGRect((trueMaxSize.width - goodSize.width) * 0.5, (trueMaxSize.height - goodSize.height) * 0.5, goodSize.width, goodSize.height)
-		let path = CGPathCreateWithRect(rect, nil)
+		let path = CGPath(rect: rect, transform: nil)
 		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location:0, length:0), path, nil)
 
 		// Create the context and fill it
@@ -143,19 +174,19 @@ extension UIImage
 		{
 			return nil
 		}
-		CGContextSetFillColorWithColor(bmContext, backgroundColor.CGColor)
-		CGContextFillRect(bmContext, /*rect*/CGRect(CGPointZero, trueMaxSize))
+		bmContext.setFillColor(backgroundColor.cgColor)
+		bmContext.fill(/*rect*/CGRect(CGPoint.zero, trueMaxSize))
 
 		// Draw the text
-		CGContextSetAllowsAntialiasing(bmContext, true)
-		CGContextSetAllowsFontSmoothing(bmContext, true)
-		CGContextSetInterpolationQuality(bmContext, .High)
+		bmContext.setAllowsAntialiasing(true)
+		bmContext.setAllowsFontSmoothing(true)
+		bmContext.interpolationQuality = .high
 		CTFrameDraw(frame, bmContext)
 
 		// Save
-		if let imageRef = CGBitmapContextCreateImage(bmContext)
+		if let imageRef = bmContext.makeImage()
 		{
-			let img = UIImage(CGImage:imageRef)
+			let img = UIImage(cgImage:imageRef)
 			return img
 		}
 		else

@@ -25,7 +25,7 @@ import UIKit
 
 extension UIColor
 {
-	class func fromRGBA(RGB: Int, alpha: CGFloat) -> UIColor
+	class func fromRGBA(_ RGB: Int, alpha: CGFloat) -> UIColor
 	{
 		let red = ((CGFloat)((RGB & 0xFF0000) >> 16)) / 255
 		let green = ((CGFloat)((RGB & 0xFF00) >> 8)) / 255
@@ -33,7 +33,7 @@ extension UIColor
 		return UIColor(red:red, green:green, blue:blue, alpha:alpha)
 	}
 
-	class func fromRGB(RGB: Int) -> UIColor
+	class func fromRGB(_ RGB: Int) -> UIColor
 	{
 		return UIColor.fromRGBA(RGB, alpha:1.0)
 	}
@@ -75,7 +75,7 @@ extension UIColor
 		return false
 	}
 
-	func colorWithMinimumSaturation(minSaturation: CGFloat) -> UIColor
+	func colorWithMinimumSaturation(_ minSaturation: CGFloat) -> UIColor
 	{
 		var h: CGFloat = 0.0, s: CGFloat = 0.0, v: CGFloat = 0.0, a: CGFloat = 0.0
 		getHue(&h, saturation:&s, brightness:&v, alpha:&a)
@@ -88,7 +88,7 @@ extension UIColor
 		return self
 	}
 
-	func isDistinct(compareColor: UIColor) -> Bool
+	func isDistinct(_ compareColor: UIColor) -> Bool
 	{
 		let convertedColor = self
 		let convertedCompareColor = compareColor
@@ -117,7 +117,7 @@ extension UIColor
 		return false
 	}
 
-	func isContrastingColor(color: UIColor) -> Bool
+	func isContrastingColor(_ color: UIColor) -> Bool
 	{
 		var r1: CGFloat = 0.0, g1: CGFloat = 0.0, b1: CGFloat = 0.0, a1: CGFloat = 0.0
 		var r2: CGFloat = 0.0, g2: CGFloat = 0.0, b2: CGFloat = 0.0, a2: CGFloat = 0.0

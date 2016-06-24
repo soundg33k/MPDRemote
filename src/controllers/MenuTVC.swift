@@ -42,8 +42,7 @@ class MenuTVC : UITableViewController
 		super.init(coder:aDecoder)
 
 		// Hamburger button
-		let image = UIImage(named:"btn-hamb")
-		let b = UIBarButtonItem(image:image?.imageTintedWithColor(UIColor.whiteColor())?.imageWithRenderingMode(.AlwaysOriginal), style:.Plain, target:self, action:#selector(showLeftViewAction(_:)))
+		let b = UIBarButtonItem(image:#imageLiteral(resourceName: "btn-hamb").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), style:.plain, target:self, action:#selector(showLeftViewAction(_:)))
 		b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 		self.navigationItem.leftBarButtonItem = b
 	}
@@ -59,25 +58,25 @@ class MenuTVC : UITableViewController
 		navigationController!.view.addSubview(menuView)
 
 		panGestureMenu = UIScreenEdgePanGestureRecognizer(target:self, action:#selector(panFromEdge(_:)))
-		panGestureMenu.edges = .Left
+		panGestureMenu.edges = .left
 		panGestureMenu.delegate = self
 		view.addGestureRecognizer(panGestureMenu)
 	}
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
 	{
-		return .Portrait
+		return .portrait
 	}
 
 	override func preferredStatusBarStyle() -> UIStatusBarStyle
 	{
-		return .LightContent
+		return .lightContent
 	}
 
 	// MARK : Button action
-	func showLeftViewAction(sender: AnyObject?)
+	func showLeftViewAction(_ sender: AnyObject?)
 	{
-		UIView.animateWithDuration(0.25, delay:0.0, options:.CurveEaseOut, animations:{
+		UIView.animate(withDuration: 0.25, delay:0.0, options:.curveEaseOut, animations:{
 			let x = self.menuView.visible ? -(self.menuView.frame.width + 2.0) : 0.0
 			self.menuView.frame = CGRect(x, self.menuView.frame.y, self.menuView.frame.size)
 		}, completion:{ finished in
@@ -88,16 +87,16 @@ class MenuTVC : UITableViewController
 	}
 
 	// MARK: - Gesture
-	func panFromEdge(gest: UIScreenEdgePanGestureRecognizer)
+	func panFromEdge(_ gest: UIScreenEdgePanGestureRecognizer)
 	{
 		let view = gest.view
 		switch (gest.state)
 		{
-			case .Began:
+			case .began:
 				__startX = menuView.frame.x
 				break
-			case .Changed:
-				let translationX = gest.translationInView(view).x
+			case .changed:
+				let translationX = gest.translation(in: view).x
 				var tmp = __startX + translationX
 				if (tmp > 0.0)
 				{
@@ -108,10 +107,10 @@ class MenuTVC : UITableViewController
 					tmp = -menuView.frame.width
 				}
 				menuView.frame.x = tmp
-			case .Ended:
+			case .ended:
 				let cmp = menuView.frame.x
 				let limit = (MENU_MIN_X / 2.6)
-				UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
+				UIView.animate(withDuration: 0.35, delay:0.0, options:.curveEaseOut, animations:{
 					self.menuView.frame.x = (cmp >= limit) ? 0.0 : MENU_MIN_X
 				}, completion:{ finished in
 					let v = (cmp >= limit)
@@ -127,20 +126,20 @@ class MenuTVC : UITableViewController
 // MARK: - MenuViewDelegate
 extension MenuTVC : MenuViewDelegate
 {
-	func menuViewShouldClose(menuView: UIView)
+	func menuViewShouldClose(_ menuView: UIView)
 	{
-		UIView.animateWithDuration(0.25, delay:0.0, options:.CurveEaseInOut, animations:{
+		UIView.animate(withDuration: 0.25, delay:0.0, options:UIViewAnimationOptions(), animations:{
 			self.menuView.frame = CGRect(MENU_MIN_X, self.menuView.frame.y, menuView.frame.size)
 		}, completion:{ finished in
 			self.menuView.visible = false
-			self.view.userInteractionEnabled = true
+			self.view.isUserInteractionEnabled = true
 			self.navigationItem.leftBarButtonItem?.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 		})
 	}
 
-	func menuViewDidClose(menuView: UIView)
+	func menuViewDidClose(_ menuView: UIView)
 	{
-		view.userInteractionEnabled = true
+		view.isUserInteractionEnabled = true
 		navigationItem.leftBarButtonItem?.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 	}
 }
@@ -148,7 +147,7 @@ extension MenuTVC : MenuViewDelegate
 // MARK: - UIGestureRecognizerDelegate
 extension MenuTVC : UIGestureRecognizerDelegate
 {
-	func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool
+	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool
 	{
 		if (gestureRecognizer === panGestureMenu)
 		{

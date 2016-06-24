@@ -25,10 +25,10 @@ import Foundation
 
 enum PlayerStatus : Int
 {
-	case Playing
-	case Paused
-	case Stopped
-	case Unknown
+	case playing
+	case paused
+	case stopped
+	case unknown
 }
 
 
@@ -40,7 +40,7 @@ final class MPDPlayer
 	// MPD server
 	var server: MPDServer! = nil
 	// Player status (playing, paused, stopped)
-	private(set) var status: PlayerStatus = .Unknown
+	private(set) var status: PlayerStatus = .unknown
 	// Current playing track
 	private(set) var currentTrack: Track? = nil
 	// Current playing album
@@ -50,14 +50,14 @@ final class MPDPlayer
 	// MPD Connection
 	private var _mpdConnection: MPDConnection! = nil
 	// Internal queue
-	private let _queue: dispatch_queue_t
+	private let _queue: DispatchQueue
 	// Timer (1sec)
-	private var _timer: dispatch_source_t!
+	private var _timer: DispatchSource!
 
 	// MARK: - Initializers
 	init()
 	{
-		self._queue = dispatch_queue_create("io.whine.mpdremote.queue.player", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_DEFAULT, 0))
+		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.player", attributes:[.serial, .qosDefault], target: nil)
 	}
 
 	// MARK: - Public
@@ -85,7 +85,7 @@ final class MPDPlayer
 		if ret
 		{
 			_mpdConnection.delegate = self
-			_startTimer(1.0)
+			_startTimer(1)
 		}
 		else
 		{
@@ -95,26 +95,26 @@ final class MPDPlayer
 	}
 
 	// MARK: - Playing
-	func playAlbum(album: Album, random: Bool, loop: Bool)
+	func playAlbum(_ album: Album, random: Bool, loop: Bool)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 		
-		dispatch_async(_queue) {
+		_queue.async {
 			self._mpdConnection.playAlbum(album, random:random, loop:loop)
 		}
 	}
 
-	func playTracks(tracks: [Track], random: Bool, loop: Bool)
+	func playTracks(_ tracks: [Track], random: Bool, loop: Bool)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(_queue) {
+		_queue.async {
 			self._mpdConnection.playTracks(tracks, random:random, loop:loop)
 		}
 	}
@@ -127,46 +127,46 @@ final class MPDPlayer
 			return
 		}
 		
-		dispatch_async(_queue) {
-			self._mpdConnection.togglePause()
+		_queue.async {
+			_ = self._mpdConnection.togglePause()
 		}
 	}
 
 	// MARK: - Add to queue
-	func addAlbumToQueue(album: Album)
+	func addAlbumToQueue(_ album: Album)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 		
-		dispatch_async(_queue) {
+		_queue.async {
 			self._mpdConnection.addAlbumToQueue(album)
 		}
 	}
 
 	// MARK: - Repeat
-	func setRepeat(loop: Bool)
+	func setRepeat(_ loop: Bool)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(_queue) {
+		_queue.async {
 			self._mpdConnection.setRepeat(loop)
 		}
 	}
 
 	// MARK: - Random
-	func setRandom(random: Bool)
+	func setRandom(_ random: Bool)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(_queue) {
+		_queue.async {
 			self._mpdConnection.setRandom(random)
 		}
 	}
@@ -179,7 +179,7 @@ final class MPDPlayer
 			return
 		}
 
-		dispatch_async(_queue) {
+		_queue.async {
 			self._mpdConnection.nextTrack()
 		}
 	}
@@ -191,51 +191,52 @@ final class MPDPlayer
 			return
 		}
 
-		dispatch_async(_queue) {
+		_queue.async {
 			self._mpdConnection.previousTrack()
 		}
 	}
 
 	// MARK: - Track position
-	func setTrackPosition(position: Int, trackPosition: UInt32)
+	func setTrackPosition(_ position: Int, trackPosition: UInt32)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(_queue) {
+		_queue.async {
 			self._mpdConnection.setTrackPosition(position, trackPosition:trackPosition)
 		}
 	}
 
 	// MARK: - Volume
-	func setVolume(volume: Int)
+	func setVolume(_ volume: Int)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
 			return
 		}
 
-		dispatch_async(_queue) {
+		_queue.async {
 			self._mpdConnection.setVolume(UInt32(volume))
 		}
 	}
 
 	// MARK: - Private
-	private func _startTimer(interval: Double)
+	private func _startTimer(_ interval: Int)
 	{
-		_timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _queue)
-		dispatch_source_set_timer(_timer, DISPATCH_TIME_NOW, UInt64(interval * Double(NSEC_PER_SEC)), UInt64(0.2 * Double(NSEC_PER_SEC))) // every interval seconds, with leeway of 0.2 second
-		dispatch_source_set_event_handler(_timer) {
+
+		_timer = DispatchSource.timer(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue) /*Migrator FIXME: Use DispatchSourceTimer to avoid the cast*/ as! DispatchSource
+		_timer.scheduleRepeating(deadline: .now(), interval:.seconds(interval))
+		_timer.setEventHandler {
 			self._playerInformations()
 		}
-		dispatch_resume(_timer)
+		_timer.resume()
 	}
 
 	private func _stopTimer()
 	{
-		dispatch_source_cancel(_timer)
+		_timer.cancel()
 		_timer = nil
 	}
 
@@ -243,37 +244,37 @@ final class MPDPlayer
 	{
 		guard let infos = _mpdConnection.getPlayerInfos() else {return}
 		let status = PlayerStatus(rawValue:infos[kPlayerStatusKey] as! Int)!
-		let track = infos[kPlayerTrackKey] as! Track!
-		let album = infos[kPlayerAlbumKey] as! Album!
+		let track = infos[kPlayerTrackKey] as! Track
+		let album = infos[kPlayerAlbumKey] as! Album
 
 		// Track changed
 		if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
 		{
-			dispatch_async(dispatch_get_main_queue()) {
-				NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationPlayingTrackChanged, object:nil, userInfo:infos)
+			DispatchQueue.main.async {
+				NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil, userInfo:infos)
 			}
 		}
 
 		// Status changed
 		if status != status
 		{
-			dispatch_async(dispatch_get_main_queue()) {
-				NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationPlayerStatusChanged, object:nil, userInfo:infos)
+			DispatchQueue.main.async {
+				NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil, userInfo:infos)
 			}
 		}
 
 		self.status = status
 		currentTrack = track
 		currentAlbum = album
-		dispatch_async(dispatch_get_main_queue()) {
-			NSNotificationCenter.defaultCenter().postNotificationName(kNYXNotificationCurrentPlayingTrack, object:nil, userInfo:infos)
+		DispatchQueue.main.async {
+			NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil, userInfo:infos)
 		}
 	}
 }
 
 extension MPDPlayer : MPDConnectionDelegate
 {
-	func albumMatchingName(name: String) -> Album?
+	func albumMatchingName(_ name: String) -> Album?
 	{
 		let albums = MPDDataSource.shared.albums
 		return albums.filter({$0.name == name}).first

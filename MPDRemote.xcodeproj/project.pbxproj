@@ -45,7 +45,6 @@
 		1E5653B31C908A310049C02D /* MPDServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E56538F1C908A310049C02D /* MPDServer.swift */; };
 		1E5653B41C908A310049C02D /* CoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653911C908A310049C02D /* CoverOperation.swift */; };
 		1E5653B51C908A310049C02D /* AlbumHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653931C908A310049C02D /* AlbumHeaderView.swift */; };
-		1E5653B61C908A310049C02D /* HeaderScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653941C908A310049C02D /* HeaderScrollView.swift */; };
 		1E5653B71C908A310049C02D /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653951C908A310049C02D /* MenuView.swift */; };
 		1E5653B81C908A310049C02D /* MiniPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653961C908A310049C02D /* MiniPlayerView.swift */; };
 		1E5653B91C908A310049C02D /* TopAlignedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653971C908A310049C02D /* TopAlignedLabel.swift */; };
@@ -111,7 +110,6 @@
 		1E56538F1C908A310049C02D /* MPDServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDServer.swift; sourceTree = "<group>"; };
 		1E5653911C908A310049C02D /* CoverOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverOperation.swift; sourceTree = "<group>"; };
 		1E5653931C908A310049C02D /* AlbumHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumHeaderView.swift; sourceTree = "<group>"; };
-		1E5653941C908A310049C02D /* HeaderScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderScrollView.swift; sourceTree = "<group>"; };
 		1E5653951C908A310049C02D /* MenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		1E5653961C908A310049C02D /* MiniPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniPlayerView.swift; sourceTree = "<group>"; };
 		1E5653971C908A310049C02D /* TopAlignedLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopAlignedLabel.swift; sourceTree = "<group>"; };
@@ -420,7 +418,6 @@
 			isa = PBXGroup;
 			children = (
 				1E5653931C908A310049C02D /* AlbumHeaderView.swift */,
-				1E5653941C908A310049C02D /* HeaderScrollView.swift */,
 				4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */,
 				1E5653951C908A310049C02D /* MenuView.swift */,
 				1E5653961C908A310049C02D /* MiniPlayerView.swift */,
@@ -473,6 +470,7 @@
 					1E19ACE91C7DCC2D00E602FB = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = 3VD3GSF4M4;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -542,7 +540,6 @@
 				1E56539A1C908A310049C02D /* AlbumDetailVC.swift in Sources */,
 				1EB93AA01CB3A82700EA5339 /* TypeChoiceView.swift in Sources */,
 				1EB93AA61CB4113300EA5339 /* Artist.swift in Sources */,
-				1E5653B61C908A310049C02D /* HeaderScrollView.swift in Sources */,
 				1E86D3DD1CB7B0C90001E203 /* Genre.swift in Sources */,
 				1E3424361C948E8D009F6BF8 /* Duration.swift in Sources */,
 				1E5653B01C908A310049C02D /* MPDConnection.swift in Sources */,
@@ -732,7 +729,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				INFOPLIST_FILE = rsrc/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -744,6 +741,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -765,7 +763,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				INFOPLIST_FILE = rsrc/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -777,6 +775,7 @@
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

@@ -33,7 +33,7 @@ final class ArtistsVC : UITableViewController
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 	// Keep track of download operations to eventually cancel them
-	private var _downloadOperations = [String : NSOperation]()
+	private var _downloadOperations = [String : Operation]()
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -46,28 +46,28 @@ final class ArtistsVC : UITableViewController
 	{
 		super.viewDidLoad()
 		// Remove back button label
-		navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
+		navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
 
 		// Tableview
 		tableView.tableFooterView = UIView()
 
 		// Navigation bar title
-		titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
+		titleView = UILabel(frame:CGRect(CGPoint.zero, 100.0, 44.0))
 		titleView.numberOfLines = 2
-		titleView.textAlignment = .Center
+		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
 		titleView.textColor = navigationController?.navigationBar.tintColor
 		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
 		navigationItem.titleView = titleView
 	}
 
-	override func viewWillAppear(animated: Bool)
+	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
 		MPDDataSource.shared.getArtistsForGenre(genre) { (artists: [Artist]) in
 			self.artists = artists
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				self.tableView.reloadData()
 				self._updateNavigationTitle()
 			}
@@ -76,15 +76,15 @@ final class ArtistsVC : UITableViewController
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
 	{
-		return .Portrait
+		return .portrait
 	}
 
 	override func preferredStatusBarStyle() -> UIStatusBarStyle
 	{
-		return .LightContent
+		return .lightContent
 	}
 
-	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+	override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?)
 	{
 		if segue.identifier == "artists-to-albums"
 		{
@@ -97,7 +97,7 @@ final class ArtistsVC : UITableViewController
 	private func _updateNavigationTitle()
 	{
 		let attrs = NSMutableAttributedString(string:genre.name + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
-		attrs.appendAttributedString(NSAttributedString(string:"\(artists.count) \(artists.count > 1 ? NYXLocalizedString("lbl_artists").lowercaseString : NYXLocalizedString("lbl_artist").lowercaseString)", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
+		attrs.append(AttributedString(string:"\(artists.count) \(artists.count > 1 ? NYXLocalizedString("lbl_artists").lowercased() : NYXLocalizedString("lbl_artist").lowercased())", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
 		titleView.attributedText = attrs
 	}
 }
@@ -105,35 +105,35 @@ final class ArtistsVC : UITableViewController
 // MARK: - UITableViewDataSource
 extension ArtistsVC
 {
-	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
 		return artists.count + 1 // dummy
 	}
 
-	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCellWithIdentifier("io.whine.mpdremote.cell.artist", forIndexPath:indexPath) as! ArtistTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.artist", for:indexPath) as! ArtistTableViewCell
 
 		// Dummy to let some space for the mini player
 		if indexPath.row == artists.count
 		{
 			cell.lblArtist.text = ""
 			cell.lblAlbums.text = ""
-			cell.separator.hidden = true
+			cell.separator.isHidden = true
 			cell.coverView.image = nil
-			cell.accessoryType = .None
-			cell.selectionStyle = .None
+			cell.accessoryType = .none
+			cell.selectionStyle = .none
 			return cell
 		}
 
 		let artist = artists[indexPath.row]
 		cell.lblArtist.text = artist.name
-		cell.separator.hidden = false
-		cell.accessoryType = .DisclosureIndicator
-		cell.accessibilityLabel = "\(artist.name), \(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercaseString : NYXLocalizedString("lbl_album").lowercaseString)"
+		cell.separator.isHidden = false
+		cell.accessoryType = .disclosureIndicator
+		cell.accessibilityLabel = "\(artist.name), \(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercased() : NYXLocalizedString("lbl_album").lowercased())"
 
 		// No server for covers
-		if NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) == nil
+		if UserDefaults.standard().data(forKey: kNYXPrefWEBServer) == nil
 		{
 			cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
 			return cell
@@ -141,7 +141,7 @@ extension ArtistsVC
 
 		if artist.albums.count > 0
 		{
-			cell.lblAlbums.text = "\(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercaseString : NYXLocalizedString("lbl_album").lowercaseString)"
+			cell.lblAlbums.text = "\(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercased() : NYXLocalizedString("lbl_album").lowercased())"
 			if let album = artist.albums.first
 			{
 				// Get local URL for cover
@@ -154,10 +154,10 @@ extension ArtistsVC
 
 				if let cover = UIImage.loadFromURL(coverURL)
 				{
-					dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+					DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosUserInitiated).async {
 						let cropped = cover.imageCroppedToFitSize(cell.coverView.size)
-						dispatch_async(dispatch_get_main_queue()) {
-							if let c = self.tableView.cellForRowAtIndexPath(indexPath) as? ArtistTableViewCell
+						DispatchQueue.main.async {
+							if let c = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
 							{
 								c.coverView.image = cropped
 							}
@@ -167,14 +167,14 @@ extension ArtistsVC
 				else
 				{
 					cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
-					let sizeAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!
-					let cropSize = NSKeyedUnarchiver.unarchiveObjectWithData(sizeAsData) as! NSValue
+					let sizeAsData = UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!
+					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						_downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue()) { (thumbnail: UIImage) in
+						_downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue()) { (thumbnail: UIImage) in
 							let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
-							dispatch_async(dispatch_get_main_queue()) {
-								if let c = self.tableView.cellForRowAtIndexPath(indexPath) as? ArtistTableViewCell
+							DispatchQueue.main.async {
+								if let c = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
 								{
 									c.coverView.image = cropped
 								}
@@ -184,10 +184,10 @@ extension ArtistsVC
 					else
 					{
 						MPDDataSource.shared.getPathForAlbum(album) {
-							self._downloadCoverForAlbum(album, cropSize:cropSize.CGSizeValue()) { (thumbnail: UIImage) in
+							self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue()) { (thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
-								dispatch_async(dispatch_get_main_queue()) {
-									if let c = self.tableView.cellForRowAtIndexPath(indexPath) as? ArtistTableViewCell
+								DispatchQueue.main.async {
+									if let c = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
 									{
 										c.coverView.image = cropped
 									}
@@ -201,10 +201,10 @@ extension ArtistsVC
 		else
 		{
 			MPDDataSource.shared.getAlbumsForArtist(artist) {
-				dispatch_async(dispatch_get_main_queue()) {
-					if let _ = self.tableView.cellForRowAtIndexPath(indexPath) as? ArtistTableViewCell
+				DispatchQueue.main.async {
+					if let _ = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
 					{
-						self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation:.None)
+						self.tableView.reloadRows(at: [indexPath], with:.none)
 					}
 				}
 			}
@@ -212,7 +212,7 @@ extension ArtistsVC
 		return cell
 	}
 
-	private func _downloadCoverForAlbum(album: Album, cropSize: CGSize, callback:(thumbnail: UIImage) -> Void)
+	private func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:(thumbnail: UIImage) -> Void)
 	{
 		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
 		let key = album.name + album.year
@@ -220,9 +220,9 @@ extension ArtistsVC
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 			if let op = weakOperation
 			{
-				if !op.cancelled
+				if !op.isCancelled
 				{
-					self._downloadOperations.removeValueForKey(key)
+					self._downloadOperations.removeValue(forKey: key)
 				}
 			}
 			callback(thumbnail:thumbnail)
@@ -235,17 +235,17 @@ extension ArtistsVC
 // MARK: - UITableViewDelegate
 extension ArtistsVC
 {
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
 		if indexPath.row == artists.count
 		{
 			return
 		}
 
-		performSegueWithIdentifier("artists-to-albums", sender: self)
+		performSegue(withIdentifier: "artists-to-albums", sender: self)
 	}
 
-	override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
+	override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath)
 	{
 		if indexPath.row == artists.count
 		{
@@ -259,12 +259,12 @@ extension ArtistsVC
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
-			_downloadOperations.removeValueForKey(key)
+			_downloadOperations.removeValue(forKey: key)
 			Logger.dlog("[+] Cancelling \(op)")
 		}
 	}
 
-	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
 	{
 		if indexPath.row == artists.count
 		{

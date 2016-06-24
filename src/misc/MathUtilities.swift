@@ -24,38 +24,38 @@ import CoreGraphics
 
 
 // MARK: - Clamp
-public func clamp<T: Comparable>(value: T, lower: T, upper: T) -> T
+public func clamp<T: Comparable>(_ value: T, lower: T, upper: T) -> T
 {
 	return max(min(value, upper), lower)
 }
 
 // MARK: - Degrees/Radians
-public func degreesToRadians(value: Float) -> Float
+public func degreesToRadians(_ value: Float) -> Float
 {
-	return value * Float(M_PI) / 180
+	return value * Float.pi / 180
 }
 
-public func radiansToDegrees(value: Float) -> Float
+public func radiansToDegrees(_ value: Float) -> Float
 {
-	return value * 180 / Float(M_PI)
+	return value * 180 / Float.pi
 }
 
-public func degreesToRadians(value: Double) -> Double
+public func degreesToRadians(_ value: Double) -> Double
 {
-	return value * M_PI / 180
+	return value * Double.pi / 180
 }
 
-public func radiansToDegrees(value: Double) -> Double
+public func radiansToDegrees(_ value: Double) -> Double
 {
-	return value * 180 / M_PI
+	return value * 180 / Double.pi
 }
 
-public func degreesToRadians(value: CGFloat) -> CGFloat
+public func degreesToRadians(_ value: CGFloat) -> CGFloat
 {
-	return value * CGFloat(M_PI) / 180
+	return value * CGFloat.pi / 180
 }
 
-public func radiansToDegrees(value: CGFloat) -> CGFloat
+public func radiansToDegrees(_ value: CGFloat) -> CGFloat
 {
-	return value * 180 / CGFloat(M_PI)
+	return value * 180 / CGFloat.pi
 }

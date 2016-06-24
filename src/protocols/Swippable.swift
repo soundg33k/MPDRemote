@@ -36,12 +36,12 @@ public extension PLeftSwippable where Self:UIView
 		let gestureRecognizer = UISwipeGestureRecognizer { [unowned self] (recognizer) -> Void in
 			let swipe = recognizer as! UISwipeGestureRecognizer
 
-			if swipe.state == .Ended
+			if swipe.state == .ended
 			{
 				self.didSwipeLeft()
 			}
 		}
-		gestureRecognizer.direction = .Left
+		gestureRecognizer.direction = .left
 		self.addGestureRecognizer(gestureRecognizer);
 	}
 
@@ -64,12 +64,12 @@ public extension PRightSwippable where Self:UIView
 		let gestureRecognizer = UISwipeGestureRecognizer { [unowned self] (recognizer) -> Void in
 			let swipe = recognizer as! UISwipeGestureRecognizer
 
-			if swipe.state == .Ended
+			if swipe.state == .ended
 			{
 				self.didSwipeRight()
 			}
 		}
-		gestureRecognizer.direction = .Right
+		gestureRecognizer.direction = .right
 		self.addGestureRecognizer(gestureRecognizer);
 	}
 
@@ -92,12 +92,12 @@ public extension PUpSwippable where Self:UIView
 		let gestureRecognizer = UISwipeGestureRecognizer { [unowned self] (recognizer) -> Void in
 			let swipe = recognizer as! UISwipeGestureRecognizer
 
-			if swipe.state == .Ended
+			if swipe.state == .ended
 			{
 				self.didSwipeUp()
 			}
 		}
-		gestureRecognizer.direction = .Up
+		gestureRecognizer.direction = .up
 		addGestureRecognizer(gestureRecognizer);
 	}
 
@@ -120,12 +120,12 @@ public extension PDownSwippable where Self:UIView
 		let gestureRecognizer = UISwipeGestureRecognizer { [unowned self] (recognizer) -> Void in
 			let swipe = recognizer as! UISwipeGestureRecognizer
 
-			if swipe.state == .Ended
+			if swipe.state == .ended
 			{
 				self.didSwipeDown()
 			}
 		}
-		gestureRecognizer.direction = .Down
+		gestureRecognizer.direction = .down
 		addGestureRecognizer(gestureRecognizer);
 	}
 

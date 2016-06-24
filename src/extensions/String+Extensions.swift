@@ -39,9 +39,9 @@ extension String
 	// MARK: - Base64 encode
 	func base64Encode() -> String
 	{
-		if let utf8str = dataUsingEncoding(NSUTF8StringEncoding)
+		if let utf8str = data(using: String.Encoding.utf8)
 		{
-			return utf8str.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+			return utf8str.base64EncodedString(.encoding64CharacterLineLength)
 		}
 		return ""
 	}
@@ -49,9 +49,9 @@ extension String
 	// MARK: - Base64 decode
 	func base64Decode() -> String
 	{
-		if let base64data = NSData(base64EncodedString:self, options:[])
+		if let base64data = Data(base64Encoded:self, options:[])
 		{
-			if let str = String(data:base64data, encoding:NSUTF8StringEncoding)
+			if let str = String(data:base64data, encoding:String.Encoding.utf8)
 			{
 				return str
 			}
@@ -62,10 +62,10 @@ extension String
 	// MARK: - Hash functions
 	func md5() -> String
 	{
-		var digest = [UInt8](count:Int(CC_MD5_DIGEST_LENGTH), repeatedValue:0)
-		if let data = dataUsingEncoding(NSUTF8StringEncoding)
+		var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
+		if let data = data(using: String.Encoding.utf8)
 		{
-			CC_MD5(data.bytes, CC_LONG(data.length), &digest)
+			CC_MD5((data as NSData).bytes, CC_LONG(data.count), &digest)
 		}
 
 		var ret = ""
@@ -82,7 +82,7 @@ extension String
 	}
 }
 
-func NYXLocalizedString(key: String) -> String
+func NYXLocalizedString(_ key: String) -> String
 {
 	return NSLocalizedString(key, comment:"")
 }

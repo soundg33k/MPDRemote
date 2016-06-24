@@ -52,7 +52,7 @@ final class StatsVC : MenuTVC
 		let titleView = UILabel(frame:CGRect(0.0, 0.0, 100.0, 44.0))
 		titleView.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
 		titleView.numberOfLines = 2
-		titleView.textAlignment = .Center
+		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
 		titleView.textColor = navigationController?.navigationBar.tintColor
 		titleView.text = NYXLocalizedString("lbl_section_stats")
@@ -60,12 +60,12 @@ final class StatsVC : MenuTVC
 		navigationItem.titleView = titleView
 	}
 
-	override func viewWillAppear(animated: Bool)
+	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
 		MPDDataSource.shared.getStats { (stats: [String : String]) in
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				self.stats = stats
 				self._updateLabels()
 			}
@@ -74,12 +74,12 @@ final class StatsVC : MenuTVC
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
 	{
-		return .Portrait
+		return .portrait
 	}
 
 	override func preferredStatusBarStyle() -> UIStatusBarStyle
 	{
-		return .LightContent
+		return .lightContent
 	}
 
 	// MARK: - Private
@@ -103,14 +103,14 @@ final class StatsVC : MenuTVC
 		duration = Duration(seconds:seconds)
 		lblMPDPlaytime.text = _formatDuration(duration)
 
-		let tt = stats["mpddbupdate"] != nil ? NSTimeInterval(stats["mpddbupdate"]!) : NSTimeInterval(0)
-		let df = NSDateFormatter()
+		let tt = stats["mpddbupdate"] != nil ? TimeInterval(stats["mpddbupdate"]!) : TimeInterval(0)
+		let df = DateFormatter()
 		df.dateFormat = "dd MMM yyyy, HH:mm"
-		let bla = df.stringFromDate(NSDate(timeIntervalSince1970:tt!))
+		let bla = df.string(from: Date(timeIntervalSince1970:tt!))
 		lblMPDDBLastUpdate.text = bla
 	}
 
-	private func _formatDuration(duration: Duration) -> String
+	private func _formatDuration(_ duration: Duration) -> String
 	{
 		if duration.seconds > 86400
 		{

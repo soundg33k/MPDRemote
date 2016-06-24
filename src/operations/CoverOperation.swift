@@ -21,37 +21,38 @@
 
 
 import UIKit
+import Foundation
 
 
-final class CoverOperation : NSOperation
+final class CoverOperation : Operation
 {
 	// MARK: - Private properties
 	// isFinished override
 	private var junk: Bool = false
-	override var finished: Bool {
+	override var isFinished: Bool {
 		get {
 			return junk
 		}
 		set (newAnswer) {
-			willChangeValueForKey("isFinished")
+			willChangeValue(forKey: "isFinished")
 			junk = newAnswer
-			didChangeValueForKey("isFinished")
+			didChangeValue(forKey: "isFinished")
 		}
 	}
 
 	// Downloaded data
 	private let incomingData = NSMutableData()
 	// Task
-	private var sessionTask: NSURLSessionTask?
+	private var sessionTask: URLSessionTask?
 	// Session configuration
-	private var localURLSessionConfiguration: NSURLSessionConfiguration {
-		let cfg = NSURLSessionConfiguration.defaultSessionConfiguration()
-		cfg.HTTPShouldUsePipelining = true
+	private var localURLSessionConfiguration: URLSessionConfiguration {
+		let cfg = URLSessionConfiguration.default()
+		cfg.httpShouldUsePipelining = true
 		return cfg
 	}
 	// Session
-	private var localURLSession: NSURLSession {
-		return NSURLSession(configuration:localURLSessionConfiguration, delegate:self, delegateQueue:nil)
+	private var localURLSession: Foundation.URLSession {
+		return Foundation.URLSession(configuration:localURLSessionConfiguration, delegate:self, delegateQueue:nil)
 	}
 
 	// MARK : Public properties
@@ -73,10 +74,10 @@ final class CoverOperation : NSOperation
 	override func start()
 	{
 		// Operation is cancelled, abort
-		if cancelled
+		if isCancelled
 		{
 			Logger.dlog("[+] Cancelled !")
-			finished = true
+			isFinished = true
 			return
 		}
 
@@ -84,23 +85,23 @@ final class CoverOperation : NSOperation
 		guard let path = album.path else
 		{
 			Logger.alog("[!] No album art path defined.")
-			finished = true
+			isFinished = true
 			return
 		}
 
 		// No mpd server configured, abort
-		guard let serverAsData = NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefWEBServer) else
+		guard let serverAsData = UserDefaults.standard().data(forKey: kNYXPrefWEBServer) else
 		{
 			Logger.alog("[!] No WEB server configured.")
 			generateCover()
-			finished = true
+			isFinished = true
 			return
 		}
-		guard let server = NSKeyedUnarchiver.unarchiveObjectWithData(serverAsData) as! WEBServer? else
+		guard let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! WEBServer? else
 		{
 			Logger.alog("[!] No WEB server configured.")
 			generateCover()
-			finished = true
+			isFinished = true
 			return
 		}
 		// No cover stuff configured, abort
@@ -108,26 +109,26 @@ final class CoverOperation : NSOperation
 		{
 			Logger.alog("[!] No web server configured, can't download covers.")
 			generateCover()
-			finished = true
+			isFinished = true
 			return
 		}
 
-		let allowedCharacters = NSCharacterSet(charactersInString:"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_/.")
+		let allowedCharacters = CharacterSet(charactersIn:"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_/.")
 		var coverURLAsString = path + "/" + server.coverName
-		coverURLAsString = coverURLAsString.stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacters)!
+		coverURLAsString = coverURLAsString.addingPercentEncoding(withAllowedCharacters: allowedCharacters)!
 		let urlAsString = server.hostname + ":\(server.port)" + coverURLAsString
 
-		let request = NSMutableURLRequest(URL:NSURL(string:urlAsString)!)
+		let request = NSMutableURLRequest(url:URL(string:urlAsString)!)
 		request.addValue("image/*", forHTTPHeaderField:"Accept")
 
-		sessionTask = localURLSession.dataTaskWithRequest(request)
+		sessionTask = localURLSession.dataTask(with: request as URLRequest)
 		sessionTask!.resume()
 	}
 
 	// MARK: - Private
 	private func processData()
 	{
-		guard let cover = UIImage(data:incomingData) else
+		guard let cover = UIImage(data:incomingData as Data) else
 		{
 			return
 		}
@@ -139,7 +140,7 @@ final class CoverOperation : NSOperation
 		{
 			return
 		}
-		UIImageJPEGRepresentation(thumbnail, 0.7)?.writeToURL(saveURL, atomically:true)
+		try! UIImageJPEGRepresentation(thumbnail, 0.7)?.write(to: saveURL, options: [.dataWritingAtomic])
 
 		if let cpl = cplBlock
 		{
@@ -149,14 +150,14 @@ final class CoverOperation : NSOperation
 
 	private func generateCover()
 	{
-		let width = UIScreen.mainScreen().bounds.width - 64.0
+		let width = UIScreen.main().bounds.width - 64.0
 		guard let cover = generateCoverForAlbum(album, size:CGSize(width, width)) else {return}
 		guard let thumbnail = cover.imageCroppedToFitSize(cropSize) else {return}
 		guard let saveURL = album.localCoverURL else
 		{
 			return
 		}
-		UIImageJPEGRepresentation(thumbnail, 0.7)?.writeToURL(saveURL, atomically:true)
+		try! UIImageJPEGRepresentation(thumbnail, 0.7)?.write(to: saveURL, options: [.dataWritingAtomic])
 		if let cpl = cplBlock
 		{
 			cpl(cover, thumbnail)
@@ -165,55 +166,55 @@ final class CoverOperation : NSOperation
 }
 
 // MARK: - NSURLSessionDelegate
-extension CoverOperation : NSURLSessionDelegate
+extension CoverOperation : URLSessionDelegate
 {
-	func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void)
+	func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveResponse response: URLResponse, completionHandler: (Foundation.URLSession.ResponseDisposition) -> Void)
 	{
-		if cancelled
+		if isCancelled
 		{
 			Logger.dlog("[+] Cancelled !")
 			sessionTask?.cancel()
-			finished = true
+			isFinished = true
 			return
 		}
 
-		completionHandler(.Allow)
+		completionHandler(.allow)
 	}
 
-	func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData)
+	func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveData data: Data)
 	{
-		if cancelled
+		if isCancelled
 		{
 			Logger.dlog("[+] Cancelled !")
 			sessionTask?.cancel()
-			finished = true
+			isFinished = true
 			return
 		}
-		incomingData.appendData(data)
+		incomingData.append(data)
 	}
 
-	func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?)
+	func URLSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: NSError?)
 	{
-		if cancelled
+		if isCancelled
 		{
 			Logger.dlog("[+] Cancelled !")
 			sessionTask?.cancel()
-			finished = true
+			isFinished = true
 			return
 		}
 
 		if error != nil
 		{
 			Logger.alog("[!] Failed to receive response: \(error?.localizedDescription)")
-			finished = true
+			isFinished = true
 			return
 		}
 		processData()
-		finished = true
+		isFinished = true
 	}
 
-	func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void)
+	func urlSession(_ session: Foundation.URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
 	{
-		completionHandler(.UseCredential, NSURLCredential(forTrust: challenge.protectionSpace.serverTrust!))
+		completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
 	}
 }

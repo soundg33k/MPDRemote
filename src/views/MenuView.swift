@@ -29,8 +29,8 @@ private let __numberOfRows = 3
 
 protocol MenuViewDelegate : class
 {
-	func menuViewShouldClose(menuView: UIView)
-	func menuViewDidClose(menuView: UIView)
+	func menuViewShouldClose(_ menuView: UIView)
+	func menuViewDidClose(_ menuView: UIView)
 }
 
 
@@ -44,7 +44,7 @@ final class MenuView : UIView
 		didSet {
 			if let p = pan
 			{
-				p.enabled = visible
+				p.isEnabled = visible
 			}
 		}
 	}
@@ -63,30 +63,30 @@ final class MenuView : UIView
 	override init(frame: CGRect)
 	{
 		super.init(frame:frame)
-		self.userInteractionEnabled = true
-		self.backgroundColor = UIColor.clearColor()
+		self.isUserInteractionEnabled = true
+		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		_menuMinX = -(frame.size.width + 2.0)
 
 		// Blur effect
-		self.blurEffectView = UIVisualEffectView(effect:UIBlurEffect(style:.Light))
+		self.blurEffectView = UIVisualEffectView(effect:UIBlurEffect(style:.light))
 		self.blurEffectView.frame = self.bounds
-		self.layer.shadowColor = UIColor.fromRGB(0xAAAAAA).CGColor
-		self.layer.shadowPath = UIBezierPath(rect:CGRect(frame.width - 1.5, 4.0, 2.0, frame.height)).CGPath
+		self.layer.shadowColor = UIColor.fromRGB(0xAAAAAA).cgColor
+		self.layer.shadowPath = UIBezierPath(rect:CGRect(frame.width - 1.5, 4.0, 2.0, frame.height)).cgPath
 		self.layer.shadowRadius = 1.0
 		self.layer.shadowOpacity = 1.0
 		self.layer.masksToBounds = false
 		self.addSubview(self.blurEffectView)
 
 		// TableView
-		self.tableView = UITableView(frame:CGRect(CGPointZero, frame.size), style:.Plain)
-		self.tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.menu")
+		self.tableView = UITableView(frame:CGRect(CGPoint.zero, frame.size), style:.plain)
+		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.menu")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
-		self.tableView.backgroundColor = UIColor.clearColor()
+		self.tableView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
-		self.tableView.scrollEnabled = false
-		self.tableView.separatorColor = UIColor.blackColor()
+		self.tableView.isScrollEnabled = false
+		self.tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		self.tableView.separatorInset = UIEdgeInsetsZero
 		self.tableView.layoutMargins = UIEdgeInsetsZero
 		self.blurEffectView.contentView.addSubview(self.tableView)
@@ -94,7 +94,7 @@ final class MenuView : UIView
 		// Pan
 		self.pan = UIPanGestureRecognizer(target:self, action:#selector(MenuView.pan(_:)))
 		self.pan.delegate = self
-		self.pan.enabled = false
+		self.pan.isEnabled = false
 		self.addGestureRecognizer(self.pan)
 
 		self.tableView.reloadData()
@@ -106,14 +106,14 @@ final class MenuView : UIView
 	}
 
 	// MARK: - Gesture
-	func pan(gest: UIPanGestureRecognizer)
+	func pan(_ gest: UIPanGestureRecognizer)
 	{
 		switch (gest.state)
 		{
-			case .Began:
+			case .began:
 				__startX = x
-			case .Changed:
-				let translationX = gest.translationInView(gest.view).x
+			case .changed:
+				let translationX = gest.translation(in: gest.view).x
 				var tmp = __startX + translationX
 				if (tmp > 0.0)
 				{
@@ -124,10 +124,10 @@ final class MenuView : UIView
 					tmp = -width
 				}
 				x = tmp
-			case .Ended:
+			case .ended:
 				let cmp = x
 				let limit = (_menuMinX / 2.6)
-				UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseOut, animations:{
+				UIView.animate(withDuration: 0.35, delay:0.0, options:.curveEaseOut, animations:{
 					self.x = (cmp >= limit) ? 0.0 : self._menuMinX
 				}, completion:{ finished in
 					let v = (cmp >= limit)
@@ -146,17 +146,17 @@ final class MenuView : UIView
 // MARK: - UITableViewDataSource
 extension MenuView : UITableViewDataSource
 {
-	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
 		return __numberOfRows + 1
 	}
 
-	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCellWithIdentifier("io.whine.mpdremote.cell.menu", forIndexPath:indexPath)
-		cell.selectionStyle = .None
-		cell.backgroundColor = UIColor.clearColor()
-		cell.textLabel?.textColor = UIColor.blackColor()
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.menu", for:indexPath)
+		cell.selectionStyle = .none
+		cell.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
+		cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		cell.layoutMargins = UIEdgeInsetsZero
 		var title = ""
 		var selected = false
@@ -164,21 +164,21 @@ extension MenuView : UITableViewDataSource
 		{
 			case 0:
 				title = NYXLocalizedString("lbl_section_home")
-				cell.imageView?.image = UIImage(named:"img-home")
-				selected = (APP_DELEGATE().window!.rootViewController === APP_DELEGATE().homeVC)
+				cell.imageView?.image = #imageLiteral(resourceName: "img-home")
+				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().homeVC)
 			case 1:
 				title = NYXLocalizedString("lbl_section_server")
-				cell.imageView?.image = UIImage(named:"img-server")
-				selected = (APP_DELEGATE().window!.rootViewController === APP_DELEGATE().serverVC)
+				cell.imageView?.image = #imageLiteral(resourceName: "img-server")
+				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().serverVC)
 			case 2:
 				title = NYXLocalizedString("lbl_section_stats")
-				cell.imageView?.image = UIImage(named:"img-stats")
-				selected = (APP_DELEGATE().window!.rootViewController === APP_DELEGATE().statsVC)
+				cell.imageView?.image = #imageLiteral(resourceName: "img-stats")
+				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().statsVC)
 			default:
 				break
 		}
 		cell.textLabel?.text = title
-		cell.textLabel?.font = selected ? UIFont.boldSystemFontOfSize(14.0) : UIFont.systemFontOfSize(14.0)
+		cell.textLabel?.font = selected ? UIFont.boldSystemFont(ofSize: 14.0) : UIFont.systemFont(ofSize: 14.0)
 		return cell
 	}
 }
@@ -186,9 +186,9 @@ extension MenuView : UITableViewDataSource
 // MARK: - UITableViewDelegate
 extension MenuView : UITableViewDelegate
 {
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		tableView.deselectRowAtIndexPath(indexPath, animated:false)
+		tableView.deselectRow(at: indexPath, animated:false)
 		var newTopViewController: UIViewController! = nil
 		switch (indexPath.row)
 		{
@@ -204,15 +204,15 @@ extension MenuView : UITableViewDelegate
 				break
 		}
 		menuDelegate?.menuViewShouldClose(self)
-		APP_DELEGATE().window!.rootViewController = newTopViewController
+		APP_DELEGATE().window?.rootViewController = newTopViewController
 
 		if newTopViewController === APP_DELEGATE().homeVC
 		{
-			APP_DELEGATE().window?.bringSubviewToFront(MiniPlayerView.shared)
+			APP_DELEGATE().window?.bringSubview(toFront: MiniPlayerView.shared)
 		}
 	}
 
-	func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
 	{
 		if indexPath.row == __numberOfRows
 		{
@@ -225,7 +225,7 @@ extension MenuView : UITableViewDelegate
 // MARK: - UIGestureRecognizerDelegate
 extension MenuView : UIGestureRecognizerDelegate
 {
-	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool
 	{
 		if (tableView.panGestureRecognizer === otherGestureRecognizer)
 		{

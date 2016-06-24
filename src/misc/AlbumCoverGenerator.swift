@@ -23,22 +23,22 @@
 import UIKit
 
 
-func generateCoverForAlbum(album: Album, size: CGSize) -> UIImage?
+func generateCoverForAlbum(_ album: Album, size: CGSize) -> UIImage?
 {
 	return _generateCoverFromString(album.name, size: size)
 }
 
-func generateCoverForGenre(genre: Genre, size: CGSize) -> UIImage?
+func generateCoverForGenre(_ genre: Genre, size: CGSize) -> UIImage?
 {
 	return _generateCoverFromString(genre.name, size: size)
 }
 
-func generateCoverForArtist(artist: Artist, size: CGSize) -> UIImage?
+func generateCoverForArtist(_ artist: Artist, size: CGSize) -> UIImage?
 {
 	return _generateCoverFromString(artist.name, size: size)
 }
 
-private func _generateCoverFromString(string: String, size: CGSize) -> UIImage?
+private func _generateCoverFromString(_ string: String, size: CGSize) -> UIImage?
 {
 	let backgroundColor = UIColor.fromRGB(string.djb2())
 	let fontColor = backgroundColor.invertedColor()

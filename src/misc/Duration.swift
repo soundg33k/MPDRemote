@@ -41,7 +41,7 @@ struct Duration
 		return (seconds / 60, seconds % 60)
 	}
 
-	func minutesRepresentationAsString(delim: String = ":") -> String
+	func minutesRepresentationAsString(_ delim: String = ":") -> String
 	{
 		let tmp = minutesRepresentation()
 		return "\(tmp.minutes)\(delim)\(tmp.seconds < 10 ? "0" : "")\(tmp.seconds)"

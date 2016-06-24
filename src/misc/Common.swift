@@ -23,7 +23,7 @@
 import UIKit
 
 /* Ugly AppDelegate shortcut */
-func APP_DELEGATE() -> AppDelegate {return UIApplication.sharedApplication().delegate as! AppDelegate}
+func APP_DELEGATE() -> AppDelegate {return UIApplication.shared().delegate as! AppDelegate}
 
 /* Preferences keys */
 public let kNYXPrefDirectoryCovers = "kNYXPrefDirectoryCovers"
@@ -51,7 +51,7 @@ public let kNYXAppColor = Int(0x660000)
 /* RootVC display type */
 enum DisplayType : Int
 {
-	case Albums
-	case Artists
-	case Genres
+	case albums
+	case artists
+	case genres
 }

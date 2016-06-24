@@ -52,7 +52,7 @@ final class Track
 
 extension Track : CustomStringConvertible
 {
-	var description:String
+	var description: String
 	{
 		return "Title: <\(title)>\nArtist: <\(artist)>\nDuration: <\(duration)>\nTrack: <\(trackNumber)>\nURI: <\(uri)>\nPosition: <\(position)>"
 	}

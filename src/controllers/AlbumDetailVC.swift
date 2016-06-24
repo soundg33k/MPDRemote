@@ -33,7 +33,7 @@ final class AlbumDetailVC : UIViewController
 
 	// MARK: - Private properties
 	// Header view (cover + album name, artist)
-	@IBOutlet private var headerView: HeaderScrollView! = nil
+	@IBOutlet private var headerView: AlbumHeaderView! = nil
 	// Header height constraint
 	@IBOutlet private var headerHeightConstraint: NSLayoutConstraint! = nil
 	// Dummy view for shadow
@@ -55,45 +55,45 @@ final class AlbumDetailVC : UIViewController
 		super.viewDidLoad()
 
 		// Navigation bar title
-		titleView = UILabel(frame:CGRect(CGPointZero, 100.0, 44.0))
+		titleView = UILabel(frame:CGRect(CGPoint.zero, 100.0, 44.0))
 		titleView.numberOfLines = 2
-		titleView.textAlignment = .Center
+		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
 		titleView.textColor = navigationController?.navigationBar.tintColor
 		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
 		navigationItem.titleView = titleView
 
 		// Album header view
-		let coverSize = NSKeyedUnarchiver.unarchiveObjectWithData(NSUserDefaults.standardUserDefaults().dataForKey(kNYXPrefCoverSize)!) as! NSValue
-		headerView.coverWidth = coverSize.CGSizeValue().width
-		headerHeightConstraint.constant = coverSize.CGSizeValue().height
-		headerView.navDelegate = self
+		let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!) as! NSValue
+		headerView.coverSize = coverSize.cgSizeValue()
+		headerHeightConstraint.constant = coverSize.cgSizeValue().height
+		//headerView.navDelegate = self
 
 		// Dummy tableview host, to create a nice shadow effect
-		dummyView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, view.width + 4.0, 4.0)).CGPath
+		dummyView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, view.width + 4.0, 4.0)).cgPath
 		dummyView.layer.shadowRadius = 3.0
 		dummyView.layer.shadowOpacity = 1.0
-		dummyView.layer.shadowColor = UIColor.blackColor().CGColor
+		dummyView.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
 		dummyView.layer.masksToBounds = false
 
 		// Tableview
 		tableView.tableFooterView = UIView()
 
 		// Notif for frame changes
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
 	}
 
-	override func viewWillAppear(animated: Bool)
+	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
 		// Add navbar shadow
 		let navigationBar = navigationController!.navigationBar
-		navigationBar.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).CGPath
+		navigationBar.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).cgPath
 		navigationBar.layer.shadowRadius = 3.0
 		navigationBar.layer.shadowOpacity = 1.0
-		navigationBar.layer.shadowColor = UIColor.blackColor().CGColor
+		navigationBar.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
 		navigationBar.layer.masksToBounds = false
 
 		// Update header
@@ -104,7 +104,7 @@ final class AlbumDetailVC : UIViewController
 		if album.songs == nil
 		{
 			MPDDataSource.shared.getSongsForAlbum(album) {
-				dispatch_async(dispatch_get_main_queue()) {
+				DispatchQueue.main.async {
 					self._updateNavigationTitle()
 					self.tableView.reloadData()
 				}
@@ -117,7 +117,7 @@ final class AlbumDetailVC : UIViewController
 		}
 	}
 
-	override func viewWillDisappear(animated: Bool)
+	override func viewWillDisappear(_ animated: Bool)
 	{
 		super.viewWillDisappear(animated)
 
@@ -130,21 +130,21 @@ final class AlbumDetailVC : UIViewController
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
 	{
-		return .Portrait
+		return .portrait
 	}
 
 	override func preferredStatusBarStyle() -> UIStatusBarStyle
 	{
-		return .LightContent
+		return .lightContent
 	}
 
 	// MARK: - Notifications
-	func playingTrackChangedNotification(aNotification: NSNotification?)
+	func playingTrackChangedNotification(_ aNotification: Notification?)
 	{
 		tableView.reloadData()
 	}
 
-	func playerStatusChangedNotification(aNotification: NSNotification?)
+	func playerStatusChangedNotification(_ aNotification: Notification?)
 	{
 		tableView.reloadData()
 	}
@@ -191,13 +191,13 @@ final class AlbumDetailVC : UIViewController
 		let album = _currentAlbum()
 
 		// Update header view
-		self.headerView.mainView.updateHeaderWithAlbum(album)
+		self.headerView.updateHeaderWithAlbum(album)
 
 		// Don't have all the metadatas
 		if album.artist.length == 0
 		{
 			MPDDataSource.shared.getMetadatasForAlbum(album) {
-				dispatch_async(dispatch_get_main_queue()) {
+				DispatchQueue.main.async {
 					self._updateHeader()
 				}
 			}
@@ -212,7 +212,7 @@ final class AlbumDetailVC : UIViewController
 			let total = tracks.reduce(Duration(seconds:0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
 			let attrs = NSMutableAttributedString(string:"\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
-			attrs.appendAttributedString(NSAttributedString(string:"\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
+			attrs.append(AttributedString(string:"\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
 			titleView.attributedText = attrs
 		}
 	}
@@ -221,7 +221,7 @@ final class AlbumDetailVC : UIViewController
 // MARK: - UITableViewDataSource
 extension AlbumDetailVC : UITableViewDataSource
 {
-	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
 		if let tracks = _currentAlbum().songs
 		{
@@ -230,9 +230,9 @@ extension AlbumDetailVC : UITableViewDataSource
 		return 0
 	}
 
-	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCellWithIdentifier("io.whine.mpdremote.cell.track", forIndexPath:indexPath) as! TrackTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.track", for:indexPath) as! TrackTableViewCell
 
 		if let tracks = _currentAlbum().songs
 		{
@@ -242,7 +242,7 @@ extension AlbumDetailVC : UITableViewDataSource
 				cell.lblTitle.text = ""
 				cell.lblTrack.text = ""
 				cell.lblDuration.text = ""
-				cell.selectionStyle = .None
+				cell.selectionStyle = .none
 				return cell
 			}
 
@@ -258,13 +258,13 @@ extension AlbumDetailVC : UITableViewDataSource
 			{
 				if currentPlayingTrack == track
 				{
-					if MPDPlayer.shared.status == .Paused
+					if MPDPlayer.shared.status == .paused
 					{
-						cell.ivPlayback.image = UIImage(named:"btn-play")
+						cell.ivPlayback.image = #imageLiteral(resourceName: "btn-play")
 					}
 					else
 					{
-						cell.ivPlayback.image = UIImage(named:"btn-pause")
+						cell.ivPlayback.image = #imageLiteral(resourceName: "btn-pause")
 					}
 					cell.ivPlayback.alpha = 1.0
 					cell.lblTrack.alpha = 0.0
@@ -301,9 +301,9 @@ extension AlbumDetailVC : UITableViewDataSource
 // MARK: - UITableViewDelegate
 extension AlbumDetailVC : UITableViewDelegate
 {
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		tableView.deselectRowAtIndexPath(indexPath, animated:true)
+		tableView.deselectRow(at: indexPath, animated:true)
 
 		// Dummy cell
 		guard let tracks = _currentAlbum().songs else {return}
@@ -318,16 +318,14 @@ extension AlbumDetailVC : UITableViewDelegate
 			let selectedTrack = tracks[indexPath.row]
 			if selectedTrack == currentPlayingTrack
 			{
-				let cell = tableView.cellForRowAtIndexPath(indexPath) as? TrackTableViewCell
-				if MPDPlayer.shared.status == .Playing
+				let cell = tableView.cellForRow(at: indexPath) as? TrackTableViewCell
+				if MPDPlayer.shared.status == .playing
 				{
-					let img = UIImage(named:"btn-play")
-					cell?.ivPlayback.image = img
+					cell?.ivPlayback.image = #imageLiteral(resourceName: "btn-play")
 				}
 				else
 				{
-					let img = UIImage(named:"btn-pause")
-					cell?.ivPlayback.image = img
+					cell?.ivPlayback.image = #imageLiteral(resourceName: "btn-pause")
 				}
 				MPDPlayer.shared.togglePause()
 				return
@@ -335,12 +333,12 @@ extension AlbumDetailVC : UITableViewDelegate
 		}
 
 		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		MPDPlayer.shared.playTracks(b, random:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRandom), loop:NSUserDefaults.standardUserDefaults().boolForKey(kNYXPrefRepeat))
+		MPDPlayer.shared.playTracks(b, random:UserDefaults.standard().bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard().bool(forKey: kNYXPrefRepeat))
 	}
 }
 
 // MARK: - HeaderScrollViewDelegate
-extension AlbumDetailVC : HeaderScrollViewDelegate
+/*extension AlbumDetailVC : HeaderScrollViewDelegate
 {
 	func requestNextAlbum() -> Album?
 	{
@@ -362,7 +360,7 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 			if album.songs == nil
 			{
 				MPDDataSource.shared.getSongsForAlbum(album) {
-					dispatch_async(dispatch_get_main_queue()) {
+					DispatchQueue.main.async {
 						self._updateHeader()
 						self._updateNavigationTitle()
 						self.tableView.reloadData()
@@ -393,7 +391,7 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 			if album.songs == nil
 			{
 				MPDDataSource.shared.getSongsForAlbum(album) {
-					dispatch_async(dispatch_get_main_queue()) {
+					DispatchQueue.main.async {
 						self._updateHeader()
 						self._updateNavigationTitle()
 						self.tableView.reloadData()
@@ -413,4 +411,4 @@ extension AlbumDetailVC : HeaderScrollViewDelegate
 		}
 		return false
 	}
-}
+}*/
