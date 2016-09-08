@@ -1,6 +1,6 @@
 **MPDRemote** is an iOS application to control a [mpd](http://www.musicpd.org/) server. It is written in Swift.
 
-![screenshot1](https://mpdremote.whine.io/images/sc.jpg)
+![screenshot1](https://static.whine.fr/images/2016/mpdremote1.jpg)
 
 There's no persistence layer apart from cover caching.
 
