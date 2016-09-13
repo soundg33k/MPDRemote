@@ -173,10 +173,10 @@ final class RootVC : MenuVC
 			}
 			else
 			{
-				/*Logger.alog("[+] No MPD server registered yet.")
+				Logger.alog("[+] No MPD server registered yet.")
 				let serverVC = APP_DELEGATE().serverVC
-				APP_DELEGATE().window?.rootViewController = serverVC*/
-				let server = MPDServer.def()
+				APP_DELEGATE().window?.rootViewController = serverVC
+				/*let server = MPDServer.def()
 				MPDDataSource.shared.server = server
 				_ = MPDDataSource.shared.initialize()
 				if _displayType != .albums
@@ -193,7 +193,7 @@ final class RootVC : MenuVC
 
 				// Player
 				MPDPlayer.shared.server = server
-				_ = MPDPlayer.shared.initialize()
+				_ = MPDPlayer.shared.initialize()*/
 			}
 		}
 

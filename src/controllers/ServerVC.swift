@@ -173,7 +173,6 @@ final class ServerVC : MenuTVC
 			self.mpdServer = mpdServer
 			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: mpdServer)
 			UserDefaults.standard.set(serverAsData, forKey:kNYXPrefMPDServer)
-			UserDefaults.standard.set(76, forKey: "blabla")
 		}
 		else
 		{

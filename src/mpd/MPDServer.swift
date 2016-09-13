@@ -23,7 +23,7 @@
 import Foundation
 
 
-final class MPDServer : NSCoding
+final class MPDServer : NSObject, NSCoding
 {
 	// MARK: - Properties
 	// Server name
