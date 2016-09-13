@@ -43,12 +43,13 @@ final class MPDDataSource
 	// Serial queue for the connection
 	private let _queue: DispatchQueue
 	// Timer (1sec)
-	private var _timer: DispatchSource!
+	private var _timer: DispatchSourceTimer!
 
 	// MARK: - Initializers
 	init()
 	{
-		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.ds", attributes:[.serial, .qosDefault], target: nil)
+		self._queue = DispatchQueue(label:"io.whine.mpdremote.queue.ds", qos:.default, attributes:[], autoreleaseFrequency:.inherit, target: nil)
+		//self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.ds", attributes:[.serial, .qosDefault], target: nil)
 	}
 
 	// MARK: - Public
@@ -85,7 +86,7 @@ final class MPDDataSource
 		return ret
 	}
 
-	func getListForDisplayType(_ displayType: DisplayType, callback: () -> Void)
+	func getListForDisplayType(_ displayType: DisplayType, callback: @escaping () -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -98,17 +99,17 @@ final class MPDDataSource
 			switch (displayType)
 			{
 				case .albums:
-					self.albums = (list as! [Album]).sorted(isOrderedBefore: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					self.albums = (list as! [Album]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 				case .genres:
-					self.genres = (list as! [Genre]).sorted(isOrderedBefore: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					self.genres = (list as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 				case .artists:
-					self.artists = (list as! [Artist]).sorted(isOrderedBefore: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					self.artists = (list as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 			}
 			callback()
 		}
 	}
 
-	func getAlbumForGenre(_ genre: Genre, callback: () -> Void)
+	func getAlbumForGenre(_ genre: Genre, callback: @escaping () -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -124,7 +125,7 @@ final class MPDDataSource
 		}
 	}
 
-	func getAlbumsForGenre(_ genre: Genre, callback: () -> Void)
+	func getAlbumsForGenre(_ genre: Genre, callback: @escaping () -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -138,7 +139,7 @@ final class MPDDataSource
 		}
 	}
 
-	func getAlbumsForArtist(_ artist: Artist, callback: () -> Void)
+	func getAlbumsForArtist(_ artist: Artist, callback: @escaping () -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -148,12 +149,12 @@ final class MPDDataSource
 		_queue.async {
 			let list = self._mpdConnection.getAlbumsForArtist(artist)
 			let set = CharacterSet(charactersIn:".?!:;/+=-*'\"")
-			artist.albums = list.sorted(isOrderedBefore: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+			artist.albums = list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 			callback()
 		}
 	}
 
-	func getArtistsForGenre(_ genre: Genre, callback: ([Artist]) -> Void)
+	func getArtistsForGenre(_ genre: Genre, callback: @escaping ([Artist]) -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -163,11 +164,11 @@ final class MPDDataSource
 		_queue.async {
 			let list = self._mpdConnection.getArtistsForGenre(genre)
 			let set = CharacterSet(charactersIn:".?!:;/+=-*'\"")
-			callback(list.sorted(isOrderedBefore: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)}))
+			callback(list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)}))
 		}
 	}
 
-	func getPathForAlbum(_ album: Album, callback: () -> Void)
+	func getPathForAlbum(_ album: Album, callback: @escaping () -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -180,7 +181,7 @@ final class MPDDataSource
 		}
 	}
 
-	func getSongsForAlbum(_ album: Album, callback: () -> Void)
+	func getSongsForAlbum(_ album: Album, callback: @escaping () -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -193,7 +194,7 @@ final class MPDDataSource
 		}
 	}
 
-	func getSongsForAlbums(_ albums: [Album], callback: () -> Void)
+	func getSongsForAlbums(_ albums: [Album], callback: @escaping () -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -209,7 +210,7 @@ final class MPDDataSource
 		}
 	}
 
-	func getMetadatasForAlbum(_ album: Album, callback: () -> Void)
+	func getMetadatasForAlbum(_ album: Album, callback: @escaping () -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -234,7 +235,7 @@ final class MPDDataSource
 		}
 	}
 
-	func getStats(_ callback: ([String : String]) -> Void)
+	func getStats(_ callback: @escaping ([String : String]) -> Void)
 	{
 		if _mpdConnection == nil || !_mpdConnection.connected
 		{
@@ -250,7 +251,7 @@ final class MPDDataSource
 	// MARK: - Private
 	private func _startTimer(_ interval: Int)
 	{
-		_timer = DispatchSource.timer(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue) /*Migrator FIXME: Use DispatchSourceTimer to avoid the cast*/ as! DispatchSource
+		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
 		_timer.scheduleRepeating(deadline: .now(), interval:.seconds(interval))
 		_timer.setEventHandler {
 			self._playerStatus()

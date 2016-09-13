@@ -41,12 +41,12 @@ final class CoverOperation : Operation
 	}
 
 	// Downloaded data
-	private let incomingData = NSMutableData()
+	let incomingData = NSMutableData()
 	// Task
-	private var sessionTask: URLSessionTask?
+	var sessionTask: URLSessionTask?
 	// Session configuration
 	private var localURLSessionConfiguration: URLSessionConfiguration {
-		let cfg = URLSessionConfiguration.default()
+		let cfg = URLSessionConfiguration.default
 		cfg.httpShouldUsePipelining = true
 		return cfg
 	}
@@ -90,7 +90,7 @@ final class CoverOperation : Operation
 		}
 
 		// No mpd server configured, abort
-		guard let serverAsData = UserDefaults.standard().data(forKey: kNYXPrefWEBServer) else
+		guard let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
 		{
 			Logger.alog("[!] No WEB server configured.")
 			generateCover()
@@ -126,7 +126,7 @@ final class CoverOperation : Operation
 	}
 
 	// MARK: - Private
-	private func processData()
+	func processData()
 	{
 		guard let cover = UIImage(data:incomingData as Data) else
 		{
@@ -140,7 +140,7 @@ final class CoverOperation : Operation
 		{
 			return
 		}
-		try! UIImageJPEGRepresentation(thumbnail, 0.7)?.write(to: saveURL, options: [.dataWritingAtomic])
+		try! UIImageJPEGRepresentation(thumbnail, 0.7)?.write(to: saveURL, options: [.atomicWrite])
 
 		if let cpl = cplBlock
 		{
@@ -150,14 +150,14 @@ final class CoverOperation : Operation
 
 	private func generateCover()
 	{
-		let width = UIScreen.main().bounds.width - 64.0
+		let width = UIScreen.main.bounds.width - 64.0
 		guard let cover = generateCoverForAlbum(album, size:CGSize(width, width)) else {return}
 		guard let thumbnail = cover.imageCroppedToFitSize(cropSize) else {return}
 		guard let saveURL = album.localCoverURL else
 		{
 			return
 		}
-		try! UIImageJPEGRepresentation(thumbnail, 0.7)?.write(to: saveURL, options: [.dataWritingAtomic])
+		try! UIImageJPEGRepresentation(thumbnail, 0.7)?.write(to: saveURL, options: [.atomicWrite])
 		if let cpl = cplBlock
 		{
 			cpl(cover, thumbnail)
@@ -213,7 +213,7 @@ extension CoverOperation : URLSessionDelegate
 		isFinished = true
 	}
 
-	func urlSession(_ session: Foundation.URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+	private func urlSession(_ session: Foundation.URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
 	{
 		completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
 	}

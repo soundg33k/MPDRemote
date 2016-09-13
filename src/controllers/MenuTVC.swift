@@ -34,7 +34,7 @@ class MenuTVC : UITableViewController
 	// Menu
 	private(set) var menuView: MenuView! = nil
 	// Screen edge gesture
-	private var panGestureMenu: UIScreenEdgePanGestureRecognizer! = nil
+	private(set) var panGestureMenu: UIScreenEdgePanGestureRecognizer! = nil
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -63,12 +63,12 @@ class MenuTVC : UITableViewController
 		view.addGestureRecognizer(panGestureMenu)
 	}
 
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
 		return .portrait
 	}
 
-	override func preferredStatusBarStyle() -> UIStatusBarStyle
+	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return .lightContent
 	}
@@ -149,7 +149,7 @@ extension MenuTVC : UIGestureRecognizerDelegate
 {
 	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool
 	{
-		if (gestureRecognizer === panGestureMenu)
+		if (gestureRecognizer === self.panGestureMenu)
 		{
 			if (menuView.visible)
 			{

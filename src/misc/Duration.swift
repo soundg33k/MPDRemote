@@ -99,7 +99,7 @@ extension Duration : CustomStringConvertible
 	}
 }
 
-extension Duration : IntegerLiteralConvertible
+extension Duration : ExpressibleByIntegerLiteral
 {
 	init(integerLiteral value: IntegerLiteralType)
 	{

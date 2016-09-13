@@ -64,9 +64,9 @@ final class AlbumDetailVC : UIViewController
 		navigationItem.titleView = titleView
 
 		// Album header view
-		let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!) as! NSValue
-		headerView.coverSize = coverSize.cgSizeValue()
-		headerHeightConstraint.constant = coverSize.cgSizeValue().height
+		let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!) as! NSValue
+		headerView.coverSize = coverSize.cgSizeValue
+		headerHeightConstraint.constant = coverSize.cgSizeValue.height
 		//headerView.navDelegate = self
 
 		// Dummy tableview host, to create a nice shadow effect
@@ -80,8 +80,8 @@ final class AlbumDetailVC : UIViewController
 		tableView.tableFooterView = UIView()
 
 		// Notif for frame changes
-		NotificationCenter.default().addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
-		NotificationCenter.default().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -128,12 +128,12 @@ final class AlbumDetailVC : UIViewController
 		navigationBar.layer.shadowOpacity = 0.0
 	}
 
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
 		return .portrait
 	}
 
-	override func preferredStatusBarStyle() -> UIStatusBarStyle
+	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return .lightContent
 	}
@@ -168,7 +168,7 @@ final class AlbumDetailVC : UIViewController
 		return nil
 	}
 
-	private func _currentAlbum() -> Album
+	func _currentAlbum() -> Album
 	{
 		return albums[selectedIndex]
 	}
@@ -212,7 +212,7 @@ final class AlbumDetailVC : UIViewController
 			let total = tracks.reduce(Duration(seconds:0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
 			let attrs = NSMutableAttributedString(string:"\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
-			attrs.append(AttributedString(string:"\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
+			attrs.append(NSAttributedString(string:"\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
 			titleView.attributedText = attrs
 		}
 	}
@@ -333,7 +333,7 @@ extension AlbumDetailVC : UITableViewDelegate
 		}
 
 		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		MPDPlayer.shared.playTracks(b, random:UserDefaults.standard().bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard().bool(forKey: kNYXPrefRepeat))
+		MPDPlayer.shared.playTracks(b, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 	}
 }
 

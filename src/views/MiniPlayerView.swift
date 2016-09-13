@@ -30,7 +30,7 @@ final class MiniPlayerView : UIView, PTappable
 {
 	// MARK: - Public properties
 	// Singletion instance
-	static let shared = MiniPlayerView(frame:CGRect(0.0, (UIApplication.shared().keyWindow?.frame.height)! + playerViewHeight, (UIApplication.shared().keyWindow?.frame.width)!, playerViewHeight))
+	static let shared = MiniPlayerView(frame:CGRect(0.0, (UIApplication.shared.keyWindow?.frame.height)! + playerViewHeight, (UIApplication.shared.keyWindow?.frame.width)!, playerViewHeight))
 	// Visible flag
 	private(set) var visible = false
 	// Player should stay hidden, regardless of playback status
@@ -115,8 +115,8 @@ final class MiniPlayerView : UIView, PTappable
 		// Single tap to request full player view
 		self.makeTappable()
 
-		NotificationCenter.default().addObserver(self, selector:#selector(playingTrackNotification(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
-		NotificationCenter.default().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil)
 
 		APP_DELEGATE().window?.addSubview(self)
 	}
@@ -133,20 +133,20 @@ final class MiniPlayerView : UIView, PTappable
 		lblArtist.text = track.artist
 
 		guard let url = album.localCoverURL else {return}
-		if let image = UIImage(contentsOfFile:url.path!)
+		if let image = UIImage(contentsOfFile:url.path)
 		{
 			let x = KawaiiColors(image:image)
 			x.analyze()
 			progressView.backgroundColor = x.dominantColor
-			imageView.image = image.imageScaledToFitSize(CGSize(imageView.width * UIScreen.main().scale, imageView.height * UIScreen.main().scale))
+			imageView.image = image.imageScaledToFitSize(CGSize(imageView.width * UIScreen.main.scale, imageView.height * UIScreen.main.scale))
 		}
 		else
 		{
-			let sizeAsData = UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!
+			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				let op = CoverOperation(album:album, cropSize:cropSize.cgSizeValue())
+				let op = CoverOperation(album:album, cropSize:cropSize.cgSizeValue)
 				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						self.setInfoFromTrack(track, ofAlbum:album)
@@ -157,7 +157,7 @@ final class MiniPlayerView : UIView, PTappable
 			else
 			{
 				MPDDataSource.shared.getPathForAlbum(album) {
-					let op = CoverOperation(album:album, cropSize:cropSize.cgSizeValue())
+					let op = CoverOperation(album:album, cropSize:cropSize.cgSizeValue)
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.setInfoFromTrack(track, ofAlbum:album)
@@ -171,25 +171,25 @@ final class MiniPlayerView : UIView, PTappable
 
 	func show(_ animated: Bool = true)
 	{
-		NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewWillShow), object:nil)
-		let w = UIApplication.shared().keyWindow!
+		NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewWillShow), object:nil)
+		let w = UIApplication.shared.keyWindow!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:UIViewAnimationOptions(), animations:{
 			self.y = w.frame.height - self.height
 		}, completion: { finished in
 			self.visible = true
-			NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewDidShow), object:nil)
+			NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewDidShow), object:nil)
 		})
 	}
 
 	func hide(_ animated: Bool = true)
 	{
-		NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewWillHide), object:nil)
-		let w = UIApplication.shared().keyWindow!
+		NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewWillHide), object:nil)
+		let w = UIApplication.shared.keyWindow!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:UIViewAnimationOptions(), animations:{
 			self.y = w.frame.height + self.height
 		}, completion: { finished in
 			self.visible = false
-			NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewDidHide), object:nil)
+			NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewDidHide), object:nil)
 		})
 	}
 
@@ -212,7 +212,7 @@ final class MiniPlayerView : UIView, PTappable
 	// MARK: - PTappable
 	func didTap()
 	{
-		NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerShouldExpand), object:nil)
+		NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerShouldExpand), object:nil)
 	}
 
 	// MARK: - Notifications

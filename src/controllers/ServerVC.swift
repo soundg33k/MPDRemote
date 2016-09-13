@@ -27,19 +27,19 @@ final class ServerVC : MenuTVC
 {
 	// MARK: - Private properties
 	// MPD Server name
-	@IBOutlet private var tfMPDName: UITextField!
+	@IBOutlet var tfMPDName: UITextField!
 	// MPD Server hostname
-	@IBOutlet private var tfMPDHostname: UITextField!
+	@IBOutlet var tfMPDHostname: UITextField!
 	// MPD Server port
-	@IBOutlet private var tfMPDPort: UITextField!
+	@IBOutlet var tfMPDPort: UITextField!
 	// MPD Server password
-	@IBOutlet private var tfMPDPassword: UITextField!
+	@IBOutlet var tfMPDPassword: UITextField!
 	// WEB Server hostname
-	@IBOutlet private var tfWEBHostname: UITextField!
+	@IBOutlet var tfWEBHostname: UITextField!
 	// WEB Server port
-	@IBOutlet private var tfWEBPort: UITextField!
+	@IBOutlet var tfWEBPort: UITextField!
 	// Cover name
-	@IBOutlet private var tfWEBCoverName: UITextField!
+	@IBOutlet var tfWEBCoverName: UITextField!
 	// MPD Server
 	private var mpdServer: MPDServer?
 	// WEB Server for covers
@@ -49,7 +49,7 @@ final class ServerVC : MenuTVC
 	// Zeroconf browser
 	private var serviceBrowser: NetServiceBrowser!
 	// List of ZC servers found
-	private var zcList = [NetService]()
+	var zcList = [NetService]()
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -68,15 +68,15 @@ final class ServerVC : MenuTVC
 		navigationItem.titleView = titleView
 
 		// Keyboard appearance notifications
-		NotificationCenter.default().addObserver(self, selector:#selector(keyboardDidShowNotification(_:)), name:NSNotification.Name.UIKeyboardDidShow, object:nil)
-		NotificationCenter.default().addObserver(self, selector:#selector(keyboardDidHideNotification(_:)), name:NSNotification.Name.UIKeyboardDidHide, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(keyboardDidShowNotification(_:)), name:NSNotification.Name.UIKeyboardDidShow, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(keyboardDidHideNotification(_:)), name:NSNotification.Name.UIKeyboardDidHide, object:nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
-		if let mpdServerAsData = UserDefaults.standard().data(forKey: kNYXPrefMPDServer)
+		if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 		{
 			if let server = NSKeyedUnarchiver.unarchiveObject(with: mpdServerAsData) as! MPDServer?
 			{
@@ -92,7 +92,7 @@ final class ServerVC : MenuTVC
 			serviceBrowser.searchForServices(ofType: "_mpd._tcp.", inDomain:"")
 		}
 
-		if let webServerAsData = UserDefaults.standard().data(forKey: kNYXPrefWEBServer)
+		if let webServerAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer)
 		{
 			if let server = NSKeyedUnarchiver.unarchiveObject(with: webServerAsData) as! WEBServer?
 			{
@@ -119,12 +119,12 @@ final class ServerVC : MenuTVC
 		}
 	}
 
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
 		return .portrait
 	}
 
-	override func preferredStatusBarStyle() -> UIStatusBarStyle
+	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return .lightContent
 	}
@@ -136,13 +136,13 @@ final class ServerVC : MenuTVC
 
 		// Check MPD server name (optional)
 		var serverName = NYXLocalizedString("lbl_server_defaultname")
-		if let strName = tfMPDName.text where strName.length > 0
+		if let strName = tfMPDName.text , strName.length > 0
 		{
 			serverName = strName
 		}
 
 		// Check MPD hostname / ip
-		guard let ip = tfMPDHostname.text where ip.length > 0 else
+		guard let ip = tfMPDHostname.text , ip.length > 0 else
 		{
 			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle:.alert)
 			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.cancel) { (action) in
@@ -154,14 +154,14 @@ final class ServerVC : MenuTVC
 
 		// Check MPD port
 		var port = UInt16(6600)
-		if let strPort = tfMPDPort.text, p = UInt16(strPort)
+		if let strPort = tfMPDPort.text, let p = UInt16(strPort)
 		{
 			port = p
 		}
 
 		// Check MPD password (optional)
 		var password = ""
-		if let strPassword = tfMPDPassword.text where strPassword.length > 0
+		if let strPassword = tfMPDPassword.text , strPassword.length > 0
 		{
 			password = strPassword
 		}
@@ -172,12 +172,12 @@ final class ServerVC : MenuTVC
 		{
 			self.mpdServer = mpdServer
 			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: mpdServer)
-			UserDefaults.standard().set(serverAsData, forKey:kNYXPrefMPDServer)
-			UserDefaults.standard().set(76, forKey: "blabla")
+			UserDefaults.standard.set(serverAsData, forKey:kNYXPrefMPDServer)
+			UserDefaults.standard.set(76, forKey: "blabla")
 		}
 		else
 		{
-			UserDefaults.standard().removeObject(forKey: kNYXPrefMPDServer)
+			UserDefaults.standard.removeObject(forKey: kNYXPrefMPDServer)
 			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle:.alert)
 			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.cancel) { (action) in
 			}
@@ -187,31 +187,31 @@ final class ServerVC : MenuTVC
 		cnn.disconnect()
 
 		// Check web URL (optional)
-		if let strURL = tfWEBHostname.text where strURL.length > 0
+		if let strURL = tfWEBHostname.text , strURL.length > 0
 		{
 			var port = UInt16(80)
-			if let strPort = tfWEBPort.text, p = UInt16(strPort)
+			if let strPort = tfWEBPort.text, let p = UInt16(strPort)
 			{
 				port = p
 			}
 
 			let webServer = WEBServer(hostname:strURL, port:port)
 			var coverName = "cover.jpg"
-			if let cn = tfWEBCoverName.text where cn.length > 0
+			if let cn = tfWEBCoverName.text , cn.length > 0
 			{
 				coverName = cn
 			}
 			webServer.coverName = coverName
 			self.webServer = webServer
 			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: webServer)
-			UserDefaults.standard().set(serverAsData, forKey:kNYXPrefWEBServer)
+			UserDefaults.standard.set(serverAsData, forKey:kNYXPrefWEBServer)
 		}
 		else
 		{
-			UserDefaults.standard().removeObject(forKey: kNYXPrefWEBServer)
+			UserDefaults.standard.removeObject(forKey: kNYXPrefWEBServer)
 		}
 
-		UserDefaults.standard().synchronize()
+		UserDefaults.standard.synchronize()
 	}
 
 	// MARK: - Notifications
@@ -224,7 +224,7 @@ final class ServerVC : MenuTVC
 
 		let info = (aNotification as NSNotification).userInfo!
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
-		let rawFrame = value.cgRectValue
+		let rawFrame = (value as AnyObject).cgRectValue
 		let keyboardFrame = view.convert(rawFrame!, from:nil)
 		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height - keyboardFrame.height)
 		_keyboardVisible = true
@@ -239,7 +239,7 @@ final class ServerVC : MenuTVC
 
 		let info = (aNotification as NSNotification).userInfo!
 		let value = info[UIKeyboardFrameEndUserInfoKey]!
-		let rawFrame = value.cgRectValue
+		let rawFrame = (value as AnyObject).cgRectValue
 		let keyboardFrame = view.convert(rawFrame!, from:nil)
 		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height + keyboardFrame.height)
 		_keyboardVisible = false
@@ -300,9 +300,9 @@ extension ServerVC
 			alertController.addAction(cancelAction)
 			let okAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.destructive) { (action) in
 				let fileManager = FileManager()
-				let cachesDirectoryURL = fileManager.urlsForDirectory(.cachesDirectory, inDomains:.userDomainMask).last!
-				let coversDirectoryName = UserDefaults.standard().string(forKey: kNYXPrefDirectoryCovers)!
-				let coversDirectoryURL = try! cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
+				let cachesDirectoryURL = fileManager.urls(for:.cachesDirectory, in:.userDomainMask).last!
+				let coversDirectoryName = UserDefaults.standard.string(forKey: kNYXPrefDirectoryCovers)!
+				let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
 				
 				do
 				{
@@ -402,31 +402,33 @@ extension ServerVC : NetServiceDelegate
 		var tmpIP = ""
 		for addressBytes in addresses where found == false
 		{
-			let inetAddressPointer = UnsafePointer<sockaddr_in>((addressBytes as NSData).bytes)
+			let inetAddressPointer = (addressBytes as NSData).bytes.assumingMemoryBound(to: sockaddr_in.self)
+			//let inetAddressPointer = UnsafePointer<sockaddr_in>((addressBytes as NSData).bytes)
 			var inetAddress = inetAddressPointer.pointee
 			if inetAddress.sin_family == sa_family_t(AF_INET)
 			{
-				let ipStringBuffer = UnsafeMutablePointer<Int8>(allocatingCapacity: Int(INET6_ADDRSTRLEN))
+				let ipStringBuffer = UnsafeMutablePointer<Int8>.allocate(capacity: Int(INET6_ADDRSTRLEN))
 				let ipString = inet_ntop(Int32(inetAddress.sin_family), &inetAddress.sin_addr, ipStringBuffer, UInt32(INET6_ADDRSTRLEN))
 				if let ip = String(validatingUTF8: ipString!)
 				{
 					tmpIP = ip
 					found = true
 				}
-				ipStringBuffer.deallocateCapacity(Int(INET6_ADDRSTRLEN))
+				ipStringBuffer.deallocate(capacity: Int(INET6_ADDRSTRLEN))
 			}
 			else if inetAddress.sin_family == sa_family_t(AF_INET6)
 			{
-				let inetAddressPointer6 = UnsafePointer<sockaddr_in6>((addressBytes as NSData).bytes)
+				let inetAddressPointer6 = (addressBytes as NSData).bytes.assumingMemoryBound(to: sockaddr_in6.self)
+				//let inetAddressPointer6 = UnsafePointer<sockaddr_in6>((addressBytes as NSData).bytes)
 				var inetAddress6 = inetAddressPointer6.pointee
-				let ipStringBuffer = UnsafeMutablePointer<Int8>(allocatingCapacity: Int(INET6_ADDRSTRLEN))
+				let ipStringBuffer = UnsafeMutablePointer<Int8>.allocate(capacity: Int(INET6_ADDRSTRLEN))
 				let ipString = inet_ntop(Int32(inetAddress6.sin6_family), &inetAddress6.sin6_addr, ipStringBuffer, UInt32(INET6_ADDRSTRLEN))
 				if let ip = String(validatingUTF8: ipString!)
 				{
 					tmpIP = ip
 					found = true
 				}
-				ipStringBuffer.deallocateCapacity(Int(INET6_ADDRSTRLEN))
+				ipStringBuffer.deallocate(capacity: Int(INET6_ADDRSTRLEN))
 			}
 
 			if found

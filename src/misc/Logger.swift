@@ -25,15 +25,15 @@ import Foundation
 
 final class Logger
 {
-	class func dlog(_ items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = #file, _ function: String = #function, _ line: Int = #line)
+	class func dlog(items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = #file, _ function: String = #function, _ line: Int = #line)
 	{
 #if NYX_DEBUG
-		let stringItem = items.map{"\($0)"}.joined(separator: separator)
-		Swift.print("[\(function)]:\(line) \(stringItem)", terminator:terminator)
+			let stringItem = items.map{"\($0)"}.joined(separator: separator)
+			Swift.print("[\(function)]:\(line) \(stringItem)", terminator:terminator)
 #endif
 	}
 
-	class func alog(_ items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = #file, _ function: String = #function, _ line: Int = #line)
+	class func alog(items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = #file, _ function: String = #function, _ line: Int = #line)
 	{
 		let stringItem = items.map{"\($0)"}.joined(separator: separator)
 		Swift.print("\(stringItem)", terminator:terminator)

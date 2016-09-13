@@ -42,9 +42,9 @@ final class Album
 	var uuid: UUID
 	// Local URL for the cover
 	lazy var localCoverURL: URL? = {
-		guard let cachesDirectoryURL = FileManager().urlsForDirectory(.cachesDirectory, inDomains:.userDomainMask).last else {return nil}
-		guard let coverDirectoryPath = UserDefaults.standard().string(forKey: kNYXPrefDirectoryCovers) else {return nil}
-		return try! cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory:true).appendingPathComponent(self.name.md5() + ".jpg")
+		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in:.userDomainMask).last else {return nil}
+		guard let coverDirectoryPath = UserDefaults.standard.string(forKey: kNYXPrefDirectoryCovers) else {return nil}
+		return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory:true).appendingPathComponent(self.name.md5() + ".jpg")
 	}()
 
 	// MARK: - Initializers

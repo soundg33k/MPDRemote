@@ -93,7 +93,7 @@ extension UIImage
 
 		let context = CGContext(data: nil, width: Int(width), height: Int(width), bitsPerComponent: cgImage.bitsPerComponent, bytesPerRow: cgImage.bytesPerRow, space: cgImage.colorSpace!, bitmapInfo: cgImage.bitmapInfo.rawValue)
 		context!.interpolationQuality = .high
-		context?.draw(in: CGRect(CGPoint.zero, width, height), image: cgImage)
+		context?.draw(cgImage, in: CGRect(CGPoint.zero, width, height))
 
 		if let scaledImageRef = context?.makeImage()
 		{
@@ -144,8 +144,9 @@ extension UIImage
 
 	class func loadFromURL(_ URL: Foundation.URL) -> UIImage?
 	{
-		guard let imageSource = CGImageSourceCreateWithURL(URL, nil) else {return nil}
-		guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, [kCGImageSourceShouldCache as String : true]) else {return nil}
+		guard let imageSource = CGImageSourceCreateWithURL(URL as CFURL, nil) else {return nil}
+		let props = [kCGImageSourceShouldCache as String : true]
+		guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, props as CFDictionary?) else {return nil}
 		let image = UIImage(cgImage:imageRef)
 		return image
 	}
@@ -157,8 +158,8 @@ extension UIImage
 		paragraphStyle.lineBreakMode = .byWordWrapping
 		paragraphStyle.alignment = .center
 		let attributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : fontColor, NSParagraphStyleAttributeName : paragraphStyle]
-		let attrString = AttributedString(string:string, attributes:attributes)
-		let scale = UIScreen.main().scale
+		let attrString = NSAttributedString(string:string, attributes:attributes)
+		let scale = UIScreen.main.scale
 		let trueMaxSize = maxSize * scale
 
 		// Figure out how big an image we need

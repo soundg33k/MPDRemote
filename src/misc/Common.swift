@@ -23,7 +23,7 @@
 import UIKit
 
 /* Ugly AppDelegate shortcut */
-func APP_DELEGATE() -> AppDelegate {return UIApplication.shared().delegate as! AppDelegate}
+func APP_DELEGATE() -> AppDelegate {return UIApplication.shared.delegate as! AppDelegate}
 
 /* Preferences keys */
 public let kNYXPrefDirectoryCovers = "kNYXPrefDirectoryCovers"

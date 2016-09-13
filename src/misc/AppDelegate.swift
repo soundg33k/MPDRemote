@@ -58,24 +58,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	}()
 
 	// MARK: - UIApplicationDelegate
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool
 	{
 		// Register default preferences
 		_registerDefaultPreferences()
 
 		// URL cache
-		URLCache.setShared(URLCache(memoryCapacity:(4 * 1024 * 1024), diskCapacity:(32 * 1024 * 1024), diskPath:nil))
+		URLCache.shared = URLCache(memoryCapacity:(4 * 1024 * 1024), diskCapacity:(32 * 1024 * 1024), diskPath:nil)
 
 		// Global operation queue
 		operationQueue = OperationQueue()
 		operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
 
-		/*window = UIWindow(frame: UIScreen.main().bounds)
+		/*window = UIWindow(frame: UIScreen.main.bounds)
 		window?.rootViewController = self.homeVC
 		window?.makeKeyAndVisible()*/
 		homeVC = window?.rootViewController
 
-		NotificationCenter.default().addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:kNYXNotificationMiniPlayerShouldExpand, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationMiniPlayerShouldExpand), object:nil)
 
 		return true
 	}
@@ -86,24 +86,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		let coversDirectoryPath = "covers"
 		let columns = CGFloat(3)
 		let span = CGFloat(10)
-		let width = ceil((UIScreen.main().bounds.width / columns) - (2 * span))
+		let width = ceil((UIScreen.main.bounds.width / columns) - (2 * span))
 		let defaults: [String: AnyObject] =
 		[
-			kNYXPrefDirectoryCovers : coversDirectoryPath,
-			kNYXPrefCoverSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize:CGSize(width, width))),
-			kNYXPrefRandom : false,
-			kNYXPrefRepeat : false,
-			kNYXPrefVolume : 100,
-			kNYXPrefDisplayType : DisplayType.albums.rawValue,
+			kNYXPrefDirectoryCovers : coversDirectoryPath as AnyObject,
+			kNYXPrefCoverSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize:CGSize(width, width))) as AnyObject,
+			kNYXPrefRandom : false as AnyObject,
+			kNYXPrefRepeat : false as AnyObject,
+			kNYXPrefVolume : 100 as AnyObject,
+			kNYXPrefDisplayType : DisplayType.albums.rawValue as AnyObject,
 		]
 
 		let fileManager = FileManager()
-		let cachesDirectoryURL = fileManager.urlsForDirectory(.cachesDirectory, inDomains:.userDomainMask).last!
+		let cachesDirectoryURL = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).last!
 
-		try! fileManager.createDirectory(at: try! cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories:true, attributes:nil)
+		try! fileManager.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories:true, attributes:nil)
 
-		UserDefaults.standard().register(defaults)
-		UserDefaults.standard().synchronize()
+		UserDefaults.standard.register(defaults:defaults)
+		UserDefaults.standard.synchronize()
 	}
 
 	// MARK: - Notifications

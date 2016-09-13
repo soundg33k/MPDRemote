@@ -34,7 +34,7 @@ class MenuVC : UIViewController
 	// Menu
 	private(set) var menuView: MenuView! = nil
 	// Screen edge gesture
-	private var panGestureMenu: UIScreenEdgePanGestureRecognizer! = nil
+	var panGestureMenu: UIScreenEdgePanGestureRecognizer! = nil
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -63,12 +63,12 @@ class MenuVC : UIViewController
 		view.addGestureRecognizer(panGestureMenu)
 	}
 
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
 		return .portrait
 	}
 
-	override func preferredStatusBarStyle() -> UIStatusBarStyle
+	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return .lightContent
 	}

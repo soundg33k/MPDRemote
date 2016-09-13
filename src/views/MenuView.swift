@@ -51,7 +51,7 @@ final class MenuView : UIView
 
 	// MARK: - Private properties
 	// TableView
-	private var tableView: UITableView! = nil
+	var tableView: UITableView! = nil
 	// Kikoolol
 	private var blurEffectView: UIVisualEffectView! = nil
 	// Pan gesture
@@ -87,8 +87,8 @@ final class MenuView : UIView
 		self.tableView.scrollsToTop = false
 		self.tableView.isScrollEnabled = false
 		self.tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		self.tableView.separatorInset = UIEdgeInsetsZero
-		self.tableView.layoutMargins = UIEdgeInsetsZero
+		self.tableView.separatorInset = UIEdgeInsets.zero
+		self.tableView.layoutMargins = UIEdgeInsets.zero
 		self.blurEffectView.contentView.addSubview(self.tableView)
 
 		// Pan
@@ -157,7 +157,7 @@ extension MenuView : UITableViewDataSource
 		cell.selectionStyle = .none
 		cell.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		cell.layoutMargins = UIEdgeInsetsZero
+		cell.layoutMargins = UIEdgeInsets.zero
 		var title = ""
 		var selected = false
 		switch (indexPath.row)

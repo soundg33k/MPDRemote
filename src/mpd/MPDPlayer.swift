@@ -52,12 +52,12 @@ final class MPDPlayer
 	// Internal queue
 	private let _queue: DispatchQueue
 	// Timer (1sec)
-	private var _timer: DispatchSource!
+	private var _timer: DispatchSourceTimer!
 
 	// MARK: - Initializers
 	init()
 	{
-		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.player", attributes:[.serial, .qosDefault], target: nil)
+		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.player", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 	}
 
 	// MARK: - Public
@@ -225,8 +225,7 @@ final class MPDPlayer
 	// MARK: - Private
 	private func _startTimer(_ interval: Int)
 	{
-
-		_timer = DispatchSource.timer(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue) /*Migrator FIXME: Use DispatchSourceTimer to avoid the cast*/ as! DispatchSource
+		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
 		_timer.scheduleRepeating(deadline: .now(), interval:.seconds(interval))
 		_timer.setEventHandler {
 			self._playerInformations()
@@ -251,7 +250,7 @@ final class MPDPlayer
 		if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
 		{
 			DispatchQueue.main.async {
-				NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil, userInfo:infos)
+				NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil, userInfo:infos)
 			}
 		}
 
@@ -259,7 +258,7 @@ final class MPDPlayer
 		if status != status
 		{
 			DispatchQueue.main.async {
-				NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil, userInfo:infos)
+				NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil, userInfo:infos)
 			}
 		}
 
@@ -267,7 +266,7 @@ final class MPDPlayer
 		currentTrack = track
 		currentAlbum = album
 		DispatchQueue.main.async {
-			NotificationCenter.default().post(name: Notification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil, userInfo:infos)
+			NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil, userInfo:infos)
 		}
 	}
 }

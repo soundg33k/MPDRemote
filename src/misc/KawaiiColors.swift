@@ -121,13 +121,14 @@ final class KawaiiColors
 		let height = cgImage?.height
 
 		let bmContext = BitmapContext.RGBABitmapContext(width:width!, height:height!, withAlpha:false)
-		bmContext?.draw(in: CGRect(0.0, 0.0, CGFloat(width!), CGFloat(height!)), image: cgImage!)
+		bmContext?.draw(cgImage!, in: CGRect(0.0, 0.0, CGFloat(width!), CGFloat(height!)))
 		let data = bmContext?.data
 		if data == nil
 		{
 			return nil
 		}
-		let pixels = UnsafeMutablePointer<RGBAPixel>(data)!
+		let pixels = data!.assumingMemoryBound(to: RGBAPixel.self)
+		//let pixels = UnsafeMutablePointer<RGBAPixel>(data)!
 
 		let pp = precision
 		let scale = UInt8(256 / pp)

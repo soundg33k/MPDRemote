@@ -54,14 +54,14 @@ final class AlbumHeaderView : UIView
 
 		let context = UIGraphicsGetCurrentContext()
 		context?.saveGState()
-		context?.clipTo(imageRect)
+		context?.clip(to:imageRect)
 
 		let startPoint = CGPoint(imageRect.minX, imageRect.midY)
 		let endPoint = CGPoint(imageRect.maxX, imageRect.midY)
 		let color = backgroundColor!
 		let gradientColors: [CGColor] = [color.withAlphaComponent(0.05).cgColor, color.withAlphaComponent(0.75).cgColor, color.withAlphaComponent(0.9).cgColor]
 		let locations: [CGFloat] = [0.0, 0.9, 1.0]
-		let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: gradientColors, locations: locations)
+		let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: gradientColors as CFArray, locations: locations)
 		context?.drawLinearGradient(gradient!, start: startPoint, end: endPoint, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
 		context?.restoreGState()
 	}
@@ -73,20 +73,20 @@ final class AlbumHeaderView : UIView
 		var image: UIImage? = nil
 		if let coverURL = album.localCoverURL
 		{
-			if let cover = UIImage(contentsOfFile:coverURL.path!)
+			if let cover = UIImage(contentsOfFile:coverURL.path)
 			{
 				image = cover
 			}
 			else
 			{
-				let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!) as! NSValue
-				image = generateCoverForAlbum(album, size: coverSize.cgSizeValue())
+				let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!) as! NSValue
+				image = generateCoverForAlbum(album, size: coverSize.cgSizeValue)
 			}
 		}
 		else
 		{
-			let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!) as! NSValue
-			image = generateCoverForAlbum(album, size: coverSize.cgSizeValue())
+			let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!) as! NSValue
+			image = generateCoverForAlbum(album, size: coverSize.cgSizeValue)
 		}
 		self.image = image
 

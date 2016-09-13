@@ -41,7 +41,7 @@ extension String
 	{
 		if let utf8str = data(using: String.Encoding.utf8)
 		{
-			return utf8str.base64EncodedString(.encoding64CharacterLineLength)
+			return utf8str.base64EncodedString(options: .lineLength64Characters)
 		}
 		return ""
 	}

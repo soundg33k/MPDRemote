@@ -32,31 +32,31 @@ final class RootVC : MenuVC
 {
 	// MARK: - Private properties
 	// Albums view
-	@IBOutlet private var collectionView: UICollectionView!
+	@IBOutlet var collectionView: UICollectionView!
 	// Top constraint for collection view
-	@IBOutlet private var topConstraint: NSLayoutConstraint!
+	@IBOutlet var topConstraint: NSLayoutConstraint!
 	// Search bar
-	private var searchBar: UISearchBar! = nil
+	var searchBar: UISearchBar! = nil
 	// Button in the navigationbar
-	private var titleView: UIButton! = nil
+	var titleView: UIButton! = nil
 	// Random button
-	private var btnRandom: UIButton! = nil
+	var btnRandom: UIButton! = nil
 	// Repeat button
-	private var btnRepeat: UIButton! = nil
+	var btnRepeat: UIButton! = nil
 	// Should show the search view, flag
-	private var searchBarVisible = false
+	var searchBarVisible = false
 	// Is currently searching, flag
-	private var searching = false
+	var searching = false
 	// Search results
-	private var searchResults = [AnyObject]()
+	var searchResults = [AnyObject]()
 	// Long press gesture is recognized, flag
-	private var longPressRecognized = false
+	var longPressRecognized = false
 	// Keep track of download operations to eventually cancel them
-	private var _downloadOperations = [String : Operation]()
+	var _downloadOperations = [String : Operation]()
 	// View to change the type of items in the collection view
-	private var _typeChoiceView: TypeChoiceView! = nil
+	var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
-	private var _displayType = DisplayType(rawValue:UserDefaults.standard().integer(forKey: kNYXPrefDisplayType))!
+	var _displayType = DisplayType(rawValue:UserDefaults.standard.integer(forKey: kNYXPrefDisplayType))!
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -88,8 +88,8 @@ final class RootVC : MenuVC
 		navigationItem.titleView = titleView
 
 		// Random button
-		let random = UserDefaults.standard().bool(forKey: kNYXPrefRandom)
-		let imageRandom = #imageLiteral(resourceName: "btn-random") //UIImage(named:"btn-random")
+		let random = UserDefaults.standard.bool(forKey: kNYXPrefRandom)
+		let imageRandom = #imageLiteral(resourceName: "btn-random")
 		btnRandom = UIButton(type:.custom)
 		btnRandom.frame = CGRect((navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
 		btnRandom.setImage(imageRandom.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:UIControlState())
@@ -100,8 +100,8 @@ final class RootVC : MenuVC
 		navigationController?.navigationBar.addSubview(btnRandom)
 
 		// Repeat button
-		let loop = UserDefaults.standard().bool(forKey: kNYXPrefRepeat)
-		let imageRepeat = #imageLiteral(resourceName: "btn-repeat") //UIImage(named:"btn-repeat")
+		let loop = UserDefaults.standard.bool(forKey: kNYXPrefRepeat)
+		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		btnRepeat = UIButton(type:.custom)
 		btnRepeat.frame = CGRect((navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
 		btnRepeat.setImage(imageRepeat.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:UIControlState())
@@ -114,7 +114,7 @@ final class RootVC : MenuVC
 		// Create collection view
 		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
-		let w = ceil((/*collectionView.width*/UIScreen.main().bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
+		let w = ceil((/*collectionView.width*/UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
 
 		// Longpress
@@ -140,7 +140,7 @@ final class RootVC : MenuVC
 		// Initialize the mpd connection
 		if MPDDataSource.shared.server == nil
 		{
-			if let serverAsData = UserDefaults.standard().data(forKey: kNYXPrefMPDServer)
+			if let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 			{
 				if let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! MPDServer?
 				{
@@ -204,7 +204,7 @@ final class RootVC : MenuVC
 		}
 
 		// Deselect cell
-		if let idxs = collectionView.indexPathsForSelectedItems()
+		if let idxs = collectionView.indexPathsForSelectedItems
 		{
 			for indexPath in idxs
 			{
@@ -221,36 +221,36 @@ final class RootVC : MenuVC
 		_downloadOperations.removeAll()
 	}
 
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
 		return .portrait
 	}
 
-	override func preferredStatusBarStyle() -> UIStatusBarStyle
+	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return .lightContent
 	}
 
-	override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?)
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
 	{
 		if segue.identifier == "root-albums-to-detail-album"
 		{
-			let vc = segue.destinationViewController as! AlbumDetailVC
+			let vc = segue.destination as! AlbumDetailVC
 			vc.albums = searching ? searchResults as! [Album] : MPDDataSource.shared.albums
-			vc.selectedIndex = collectionView.indexPathsForSelectedItems()![0].row
+			vc.selectedIndex = collectionView.indexPathsForSelectedItems![0].row
 		}
 		else if segue.identifier == "root-genres-to-artists"
 		{
-			let row = collectionView.indexPathsForSelectedItems()![0].row
+			let row = collectionView.indexPathsForSelectedItems![0].row
 			let genre = searching ? searchResults[row] as! Genre : MPDDataSource.shared.genres[row]
-			let vc = segue.destinationViewController as! ArtistsVC
+			let vc = segue.destination as! ArtistsVC
 			vc.genre = genre
 		}
 		else if segue.identifier == "root-artists-to-albums"
 		{
-			let row = collectionView.indexPathsForSelectedItems()![0].row
+			let row = collectionView.indexPathsForSelectedItems![0].row
 			let artist = searching ? searchResults[row] as! Artist : MPDDataSource.shared.artists[row]
-			let vc = segue.destinationViewController as! AlbumsVC
+			let vc = segue.destination as! AlbumsVC
 			vc.artist = artist
 		}
 	}
@@ -269,13 +269,13 @@ final class RootVC : MenuVC
 			{
 				case .albums:
 					let album = searching ? searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
-					MPDPlayer.shared.playAlbum(album, random:UserDefaults.standard().bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard().bool(forKey: kNYXPrefRepeat))
+					MPDPlayer.shared.playAlbum(album, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 				case .artists:
 					let artist = searching ? searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
 					MPDDataSource.shared.getAlbumsForArtist(artist) {
 						MPDDataSource.shared.getSongsForAlbums(artist.albums) {
 							let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
-							MPDPlayer.shared.playTracks(ar, random:UserDefaults.standard().bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard().bool(forKey: kNYXPrefRepeat))
+							MPDPlayer.shared.playTracks(ar, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 						}
 					}
 				case .genres:
@@ -283,7 +283,7 @@ final class RootVC : MenuVC
 					MPDDataSource.shared.getAlbumsForGenre(genre) {
 						MPDDataSource.shared.getSongsForAlbums(genre.albums) {
 							let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
-							MPDPlayer.shared.playTracks(ar, random:UserDefaults.standard().bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard().bool(forKey: kNYXPrefRepeat))
+							MPDPlayer.shared.playTracks(ar, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 						}
 					}
 			}
@@ -455,7 +455,7 @@ final class RootVC : MenuVC
 
 	func toggleRandomAction(_ sender: AnyObject?)
 	{
-		let prefs = UserDefaults.standard()
+		let prefs = UserDefaults.standard
 		let random = !prefs.bool(forKey: kNYXPrefRandom)
 
 		btnRandom.isSelected = random
@@ -469,7 +469,7 @@ final class RootVC : MenuVC
 
 	func toggleRepeatAction(_ sender: AnyObject?)
 	{
-		let prefs = UserDefaults.standard()
+		let prefs = UserDefaults.standard
 		let loop = !prefs.bool(forKey: kNYXPrefRepeat)
 
 		btnRepeat.isSelected = loop
@@ -482,7 +482,7 @@ final class RootVC : MenuVC
 	}
 
 	// MARK: - Private
-	private func _showNavigationBar(animated: Bool = true)
+	func _showNavigationBar(animated: Bool = true)
 	{
 		searchBar.endEditing(true)
 		let bar = (navigationController?.navigationBar)!
@@ -493,7 +493,7 @@ final class RootVC : MenuVC
 		})
 	}
 
-	private func _hideNavigationBar(animated: Bool = true)
+	func _hideNavigationBar(animated: Bool = true)
 	{
 		let bar = (navigationController?.navigationBar)!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:.curveEaseOut, animations:{
@@ -503,7 +503,7 @@ final class RootVC : MenuVC
 		})
 	}
 
-	private func _updateNavigationTitle()
+	func _updateNavigationTitle()
 	{
 		let p = NSMutableParagraphStyle()
 		p.alignment = .center
@@ -521,9 +521,9 @@ final class RootVC : MenuVC
 				let n = MPDDataSource.shared.artists.count
 				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_artists") : NYXLocalizedString("lbl_artist"))"
 		}
-		let astr1 = AttributedString(string:title, attributes:[NSForegroundColorAttributeName : #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
+		let astr1 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr1, for:UIControlState())
-		let astr2 = AttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
+		let astr2 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr2, for:.highlighted)
 	}
 }
@@ -552,7 +552,7 @@ extension RootVC : UICollectionViewDataSource
 	{
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "io.whine.mpdremote.cell.album", for:indexPath) as! RootCollectionViewCell
 		cell.layer.shouldRasterize = true
-		cell.layer.rasterizationScale = UIScreen.main().scale
+		cell.layer.rasterizationScale = UIScreen.main.scale
 
 		// Sanity check
 		if searching && indexPath.row >= searchResults.count
@@ -636,7 +636,7 @@ extension RootVC : UICollectionViewDataSource
 		cell.label.text = genre.name
 		cell.accessibilityLabel = genre.name
 
-		if UserDefaults.standard().data(forKey: kNYXPrefWEBServer) == nil
+		if UserDefaults.standard.data(forKey: kNYXPrefWEBServer) == nil
 		{
 			cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 			return
@@ -712,7 +712,7 @@ extension RootVC : UICollectionViewDataSource
 		cell.label.text = artist.name
 		cell.accessibilityLabel = artist.name
 
-		if UserDefaults.standard().data(forKey: kNYXPrefWEBServer) == nil
+		if UserDefaults.standard.data(forKey: kNYXPrefWEBServer) == nil
 		{
 			cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
 			return
@@ -744,11 +744,11 @@ extension RootVC : UICollectionViewDataSource
 				}
 				else
 				{
-					let sizeAsData = UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!
+					let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
 					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						_downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue()) { (cover: UIImage, thumbnail: UIImage) in
+						_downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 							let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 							DispatchQueue.main.async {
 								if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
@@ -761,7 +761,7 @@ extension RootVC : UICollectionViewDataSource
 					else
 					{
 						MPDDataSource.shared.getPathForAlbum(album) {
-							self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue()) { (cover: UIImage, thumbnail: UIImage) in
+							self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 								DispatchQueue.main.async {
 									if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
@@ -788,7 +788,7 @@ extension RootVC : UICollectionViewDataSource
 		}
 	}
 
-	private func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:(cover: UIImage, thumbnail: UIImage) -> Void)
+	func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:@escaping (_ cover: UIImage, _ thumbnail: UIImage) -> Void)
 	{
 		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
 		let key = album.name + album.year
@@ -801,7 +801,7 @@ extension RootVC : UICollectionViewDataSource
 					self._downloadOperations.removeValue(forKey: key)
 				}
 			}
-			callback(cover:cover, thumbnail:thumbnail)
+			callback(cover, thumbnail)
 		}
 		_downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
@@ -972,8 +972,8 @@ extension RootVC : TypeChoiceViewDelegate
 		}
 		_displayType = type
 
-		UserDefaults.standard().set(type.rawValue, forKey:kNYXPrefDisplayType)
-		UserDefaults.standard().synchronize()
+		UserDefaults.standard.set(type.rawValue, forKey:kNYXPrefDisplayType)
+		UserDefaults.standard.synchronize()
 
 		// Refresh view
 		MPDDataSource.shared.getListForDisplayType(type) {
@@ -989,7 +989,7 @@ extension RootVC : TypeChoiceViewDelegate
 // MARK: - UIResponder
 extension RootVC
 {
-	override func canBecomeFirstResponder() -> Bool
+	override var canBecomeFirstResponder: Bool
 	{
 		return true
 	}
@@ -1011,10 +1011,10 @@ extension RootVC
 			}
 
 			// Briefly display cover of album
-			let sizeAsData = UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!
+			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			MPDDataSource.shared.getPathForAlbum(randomAlbum) {
-				self._downloadCoverForAlbum(randomAlbum, cropSize:cropSize.cgSizeValue(), callback:{ (cover: UIImage, thumbnail: UIImage) in
+				self._downloadCoverForAlbum(randomAlbum, cropSize:cropSize.cgSizeValue, callback:{ (cover: UIImage, thumbnail: UIImage) in
 					let size = CGSize(self.view.width - 64.0, self.view.width - 64.0)
 					let cropped = cover.imageCroppedToFitSize(size)
 					DispatchQueue.main.async {

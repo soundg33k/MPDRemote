@@ -25,23 +25,24 @@ import UIKit
 
 final class NYXNavigationController : UINavigationController
 {
-	override func shouldAutorotate() -> Bool
+	override var shouldAutorotate: Bool
 	{
-		return (topViewController?.shouldAutorotate())!
+		//return topViewController?.shouldAutorotate
+		return (topViewController?.shouldAutorotate)!
 	}
 
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
-		return (topViewController?.supportedInterfaceOrientations())!
+		return (topViewController?.supportedInterfaceOrientations)!
 	}
 
-	override func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation
+	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation
 	{
-		return (topViewController?.preferredInterfaceOrientationForPresentation())!
+		return (topViewController?.preferredInterfaceOrientationForPresentation)!
 	}
 
-	override func preferredStatusBarStyle() -> UIStatusBarStyle
+	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return (topViewController?.preferredStatusBarStyle())!
+		return (topViewController?.preferredStatusBarStyle)!
 	}
 }

@@ -40,9 +40,9 @@ class Associator
 		return Wrapper(x)
 	}
 
-	static func setAssociatedObject<T>(_ object: AnyObject, value: T, associativeKey: UnsafePointer<Void>, policy: objc_AssociationPolicy)
+	static func setAssociatedObject<T>(_ object: AnyObject, value: T, associativeKey: UnsafeRawPointer, policy: objc_AssociationPolicy)
 	{
-		if let v: AnyObject = value as? AnyObject
+		if let v = value as? AnyObject
 		{
 			objc_setAssociatedObject(object, associativeKey, v, policy)
 		}
@@ -52,7 +52,7 @@ class Associator
 		}
 	}
 
-	static func getAssociatedObject<T>(_ object: AnyObject, associativeKey: UnsafePointer<Void>) -> T?
+	static func getAssociatedObject<T>(_ object: AnyObject, associativeKey: UnsafeRawPointer) -> T?
 	{
 		if let v = objc_getAssociatedObject(object, associativeKey) as? T
 		{
@@ -85,7 +85,7 @@ extension UIGestureRecognizer
 		static var multiDelegateKey = "key-delegate"
 	}
 
-	private var block:((recognizer:UIGestureRecognizer) -> Void)
+	private var block:((_ recognizer:UIGestureRecognizer) -> Void)
 	{
 		get
 		{
@@ -109,7 +109,7 @@ extension UIGestureRecognizer
 		}
 	}
 
-	convenience init(block:(recognizer:UIGestureRecognizer) -> Void)
+	convenience init(block:@escaping (_ recognizer:UIGestureRecognizer) -> Void)
 	{
 		self.init()
 		self.block = block
@@ -120,6 +120,6 @@ extension UIGestureRecognizer
 
 	@objc func didInteractWithGestureRecognizer(_ sender:UIGestureRecognizer)
 	{
-		block(recognizer:sender)
+		block(sender)
 	}
 }

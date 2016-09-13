@@ -31,7 +31,7 @@ final class AlbumsVC : UITableViewController
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 	// Keep track of download operations to eventually cancel them
-	private var _downloadOperations = [String : Operation]()
+	var _downloadOperations = [String : Operation]()
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -77,21 +77,21 @@ final class AlbumsVC : UITableViewController
 		_updateNavigationTitle()
 	}
 
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
 		return .portrait
 	}
 
-	override func preferredStatusBarStyle() -> UIStatusBarStyle
+	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return .lightContent
 	}
 
-	override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?)
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
 	{
 		if segue.identifier == "albums-to-albumdetail"
 		{
-			let vc = segue.destinationViewController as! AlbumDetailVC
+			let vc = segue.destination as! AlbumDetailVC
 			vc.selectedIndex = tableView.indexPathForSelectedRow!.row
 			vc.albums = artist.albums
 		}
@@ -101,7 +101,7 @@ final class AlbumsVC : UITableViewController
 	private func _updateNavigationTitle()
 	{
 		let attrs = NSMutableAttributedString(string:artist.name + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
-		attrs.append(AttributedString(string:"\(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercased() : NYXLocalizedString("lbl_album").lowercased())", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
+		attrs.append(NSAttributedString(string:"\(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercased() : NYXLocalizedString("lbl_album").lowercased())", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
 		titleView.attributedText = attrs
 	}
 }
@@ -136,7 +136,7 @@ extension AlbumsVC
 		cell.accessibilityLabel = "\(album.name)"
 
 		// No server for covers
-		if UserDefaults.standard().data(forKey: kNYXPrefWEBServer) == nil
+		if UserDefaults.standard.data(forKey: kNYXPrefWEBServer) == nil
 		{
 			cell.coverView.image = generateCoverForAlbum(album, size: cell.coverView.size)
 			return cell
@@ -152,7 +152,7 @@ extension AlbumsVC
 
 		if let cover = UIImage.loadFromURL(coverURL)
 		{
-			DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosUserInitiated).async {
+			DispatchQueue.global(qos: .userInitiated).async {
 				let cropped = cover.imageCroppedToFitSize(cell.coverView.size)
 				DispatchQueue.main.async {
 					if let c = self.tableView.cellForRow(at: indexPath) as? AlbumTableViewCell
@@ -165,11 +165,11 @@ extension AlbumsVC
 		else
 		{
 			cell.coverView.image = generateCoverForAlbum(album, size: cell.coverView.size)
-			let sizeAsData = UserDefaults.standard().data(forKey: kNYXPrefCoverSize)!
+			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				_downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue()) { (thumbnail: UIImage) in
+				_downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
 					let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 					DispatchQueue.main.async {
 						if let c = self.tableView.cellForRow(at: indexPath) as? AlbumTableViewCell
@@ -182,7 +182,7 @@ extension AlbumsVC
 			else
 			{
 				MPDDataSource.shared.getPathForAlbum(album) {
-					self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue()) { (thumbnail: UIImage) in
+					self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
 						let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 						DispatchQueue.main.async {
 							if let c = self.tableView.cellForRow(at: indexPath) as? AlbumTableViewCell
@@ -198,7 +198,7 @@ extension AlbumsVC
 		return cell
 	}
 
-	private func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:(thumbnail: UIImage) -> Void)
+	private func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:@escaping (_ thumbnail: UIImage) -> Void)
 	{
 		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
 		let key = album.name + album.year
@@ -211,7 +211,7 @@ extension AlbumsVC
 					self._downloadOperations.removeValue(forKey: key)
 				}
 			}
-			callback(thumbnail:thumbnail)
+			callback(thumbnail)
 		}
 		_downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)

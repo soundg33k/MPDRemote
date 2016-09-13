@@ -67,7 +67,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		sliderPosition.addTarget(self, action:#selector(changeTrackPositionAction(_:)), for:.touchUpInside)
 
 		// Slider volume
-		sliderVolume.value = Float(UserDefaults.standard().integer(forKey: kNYXPrefVolume))
+		sliderVolume.value = Float(UserDefaults.standard.integer(forKey: kNYXPrefVolume))
 		sliderVolume.addTarget(self, action:#selector(changeVolumeAction(_:)), for:.touchUpInside)
 		ivVolumeLo.image = #imageLiteral(resourceName: "img-volume-lo").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
 		ivVolumeHi.image = #imageLiteral(resourceName: "img-volume-hi").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
@@ -82,7 +82,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), for:.highlighted)
 		btnPrevious.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.requestPreviousTrack), for:.touchUpInside)
 
-		let loop = UserDefaults.standard().bool(forKey: kNYXPrefRepeat)
+		let loop = UserDefaults.standard.bool(forKey: kNYXPrefRepeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		btnRepeat.setImage(imageRepeat.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:UIControlState())
 		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
@@ -90,7 +90,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), for:.touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		let random = UserDefaults.standard().bool(forKey: kNYXPrefRandom)
+		let random = UserDefaults.standard.bool(forKey: kNYXPrefRandom)
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
 		btnRandom.setImage(imageRandom.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:UIControlState())
 		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
@@ -117,9 +117,9 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		super.viewWillAppear(animated)
 
-		NotificationCenter.default().addObserver(self, selector:#selector(playingTrackNotification(_:)), name:kNYXNotificationCurrentPlayingTrack, object:nil)
-		NotificationCenter.default().addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:kNYXNotificationPlayingTrackChanged, object:nil)
-		NotificationCenter.default().addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:kNYXNotificationPlayerStatusChanged, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil)
 
 		if let track = MPDPlayer.shared.currentTrack, let album = MPDPlayer.shared.currentAlbum
 		{
@@ -162,22 +162,22 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		super.viewWillDisappear(animated)
 
-		NotificationCenter.default().removeObserver(self, name:NSNotification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil)
-		NotificationCenter.default().removeObserver(self, name:NSNotification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil)
-		NotificationCenter.default().removeObserver(self, name:NSNotification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil)
+		NotificationCenter.default.removeObserver(self, name:NSNotification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil)
+		NotificationCenter.default.removeObserver(self, name:NSNotification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil)
+		NotificationCenter.default.removeObserver(self, name:NSNotification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil)
 	}
 
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
 		return .portrait
 	}
 
-	override func preferredStatusBarStyle() -> UIStatusBarStyle
+	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return .lightContent
 	}
 
-	override func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation
+	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation
 	{
 		return .portrait
 	}
@@ -201,7 +201,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// MARK: - Buttons actions
 	func toggleRandomAction(_ sender: AnyObject?)
 	{
-		let prefs = UserDefaults.standard()
+		let prefs = UserDefaults.standard
 		let random = !prefs.bool(forKey: kNYXPrefRandom)
 
 		btnRandom.isSelected = random
@@ -215,7 +215,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 
 	func toggleRepeatAction(_ sender: AnyObject?)
 	{
-		let prefs = UserDefaults.standard()
+		let prefs = UserDefaults.standard
 		let loop = !prefs.bool(forKey: kNYXPrefRepeat)
 
 		btnRepeat.isSelected = loop
@@ -238,7 +238,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	func changeVolumeAction(_ sender: UISlider?)
 	{
 		let volume = Int(ceil(sliderVolume.value))
-		let prefs = UserDefaults.standard()
+		let prefs = UserDefaults.standard
 		prefs.set(volume, forKey:kNYXPrefVolume)
 		prefs.synchronize()
 		sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
