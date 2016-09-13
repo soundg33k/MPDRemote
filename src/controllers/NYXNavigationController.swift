@@ -27,7 +27,6 @@ final class NYXNavigationController : UINavigationController
 {
 	override var shouldAutorotate: Bool
 	{
-		//return topViewController?.shouldAutorotate
 		return (topViewController?.shouldAutorotate)!
 	}
 

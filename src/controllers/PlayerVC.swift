@@ -117,9 +117,9 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		super.viewWillAppear(animated)
 
-		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackNotification(_:)), name:.currentPlayingTrack, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:.playingTrackChanged, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:.playerStatusChanged, object:nil)
 
 		if let track = MPDPlayer.shared.currentTrack, let album = MPDPlayer.shared.currentAlbum
 		{
@@ -162,9 +162,9 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		super.viewWillDisappear(animated)
 
-		NotificationCenter.default.removeObserver(self, name:NSNotification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil)
-		NotificationCenter.default.removeObserver(self, name:NSNotification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil)
-		NotificationCenter.default.removeObserver(self, name:NSNotification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil)
+		NotificationCenter.default.removeObserver(self, name:.currentPlayingTrack, object:nil)
+		NotificationCenter.default.removeObserver(self, name:.playingTrackChanged, object:nil)
+		NotificationCenter.default.removeObserver(self, name:.playerStatusChanged, object:nil)
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask

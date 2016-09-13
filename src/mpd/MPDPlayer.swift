@@ -250,7 +250,7 @@ final class MPDPlayer
 		if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
 		{
 			DispatchQueue.main.async {
-				NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil, userInfo:infos)
+				NotificationCenter.default.post(name: .playingTrackChanged, object:nil, userInfo:infos)
 			}
 		}
 
@@ -258,7 +258,7 @@ final class MPDPlayer
 		if status != status
 		{
 			DispatchQueue.main.async {
-				NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil, userInfo:infos)
+				NotificationCenter.default.post(name: .playerStatusChanged, object:nil, userInfo:infos)
 			}
 		}
 
@@ -266,7 +266,7 @@ final class MPDPlayer
 		currentTrack = track
 		currentAlbum = album
 		DispatchQueue.main.async {
-			NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil, userInfo:infos)
+			NotificationCenter.default.post(name: .currentPlayingTrack, object:nil, userInfo:infos)
 		}
 	}
 }

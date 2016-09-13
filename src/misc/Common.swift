@@ -36,14 +36,14 @@ public let kNYXPrefVolume = "kNYXPrefVolume"
 public let kNYXPrefDisplayType = "kNYXPrefDisplayType"
 
 /* Notifications names */
-public let kNYXNotificationCurrentPlayingTrack = "kNYXNotificationCurrentPlayingTrack"
+/*public let kNYXNotificationCurrentPlayingTrack = "kNYXNotificationCurrentPlayingTrack"
 public let kNYXNotificationPlayingTrackChanged = "kNYXNotificationPlayingTrackChanged"
 public let kNYXNotificationPlayerStatusChanged = "kNYXNotificationPlayerStatusChanged"
 public let kNYXNotificationMiniPlayerViewWillShow = "kNYXNotificationMiniPlayerViewWillShow"
 public let kNYXNotificationMiniPlayerViewDidShow = "kNYXNotificationMiniPlayerViewDidShow"
 public let kNYXNotificationMiniPlayerViewWillHide = "kNYXNotificationMiniPlayerViewWillHide"
 public let kNYXNotificationMiniPlayerViewDidHide = "kNYXNotificationMiniPlayerViewDidHide"
-public let kNYXNotificationMiniPlayerShouldExpand = "kNYXNotificationMiniPlayerShouldExpand"
+public let kNYXNotificationMiniPlayerShouldExpand = "kNYXNotificationMiniPlayerShouldExpand"*/
 
 /* App color */
 public let kNYXAppColor = Int(0x660000)
@@ -54,4 +54,17 @@ enum DisplayType : Int
 	case albums
 	case artists
 	case genres
+}
+
+/* Notifications names */
+extension Notification.Name
+{
+	static let currentPlayingTrack = Notification.Name("kNYXNotificationCurrentPlayingTrack")
+	static let playingTrackChanged = Notification.Name("kNYXNotificationPlayingTrackChanged")
+	static let playerStatusChanged = Notification.Name("kNYXNotificationPlayerStatusChanged")
+	static let miniPlayerViewWillShow = Notification.Name("kNYXNotificationMiniPlayerViewWillShow")
+	static let miniPlayerViewDidShow = Notification.Name("kNYXNotificationMiniPlayerViewDidShow")
+	static let miniPlayerViewWillHide = Notification.Name("kNYXNotificationMiniPlayerViewWillHide")
+	static let miniPlayerViewDidHide = Notification.Name("kNYXNotificationMiniPlayerViewDidHide")
+	static let miniPlayerShouldExpand = Notification.Name("kNYXNotificationMiniPlayerShouldExpand")
 }

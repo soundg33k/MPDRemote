@@ -67,7 +67,6 @@ final class AlbumDetailVC : UIViewController
 		let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!) as! NSValue
 		headerView.coverSize = coverSize.cgSizeValue
 		headerHeightConstraint.constant = coverSize.cgSizeValue.height
-		//headerView.navDelegate = self
 
 		// Dummy tableview host, to create a nice shadow effect
 		dummyView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, view.width + 4.0, 4.0)).cgPath
@@ -80,8 +79,8 @@ final class AlbumDetailVC : UIViewController
 		tableView.tableFooterView = UIView()
 
 		// Notif for frame changes
-		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayingTrackChanged), object:nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:.playingTrackChanged, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:.playerStatusChanged, object:nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)

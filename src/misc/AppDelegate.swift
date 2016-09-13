@@ -75,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		window?.makeKeyAndVisible()*/
 		homeVC = window?.rootViewController
 
-		NotificationCenter.default.addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationMiniPlayerShouldExpand), object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:.miniPlayerShouldExpand, object:nil)
 
 		return true
 	}

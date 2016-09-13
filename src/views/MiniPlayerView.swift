@@ -115,8 +115,8 @@ final class MiniPlayerView : UIView, PTappable
 		// Single tap to request full player view
 		self.makeTappable()
 
-		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationCurrentPlayingTrack), object:nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:NSNotification.Name(rawValue: kNYXNotificationPlayerStatusChanged), object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackNotification(_:)), name:.currentPlayingTrack, object:nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:.playerStatusChanged, object:nil)
 
 		APP_DELEGATE().window?.addSubview(self)
 	}
@@ -171,25 +171,25 @@ final class MiniPlayerView : UIView, PTappable
 
 	func show(_ animated: Bool = true)
 	{
-		NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewWillShow), object:nil)
+		NotificationCenter.default.post(name: .miniPlayerViewWillShow, object:nil)
 		let w = UIApplication.shared.keyWindow!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:UIViewAnimationOptions(), animations:{
 			self.y = w.frame.height - self.height
 		}, completion: { finished in
 			self.visible = true
-			NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewDidShow), object:nil)
+			NotificationCenter.default.post(name: .miniPlayerViewDidShow, object:nil)
 		})
 	}
 
 	func hide(_ animated: Bool = true)
 	{
-		NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewWillHide), object:nil)
+		NotificationCenter.default.post(name: .miniPlayerViewWillHide, object:nil)
 		let w = UIApplication.shared.keyWindow!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:UIViewAnimationOptions(), animations:{
 			self.y = w.frame.height + self.height
 		}, completion: { finished in
 			self.visible = false
-			NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerViewDidHide), object:nil)
+			NotificationCenter.default.post(name: .miniPlayerViewDidHide, object:nil)
 		})
 	}
 
@@ -212,7 +212,7 @@ final class MiniPlayerView : UIView, PTappable
 	// MARK: - PTappable
 	func didTap()
 	{
-		NotificationCenter.default.post(name: Notification.Name(rawValue: kNYXNotificationMiniPlayerShouldExpand), object:nil)
+		NotificationCenter.default.post(name: .miniPlayerShouldExpand, object:nil)
 	}
 
 	// MARK: - Notifications
