@@ -23,7 +23,7 @@
 import Foundation
 
 
-final class WEBServer : NSCoding
+final class WEBServer : NSObject, NSCoding
 {
 	// MARK: - Properties
 	// Server hostname
