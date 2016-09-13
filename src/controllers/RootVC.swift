@@ -176,24 +176,6 @@ final class RootVC : MenuVC
 				Logger.alog("[+] No MPD server registered yet.")
 				let serverVC = APP_DELEGATE().serverVC
 				APP_DELEGATE().window?.rootViewController = serverVC
-				/*let server = MPDServer.def()
-				MPDDataSource.shared.server = server
-				_ = MPDDataSource.shared.initialize()
-				if _displayType != .albums
-				{
-					// Always fetch the albums list
-					MPDDataSource.shared.getListForDisplayType(.albums) {}
-				}
-				MPDDataSource.shared.getListForDisplayType(_displayType) {
-					DispatchQueue.main.async {
-						self.collectionView.reloadData()
-						self._updateNavigationTitle()
-					}
-				}
-
-				// Player
-				MPDPlayer.shared.server = server
-				_ = MPDPlayer.shared.initialize()*/
 			}
 		}
 
