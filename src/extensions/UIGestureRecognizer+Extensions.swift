@@ -40,9 +40,9 @@ class Associator
 		return Wrapper(x)
 	}
 
-	static func setAssociatedObject<T>(_ object: AnyObject, value: T, associativeKey: UnsafeRawPointer, policy: objc_AssociationPolicy)
+	static func setAssociatedObject<T>(_ object: AnyObject, value: T?, associativeKey: UnsafeRawPointer, policy: objc_AssociationPolicy)
 	{
-		if let v = value as? AnyObject
+		if let v = value
 		{
 			objc_setAssociatedObject(object, associativeKey, v, policy)
 		}
