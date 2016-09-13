@@ -402,9 +402,9 @@ final class MPDConnection
 		return list
 	}
 
-	func getMetadatasForAlbum(_ album: Album) -> [String : AnyObject]
+	func getMetadatasForAlbum(_ album: Album) -> [String : Any]
 	{
-		var metadatas = [String : AnyObject]()
+		var metadatas = [String : Any]()
 		// Find album artist
 		if !mpd_search_db_tags(_connection, MPD_TAG_ALBUM_ARTIST)
 		{
@@ -427,7 +427,7 @@ final class MPDConnection
 			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(tmpArtist?.pointee.value)!), count: Int(strlen(tmpArtist?.pointee.value)), deallocator: .none)
 			if let name = String(data:dataTemp, encoding:.utf8)
 			{
-				metadatas["artist"] = name as AnyObject
+				metadatas["artist"] = name
 			}
 		}
 		mpd_return_pair(_connection, tmpArtist)
@@ -464,7 +464,7 @@ final class MPDConnection
 			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(tmpDate?.pointee.value)!), count: l, deallocator: .none)
 			if let year = String(data:dataTemp, encoding:.utf8)
 			{
-				metadatas["year"] = year as AnyObject
+				metadatas["year"] = year
 			}
 		}
 		mpd_return_pair(_connection, tmpDate)
@@ -496,7 +496,7 @@ final class MPDConnection
 			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(tmpGenre?.pointee.value)!), count: Int(strlen(tmpGenre?.pointee.value)), deallocator: .none)
 			if let genre = String(data:dataTemp, encoding:.utf8)
 			{
-				metadatas["genre"] = genre as AnyObject
+				metadatas["genre"] = genre
 			}
 		}
 		mpd_return_pair(_connection, tmpGenre)
@@ -642,7 +642,7 @@ final class MPDConnection
 		}
 	}
 
-	func getPlayerInfos() -> [String: AnyObject]?
+	func getPlayerInfos() -> [String: Any]?
 	{
 		let song = mpd_run_current_song(_connection)
 		if song == nil
@@ -669,7 +669,7 @@ final class MPDConnection
 		{
 			if let album = delegate?.albumMatchingName(name)
 			{
-				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed) as AnyObject, kPlayerStatusKey : state.rawValue as AnyObject]
+				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state.rawValue]
 			}
 		}
 

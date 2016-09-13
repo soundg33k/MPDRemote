@@ -38,7 +38,7 @@ final class Album
 	var path: String? = nil
 	// Album tracks
 	var songs: [Track]? = nil
-	//
+	// Album UUID
 	var uuid: UUID
 	// Local URL for the cover
 	lazy var localCoverURL: URL? = {

@@ -87,14 +87,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		let columns = CGFloat(3)
 		let span = CGFloat(10)
 		let width = ceil((UIScreen.main.bounds.width / columns) - (2 * span))
-		let defaults: [String: AnyObject] =
+		let defaults: [String: Any] =
 		[
-			kNYXPrefDirectoryCovers : coversDirectoryPath as AnyObject,
-			kNYXPrefCoverSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize:CGSize(width, width))) as AnyObject,
-			kNYXPrefRandom : false as AnyObject,
-			kNYXPrefRepeat : false as AnyObject,
-			kNYXPrefVolume : 100 as AnyObject,
-			kNYXPrefDisplayType : DisplayType.albums.rawValue as AnyObject,
+			kNYXPrefDirectoryCovers : coversDirectoryPath,
+			kNYXPrefCoverSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize:CGSize(width, width))),
+			kNYXPrefRandom : false,
+			kNYXPrefRepeat : false,
+			kNYXPrefVolume : 100,
+			kNYXPrefDisplayType : DisplayType.albums.rawValue,
 		]
 
 		let fileManager = FileManager()
