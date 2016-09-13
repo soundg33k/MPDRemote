@@ -34,7 +34,7 @@ class MenuVC : UIViewController
 	// Menu
 	private(set) var menuView: MenuView! = nil
 	// Screen edge gesture
-	var panGestureMenu: UIScreenEdgePanGestureRecognizer! = nil
+	private(set) var panGestureMenu: UIScreenEdgePanGestureRecognizer! = nil
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -151,11 +151,7 @@ extension MenuVC : UIGestureRecognizerDelegate
 	{
 		if (gestureRecognizer === panGestureMenu)
 		{
-			if (menuView.visible)
-			{
-				return false
-			}
-			return true
+			return !menuView.visible
 		}
 		return true
 	}

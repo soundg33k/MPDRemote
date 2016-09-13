@@ -151,11 +151,7 @@ extension MenuTVC : UIGestureRecognizerDelegate
 	{
 		if (gestureRecognizer === self.panGestureMenu)
 		{
-			if (menuView.visible)
-			{
-				return false
-			}
-			return true
+			return !menuView.visible
 		}
 		return true
 	}
