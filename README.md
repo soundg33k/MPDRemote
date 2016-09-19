@@ -1,4 +1,4 @@
-**MPDRemote** is an iOS application to control a [mpd](http://www.musicpd.org/) server. It is written in Swift.
+**MPDRemote** is an iOS application to control a [mpd](http://www.musicpd.org/) server. It is written in Swift 3.
 
 ![screenshot1](https://static.whine.fr/images/2016/mpdremote1.jpg)
 
