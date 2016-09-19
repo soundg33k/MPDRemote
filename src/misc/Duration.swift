@@ -26,13 +26,18 @@ import Foundation
 struct Duration
 {
 	// MARK: - Properties
-	// Value in secondss
+	// Value in seconds
 	let seconds: UInt
 
-	// MARK: - Initializer
+	// MARK: - Initializers
 	init(seconds: UInt)
 	{
 		self.seconds = seconds
+	}
+
+	init(seconds: Int)
+	{
+		self.seconds = UInt(seconds)
 	}
 
 	// MARK: - Public
@@ -96,14 +101,6 @@ extension Duration : CustomStringConvertible
 	var description: String
 	{
 		return String(seconds)
-	}
-}
-
-extension Duration : ExpressibleByIntegerLiteral
-{
-	init(integerLiteral value: IntegerLiteralType)
-	{
-		self.init(seconds:UInt(value))
 	}
 }
 

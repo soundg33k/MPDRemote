@@ -36,27 +36,27 @@ final class RootVC : MenuVC
 	// Top constraint for collection view
 	@IBOutlet var topConstraint: NSLayoutConstraint!
 	// Search bar
-	var searchBar: UISearchBar! = nil
+	fileprivate var searchBar: UISearchBar! = nil
 	// Button in the navigationbar
-	var titleView: UIButton! = nil
+	fileprivate var titleView: UIButton! = nil
 	// Random button
-	var btnRandom: UIButton! = nil
+	fileprivate var btnRandom: UIButton! = nil
 	// Repeat button
-	var btnRepeat: UIButton! = nil
+	fileprivate var btnRepeat: UIButton! = nil
 	// Should show the search view, flag
-	var searchBarVisible = false
+	fileprivate var searchBarVisible = false
 	// Is currently searching, flag
-	var searching = false
+	fileprivate var searching = false
 	// Search results
-	var searchResults = [AnyObject]()
+	fileprivate var searchResults = [AnyObject]()
 	// Long press gesture is recognized, flag
-	var longPressRecognized = false
+	fileprivate var longPressRecognized = false
 	// Keep track of download operations to eventually cancel them
-	var _downloadOperations = [String : Operation]()
+	fileprivate var _downloadOperations = [String : Operation]()
 	// View to change the type of items in the collection view
-	var _typeChoiceView: TypeChoiceView! = nil
+	fileprivate  var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
-	var _displayType = DisplayType(rawValue:UserDefaults.standard.integer(forKey: kNYXPrefDisplayType))!
+	fileprivate var _displayType = DisplayType(rawValue:UserDefaults.standard.integer(forKey: kNYXPrefDisplayType))!
 
 	// MARK: - UIViewController
 	override func viewDidLoad()

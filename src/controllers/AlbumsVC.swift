@@ -31,7 +31,7 @@ final class AlbumsVC : UITableViewController
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 	// Keep track of download operations to eventually cancel them
-	var _downloadOperations = [String : Operation]()
+	fileprivate var _downloadOperations = [String : Operation]()
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)

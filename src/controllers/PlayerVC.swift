@@ -264,7 +264,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			sliderPosition.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((sliderPosition.value * 100.0) / sliderPosition.maximumValue))%"
 		}
 
-		let elapsedDuration = Duration(seconds:UInt(elapsed))
+		let elapsedDuration = Duration(seconds:elapsed)
 		let remainingDuration = track.duration - elapsedDuration
 		lblElapsedDuration.text = elapsedDuration.minutesRepresentationAsString()
 		lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"

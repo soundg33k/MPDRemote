@@ -49,7 +49,7 @@ final class ServerVC : MenuTVC
 	// Zeroconf browser
 	private var serviceBrowser: NetServiceBrowser!
 	// List of ZC servers found
-	var zcList = [NetService]()
+	fileprivate var zcList = [NetService]()
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -402,7 +402,6 @@ extension ServerVC : NetServiceDelegate
 		for addressBytes in addresses where found == false
 		{
 			let inetAddressPointer = (addressBytes as NSData).bytes.assumingMemoryBound(to: sockaddr_in.self)
-			//let inetAddressPointer = UnsafePointer<sockaddr_in>((addressBytes as NSData).bytes)
 			var inetAddress = inetAddressPointer.pointee
 			if inetAddress.sin_family == sa_family_t(AF_INET)
 			{
@@ -418,7 +417,6 @@ extension ServerVC : NetServiceDelegate
 			else if inetAddress.sin_family == sa_family_t(AF_INET6)
 			{
 				let inetAddressPointer6 = (addressBytes as NSData).bytes.assumingMemoryBound(to: sockaddr_in6.self)
-				//let inetAddressPointer6 = UnsafePointer<sockaddr_in6>((addressBytes as NSData).bytes)
 				var inetAddress6 = inetAddressPointer6.pointee
 				let ipStringBuffer = UnsafeMutablePointer<Int8>.allocate(capacity: Int(INET6_ADDRSTRLEN))
 				let ipString = inet_ntop(Int32(inetAddress6.sin6_family), &inetAddress6.sin6_addr, ipStringBuffer, UInt32(INET6_ADDRSTRLEN))

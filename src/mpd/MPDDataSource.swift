@@ -49,7 +49,6 @@ final class MPDDataSource
 	init()
 	{
 		self._queue = DispatchQueue(label:"io.whine.mpdremote.queue.ds", qos:.default, attributes:[], autoreleaseFrequency:.inherit, target: nil)
-		//self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.ds", attributes:[.serial, .qosDefault], target: nil)
 	}
 
 	// MARK: - Public
