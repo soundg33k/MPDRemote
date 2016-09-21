@@ -1,4 +1,4 @@
-// WEBServer.swift
+// MPDServer.swift
 // Copyright (c) 2016 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,43 +23,48 @@
 import Foundation
 
 
-final class WEBServer : NSObject, NSCoding
+final class AudioServer : NSObject, NSCoding
 {
 	// MARK: - Properties
-	// Server hostname
-	let hostname: String
+	// Server name
+	var name: String
+	// Server IP / hostname
+	var hostname: String
 	// Server port
-	let port: UInt16
-	// Name of the cover files
-	var coverName: String = "cover.jpg"
+	var port: UInt16
+	// Server password
+	var password: String = ""
 
 	// MARK: - Initializers
-	init(hostname: String, port: UInt16)
+	init(name: String, hostname: String, port: UInt16)
 	{
+		self.name = name
 		self.hostname = hostname
 		self.port = port
 	}
 
-	convenience init(hostname: String, port: UInt16, coverName: String)
+	convenience init(name: String, hostname: String, port: UInt16, password: String)
 	{
-		self.init(hostname:hostname, port:port)
-		self.coverName = coverName
+		self.init(name:name, hostname:hostname, port:port)
+		self.password = password
 	}
 
 	// MARK: - NSCoding
 	required convenience init?(coder decoder: NSCoder)
 	{
-		guard let hostname = decoder.decodeObject(forKey: "hostname") as? String,
-			let coverName = decoder.decodeObject(forKey: "covername") as? String
+		guard let name = decoder.decodeObject(forKey: "name") as? String,
+			let hostname = decoder.decodeObject(forKey: "hostname") as? String,
+			let password = decoder.decodeObject(forKey: "password") as? String
 			else { return nil }
-
-		self.init(hostname:hostname, port:UInt16(decoder.decodeInteger(forKey: "port")), coverName:coverName)
+		
+		self.init(name:name, hostname:hostname, port:UInt16(decoder.decodeInteger(forKey: "port")), password:password)
 	}
 
 	func encode(with coder: NSCoder)
 	{
+		coder.encode(name, forKey:"name")
 		coder.encode(hostname, forKey:"hostname")
 		coder.encode(Int(port), forKey:"port")
-		coder.encode(coverName, forKey:"covername")
+		coder.encode(password, forKey:"password")
 	}
 }

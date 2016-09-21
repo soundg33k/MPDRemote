@@ -116,18 +116,24 @@ final class KawaiiColors
 	private func _findEdgeColor(_ colors: inout [CountedObject<UIColor>]) -> UIColor?
 	{
 		// Get raw image pixels
-		let cgImage = image.cgImage
-		let width = cgImage?.width
-		let height = cgImage?.height
-
-		let bmContext = BitmapContext.RGBABitmapContext(width:width!, height:height!, withAlpha:false)
-		bmContext?.draw(cgImage!, in: CGRect(0.0, 0.0, CGFloat(width!), CGFloat(height!)))
-		let data = bmContext?.data
-		if data == nil
+		guard let cgImage = image.cgImage else
 		{
 			return nil
 		}
-		let pixels = data!.assumingMemoryBound(to: RGBAPixel.self)
+		let width = cgImage.width
+		let height = cgImage.height
+
+		guard let bmContext = BitmapContext.RGBABitmapContext(width:width, height:height, withAlpha:false) else
+		{
+			return nil
+		}
+		bmContext.draw(cgImage, in: CGRect(0.0, 0.0, CGFloat(width), CGFloat(height)))
+		guard let data = bmContext.data else
+			//if data == nil
+		{
+			return nil
+		}
+		let pixels = data.assumingMemoryBound(to: RGBAPixel.self)
 		//let pixels = UnsafeMutablePointer<RGBAPixel>(data)!
 
 		let pp = precision
@@ -135,12 +141,12 @@ final class KawaiiColors
 		var rawImageColors: [[[UInt]]] = [[[UInt]]](repeating: [[UInt]](repeating: [UInt](repeating: 0, count: pp), count: pp), count: pp)
 		var rawEdgeColors: [[[UInt]]] = [[[UInt]]](repeating: [[UInt]](repeating: [UInt](repeating: 0, count: pp), count: pp), count: pp)
 
-		let edge = samplingEdge == .left ? 0 : width! - 1
-		for y in 0 ..< height!
+		let edge = samplingEdge == .left ? 0 : width - 1
+		for y in 0 ..< height
 		{
-			for x in 0 ..< width!
+			for x in 0 ..< width
 			{
-				let index = x + y * width!
+				let index = x + y * width
 				let pixel = pixels[index]
 				let r = pixel.r / scale
 				let g = pixel.g / scale

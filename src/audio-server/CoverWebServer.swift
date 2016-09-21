@@ -1,4 +1,4 @@
-// MPDServer.swift
+// WEBServer.swift
 // Copyright (c) 2016 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,53 +23,43 @@
 import Foundation
 
 
-final class MPDServer : NSObject, NSCoding
+final class CoverWebServer : NSObject, NSCoding
 {
 	// MARK: - Properties
-	// Server name
-	var name: String
-	// Server IP / hostname
-	var hostname: String
+	// Server hostname
+	let hostname: String
 	// Server port
-	var port: UInt16
-	// Server password
-	var password: String = ""
+	let port: UInt16
+	// Name of the cover files
+	var coverName: String = "cover.jpg"
 
 	// MARK: - Initializers
-	init(name: String, hostname: String, port: UInt16)
+	init(hostname: String, port: UInt16)
 	{
-		self.name = name
 		self.hostname = hostname
 		self.port = port
 	}
 
-	convenience init(name: String, hostname: String, port: UInt16, password: String)
+	convenience init(hostname: String, port: UInt16, coverName: String)
 	{
-		self.init(name:name, hostname:hostname, port:port)
-		self.password = password
-	}
-
-	class func def() -> MPDServer
-	{
-		return MPDServer(name:"default-debug", hostname:"127.0.0.1", port:6600)
+		self.init(hostname:hostname, port:port)
+		self.coverName = coverName
 	}
 
 	// MARK: - NSCoding
 	required convenience init?(coder decoder: NSCoder)
 	{
-		guard let name = decoder.decodeObject(forKey: "name") as? String,
-			let hostname = decoder.decodeObject(forKey: "hostname") as? String,
-			let password = decoder.decodeObject(forKey: "password") as? String
+		guard let hostname = decoder.decodeObject(forKey: "hostname") as? String,
+			let coverName = decoder.decodeObject(forKey: "covername") as? String
 			else { return nil }
-		
-		self.init(name:name, hostname:hostname, port:UInt16(decoder.decodeInteger(forKey: "port")), password:password)
+
+		self.init(hostname:hostname, port:UInt16(decoder.decodeInteger(forKey: "port")), coverName:coverName)
 	}
 
 	func encode(with coder: NSCoder)
 	{
-		coder.encode(name, forKey:"name")
 		coder.encode(hostname, forKey:"hostname")
 		coder.encode(Int(port), forKey:"port")
-		coder.encode(password, forKey:"password")
+		coder.encode(coverName, forKey:"covername")
 	}
 }

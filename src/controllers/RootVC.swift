@@ -142,7 +142,7 @@ final class RootVC : MenuVC
 		{
 			if let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 			{
-				if let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! MPDServer?
+				if let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! AudioServer?
 				{
 					// Data source
 					MPDDataSource.shared.server = server

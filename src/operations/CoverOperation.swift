@@ -97,7 +97,7 @@ final class CoverOperation : Operation
 			isFinished = true
 			return
 		}
-		guard let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! WEBServer? else
+		guard let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! CoverWebServer? else
 		{
 			Logger.alog("[!] No WEB server configured.")
 			generateCover()

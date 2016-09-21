@@ -24,25 +24,13 @@ import MPDCLIENT
 import UIKit
 
 
-protocol MPDConnectionDelegate : class
-{
-	func albumMatchingName(_ name: String) -> Album?
-}
-
-
-public let kPlayerTrackKey = "track"
-public let kPlayerAlbumKey = "album"
-public let kPlayerElapsedKey = "elapsed"
-public let kPlayerStatusKey = "status"
-
-
-final class MPDConnection
+final class MPDConnection : AudioServerConnection
 {
 	// MARK: - Public properties
 	// mpd server
-	let server: MPDServer
+	let server: AudioServer
 	// Delegate
-	weak var delegate: MPDConnectionDelegate?
+	weak var delegate: AudioServerConnectionDelegate?
 	// Connected flag
 	private(set) var connected = false
 
@@ -53,7 +41,7 @@ final class MPDConnection
 	private let _timeout = UInt32(30)
 
 	// MARK: - Initializers
-	init(server: MPDServer)
+	init(server: AudioServer)
 	{
 		self.server = server
 	}
@@ -120,7 +108,6 @@ final class MPDConnection
 		{
 			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
 			if let name = String(data: dataTemp, encoding: .utf8)
-			//if let name = String(data:Data(bytesNoCopy: UnsafeMutablePointer<UInt8>(UnsafeMutableRawPointer((pair?.pointee.value)!)), count:Int(strlen(pair?.pointee.value)), deallocator: .none), encoding:String.Encoding.utf8)
 			{
 				switch displayType
 				{

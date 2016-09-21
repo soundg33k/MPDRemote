@@ -41,9 +41,9 @@ final class ServerVC : MenuTVC
 	// Cover name
 	@IBOutlet var tfWEBCoverName: UITextField!
 	// MPD Server
-	private var mpdServer: MPDServer?
+	private var mpdServer: AudioServer?
 	// WEB Server for covers
-	private var webServer: WEBServer?
+	private var webServer: CoverWebServer?
 	// Indicate that the keyboard is visible, flag
 	private var _keyboardVisible = false
 	// Zeroconf browser
@@ -78,7 +78,7 @@ final class ServerVC : MenuTVC
 
 		if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 		{
-			if let server = NSKeyedUnarchiver.unarchiveObject(with: mpdServerAsData) as! MPDServer?
+			if let server = NSKeyedUnarchiver.unarchiveObject(with: mpdServerAsData) as! AudioServer?
 			{
 				mpdServer = server
 			}
@@ -94,7 +94,7 @@ final class ServerVC : MenuTVC
 
 		if let webServerAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer)
 		{
-			if let server = NSKeyedUnarchiver.unarchiveObject(with: webServerAsData) as! WEBServer?
+			if let server = NSKeyedUnarchiver.unarchiveObject(with: webServerAsData) as! CoverWebServer?
 			{
 				webServer = server
 			}
@@ -166,7 +166,7 @@ final class ServerVC : MenuTVC
 			password = strPassword
 		}
 
-		let mpdServer = password.length > 0 ? MPDServer(name:serverName, hostname:ip, port:port, password:password) : MPDServer(name:serverName, hostname:ip, port:port)
+		let mpdServer = password.length > 0 ? AudioServer(name:serverName, hostname:ip, port:port, password:password) : AudioServer(name:serverName, hostname:ip, port:port)
 		let cnn = MPDConnection(server:mpdServer)
 		if cnn.connect()
 		{
@@ -194,7 +194,7 @@ final class ServerVC : MenuTVC
 				port = p
 			}
 
-			let webServer = WEBServer(hostname:strURL, port:port)
+			let webServer = CoverWebServer(hostname:strURL, port:port)
 			var coverName = "cover.jpg"
 			if let cn = tfWEBCoverName.text , cn.length > 0
 			{
