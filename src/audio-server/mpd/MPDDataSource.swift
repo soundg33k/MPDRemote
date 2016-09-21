@@ -270,7 +270,7 @@ final class MPDDataSource
 	}
 }
 
-extension MPDDataSource : /*MPDConnectionDelegate*/ AudioServerConnectionDelegate
+extension MPDDataSource : AudioServerConnectionDelegate
 {
 	func albumMatchingName(_ name: String) -> Album?
 	{

@@ -52,7 +52,7 @@ final class RootVC : MenuVC
 	// Long press gesture is recognized, flag
 	fileprivate var longPressRecognized = false
 	// Keep track of download operations to eventually cancel them
-	fileprivate var _downloadOperations = [String : Operation]()
+	fileprivate var _downloadOperations = [UUID : Operation]()
 	// View to change the type of items in the collection view
 	fileprivate  var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
@@ -114,8 +114,9 @@ final class RootVC : MenuVC
 		// Create collection view
 		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
-		let w = ceil((/*collectionView.width*/UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
+		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
+		collectionView.prefetchDataSource = self
 
 		// Longpress
 		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(longPress(_:)))
@@ -770,10 +771,10 @@ extension RootVC : UICollectionViewDataSource
 		}
 	}
 
-	func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:@escaping (_ cover: UIImage, _ thumbnail: UIImage) -> Void)
+	func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
 	{
 		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
-		let key = album.name + album.year
+		let key = album.uuid
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 			if let op = weakOperation
@@ -783,7 +784,11 @@ extension RootVC : UICollectionViewDataSource
 					self._downloadOperations.removeValue(forKey: key)
 				}
 			}
-			callback(cover, thumbnail)
+			if let block = callback
+			{
+				block(cover, thumbnail)
+
+			}
 		}
 		_downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
@@ -836,12 +841,52 @@ extension RootVC : UICollectionViewDelegate
 
 		// Remove download cover operation if still in queue
 		let album = src[indexPath.row]
-		let key = album.name + album.year
+		let key = album.uuid
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
 			_downloadOperations.removeValue(forKey: key)
 			Logger.dlog("[+] Cancelling \(op)")
+		}
+	}
+}
+
+// MARK: - UICollectionViewDataSourcePrefetching
+extension RootVC : UICollectionViewDataSourcePrefetching
+{
+	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath])
+	{
+		if _displayType != .albums || searching
+		{
+			return
+		}
+
+		let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
+		let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
+		for ip in indexPaths
+		{
+			let album = MPDDataSource.shared.albums[ip.row]
+			_downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue, callback: nil)
+		}
+	}
+
+	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath])
+	{
+		if _displayType != .albums || searching
+		{
+			return
+		}
+
+		for ip in indexPaths
+		{
+			let album = MPDDataSource.shared.albums[ip.row]
+			let key = album.uuid
+			if let op = _downloadOperations[key] as! CoverOperation?
+			{
+				op.cancel()
+				_downloadOperations.removeValue(forKey: key)
+				Logger.dlog("[+] Cancelling \(op)")
+			}
 		}
 	}
 }

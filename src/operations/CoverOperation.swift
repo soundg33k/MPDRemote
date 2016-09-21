@@ -84,7 +84,7 @@ final class CoverOperation : Operation
 		// No path for album, abort
 		guard let path = album.path else
 		{
-			Logger.alog("[!] No album art path defined.")
+			Logger.alog("[!] No album path defined.")
 			isFinished = true
 			return
 		}

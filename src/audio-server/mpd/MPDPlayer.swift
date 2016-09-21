@@ -271,7 +271,7 @@ final class MPDPlayer
 	}
 }
 
-extension MPDPlayer : /*MPDConnectionDelegate*/ AudioServerConnectionDelegate
+extension MPDPlayer : AudioServerConnectionDelegate
 {
 	func albumMatchingName(_ name: String) -> Album?
 	{
