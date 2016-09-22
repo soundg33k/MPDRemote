@@ -61,13 +61,13 @@ final class AudioServer : NSObject, NSCoding
 	// MARK: - NSCoding
 	required convenience init?(coder decoder: NSCoder)
 	{
-		guard let type = decoder.decodeObject(forKey: "type") as? Int,
-			let name = decoder.decodeObject(forKey: "name") as? String,
+		guard let name = decoder.decodeObject(forKey: "name") as? String,
 			let hostname = decoder.decodeObject(forKey: "hostname") as? String,
-			let password = decoder.decodeObject(forKey: "password") as? String,
-			let port = decoder.decodeObject(forKey: "port") as? Int
+			let password = decoder.decodeObject(forKey: "password") as? String
 			else { return nil }
-		
+
+		let type = decoder.decodeInteger(forKey: "type")
+		let port = decoder.decodeInteger(forKey: "port")
 		self.init(type:AudioServerType(rawValue: type)!, name:name, hostname:hostname, port:UInt16(port), password:password)
 	}
 
