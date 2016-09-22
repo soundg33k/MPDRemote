@@ -45,23 +45,41 @@ final class RootCollectionViewCell : UICollectionViewCell
 		{
 			if longPressed
 			{
-				label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
-				imageView.layer.borderWidth = 0.5
-				if let img = image
-				{
-					guard let ciimg = CIImage(image:img) else {return}
-					guard let filter = CIFilter(name:"CIUnsharpMask") else {return}
-					filter.setDefaults()
-					filter.setValue(ciimg, forKey:kCIInputImageKey)
-					guard let result = filter.value(forKey: kCIOutputImageKey) as! CIImage? else {return}
-					imageView.image = UIImage(ciImage:result)
-				}
+				UIView.animate(withDuration: 0.25, delay:0.0, options:.curveEaseOut, animations:{
+					self.label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
+					let anim = CABasicAnimation(keyPath: "borderWidth")
+					anim.fromValue = 0
+					anim.toValue = 1
+					anim.duration = CATransaction.animationDuration()
+					anim.timingFunction = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseInEaseOut)
+					self.imageView.layer.add(anim, forKey: "kawaii-anim")
+					if let img = self.image
+					{
+						guard let ciimg = CIImage(image:img) else {return}
+						guard let filter = CIFilter(name:"CIUnsharpMask") else {return}
+						filter.setDefaults()
+						filter.setValue(ciimg, forKey:kCIInputImageKey)
+						guard let result = filter.value(forKey: kCIOutputImageKey) as! CIImage? else {return}
+						self.imageView.image = UIImage(ciImage:result)
+					}
+				}, completion:{ finished in
+					self.imageView.layer.borderWidth = 1
+				})
 			}
 			else
 			{
-				label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
-				imageView.layer.borderWidth = 0.0
-				imageView.image = image
+				UIView.animate(withDuration: 0.25, delay:0.0, options:.curveEaseOut, animations:{
+					self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+					let anim = CABasicAnimation(keyPath: "borderWidth")
+					anim.fromValue = 1
+					anim.toValue = 0
+					anim.duration = CATransaction.animationDuration()
+					anim.timingFunction = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseInEaseOut)
+					self.imageView.layer.add(anim, forKey: "kawaii-anim")
+					self.imageView.image = self.image
+				}, completion:{ finished in
+					self.imageView.layer.borderWidth = 0
+				})
 			}
 		}
 	}
