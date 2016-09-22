@@ -139,21 +139,21 @@ final class RootVC : MenuVC
 		super.viewWillAppear(animated)
 
 		// Initialize the mpd connection
-		if MPDDataSource.shared.server == nil
+		if MusicDataSource.shared.server == nil
 		{
 			if let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 			{
 				if let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! AudioServer?
 				{
 					// Data source
-					MPDDataSource.shared.server = server
-					_ = MPDDataSource.shared.initialize()
+					MusicDataSource.shared.server = server
+					_ = MusicDataSource.shared.initialize()
 					if _displayType != .albums
 					{
 						// Always fetch the albums list
-						MPDDataSource.shared.getListForDisplayType(.albums) {}
+						MusicDataSource.shared.getListForDisplayType(.albums) {}
 					}
-					MPDDataSource.shared.getListForDisplayType(_displayType) {
+					MusicDataSource.shared.getListForDisplayType(_displayType) {
 						DispatchQueue.main.async {
 							self.collectionView.reloadData()
 							self._updateNavigationTitle()
@@ -161,8 +161,8 @@ final class RootVC : MenuVC
 					}
 
 					// Player
-					MPDPlayer.shared.server = server
-					_ = MPDPlayer.shared.initialize()
+					PlayerController.shared.server = server
+					_ = PlayerController.shared.initialize()
 				}
 				else
 				{
@@ -219,20 +219,20 @@ final class RootVC : MenuVC
 		if segue.identifier == "root-albums-to-detail-album"
 		{
 			let vc = segue.destination as! AlbumDetailVC
-			vc.albums = searching ? searchResults as! [Album] : MPDDataSource.shared.albums
+			vc.albums = searching ? searchResults as! [Album] : MusicDataSource.shared.albums
 			vc.selectedIndex = collectionView.indexPathsForSelectedItems![0].row
 		}
 		else if segue.identifier == "root-genres-to-artists"
 		{
 			let row = collectionView.indexPathsForSelectedItems![0].row
-			let genre = searching ? searchResults[row] as! Genre : MPDDataSource.shared.genres[row]
+			let genre = searching ? searchResults[row] as! Genre : MusicDataSource.shared.genres[row]
 			let vc = segue.destination as! ArtistsVC
 			vc.genre = genre
 		}
 		else if segue.identifier == "root-artists-to-albums"
 		{
 			let row = collectionView.indexPathsForSelectedItems![0].row
-			let artist = searching ? searchResults[row] as! Artist : MPDDataSource.shared.artists[row]
+			let artist = searching ? searchResults[row] as! Artist : MusicDataSource.shared.artists[row]
 			let vc = segue.destination as! AlbumsVC
 			vc.artist = artist
 		}
@@ -251,22 +251,22 @@ final class RootVC : MenuVC
 			switch _displayType
 			{
 				case .albums:
-					let album = searching ? searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
-					MPDPlayer.shared.playAlbum(album, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
+					let album = searching ? searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
+					PlayerController.shared.playAlbum(album, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 				case .artists:
-					let artist = searching ? searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
-					MPDDataSource.shared.getAlbumsForArtist(artist) {
-						MPDDataSource.shared.getSongsForAlbums(artist.albums) {
+					let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
+					MusicDataSource.shared.getAlbumsForArtist(artist) {
+						MusicDataSource.shared.getSongsForAlbums(artist.albums) {
 							let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
-							MPDPlayer.shared.playTracks(ar, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
+							PlayerController.shared.playTracks(ar, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 						}
 					}
 				case .genres:
-					let genre = searching ? searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
-					MPDDataSource.shared.getAlbumsForGenre(genre) {
-						MPDDataSource.shared.getSongsForAlbums(genre.albums) {
+					let genre = searching ? searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
+					MusicDataSource.shared.getAlbumsForGenre(genre) {
+						MusicDataSource.shared.getSongsForAlbums(genre.albums) {
 							let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
-							MPDPlayer.shared.playTracks(ar, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
+							PlayerController.shared.playTracks(ar, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 						}
 					}
 			}
@@ -299,35 +299,35 @@ final class RootVC : MenuVC
 			switch _displayType
 			{
 				case .albums:
-					let album = searching ? searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
+					let album = searching ? searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
 					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.default) { (action) in
-						MPDPlayer.shared.playAlbum(album, random:false, loop:false)
+						PlayerController.shared.playAlbum(album, random:false, loop:false)
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.default) { (action) in
-						MPDPlayer.shared.playAlbum(album, random:true, loop:false)
+						PlayerController.shared.playAlbum(album, random:true, loop:false)
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.default) { (action) in
-						MPDPlayer.shared.addAlbumToQueue(album)
+						PlayerController.shared.addAlbumToQueue(album)
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(addQueueAction)
 				case .artists:
-					let artist = searching ? searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
+					let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.default) { (action) in
-						MPDDataSource.shared.getAlbumsForArtist(artist) {
-							MPDDataSource.shared.getSongsForAlbums(artist.albums) {
+						MusicDataSource.shared.getAlbumsForArtist(artist) {
+							MusicDataSource.shared.getSongsForAlbums(artist.albums) {
 								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
-								MPDPlayer.shared.playTracks(ar, random:false, loop:false)
+								PlayerController.shared.playTracks(ar, random:false, loop:false)
 							}
 						}
 						self.longPressRecognized = false
@@ -336,10 +336,10 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.default) { (action) in
-						MPDDataSource.shared.getAlbumsForArtist(artist) {
-							MPDDataSource.shared.getSongsForAlbums(artist.albums) {
+						MusicDataSource.shared.getAlbumsForArtist(artist) {
+							MusicDataSource.shared.getSongsForAlbums(artist.albums) {
 								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
-								MPDPlayer.shared.playTracks(ar, random:true, loop:false)
+								PlayerController.shared.playTracks(ar, random:true, loop:false)
 							}
 						}
 						self.longPressRecognized = false
@@ -348,10 +348,10 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.default) { (action) in
-						MPDDataSource.shared.getAlbumsForArtist(artist) {
+						MusicDataSource.shared.getAlbumsForArtist(artist) {
 							for album in artist.albums
 							{
-								MPDPlayer.shared.addAlbumToQueue(album)
+								PlayerController.shared.addAlbumToQueue(album)
 							}
 						}
 						self.longPressRecognized = false
@@ -360,12 +360,12 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(addQueueAction)
 				case .genres:
-					let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
+					let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.default) { (action) in
-						MPDDataSource.shared.getAlbumsForGenre(genre) {
-							MPDDataSource.shared.getSongsForAlbums(genre.albums) {
+						MusicDataSource.shared.getAlbumsForGenre(genre) {
+							MusicDataSource.shared.getSongsForAlbums(genre.albums) {
 								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
-								MPDPlayer.shared.playTracks(ar, random:false, loop:false)
+								PlayerController.shared.playTracks(ar, random:false, loop:false)
 							}
 						}
 						self.longPressRecognized = false
@@ -374,10 +374,10 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.default) { (action) in
-						MPDDataSource.shared.getAlbumsForGenre(genre) {
-							MPDDataSource.shared.getSongsForAlbums(genre.albums) {
+						MusicDataSource.shared.getAlbumsForGenre(genre) {
+							MusicDataSource.shared.getSongsForAlbums(genre.albums) {
 								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
-								MPDPlayer.shared.playTracks(ar, random:true, loop:false)
+								PlayerController.shared.playTracks(ar, random:true, loop:false)
 							}
 						}
 						self.longPressRecognized = false
@@ -386,10 +386,10 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.default) { (action) in
-						MPDDataSource.shared.getAlbumsForGenre(genre) {
+						MusicDataSource.shared.getAlbumsForGenre(genre) {
 							for album in genre.albums
 							{
-								MPDPlayer.shared.addAlbumToQueue(album)
+								PlayerController.shared.addAlbumToQueue(album)
 							}
 						}
 						self.longPressRecognized = false
@@ -447,7 +447,7 @@ final class RootVC : MenuVC
 		prefs.set(random, forKey:kNYXPrefRandom)
 		prefs.synchronize()
 
-		MPDPlayer.shared.setRandom(random)
+		PlayerController.shared.setRandom(random)
 	}
 
 	func toggleRepeatAction(_ sender: AnyObject?)
@@ -461,7 +461,7 @@ final class RootVC : MenuVC
 		prefs.set(loop, forKey:kNYXPrefRepeat)
 		prefs.synchronize()
 
-		MPDPlayer.shared.setRepeat(loop)
+		PlayerController.shared.setRepeat(loop)
 	}
 
 	// MARK: - Private
@@ -495,13 +495,13 @@ final class RootVC : MenuVC
 		switch _displayType
 		{
 			case .albums:
-				let n = MPDDataSource.shared.albums.count
+				let n = MusicDataSource.shared.albums.count
 				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_albums") : NYXLocalizedString("lbl_album"))"
 			case .genres:
-				let n = MPDDataSource.shared.genres.count
+				let n = MusicDataSource.shared.genres.count
 				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_genres") : NYXLocalizedString("lbl_genre"))"
 			case .artists:
-				let n = MPDDataSource.shared.artists.count
+				let n = MusicDataSource.shared.artists.count
 				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_artists") : NYXLocalizedString("lbl_artist"))"
 		}
 		let astr1 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
@@ -523,11 +523,11 @@ extension RootVC : UICollectionViewDataSource
 		switch _displayType
 		{
 			case .albums:
-				return MPDDataSource.shared.albums.count
+				return MusicDataSource.shared.albums.count
 			case .genres:
-				return MPDDataSource.shared.genres.count
+				return MusicDataSource.shared.genres.count
 			case .artists:
-				return MPDDataSource.shared.artists.count
+				return MusicDataSource.shared.artists.count
 		}
 	}
 
@@ -546,13 +546,13 @@ extension RootVC : UICollectionViewDataSource
 		switch _displayType
 		{
 			case .albums:
-				let album = searching ? searchResults[indexPath.row] as! Album : MPDDataSource.shared.albums[indexPath.row]
+				let album = searching ? searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
 				_configureCellForAlbum(cell, indexPath:indexPath, album:album)
 			case .genres:
-				let genre = searching ? searchResults[indexPath.row] as! Genre : MPDDataSource.shared.genres[indexPath.row]
+				let genre = searching ? searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 				_configureCellForGenre(cell, indexPath:indexPath, genre:genre)
 			case .artists:
-				let artist = searching ? searchResults[indexPath.row] as! Artist : MPDDataSource.shared.artists[indexPath.row]
+				let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 				_configureCellForArtist(cell, indexPath:indexPath, artist:artist)
 		}
 
@@ -600,7 +600,7 @@ extension RootVC : UICollectionViewDataSource
 			}
 			else
 			{
-				MPDDataSource.shared.getPathForAlbum(album) {
+				MusicDataSource.shared.getPathForAlbum(album) {
 					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
@@ -663,7 +663,7 @@ extension RootVC : UICollectionViewDataSource
 				}
 				else
 				{
-					MPDDataSource.shared.getPathForAlbum(album) {
+					MusicDataSource.shared.getPathForAlbum(album) {
 						self._downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 							DispatchQueue.main.async {
 								if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
@@ -678,7 +678,7 @@ extension RootVC : UICollectionViewDataSource
 		}
 		else
 		{
-			MPDDataSource.shared.getAlbumForGenre(genre) {
+			MusicDataSource.shared.getAlbumForGenre(genre) {
 				DispatchQueue.main.async {
 					if let _ = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 					{
@@ -743,7 +743,7 @@ extension RootVC : UICollectionViewDataSource
 					}
 					else
 					{
-						MPDDataSource.shared.getPathForAlbum(album) {
+						MusicDataSource.shared.getPathForAlbum(album) {
 							self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 								DispatchQueue.main.async {
@@ -760,7 +760,7 @@ extension RootVC : UICollectionViewDataSource
 		}
 		else
 		{
-			MPDDataSource.shared.getAlbumsForArtist(artist) {
+			MusicDataSource.shared.getAlbumsForArtist(artist) {
 				DispatchQueue.main.async {
 					if let _ = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 					{
@@ -833,7 +833,7 @@ extension RootVC : UICollectionViewDelegate
 		}
 
 		// When searching things can go wrong, this prevent some crashes
-		let src = searching ? searchResults as! [Album] : MPDDataSource.shared.albums
+		let src = searching ? searchResults as! [Album] : MusicDataSource.shared.albums
 		if indexPath.row >= src.count
 		{
 			return
@@ -865,7 +865,7 @@ extension RootVC : UICollectionViewDataSourcePrefetching
 		let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 		for ip in indexPaths
 		{
-			let album = MPDDataSource.shared.albums[ip.row]
+			let album = MusicDataSource.shared.albums[ip.row]
 			_downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue, callback: nil)
 		}
 	}
@@ -879,7 +879,7 @@ extension RootVC : UICollectionViewDataSourcePrefetching
 
 		for ip in indexPaths
 		{
-			let album = MPDDataSource.shared.albums[ip.row]
+			let album = MusicDataSource.shared.albums[ip.row]
 			let key = album.uuid
 			if let op = _downloadOperations[key] as! CoverOperation?
 			{
@@ -967,19 +967,19 @@ extension RootVC : UISearchBarDelegate
 		switch _displayType
 		{
 			case .albums:
-				if MPDDataSource.shared.albums.count > 0
+				if MusicDataSource.shared.albums.count > 0
 				{
-					searchResults = MPDDataSource.shared.albums.filter({$0.name.lowercased().contains(searchText.lowercased())})
+					searchResults = MusicDataSource.shared.albums.filter({$0.name.lowercased().contains(searchText.lowercased())})
 				}
 			case .genres:
-				if MPDDataSource.shared.genres.count > 0
+				if MusicDataSource.shared.genres.count > 0
 				{
-					searchResults = MPDDataSource.shared.genres.filter({$0.name.lowercased().contains(searchText.lowercased())})
+					searchResults = MusicDataSource.shared.genres.filter({$0.name.lowercased().contains(searchText.lowercased())})
 				}
 			case .artists:
-				if MPDDataSource.shared.artists.count > 0
+				if MusicDataSource.shared.artists.count > 0
 				{
-					searchResults = MPDDataSource.shared.artists.filter({$0.name.lowercased().contains(searchText.lowercased())})
+					searchResults = MusicDataSource.shared.artists.filter({$0.name.lowercased().contains(searchText.lowercased())})
 				}
 		}
 		collectionView.reloadData()
@@ -1003,7 +1003,7 @@ extension RootVC : TypeChoiceViewDelegate
 		UserDefaults.standard.synchronize()
 
 		// Refresh view
-		MPDDataSource.shared.getListForDisplayType(type) {
+		MusicDataSource.shared.getListForDisplayType(type) {
 			DispatchQueue.main.async {
 				self.collectionView.setContentOffset(CGPoint.zero, animated:true)
 				self.collectionView.reloadData()
@@ -1025,22 +1025,22 @@ extension RootVC
 	{
 		if motion == .motionShake
 		{
-			let randomAlbum = MPDDataSource.shared.albums.randomItem()
+			let randomAlbum = MusicDataSource.shared.albums.randomItem()
 			if randomAlbum.songs == nil
 			{
-				MPDDataSource.shared.getSongsForAlbum(randomAlbum) {
-					MPDPlayer.shared.playAlbum(randomAlbum, random:false, loop:false)
+				MusicDataSource.shared.getSongsForAlbum(randomAlbum) {
+					PlayerController.shared.playAlbum(randomAlbum, random:false, loop:false)
 				}
 			}
 			else
 			{
-				MPDPlayer.shared.playAlbum(randomAlbum, random:false, loop:false)
+				PlayerController.shared.playAlbum(randomAlbum, random:false, loop:false)
 			}
 
 			// Briefly display cover of album
 			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
-			MPDDataSource.shared.getPathForAlbum(randomAlbum) {
+			MusicDataSource.shared.getPathForAlbum(randomAlbum) {
 				self._downloadCoverForAlbum(randomAlbum, cropSize:cropSize.cgSizeValue, callback:{ (cover: UIImage, thumbnail: UIImage) in
 					let size = CGSize(self.view.width - 64.0, self.view.width - 64.0)
 					let cropped = cover.imageCroppedToFitSize(size)

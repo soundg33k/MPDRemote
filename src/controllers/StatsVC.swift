@@ -64,7 +64,7 @@ final class StatsVC : MenuTVC
 	{
 		super.viewWillAppear(animated)
 
-		MPDDataSource.shared.getStats { (stats: [String : String]) in
+		MusicDataSource.shared.getStats { (stats: [String : String]) in
 			DispatchQueue.main.async {
 				self.stats = stats
 				self._updateLabels()

@@ -156,7 +156,7 @@ final class MiniPlayerView : UIView, PTappable
 			}
 			else
 			{
-				MPDDataSource.shared.getPathForAlbum(album) {
+				MusicDataSource.shared.getPathForAlbum(album) {
 					let op = CoverOperation(album:album, cropSize:cropSize.cgSizeValue)
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
@@ -206,7 +206,7 @@ final class MiniPlayerView : UIView, PTappable
 			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for:UIControlState())
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
-		MPDPlayer.shared.togglePause()
+		PlayerController.shared.togglePause()
 	}
 
 	// MARK: - PTappable

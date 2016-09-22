@@ -66,7 +66,7 @@ final class AlbumsVC : UITableViewController
 
 		if artist.albums.count <= 0
 		{
-			MPDDataSource.shared.getAlbumsForArtist(artist) {
+			MusicDataSource.shared.getAlbumsForArtist(artist) {
 				DispatchQueue.main.async {
 					self.tableView.reloadData()
 					self._updateNavigationTitle()
@@ -181,7 +181,7 @@ extension AlbumsVC
 			}
 			else
 			{
-				MPDDataSource.shared.getPathForAlbum(album) {
+				MusicDataSource.shared.getPathForAlbum(album) {
 					self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
 						let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 						DispatchQueue.main.async {

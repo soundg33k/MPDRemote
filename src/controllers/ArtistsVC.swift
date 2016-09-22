@@ -65,7 +65,7 @@ final class ArtistsVC : UITableViewController
 	{
 		super.viewWillAppear(animated)
 
-		MPDDataSource.shared.getArtistsForGenre(genre) { (artists: [Artist]) in
+		MusicDataSource.shared.getArtistsForGenre(genre) { (artists: [Artist]) in
 			self.artists = artists
 			DispatchQueue.main.async {
 				self.tableView.reloadData()
@@ -183,7 +183,7 @@ extension ArtistsVC
 					}
 					else
 					{
-						MPDDataSource.shared.getPathForAlbum(album) {
+						MusicDataSource.shared.getPathForAlbum(album) {
 							self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 								DispatchQueue.main.async {
@@ -200,7 +200,7 @@ extension ArtistsVC
 		}
 		else
 		{
-			MPDDataSource.shared.getAlbumsForArtist(artist) {
+			MusicDataSource.shared.getAlbumsForArtist(artist) {
 				DispatchQueue.main.async {
 					if let _ = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
 					{

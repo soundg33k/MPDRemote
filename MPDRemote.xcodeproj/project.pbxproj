@@ -56,9 +56,9 @@
 		1EDF75591CB54E130071818E /* AlbumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF75581CB54E130071818E /* AlbumTableViewCell.swift */; };
 		4303DE9A1D9036660083C686 /* AudioServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4303DE931D9036660083C686 /* AudioServerConnection.swift */; };
 		4303DE9B1D9036660083C686 /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4303DE951D9036660083C686 /* MPDConnection.swift */; };
-		4303DE9C1D9036660083C686 /* MPDDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4303DE961D9036660083C686 /* MPDDataSource.swift */; };
-		4303DE9D1D9036660083C686 /* MPDPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4303DE971D9036660083C686 /* MPDPlayer.swift */; };
 		4334E51B1D0ED5C5004553A3 /* InteractableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */; };
+		434C97121D94136200B5FCAD /* MusicDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434C97111D94136200B5FCAD /* MusicDataSource.swift */; };
+		434C97141D94157E00B5FCAD /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434C97131D94157E00B5FCAD /* PlayerController.swift */; };
 		4355DCB41D0EB0750000232D /* Tappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCB31D0EB0750000232D /* Tappable.swift */; };
 		4355DCB61D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCB51D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift */; };
 		4355DCBC1D0EC7490000232D /* Swippable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCBB1D0EC7490000232D /* Swippable.swift */; };
@@ -172,11 +172,11 @@
 		1EDF75581CB54E130071818E /* AlbumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTableViewCell.swift; sourceTree = "<group>"; };
 		4303DE931D9036660083C686 /* AudioServerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioServerConnection.swift; sourceTree = "<group>"; };
 		4303DE951D9036660083C686 /* MPDConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDConnection.swift; sourceTree = "<group>"; };
-		4303DE961D9036660083C686 /* MPDDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDDataSource.swift; sourceTree = "<group>"; };
-		4303DE971D9036660083C686 /* MPDPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDPlayer.swift; sourceTree = "<group>"; };
 		430C2EEB1D18172900D7F1A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/main.strings; sourceTree = "<group>"; };
 		430C2EED1D18173200D7F1A3 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/main.strings; sourceTree = "<group>"; };
 		4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InteractableImageView.swift; sourceTree = "<group>"; };
+		434C97111D94136200B5FCAD /* MusicDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicDataSource.swift; sourceTree = "<group>"; };
+		434C97131D94157E00B5FCAD /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
 		4355DCB31D0EB0750000232D /* Tappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Tappable.swift; path = protocols/Tappable.swift; sourceTree = "<group>"; };
 		4355DCB51D0EBB2D0000232D /* UIGestureRecognizer+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIGestureRecognizer+Extensions.swift"; sourceTree = "<group>"; };
 		4355DCBB1D0EC7490000232D /* Swippable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Swippable.swift; path = protocols/Swippable.swift; sourceTree = "<group>"; };
@@ -423,6 +423,8 @@
 				43DCAFA21D9193C500D0B908 /* AudioServer.swift */,
 				4303DE931D9036660083C686 /* AudioServerConnection.swift */,
 				43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */,
+				434C97111D94136200B5FCAD /* MusicDataSource.swift */,
+				434C97131D94157E00B5FCAD /* PlayerController.swift */,
 				4303DE941D9036660083C686 /* mpd */,
 			);
 			path = "audio-server";
@@ -432,8 +434,6 @@
 			isa = PBXGroup;
 			children = (
 				4303DE951D9036660083C686 /* MPDConnection.swift */,
-				4303DE961D9036660083C686 /* MPDDataSource.swift */,
-				4303DE971D9036660083C686 /* MPDPlayer.swift */,
 			);
 			path = mpd;
 			sourceTree = "<group>";
@@ -581,7 +581,6 @@
 				1E5653AA1C908A310049C02D /* CountedObject.swift in Sources */,
 				1E441D4B1CAC048C009DCEF4 /* PlayerVC.swift in Sources */,
 				1E5653A31C908A310049C02D /* String+Extensions.swift in Sources */,
-				4303DE9C1D9036660083C686 /* MPDDataSource.swift in Sources */,
 				4303DE9A1D9036660083C686 /* AudioServerConnection.swift in Sources */,
 				1E5653A41C908A310049C02D /* UIColor+Extensions.swift in Sources */,
 				43DCAFA51D91940C00D0B908 /* CoverWebServer.swift in Sources */,
@@ -591,9 +590,10 @@
 				1E5653AD1C908A310049C02D /* MathUtilities.swift in Sources */,
 				1E56539B1C908A310049C02D /* MenuVC.swift in Sources */,
 				1E5653B81C908A310049C02D /* MiniPlayerView.swift in Sources */,
-				4303DE9D1D9036660083C686 /* MPDPlayer.swift in Sources */,
+				434C97121D94136200B5FCAD /* MusicDataSource.swift in Sources */,
 				1E56539C1C908A310049C02D /* NYXNavigationController.swift in Sources */,
 				1E5653A61C908A310049C02D /* UIImage+Extensions.swift in Sources */,
+				434C97141D94157E00B5FCAD /* PlayerController.swift in Sources */,
 				1E5653991C908A310049C02D /* TrackTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

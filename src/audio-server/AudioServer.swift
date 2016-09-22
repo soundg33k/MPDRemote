@@ -23,45 +23,57 @@
 import Foundation
 
 
+enum AudioServerType : Int
+{
+	case mpd
+}
+
+
 final class AudioServer : NSObject, NSCoding
 {
 	// MARK: - Properties
+	// Server type, only mpd supported
+	let type: AudioServerType
 	// Server name
-	var name: String
+	let name: String
 	// Server IP / hostname
-	var hostname: String
+	let hostname: String
 	// Server port
-	var port: UInt16
+	let port: UInt16
 	// Server password
 	var password: String = ""
 
 	// MARK: - Initializers
-	init(name: String, hostname: String, port: UInt16)
+	init(type: AudioServerType, name: String, hostname: String, port: UInt16)
 	{
+		self.type = type
 		self.name = name
 		self.hostname = hostname
 		self.port = port
 	}
 
-	convenience init(name: String, hostname: String, port: UInt16, password: String)
+	convenience init(type: AudioServerType, name: String, hostname: String, port: UInt16, password: String)
 	{
-		self.init(name:name, hostname:hostname, port:port)
+		self.init(type:type, name:name, hostname:hostname, port:port)
 		self.password = password
 	}
 
 	// MARK: - NSCoding
 	required convenience init?(coder decoder: NSCoder)
 	{
-		guard let name = decoder.decodeObject(forKey: "name") as? String,
+		guard let type = decoder.decodeObject(forKey: "type") as? Int,
+			let name = decoder.decodeObject(forKey: "name") as? String,
 			let hostname = decoder.decodeObject(forKey: "hostname") as? String,
-			let password = decoder.decodeObject(forKey: "password") as? String
+			let password = decoder.decodeObject(forKey: "password") as? String,
+			let port = decoder.decodeObject(forKey: "port") as? Int
 			else { return nil }
 		
-		self.init(name:name, hostname:hostname, port:UInt16(decoder.decodeInteger(forKey: "port")), password:password)
+		self.init(type:AudioServerType(rawValue: type)!, name:name, hostname:hostname, port:UInt16(port), password:password)
 	}
 
 	func encode(with coder: NSCoder)
 	{
+		coder.encode(type.rawValue, forKey:"type")
 		coder.encode(name, forKey:"name")
 		coder.encode(hostname, forKey:"hostname")
 		coder.encode(Int(port), forKey:"port")

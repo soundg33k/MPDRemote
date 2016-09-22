@@ -72,15 +72,15 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		ivVolumeLo.image = #imageLiteral(resourceName: "img-volume-lo").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
 		ivVolumeHi.image = #imageLiteral(resourceName: "img-volume-hi").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
 
-		btnPlay.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.togglePause), for:.touchUpInside)
+		btnPlay.addTarget(PlayerController.shared, action:#selector(PlayerController.togglePause), for:.touchUpInside)
 
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:UIControlState())
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), for:.highlighted)
-		btnNext.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.requestNextTrack), for:.touchUpInside)
+		btnNext.addTarget(PlayerController.shared, action:#selector(PlayerController.requestNextTrack), for:.touchUpInside)
 
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:UIControlState())
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), for:.highlighted)
-		btnPrevious.addTarget(MPDPlayer.shared, action:#selector(MPDPlayer.requestPreviousTrack), for:.touchUpInside)
+		btnPrevious.addTarget(PlayerController.shared, action:#selector(PlayerController.requestPreviousTrack), for:.touchUpInside)
 
 		let loop = UserDefaults.standard.bool(forKey: kNYXPrefRepeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
@@ -121,7 +121,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:.playingTrackChanged, object:nil)
 		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:.playerStatusChanged, object:nil)
 
-		if let track = MPDPlayer.shared.currentTrack, let album = MPDPlayer.shared.currentAlbum
+		if let track = PlayerController.shared.currentTrack, let album = PlayerController.shared.currentAlbum
 		{
 			lblTrackTitle.text = track.title
 			lblTrackArtist.text = track.artist
@@ -142,7 +142,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			}
 			else
 			{
-				MPDDataSource.shared.getPathForAlbum(album) {
+				MusicDataSource.shared.getPathForAlbum(album) {
 					let op = CoverOperation(album:album, cropSize:self.coverView.size)
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
@@ -191,11 +191,11 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	}
 	func didSwipeLeft()
 	{
-		MPDPlayer.shared.requestNextTrack()
+		PlayerController.shared.requestNextTrack()
 	}
 	func didSwipeRight()
 	{
-		MPDPlayer.shared.requestPreviousTrack()
+		PlayerController.shared.requestPreviousTrack()
 	}
 
 	// MARK: - Buttons actions
@@ -210,7 +210,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		prefs.set(random, forKey:kNYXPrefRandom)
 		prefs.synchronize()
 
-		MPDPlayer.shared.setRandom(random)
+		PlayerController.shared.setRandom(random)
 	}
 
 	func toggleRepeatAction(_ sender: AnyObject?)
@@ -224,14 +224,14 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		prefs.set(loop, forKey:kNYXPrefRepeat)
 		prefs.synchronize()
 
-		MPDPlayer.shared.setRepeat(loop)
+		PlayerController.shared.setRepeat(loop)
 	}
 
 	func changeTrackPositionAction(_ sender: UISlider?)
 	{
-		if let track = MPDPlayer.shared.currentTrack
+		if let track = PlayerController.shared.currentTrack
 		{
-			MPDPlayer.shared.setTrackPosition(Int(sliderPosition.value), trackPosition:track.position)
+			PlayerController.shared.setTrackPosition(Int(sliderPosition.value), trackPosition:track.position)
 		}
 	}
 
@@ -243,7 +243,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		prefs.synchronize()
 		sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
 
-		MPDPlayer.shared.setVolume(volume)
+		PlayerController.shared.setVolume(volume)
 	}
 
 	// MARK: - Notifications
@@ -294,7 +294,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// MARK: - Private
 	private func _updatePlayPauseButton()
 	{
-		if MPDPlayer.shared.status == .paused
+		if PlayerController.shared.status == .paused
 		{
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
 			btnPlay.setImage(imgPlay.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:UIControlState())

@@ -1,4 +1,4 @@
-// MPDPlayer.swift
+// PlayerController.swift
 // Copyright (c) 2016 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,11 +32,11 @@ enum PlayerStatus : Int
 }
 
 
-final class MPDPlayer
+final class PlayerController
 {
 	// MARK: - Public properties
 	// Singletion instance
-	static let shared = MPDPlayer()
+	static let shared = PlayerController()
 	// MPD server
 	var server: AudioServer! = nil
 	// Player status (playing, paused, stopped)
@@ -48,7 +48,7 @@ final class MPDPlayer
 
 	// MARK: - Private properties
 	// MPD Connection
-	private var _mpdConnection: MPDConnection! = nil
+	private var _connection: AudioServerConnection! = nil
 	// Internal queue
 	private let _queue: DispatchQueue
 	// Timer (1sec)
@@ -64,9 +64,9 @@ final class MPDPlayer
 	func initialize() -> Bool
 	{
 		// Sanity check 1
-		if _mpdConnection != nil
+		if _connection != nil
 		{
-			if _mpdConnection.connected
+			if _connection.connected
 			{
 				return true
 			}
@@ -80,16 +80,16 @@ final class MPDPlayer
 		}
 
 		// Connect
-		_mpdConnection = MPDConnection(server:server)
-		let ret = _mpdConnection.connect()
+		_connection = MPDConnection(server:server)
+		let ret = _connection.connect()
 		if ret
 		{
-			_mpdConnection.delegate = self
+			_connection.delegate = self
 			_startTimer(1)
 		}
 		else
 		{
-			_mpdConnection = nil
+			_connection = nil
 		}
 		return ret
 	}
@@ -97,128 +97,128 @@ final class MPDPlayer
 	// MARK: - Playing
 	func playAlbum(_ album: Album, random: Bool, loop: Bool)
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
-		
+
 		_queue.async {
-			self._mpdConnection.playAlbum(album, random:random, loop:loop)
+			self._connection.playAlbum(album, random:random, loop:loop)
 		}
 	}
 
 	func playTracks(_ tracks: [Track], random: Bool, loop: Bool)
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
 
 		_queue.async {
-			self._mpdConnection.playTracks(tracks, random:random, loop:loop)
+			self._connection.playTracks(tracks, random:random, loop:loop)
 		}
 	}
 
 	// MARK: - Pausing
 	@objc func togglePause()
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
-		
+
 		_queue.async {
-			_ = self._mpdConnection.togglePause()
+			_ = self._connection.togglePause()
 		}
 	}
 
 	// MARK: - Add to queue
 	func addAlbumToQueue(_ album: Album)
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
-		
+
 		_queue.async {
-			self._mpdConnection.addAlbumToQueue(album)
+			self._connection.addAlbumToQueue(album)
 		}
 	}
 
 	// MARK: - Repeat
 	func setRepeat(_ loop: Bool)
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
 
 		_queue.async {
-			self._mpdConnection.setRepeat(loop)
+			self._connection.setRepeat(loop)
 		}
 	}
 
 	// MARK: - Random
 	func setRandom(_ random: Bool)
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
 
 		_queue.async {
-			self._mpdConnection.setRandom(random)
+			self._connection.setRandom(random)
 		}
 	}
 
 	// MARK: - Tracks navigation
 	@objc func requestNextTrack()
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
 
 		_queue.async {
-			self._mpdConnection.nextTrack()
+			self._connection.nextTrack()
 		}
 	}
 
 	@objc func requestPreviousTrack()
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
 
 		_queue.async {
-			self._mpdConnection.previousTrack()
+			self._connection.previousTrack()
 		}
 	}
 
 	// MARK: - Track position
 	func setTrackPosition(_ position: Int, trackPosition: UInt32)
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
 
 		_queue.async {
-			self._mpdConnection.setTrackPosition(position, trackPosition:trackPosition)
+			self._connection.setTrackPosition(position, trackPosition:trackPosition)
 		}
 	}
 
 	// MARK: - Volume
 	func setVolume(_ volume: Int)
 	{
-		if _mpdConnection == nil || !_mpdConnection.connected
+		if _connection == nil || !_connection.connected
 		{
 			return
 		}
 
 		_queue.async {
-			self._mpdConnection.setVolume(UInt32(volume))
+			self._connection.setVolume(UInt32(volume))
 		}
 	}
 
@@ -241,7 +241,7 @@ final class MPDPlayer
 
 	private func _playerInformations()
 	{
-		guard let infos = _mpdConnection.getPlayerInfos() else {return}
+		guard let infos = _connection.getPlayerInfos() else {return}
 		let status = PlayerStatus(rawValue:infos[kPlayerStatusKey] as! Int)!
 		let track = infos[kPlayerTrackKey] as! Track
 		let album = infos[kPlayerAlbumKey] as! Album
@@ -271,11 +271,11 @@ final class MPDPlayer
 	}
 }
 
-extension MPDPlayer : AudioServerConnectionDelegate
+extension PlayerController : AudioServerConnectionDelegate
 {
 	func albumMatchingName(_ name: String) -> Album?
 	{
-		let albums = MPDDataSource.shared.albums
+		let albums = MusicDataSource.shared.albums
 		return albums.filter({$0.name == name}).first
 	}
 }

@@ -166,7 +166,7 @@ final class ServerVC : MenuTVC
 			password = strPassword
 		}
 
-		let mpdServer = password.length > 0 ? AudioServer(name:serverName, hostname:ip, port:port, password:password) : AudioServer(name:serverName, hostname:ip, port:port)
+		let mpdServer = password.length > 0 ? AudioServer(type:.mpd, name:serverName, hostname:ip, port:port, password:password) : AudioServer(type:.mpd, name:serverName, hostname:ip, port:port)
 		let cnn = MPDConnection(server:mpdServer)
 		if cnn.connect()
 		{

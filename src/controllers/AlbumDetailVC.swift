@@ -102,7 +102,7 @@ final class AlbumDetailVC : UIViewController
 		let album = _currentAlbum()
 		if album.songs == nil
 		{
-			MPDDataSource.shared.getSongsForAlbum(album) {
+			MusicDataSource.shared.getSongsForAlbum(album) {
 				DispatchQueue.main.async {
 					self._updateNavigationTitle()
 					self.tableView.reloadData()
@@ -176,11 +176,11 @@ final class AlbumDetailVC : UIViewController
 	{
 		if let nextAlbum = _nextAlbum()
 		{
-			MPDDataSource.shared.getMetadatasForAlbum(nextAlbum) {}
+			MusicDataSource.shared.getMetadatasForAlbum(nextAlbum) {}
 		}
 		if let previousAlbum = _previousAlbum()
 		{
-			MPDDataSource.shared.getMetadatasForAlbum(previousAlbum) {}
+			MusicDataSource.shared.getMetadatasForAlbum(previousAlbum) {}
 		}
 	}
 
@@ -195,7 +195,7 @@ final class AlbumDetailVC : UIViewController
 		// Don't have all the metadatas
 		if album.artist.length == 0
 		{
-			MPDDataSource.shared.getMetadatasForAlbum(album) {
+			MusicDataSource.shared.getMetadatasForAlbum(album) {
 				DispatchQueue.main.async {
 					self._updateHeader()
 				}
@@ -253,11 +253,11 @@ extension AlbumDetailVC : UITableViewDataSource
 			cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
 
 			// Display playing image if this track is the current one being played
-			if let currentPlayingTrack = MPDPlayer.shared.currentTrack
+			if let currentPlayingTrack = PlayerController.shared.currentTrack
 			{
 				if currentPlayingTrack == track
 				{
-					if MPDPlayer.shared.status == .paused
+					if PlayerController.shared.status == .paused
 					{
 						cell.ivPlayback.image = #imageLiteral(resourceName: "btn-play")
 					}
@@ -312,13 +312,13 @@ extension AlbumDetailVC : UITableViewDelegate
 		}
 
 		// Toggle play / pause for the current track
-		if let currentPlayingTrack = MPDPlayer.shared.currentTrack
+		if let currentPlayingTrack = PlayerController.shared.currentTrack
 		{
 			let selectedTrack = tracks[indexPath.row]
 			if selectedTrack == currentPlayingTrack
 			{
 				let cell = tableView.cellForRow(at: indexPath) as? TrackTableViewCell
-				if MPDPlayer.shared.status == .playing
+				if PlayerController.shared.status == .playing
 				{
 					cell?.ivPlayback.image = #imageLiteral(resourceName: "btn-play")
 				}
@@ -326,13 +326,13 @@ extension AlbumDetailVC : UITableViewDelegate
 				{
 					cell?.ivPlayback.image = #imageLiteral(resourceName: "btn-pause")
 				}
-				MPDPlayer.shared.togglePause()
+				PlayerController.shared.togglePause()
 				return
 			}
 		}
 
 		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		MPDPlayer.shared.playTracks(b, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
+		PlayerController.shared.playTracks(b, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 	}
 }
 
