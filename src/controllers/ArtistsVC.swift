@@ -33,7 +33,7 @@ final class ArtistsVC : UITableViewController
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 	// Keep track of download operations to eventually cancel them
-	fileprivate var _downloadOperations = [String : Operation]()
+	fileprivate var _downloadOperations = [UUID : Operation]()
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -215,7 +215,7 @@ extension ArtistsVC
 	private func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:@escaping (_ thumbnail: UIImage) -> Void)
 	{
 		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
-		let key = album.name + album.year
+		let key = album.uuid
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 			if let op = weakOperation
@@ -255,7 +255,7 @@ extension ArtistsVC
 		// Remove download cover operation if still in queue
 		let artist = artists[indexPath.row]
 		guard let album = artist.albums.first else {return}
-		let key = album.name + album.year
+		let key = album.uuid
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
