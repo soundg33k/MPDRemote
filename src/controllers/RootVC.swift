@@ -414,25 +414,24 @@ final class RootVC : MenuVC
 		}
 
 		if _typeChoiceView.superview != nil
-		{
-			view.backgroundColor = UIColor.fromRGB(0xECECEC)
-			UIView.animate(withDuration: 0.35, delay:0.0, options:.curveEaseOut, animations:{
-				self.topConstraint.constant = 0.0;
-				self.collectionView.layoutIfNeeded()
+		{ // Is visible
+			topConstraint.constant = 0.0;
+			UIView.animate(withDuration: 0.3, delay:0.0, options:.curveEaseOut, animations:{
+				self.view.backgroundColor = UIColor.fromRGB(0xECECEC)
+				self.view.layoutIfNeeded()
 			}, completion:{ finished in
 				self._typeChoiceView.removeFromSuperview()
 			})
 		}
 		else
-		{
-			view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		{ // Is hidden
 			_typeChoiceView.tableView.reloadData()
 			view.insertSubview(_typeChoiceView, belowSubview:collectionView)
-			topConstraint.constant = _typeChoiceView.height;
+			topConstraint.constant = self._typeChoiceView.height;
 
-			UIView.animate(withDuration: 0.35, delay:0.0, options:.curveEaseOut, animations:{
-				self.topConstraint.constant = 132.0;
-				self.collectionView.layoutIfNeeded()
+			UIView.animate(withDuration: 0.2, delay:0.0, options:.curveEaseOut, animations:{
+				self.view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+				//self.view.layoutIfNeeded()
 			}, completion:nil)
 		}
 	}
@@ -521,6 +520,7 @@ extension RootVC : UICollectionViewDataSource
 		{
 			return searchResults.count
 		}
+
 		switch _displayType
 		{
 			case .albums:
@@ -993,9 +993,9 @@ extension RootVC : TypeChoiceViewDelegate
 	func didSelectType(_ type: DisplayType)
 	{
 		// Ignore if type did not change
-		changeTypeAction(nil)
 		if _displayType == type
 		{
+			changeTypeAction(nil)
 			return
 		}
 		_displayType = type
@@ -1006,8 +1006,9 @@ extension RootVC : TypeChoiceViewDelegate
 		// Refresh view
 		MusicDataSource.shared.getListForDisplayType(type) {
 			DispatchQueue.main.async {
-				self.collectionView.setContentOffset(CGPoint.zero, animated:true)
 				self.collectionView.reloadData()
+				self.changeTypeAction(nil)
+				self.collectionView.setContentOffset(CGPoint.zero, animated:true) // Scroll to top
 				self._updateNavigationTitle()
 			}
 		}

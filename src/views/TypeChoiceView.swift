@@ -132,7 +132,7 @@ extension TypeChoiceView : UITableViewDelegate
 		// lil bounce animation
 		let cellRect = tableView.rectForRow(at: indexPath)
 
-		cell.frame = CGRect(cell.x, cell.y + tableView.height, cell.width, cell.height)
+		cell.y = cell.y + tableView.height
 
 		UIView.animate(withDuration: 0.5, delay:0.1 * Double(indexPath.row), usingSpringWithDamping:0.8, initialSpringVelocity:10.0, options:UIViewAnimationOptions(), animations:{
 			cell.frame = cellRect

@@ -97,12 +97,12 @@ final class MusicDataSource
 			let set = CharacterSet(charactersIn:".?!:;/+=-*'\"")
 			switch (displayType)
 			{
-			case .albums:
-				self.albums = (list as! [Album]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-			case .genres:
-				self.genres = (list as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-			case .artists:
-				self.artists = (list as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+				case .albums:
+					self.albums = (list as! [Album]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+				case .genres:
+					self.genres = (list as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+				case .artists:
+					self.artists = (list as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 			}
 			callback()
 		}
