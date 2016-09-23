@@ -219,9 +219,10 @@ final class RootVC : MenuVC
 	{
 		if segue.identifier == "root-albums-to-detail-album"
 		{
+			let row = collectionView.indexPathsForSelectedItems![0].row
+			let album = searching ? searchResults[row] as! Album : MusicDataSource.shared.albums[row]
 			let vc = segue.destination as! AlbumDetailVC
-			vc.albums = searching ? searchResults as! [Album] : MusicDataSource.shared.albums
-			vc.selectedIndex = collectionView.indexPathsForSelectedItems![0].row
+			vc.album = album
 		}
 		else if segue.identifier == "root-genres-to-artists"
 		{

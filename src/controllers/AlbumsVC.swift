@@ -92,8 +92,7 @@ final class AlbumsVC : UITableViewController
 		if segue.identifier == "albums-to-albumdetail"
 		{
 			let vc = segue.destination as! AlbumDetailVC
-			vc.selectedIndex = tableView.indexPathForSelectedRow!.row
-			vc.albums = artist.albums
+			vc.album = artist.albums[tableView.indexPathForSelectedRow!.row]
 		}
 	}
 

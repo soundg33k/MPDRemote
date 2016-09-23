@@ -26,10 +26,8 @@ import UIKit
 final class AlbumDetailVC : UIViewController
 {
 	// MARK: - Public properties
-	// Albums list
-	var albums: [Album]! = nil
-	// Album index in the list
-	var selectedIndex: Int = 0
+	// Selected album
+	var album: Album
 
 	// MARK: - Private properties
 	// Header view (cover + album name, artist)
@@ -46,6 +44,9 @@ final class AlbumDetailVC : UIViewController
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
 	{
+		// Dummy
+		self.album = Album(name:"")
+
 		super.init(coder:aDecoder)
 	}
 
@@ -77,10 +78,6 @@ final class AlbumDetailVC : UIViewController
 
 		// Tableview
 		tableView.tableFooterView = UIView()
-
-		// Notif for frame changes
-		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:.playingTrackChanged, object:nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:.playerStatusChanged, object:nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -99,7 +96,6 @@ final class AlbumDetailVC : UIViewController
 		_updateHeader()
 
 		// Get songs list if needed
-		let album = _currentAlbum()
 		if album.songs == nil
 		{
 			MusicDataSource.shared.getSongsForAlbum(album) {
@@ -137,58 +133,9 @@ final class AlbumDetailVC : UIViewController
 		return .lightContent
 	}
 
-	// MARK: - Notifications
-	func playingTrackChangedNotification(_ aNotification: Notification?)
-	{
-		tableView.reloadData()
-	}
-
-	func playerStatusChangedNotification(_ aNotification: Notification?)
-	{
-		tableView.reloadData()
-	}
-
 	// MARK: - Private
-	private func _nextAlbum() -> Album?
-	{
-		if selectedIndex < (albums.count - 1)
-		{
-			return albums[selectedIndex + 1]
-		}
-		return nil
-	}
-
-	private func _previousAlbum() -> Album?
-	{
-		if selectedIndex > 0
-		{
-			return albums[selectedIndex - 1]
-		}
-		return nil
-	}
-
-	func _currentAlbum() -> Album
-	{
-		return albums[selectedIndex]
-	}
-
-	private func _fetchMetadatasForSideAlbums()
-	{
-		if let nextAlbum = _nextAlbum()
-		{
-			MusicDataSource.shared.getMetadatasForAlbum(nextAlbum) {}
-		}
-		if let previousAlbum = _previousAlbum()
-		{
-			MusicDataSource.shared.getMetadatasForAlbum(previousAlbum) {}
-		}
-	}
-
 	private func _updateHeader()
 	{
-		// get current album
-		let album = _currentAlbum()
-
 		// Update header view
 		self.headerView.updateHeaderWithAlbum(album)
 
@@ -205,7 +152,6 @@ final class AlbumDetailVC : UIViewController
 
 	private func _updateNavigationTitle()
 	{
-		let album = _currentAlbum()
 		if let tracks = album.songs
 		{
 			let total = tracks.reduce(Duration(seconds:0)){$0 + $1.duration}
@@ -222,7 +168,7 @@ extension AlbumDetailVC : UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		if let tracks = _currentAlbum().songs
+		if let tracks = album.songs
 		{
 			return tracks.count + 1 // dummy
 		}
@@ -233,7 +179,7 @@ extension AlbumDetailVC : UITableViewDataSource
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.track", for:indexPath) as! TrackTableViewCell
 
-		if let tracks = _currentAlbum().songs
+		if let tracks = album.songs
 		{
 			// Dummy to let some space for the mini player
 			if indexPath.row == tracks.count
@@ -251,34 +197,6 @@ extension AlbumDetailVC : UITableViewDataSource
 			let minutes = track.duration.minutesRepresentation().minutes
 			let seconds = track.duration.minutesRepresentation().seconds
 			cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
-
-			// Display playing image if this track is the current one being played
-			if let currentPlayingTrack = PlayerController.shared.currentTrack
-			{
-				if currentPlayingTrack == track
-				{
-					if PlayerController.shared.status == .paused
-					{
-						cell.ivPlayback.image = #imageLiteral(resourceName: "btn-play")
-					}
-					else
-					{
-						cell.ivPlayback.image = #imageLiteral(resourceName: "btn-pause")
-					}
-					cell.ivPlayback.alpha = 1.0
-					cell.lblTrack.alpha = 0.0
-				}
-				else
-				{
-					cell.ivPlayback.alpha = 0.0
-					cell.lblTrack.alpha = 1.0
-				}
-			}
-			else
-			{
-				cell.ivPlayback.alpha = 0.0
-				cell.lblTrack.alpha = 1.0
-			}
 
 			// Accessibility
 			var stra = "\(NYXLocalizedString("lbl_track")) \(track.trackNumber), \(track.title)\n"
@@ -305,8 +223,8 @@ extension AlbumDetailVC : UITableViewDelegate
 		tableView.deselectRow(at: indexPath, animated:true)
 
 		// Dummy cell
-		guard let tracks = _currentAlbum().songs else {return}
-		if indexPath.row == tracks.count
+		guard let tracks = album.songs else {return}
+		if indexPath.row >= tracks.count
 		{
 			return
 		}
@@ -317,15 +235,6 @@ extension AlbumDetailVC : UITableViewDelegate
 			let selectedTrack = tracks[indexPath.row]
 			if selectedTrack == currentPlayingTrack
 			{
-				let cell = tableView.cellForRow(at: indexPath) as? TrackTableViewCell
-				if PlayerController.shared.status == .playing
-				{
-					cell?.ivPlayback.image = #imageLiteral(resourceName: "btn-play")
-				}
-				else
-				{
-					cell?.ivPlayback.image = #imageLiteral(resourceName: "btn-pause")
-				}
 				PlayerController.shared.togglePause()
 				return
 			}

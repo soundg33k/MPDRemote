@@ -32,8 +32,6 @@ final class TrackTableViewCell : UITableViewCell
 	@IBOutlet private(set) var lblTitle: UILabel!
 	// Track duration
 	@IBOutlet private(set) var lblDuration: UILabel!
-	// Image to indicate play / pause state
-	@IBOutlet private(set) var ivPlayback: UIImageView!
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
