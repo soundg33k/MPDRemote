@@ -117,6 +117,7 @@ final class RootVC : MenuVC
 		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
 		//collectionView.prefetchDataSource = self
+		collectionView.isPrefetchingEnabled = false
 
 		// Longpress
 		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(longPress(_:)))

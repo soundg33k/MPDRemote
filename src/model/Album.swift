@@ -27,7 +27,7 @@ final class Album
 {
 	// MARK: - Properties
 	// Album name
-	var name: String
+	let name: String
 	// Album artist
 	var artist: String = ""
 	// Album genre
@@ -39,12 +39,12 @@ final class Album
 	// Album tracks
 	var songs: [Track]? = nil
 	// Album UUID
-	var uuid: UUID
+	let uuid: UUID
 	// Local URL for the cover
 	lazy var localCoverURL: URL? = {
 		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in:.userDomainMask).last else {return nil}
 		guard let coverDirectoryPath = UserDefaults.standard.string(forKey: kNYXPrefDirectoryCovers) else {return nil}
-		return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory:true).appendingPathComponent(self.name.md5() + ".jpg")
+		return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory:true).appendingPathComponent(self.uuid.uuidString + ".jpg")
 	}()
 
 	// MARK: - Initializers
