@@ -81,7 +81,7 @@ final class MiniPlayerView : UIView, PTappable
 		// Play / pause button
 		self.btnPlay = UIButton(type:.custom)
 		self.btnPlay.frame = CGRect(6.0, 6.0, 32.0, 32.0)
-		self.btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), for:UIControlState())
+		self.btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), for:.normal)
 		self.btnPlay.addTarget(self, action:#selector(MiniPlayerView.changePlaybackAction(_:)), for:.touchUpInside)
 		self.btnPlay.tag = PlayerStatus.stopped.rawValue
 		self.btnPlay.isAccessibilityElement = true
@@ -198,12 +198,12 @@ final class MiniPlayerView : UIView, PTappable
 	{
 		if btnPlay.tag == PlayerStatus.playing.rawValue
 		{
-			btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate), for:UIControlState())
+			btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate), for:.normal)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 		}
 		else
 		{
-			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for:UIControlState())
+			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for:.normal)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 		PlayerController.shared.togglePause()
@@ -250,12 +250,12 @@ final class MiniPlayerView : UIView, PTappable
 			let state = PlayerStatus(rawValue:infos[kPlayerStatusKey] as! Int)!
 			if state == .playing
 			{
-				btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for:UIControlState())
+				btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for:.normal)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 			}
 			else
 			{
-				btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate), for:UIControlState())
+				btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate), for:.normal)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 			}
 			btnPlay.tag = state.rawValue

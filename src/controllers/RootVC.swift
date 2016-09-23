@@ -92,7 +92,7 @@ final class RootVC : MenuVC
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
 		btnRandom = UIButton(type:.custom)
 		btnRandom.frame = CGRect((navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
-		btnRandom.setImage(imageRandom.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:UIControlState())
+		btnRandom.setImage(imageRandom.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:.normal)
 		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), for:.touchUpInside)
@@ -104,7 +104,7 @@ final class RootVC : MenuVC
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		btnRepeat = UIButton(type:.custom)
 		btnRepeat.frame = CGRect((navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:UIControlState())
+		btnRepeat.setImage(imageRepeat.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:.normal)
 		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), for:.touchUpInside)
@@ -506,7 +506,7 @@ final class RootVC : MenuVC
 				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_artists") : NYXLocalizedString("lbl_artist"))"
 		}
 		let astr1 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
-		titleView.setAttributedTitle(astr1, for:UIControlState())
+		titleView.setAttributedTitle(astr1, for:.normal)
 		let astr2 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr2, for:.highlighted)
 	}
