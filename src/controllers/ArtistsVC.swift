@@ -152,7 +152,7 @@ extension ArtistsVC
 					return cell
 				}
 
-				if let cover = UIImage.loadFromURL(coverURL)
+				if let cover = UIImage.loadFromFileURL(coverURL)
 				{
 					DispatchQueue.global(qos: .userInitiated).async {
 						let cropped = cover.imageCroppedToFitSize(cell.coverView.size)

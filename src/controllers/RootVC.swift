@@ -116,7 +116,7 @@ final class RootVC : MenuVC
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
 		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
-		collectionView.prefetchDataSource = self
+		//collectionView.prefetchDataSource = self
 
 		// Longpress
 		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(longPress(_:)))
@@ -580,7 +580,7 @@ extension RootVC : UICollectionViewDataSource
 			return
 		}
 
-		if let cover = UIImage.loadFromURL(coverURL)
+		if let cover = UIImage.loadFromFileURL(coverURL)
 		{
 			cell.image = cover
 			ImageCache.shared[album.uuid] = cover
@@ -642,7 +642,7 @@ extension RootVC : UICollectionViewDataSource
 				return
 			}
 
-			if let cover = UIImage.loadFromURL(coverURL)
+			if let cover = UIImage.loadFromFileURL(coverURL)
 			{
 				cell.image = cover
 				ImageCache.shared[album.uuid] = cover
@@ -720,7 +720,7 @@ extension RootVC : UICollectionViewDataSource
 					return
 				}
 
-				if let cover = UIImage.loadFromURL(coverURL)
+				if let cover = UIImage.loadFromFileURL(coverURL)
 				{
 					cell.image = cover
 					ImageCache.shared[album.uuid] = cover
@@ -844,15 +844,15 @@ extension RootVC : UICollectionViewDelegate
 		let key = album.uuid
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
-			op.cancel()
 			_downloadOperations.removeValue(forKey: key)
+			op.cancel()
 			Logger.dlog("[+] Cancelling \(op)")
 		}
 	}
 }
 
 // MARK: - UICollectionViewDataSourcePrefetching
-extension RootVC : UICollectionViewDataSourcePrefetching
+/*extension RootVC : UICollectionViewDataSourcePrefetching
 {
 	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath])
 	{
@@ -889,7 +889,7 @@ extension RootVC : UICollectionViewDataSourcePrefetching
 			}
 		}
 	}
-}
+}*/
 
 // MARK: - UIScrollViewDelegate
 extension RootVC : UIScrollViewDelegate
