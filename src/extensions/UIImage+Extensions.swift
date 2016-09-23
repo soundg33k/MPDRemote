@@ -63,24 +63,11 @@ extension UIImage
 		let sourceRect = CGRect(ceil(destX / scaleFactor), destY / scaleFactor, targetWidth / scaleFactor, targetHeight / scaleFactor).integral
 
 		// Create scale-cropped image
-		if #available(iOS 10, *)
-		{
-			let renderer = UIGraphicsImageRenderer(size: destRect.size)
-			return renderer.image() { rendererContext in
-				let sourceImg = cgImage?.cropping(to: sourceRect) // cropping happens here
-				let image = UIImage(cgImage:sourceImg!, scale:0.0, orientation:imageOrientation)
-				image.draw(in: destRect) // the actual scaling happens here, and orientation is taken care of automatically
-			}
-		}
-		else
-		{
-			UIGraphicsBeginImageContextWithOptions(destRect.size, false, 0.0) // 0.0 = scale for device's main screen
+		let renderer = UIGraphicsImageRenderer(size: destRect.size)
+		return renderer.image() { rendererContext in
 			let sourceImg = cgImage?.cropping(to: sourceRect) // cropping happens here
-			var image = UIImage(cgImage:sourceImg!, scale:0.0, orientation:imageOrientation)
+			let image = UIImage(cgImage:sourceImg!, scale:0.0, orientation:imageOrientation)
 			image.draw(in: destRect) // the actual scaling happens here, and orientation is taken care of automatically
-			image = UIGraphicsGetImageFromCurrentImageContext()!
-			UIGraphicsEndImageContext()
-			return image
 		}
 	}
 
@@ -105,27 +92,9 @@ extension UIImage
 
 	func imageTintedWithColor(_ color: UIColor, opacity: CGFloat = 0.0) -> UIImage?
 	{
-		if #available(iOS 10, *)
-		{
-			let renderer = UIGraphicsImageRenderer(size: size)
-			return renderer.image() { rendererContext in
-				let rect = CGRect(0.0, 0.0, self.size.width, self.size.height)
-				color.set()
-				UIRectFill(rect)
-
-				draw(in: rect, blendMode:.destinationIn, alpha:1.0)
-
-				if (opacity > 0.0)
-				{
-					draw(in: rect, blendMode:.sourceAtop, alpha:opacity)
-				}
-			}
-		}
-		else
-		{
-			UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-
-			let rect = CGRect(0.0, 0.0, size.width, size.height)
+		let renderer = UIGraphicsImageRenderer(size: size)
+		return renderer.image() { rendererContext in
+			let rect = CGRect(CGPoint.zero, self.size)
 			color.set()
 			UIRectFill(rect)
 
@@ -135,10 +104,6 @@ extension UIImage
 			{
 				draw(in: rect, blendMode:.sourceAtop, alpha:opacity)
 			}
-			let image = UIGraphicsGetImageFromCurrentImageContext()
-			UIGraphicsEndImageContext()
-			
-			return image
 		}
 	}
 
@@ -176,7 +141,7 @@ extension UIImage
 			return nil
 		}
 		bmContext.setFillColor(backgroundColor.cgColor)
-		bmContext.fill(/*rect*/CGRect(CGPoint.zero, trueMaxSize))
+		bmContext.fill(CGRect(CGPoint.zero, trueMaxSize))
 
 		// Draw the text
 		bmContext.setAllowsAntialiasing(true)
