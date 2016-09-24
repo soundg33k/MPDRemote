@@ -249,10 +249,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// MARK: - Notifications
 	func playingTrackNotification(_ aNotification: Notification?)
 	{
-		/*guard let track = (aNotification as NSNotification?)?.userInfo![kPlayerTrackKey] as? Track, let elapsed = (aNotification as NSNotification?)?.userInfo![kPlayerElapsedKey] as? Int else
-		{
-			return
-		}*/
 		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track, let elapsed = aNotification?.userInfo![kPlayerElapsedKey] as? Int else
 		{
 			return
@@ -276,10 +272,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		{
 			return
 		}
-		/*guard let track = (aNotification as NSNotification?)?.userInfo![kPlayerTrackKey] as? Track, let album = (aNotification as NSNotification?)?.userInfo![kPlayerAlbumKey] as? Album else
-		{
-			return
-		}*/
 		lblTrackTitle.text = track.title
 		lblTrackArtist.text = track.artist
 		lblAlbumName.text = album.name
