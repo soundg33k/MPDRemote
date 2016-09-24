@@ -66,7 +66,6 @@ final class RootVC : MenuVC
 		navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
 
 		// Customize navbar
-		let headerColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
 		let navigationBar = (navigationController?.navigationBar)!
 
 		// Searchbar
@@ -77,7 +76,7 @@ final class RootVC : MenuVC
 		searchBar.searchBarStyle = .minimal
 		searchBar.barTintColor = searchView.backgroundColor
 		searchBar.tintColor = navigationBar.tintColor
-		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = headerColor
+		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
 		searchBar.showsCancelButton = true
 		searchBar.delegate = self
 		searchView.addSubview(searchBar)
@@ -484,6 +483,7 @@ final class RootVC : MenuVC
 			bar.y = -48.0
 		}, completion:{ finished in
 			self.searchBarVisible = true
+			self.searchBar.becomeFirstResponder()
 		})
 	}
 
@@ -568,11 +568,12 @@ extension RootVC : UICollectionViewDataSource
 		cell.accessibilityLabel = album.name
 
 		// If image is in cache, bail out quickly
-		if let cachedImage = ImageCache.shared[album.uuid]
+		/*if let cachedImage = ImageCache.shared[album.uuid]
 		{
 			cell.image = cachedImage
 			return
-		}
+		}*/
+		cell.image = nil
 
 		// Get local URL for cover
 		guard let coverURL = album.localCoverURL else
@@ -585,7 +586,7 @@ extension RootVC : UICollectionViewDataSource
 		if let cover = UIImage.loadFromFileURL(coverURL)
 		{
 			cell.image = cover
-			ImageCache.shared[album.uuid] = cover
+			//ImageCache.shared[album.uuid] = cover
 		}
 		else
 		{
@@ -956,6 +957,16 @@ extension RootVC : UISearchBarDelegate
 	func searchBarTextDidBeginEditing(_ searchBar: UISearchBar)
 	{
 		searching = true
+		// Copy original source to avoid crash when nothing was searched
+		switch _displayType
+		{
+			case .albums:
+				searchResults = MusicDataSource.shared.albums
+			case .genres:
+				searchResults = MusicDataSource.shared.genres
+			case .artists:
+				searchResults = MusicDataSource.shared.artists
+		}
 	}
 
 	func searchBarTextDidEndEditing(_ searchBar: UISearchBar)
