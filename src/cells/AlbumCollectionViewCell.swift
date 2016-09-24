@@ -93,6 +93,7 @@ final class RootCollectionViewCell : UICollectionViewCell
 
 		self.imageView = UIImageView(frame:CGRect(CGPoint.zero, frame.width, frame.height - 20.0))
 		self.imageView.isAccessibilityElement = false
+		self.imageView.backgroundColor = UIColor.fromRGB(0x444444)
 		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
@@ -114,6 +115,7 @@ final class RootCollectionViewCell : UICollectionViewCell
 
 		self.imageView = UIImageView(frame:CGRect(CGPoint.zero, frame.width, frame.height - 20.0))
 		self.imageView.isAccessibilityElement = false
+		self.imageView.backgroundColor = UIColor.fromRGB(0x444444)
 		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
