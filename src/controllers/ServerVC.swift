@@ -271,7 +271,7 @@ final class ServerVC : MenuTVC
 		else
 		{
 			tfWEBHostname.text = ""
-			tfWEBPort.text = "8080"
+			tfWEBPort.text = "80"
 			tfWEBCoverName.text = "cover.jpg"
 		}
 	}
