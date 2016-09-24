@@ -578,7 +578,7 @@ extension RootVC : UICollectionViewDataSource
 		// Get local URL for cover
 		guard let coverURL = album.localCoverURL else
 		{
-			Logger.alog("[!] No cover URL for \(album)") // should not happen
+			Logger.alog("[!] No cover file URL for \(album)") // should not happen
 			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
 			return
 		}
