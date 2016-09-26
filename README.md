@@ -1,8 +1,8 @@
-**MPDRemote** is an iOS application to control a [mpd](http://www.musicpd.org/) server. It is written in Swift 3.
+**MPDRemote** is an iOS application to control a [mpd](http://www.musicpd.org/) server. It is written in Swift 3 and requires iOS 10.
 
 ![screenshot1](https://static.whine.fr/images/2016/mpdremote1.jpg)
 
-There's no persistence layer apart from cover caching.
+There is no persistence layer apart from cover caching.
 
 ### FEATURES
 
@@ -12,18 +12,15 @@ There's no persistence layer apart from cover caching.
 - Shake to play a random album
 - Add album / artist / genre to play queue
 - VoiceOver compliant
-- Automatically find mpd server with Zeroconf
+- Automatically find mpd server with Bonjour/Zeroconf
 - English and French localized
 
 ### TODO
 
-- [X] Full player view
-- [X] Possibility to browse by Artists, Genre…
-- [ ] Optimize things
-- [ ] Add some settings
+- [ ] Optimize things? Not slow anyway, works well on my iPhone 5 with 3000+ albums 
+- [ ] Add some settings?
 - [ ] iPad version
 - [ ] Persistence layer? probably not since it's quite fast on a local network and my 40K musical library evolve quite often
-- [X] An app icon
 - [ ] Better icons for consistency, I took random free icons on the net. Problem is my skills in design are (void*)0.
 
 ### LICENSE

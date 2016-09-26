@@ -68,6 +68,7 @@
 		43DCAFA51D91940C00D0B908 /* CoverWebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */; };
 		43E187531D1BEF7400C19ECD /* main-ipad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43E187511D1BEF7400C19ECD /* main-ipad.storyboard */; };
 		43EA923B1D100C380074389A /* main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43EA92391D100C380074389A /* main.storyboard */; };
+		43EC51941D996E120006E662 /* ZeroConfExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EC51931D996E120006E662 /* ZeroConfExplorer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -186,6 +187,7 @@
 		43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverWebServer.swift; sourceTree = "<group>"; };
 		43E187521D1BEF7400C19ECD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/main-ipad.storyboard"; sourceTree = "<group>"; };
 		43EA923A1D100C380074389A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/main.storyboard; sourceTree = "<group>"; };
+		43EC51931D996E120006E662 /* ZeroConfExplorer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfExplorer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -425,6 +427,7 @@
 				43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */,
 				434C97111D94136200B5FCAD /* MusicDataSource.swift */,
 				434C97131D94157E00B5FCAD /* PlayerController.swift */,
+				43EC51931D996E120006E662 /* ZeroConfExplorer.swift */,
 				4303DE941D9036660083C686 /* mpd */,
 			);
 			path = "audio-server";
@@ -550,6 +553,7 @@
 				1E2EFCA71CBF9A1700906CF2 /* StatsVC.swift in Sources */,
 				1E5653A71C908A310049C02D /* AppDelegate.swift in Sources */,
 				1E56539A1C908A310049C02D /* AlbumDetailVC.swift in Sources */,
+				43EC51941D996E120006E662 /* ZeroConfExplorer.swift in Sources */,
 				1EB93AA01CB3A82700EA5339 /* TypeChoiceView.swift in Sources */,
 				1EB93AA61CB4113300EA5339 /* Artist.swift in Sources */,
 				1E86D3DD1CB7B0C90001E203 /* Genre.swift in Sources */,
