@@ -45,7 +45,7 @@ public extension PTappable where Self:UIView
 		}
 		gestureRecognizer.numberOfTapsRequired = numberOfTapsRequired()
 		gestureRecognizer.numberOfTouchesRequired = numberOfTouchesRequired()
-		addGestureRecognizer(gestureRecognizer);
+		addGestureRecognizer(gestureRecognizer)
 	}
 
 	func didTap()

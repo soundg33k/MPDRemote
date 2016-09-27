@@ -42,7 +42,7 @@ public extension PLeftSwippable where Self:UIView
 			}
 		}
 		gestureRecognizer.direction = .left
-		self.addGestureRecognizer(gestureRecognizer);
+		self.addGestureRecognizer(gestureRecognizer)
 	}
 
 	func didSwipeLeft()
@@ -70,7 +70,7 @@ public extension PRightSwippable where Self:UIView
 			}
 		}
 		gestureRecognizer.direction = .right
-		self.addGestureRecognizer(gestureRecognizer);
+		self.addGestureRecognizer(gestureRecognizer)
 	}
 
 	func didSwipeRight()
@@ -98,7 +98,7 @@ public extension PUpSwippable where Self:UIView
 			}
 		}
 		gestureRecognizer.direction = .up
-		addGestureRecognizer(gestureRecognizer);
+		addGestureRecognizer(gestureRecognizer)
 	}
 
 	func didSwipeUp()
@@ -126,7 +126,7 @@ public extension PDownSwippable where Self:UIView
 			}
 		}
 		gestureRecognizer.direction = .down
-		addGestureRecognizer(gestureRecognizer);
+		addGestureRecognizer(gestureRecognizer)
 	}
 
 	func didSwipeDown()
