@@ -25,7 +25,7 @@ import Foundation
 
 final class Artist
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Artist name
 	var name: String
 	// Albums list reference

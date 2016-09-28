@@ -25,7 +25,7 @@ import Foundation
 
 final class Track
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Track title
 	var title: String
 	// Track artist

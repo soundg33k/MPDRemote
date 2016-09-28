@@ -25,7 +25,7 @@ import UIKit
 
 final class Album
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Album name
 	let name: String
 	// Album artist

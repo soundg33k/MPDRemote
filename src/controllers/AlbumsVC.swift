@@ -25,9 +25,11 @@ import UIKit
 
 final class AlbumsVC : UITableViewController
 {
-	// MARK: - Private properties
+	// MARK: - Public properties
 	// Selected artist
 	var artist: Artist!
+
+	// MARK: - Private properties
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 	// Keep track of download operations to eventually cancel them

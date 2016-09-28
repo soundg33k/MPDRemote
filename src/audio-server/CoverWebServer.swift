@@ -25,7 +25,7 @@ import Foundation
 
 final class CoverWebServer : Server
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Name of the cover files
 	var coverName: String = "cover.jpg"
 

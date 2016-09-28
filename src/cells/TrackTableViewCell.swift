@@ -25,7 +25,7 @@ import UIKit
 
 final class TrackTableViewCell : UITableViewCell
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Track number
 	@IBOutlet private(set) var lblTrack: UILabel!
 	// Track title

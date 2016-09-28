@@ -25,7 +25,7 @@ import UIKit
 
 final class RootCollectionViewCell : UICollectionViewCell
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Album cover
 	private(set) var imageView: UIImageView! = nil
 	// Album name

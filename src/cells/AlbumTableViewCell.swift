@@ -25,7 +25,7 @@ import UIKit
 
 final class AlbumTableViewCell : UITableViewCell
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Album cover
 	@IBOutlet private(set) var coverView: UIImageView!
 	// Album name

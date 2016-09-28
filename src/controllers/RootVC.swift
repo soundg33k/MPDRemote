@@ -32,9 +32,9 @@ final class RootVC : MenuVC
 {
 	// MARK: - Private properties
 	// Albums view
-	@IBOutlet var collectionView: UICollectionView!
+	@IBOutlet fileprivate var collectionView: UICollectionView!
 	// Top constraint for collection view
-	@IBOutlet var topConstraint: NSLayoutConstraint!
+	@IBOutlet fileprivate var topConstraint: NSLayoutConstraint!
 	// Search bar
 	fileprivate var searchBar: UISearchBar! = nil
 	// Button in the navigationbar

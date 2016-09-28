@@ -28,8 +28,6 @@ final class MenuViewTableViewCell : UITableViewCell
 	// MARK: - Public properties
 	// Section image
 	private(set) var ivLogo: UIImageView!
-	// Section name
-	private(set) var lblArtist: UILabel!
 
 	// MARK: - Initializers
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?)

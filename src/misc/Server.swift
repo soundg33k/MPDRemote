@@ -25,7 +25,7 @@ import Foundation
 
 class Server : NSObject, NSCoding
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Server name
 	var name: String
 	// Server IP / hostname

@@ -36,7 +36,7 @@ protocol AudioServerConnectionDelegate : class
 
 protocol AudioServerConnection
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Delegate
 	weak var delegate: AudioServerConnectionDelegate? {get set}
 	// Connected flag

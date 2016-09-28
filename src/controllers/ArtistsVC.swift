@@ -25,11 +25,13 @@ import UIKit
 
 final class ArtistsVC : UITableViewController
 {
-	// MARK: - Private properties
+	// MARK: - Public properties
 	// Selected genre
 	var genre: Genre! = nil
 	// List of artists
 	var artists = [Artist]()
+
+	// MARK: - Private properties
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 	// Keep track of download operations to eventually cancel them

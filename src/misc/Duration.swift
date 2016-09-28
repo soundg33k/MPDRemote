@@ -25,7 +25,7 @@ import Foundation
 
 struct Duration
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Value in seconds
 	let seconds: UInt
 

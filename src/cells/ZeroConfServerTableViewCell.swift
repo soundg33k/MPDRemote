@@ -25,7 +25,7 @@ import UIKit
 
 final class ZeroConfServerTableViewCell : UITableViewCell
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Track number
 	@IBOutlet private(set) var lblName: UILabel!
 	// Track title

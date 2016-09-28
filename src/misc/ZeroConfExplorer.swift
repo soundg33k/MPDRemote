@@ -31,14 +31,17 @@ protocol ZeroConfExplorerDelegate : class
 
 final class ZeroConfExplorer : NSObject
 {
-	// Zeroconf browser
-	private var _serviceBrowser: NetServiceBrowser!
+	// MARK: - Public properties
 	// Is searching flag
 	fileprivate(set) var isSearching = false
 	// Services list
 	fileprivate(set) var services = [NetService : Server]()
 	// Delegate
 	weak var delegate: ZeroConfExplorerDelegate?
+
+	// MARK: - Private properties
+	// Zeroconf browser
+	private var _serviceBrowser: NetServiceBrowser!
 
 	// MARK: - Initializer
 	override init()

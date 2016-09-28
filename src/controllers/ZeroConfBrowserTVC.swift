@@ -31,13 +31,15 @@ protocol ZeroConfBrowserTVCDelegate : class
 
 final class ZeroConfBrowserTVC : UITableViewController
 {
-	// MARK: - Properties
+	// MARK: - Public properties
+	// Delegate
+	weak var delegate: ZeroConfBrowserTVCDelegate? = nil
+
+	// MARK: - Private properties
 	// Zeroconf explorer
 	fileprivate var _explorer: ZeroConfExplorer! = nil
 	// List of servers found
 	fileprivate var _servers = [Server]()
-	// Delegate
-	weak var delegate: ZeroConfBrowserTVCDelegate? = nil
 
 	// MARK: - Initializer
 	required init?(coder aDecoder: NSCoder)

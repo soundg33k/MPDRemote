@@ -30,7 +30,7 @@ private var __startX = CGFloat(0.0)
 
 class MenuTVC : UITableViewController
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Menu
 	private(set) var menuView: MenuView! = nil
 	// Screen edge gesture

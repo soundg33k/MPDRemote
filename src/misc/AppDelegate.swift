@@ -33,11 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	private(set) var operationQueue: OperationQueue! = nil
 	// Albums list VC
 	private(set) var homeVC: UIViewController! = nil
-	/*private(set) lazy var homeVC: UIViewController = {
-		let sb = UIStoryboard(name: "main", bundle: nil)
-		let vc = sb.instantiateViewController(withIdentifier: "RootNVC")
-		return vc
-	}()*/
 	// Server configuration VC
 	private(set) lazy var serverVC: UIViewController = {
 		let sb = UIStoryboard(name: "main", bundle: nil)
@@ -70,9 +65,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		operationQueue = OperationQueue()
 		operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
 
-		/*window = UIWindow(frame: UIScreen.main.bounds)
-		window?.rootViewController = self.homeVC
-		window?.makeKeyAndVisible()*/
 		homeVC = window?.rootViewController
 
 		NotificationCenter.default.addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:.miniPlayerShouldExpand, object:nil)

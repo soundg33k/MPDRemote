@@ -53,7 +53,7 @@ final class MenuView : UIView
 
 	// MARK: - Private properties
 	// TableView
-	var tableView: UITableView! = nil
+	fileprivate var tableView: UITableView! = nil
 	// Kikoolol
 	private var blurEffectView: UIVisualEffectView! = nil
 	// Pan gesture

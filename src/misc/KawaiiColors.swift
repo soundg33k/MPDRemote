@@ -38,7 +38,7 @@ enum SamplingEdge
 
 final class KawaiiColors
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Image to analyze
 	let image: UIImage
 	// Edge color precision

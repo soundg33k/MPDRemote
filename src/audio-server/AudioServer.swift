@@ -31,8 +31,8 @@ enum AudioServerType : Int
 
 final class AudioServer : Server
 {
-	// MARK: - Properties
-	// Server type, only mpd supported
+	// MARK: - Public properties
+	// Audio server type, only mpd supported for now
 	var type: AudioServerType = .mpd
 
 	// MARK: - Initializers

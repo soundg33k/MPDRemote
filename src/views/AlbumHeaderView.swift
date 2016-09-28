@@ -25,7 +25,7 @@ import UIKit
 
 final class AlbumHeaderView : UIView
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Album cover
 	private(set) var image: UIImage!
 	// Album title

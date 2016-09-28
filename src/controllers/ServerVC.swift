@@ -27,19 +27,19 @@ final class ServerVC : MenuTVC
 {
 	// MARK: - Private properties
 	// MPD Server name
-	@IBOutlet var tfMPDName: UITextField!
+	@IBOutlet fileprivate var tfMPDName: UITextField!
 	// MPD Server hostname
-	@IBOutlet var tfMPDHostname: UITextField!
+	@IBOutlet fileprivate var tfMPDHostname: UITextField!
 	// MPD Server port
-	@IBOutlet var tfMPDPort: UITextField!
+	@IBOutlet fileprivate var tfMPDPort: UITextField!
 	// MPD Server password
-	@IBOutlet var tfMPDPassword: UITextField!
+	@IBOutlet fileprivate var tfMPDPassword: UITextField!
 	// WEB Server hostname
-	@IBOutlet var tfWEBHostname: UITextField!
+	@IBOutlet fileprivate var tfWEBHostname: UITextField!
 	// WEB Server port
-	@IBOutlet var tfWEBPort: UITextField!
+	@IBOutlet fileprivate var tfWEBPort: UITextField!
 	// Cover name
-	@IBOutlet var tfWEBCoverName: UITextField!
+	@IBOutlet fileprivate var tfWEBCoverName: UITextField!
 	// MPD Server
 	private var mpdServer: AudioServer?
 	// WEB Server for covers

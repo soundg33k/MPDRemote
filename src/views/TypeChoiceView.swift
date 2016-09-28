@@ -31,7 +31,7 @@ protocol TypeChoiceViewDelegate : class
 
 final class TypeChoiceView : UIView
 {
-	// MARK: - Properties
+	// MARK: - Public properties
 	// Delegate
 	weak var delegate: TypeChoiceViewDelegate? = nil
 	// TableView
