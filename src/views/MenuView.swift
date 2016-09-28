@@ -40,8 +40,10 @@ final class MenuView : UIView
 	// Delegate
 	weak var menuDelegate: MenuViewDelegate? = nil
 	// Is visible flag
-	var visible = false {
-		didSet {
+	var visible = false
+	{
+		didSet
+		{
 			if let p = pan
 			{
 				p.isEnabled = visible
@@ -79,7 +81,7 @@ final class MenuView : UIView
 
 		// TableView
 		self.tableView = UITableView(frame:CGRect(CGPoint.zero, frame.size), style:.plain)
-		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.menu")
+		self.tableView.register(MenuViewTableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.menu")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
 		self.tableView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
@@ -153,32 +155,31 @@ extension MenuView : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.menu", for:indexPath)
-		cell.selectionStyle = .none
-		cell.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
-		cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		cell.layoutMargins = UIEdgeInsets.zero
-		var title = ""
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.menu", for:indexPath) as! MenuViewTableViewCell
+		
 		var selected = false
 		switch (indexPath.row)
 		{
 			case 0:
-				title = NYXLocalizedString("lbl_section_home")
-				cell.imageView?.image = #imageLiteral(resourceName: "img-home")
+				cell.accessibilityLabel = NYXLocalizedString("lbl_section_home")
+				cell.ivLogo.image = #imageLiteral(resourceName: "img-home")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().homeVC)
 			case 1:
-				title = NYXLocalizedString("lbl_section_server")
-				cell.imageView?.image = #imageLiteral(resourceName: "img-server")
+				cell.accessibilityLabel = NYXLocalizedString("lbl_section_server")
+				cell.ivLogo.image = #imageLiteral(resourceName: "img-server")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().serverVC)
 			case 2:
-				title = NYXLocalizedString("lbl_section_stats")
-				cell.imageView?.image = #imageLiteral(resourceName: "img-stats")
+				cell.accessibilityLabel = NYXLocalizedString("lbl_section_stats")
+				cell.ivLogo.image = #imageLiteral(resourceName: "img-stats")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().statsVC)
 			default:
 				break
 		}
-		cell.textLabel?.text = title
-		cell.textLabel?.font = selected ? UIFont.boldSystemFont(ofSize: 14.0) : UIFont.systemFont(ofSize: 14.0)
+		if selected
+		{
+			cell.ivLogo.image = cell.ivLogo.image?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor))
+		}
+
 		return cell
 	}
 }
@@ -218,7 +219,7 @@ extension MenuView : UITableViewDelegate
 		{
 			return tableView.height
 		}
-		return 44.0
+		return 128.0
 	}
 }
 

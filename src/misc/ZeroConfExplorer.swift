@@ -23,25 +23,9 @@
 import Foundation
 
 
-struct ZeroConfServer
-{
-	// Server name
-	var name: String
-	// Server address
-	var ip: String
-	// Server port
-	var port: UInt16
-
-	func isResolved() -> Bool
-	{
-		return ip != "" && port != 0
-	}
-}
-
-
 protocol ZeroConfExplorerDelegate : class
 {
-	func didFindServer(_ server: ZeroConfServer)
+	func didFindServer(_ server: Server)
 }
 
 
@@ -52,7 +36,7 @@ final class ZeroConfExplorer : NSObject
 	// Is searching flag
 	fileprivate(set) var isSearching = false
 	// Services list
-	fileprivate(set) var services = [NetService : ZeroConfServer]()
+	fileprivate(set) var services = [NetService : Server]()
 	// Delegate
 	weak var delegate: ZeroConfExplorerDelegate?
 
@@ -63,6 +47,12 @@ final class ZeroConfExplorer : NSObject
 
 		self._serviceBrowser = NetServiceBrowser()
 		self._serviceBrowser.delegate = self
+	}
+
+	deinit
+	{
+		self._serviceBrowser.delegate = nil
+		self._serviceBrowser = nil
 	}
 
 	// MARK: - Public
@@ -85,13 +75,18 @@ final class ZeroConfExplorer : NSObject
 	// MARK: - Private
 	fileprivate func _resolvZeroconfService(service: NetService)
 	{
-		if let server = services[service] , server.isResolved()
+		if let server = services[service] , _isResolved(server)
 		{
 			return
 		}
 
 		service.delegate = self
 		service.resolve(withTimeout: 5)
+	}
+
+	fileprivate func _isResolved(_ server: Server) -> Bool
+	{
+		return server.hostname != "" && server.port != 0
 	}
 }
 
@@ -118,7 +113,7 @@ extension ZeroConfExplorer : NetServiceBrowserDelegate
 	func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)
 	{
 		Logger.dlog("didFindService")
-		services[service] = ZeroConfServer(name: service.name, ip: "", port: 0)
+		services[service] = Server(name: service.name, hostname: "", port: 0)
 		_resolvZeroconfService(service: service)
 	}
 
@@ -171,7 +166,7 @@ extension ZeroConfExplorer : NetServiceDelegate
 
 			if found
 			{
-				let server = ZeroConfServer(name: sender.name, ip: tmpIP, port: UInt16(sender.port))
+				let server = Server(name: sender.name, hostname: tmpIP, port: UInt16(sender.port))
 				services[sender] = server
 				delegate?.didFindServer(server)
 			}

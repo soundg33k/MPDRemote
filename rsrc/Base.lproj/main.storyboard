@@ -5,6 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -426,7 +427,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WFh-5x-1kf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1110" y="-126"/>
+            <point key="canvasLocation" x="1916.25" y="-175.35211267605635"/>
         </scene>
         <!--RootVC-->
         <scene sceneID="SEY-Ia-qi1">
@@ -485,7 +486,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2L1-ri-UzV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1004" y="633"/>
+            <point key="canvasLocation" x="2000.625" y="632.74647887323943"/>
         </scene>
         <!--Root Navigation Controller-->
         <scene sceneID="6zI-qx-xoQ">
@@ -510,7 +511,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Igz-9W-3hf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="286" y="633"/>
+            <point key="canvasLocation" x="1282.5" y="632.74647887323943"/>
         </scene>
         <!--AlbumDetailVC-->
         <scene sceneID="N9l-RR-ru4">
@@ -724,7 +725,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MAZ-5q-NqE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2556" y="101"/>
+            <point key="canvasLocation" x="3553.125" y="100.35211267605634"/>
         </scene>
         <!--AlbumsVC-->
         <scene sceneID="2Dl-on-2xf">
@@ -802,7 +803,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HVD-QF-cqf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1804" y="653"/>
+            <point key="canvasLocation" x="2801.25" y="652.81690140845069"/>
         </scene>
         <!--ArtistsVC-->
         <scene sceneID="YY2-cH-hkE">
@@ -885,7 +886,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UK7-oa-QXZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1798" y="-288"/>
+            <point key="canvasLocation" x="2793.75" y="-288.38028169014086"/>
         </scene>
         <!--StatsNVC-->
         <scene sceneID="3uk-6g-S9Y">
@@ -1535,12 +1536,20 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="l3h-zR-Qr3">
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="EdZ-2h-jxg">
-                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <connections>
-                                <action selector="validateSettingsAction:" destination="hWt-7D-M48" id="oeu-nd-9zu"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="save" id="EdZ-2h-jxg">
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="validateSettingsAction:" destination="hWt-7D-M48" id="oeu-nd-9zu"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="search" id="J3h-cA-I4B">
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="browserZeroConfServers:" destination="hWt-7D-M48" id="N7e-MO-LFy"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="tfMPDHostname" destination="hgY-GW-OCq" id="z7D-Kl-0Fu"/>
@@ -1554,7 +1563,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q0L-e3-8gW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1196" y="2147"/>
+            <point key="canvasLocation" x="1316" y="2146"/>
         </scene>
         <!--ServerNVC-->
         <scene sceneID="M6z-sV-Zva">
@@ -1575,6 +1584,96 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oFA-iQ-690" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="545" y="2147"/>
+        </scene>
+        <!--ZeroConfBrowserTVC-->
+        <scene sceneID="uS0-ur-iY1">
+            <objects>
+                <tableViewController storyboardIdentifier="ZeroConfBrowserTVC" title="ZeroConfBrowserTVC" id="Wer-7b-FmE" customClass="ZeroConfBrowserTVC" customModule="MPDRemote" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" id="hH1-gf-ohs">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="separatorColor" red="0.92549019610000005" green="0.92549019610000005" blue="0.92549019610000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <inset key="separatorInset" minX="16" minY="0.0" maxX="16" maxY="0.0"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="io.whine.mpdremote.cell.zeroconf" rowHeight="60" id="rjF-wR-Xln" customClass="ZeroConfServerTableViewCell" customModule="MPDRemote" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="320" height="60"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rjF-wR-Xln" id="Gqm-8S-pnj">
+                                    <frame key="frameInset" width="320" height="59.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xa8-aj-tbI">
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="19" id="ka1-2q-90V"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h9U-bb-Dec">
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="16" id="GEH-Jv-SuZ"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Xa8-aj-tbI" firstAttribute="leading" secondItem="Gqm-8S-pnj" secondAttribute="leadingMargin" constant="8" id="DCJ-4e-QFn"/>
+                                        <constraint firstItem="h9U-bb-Dec" firstAttribute="top" secondItem="Xa8-aj-tbI" secondAttribute="bottom" constant="4" id="ee7-9B-VGx"/>
+                                        <constraint firstItem="h9U-bb-Dec" firstAttribute="leading" secondItem="Gqm-8S-pnj" secondAttribute="leadingMargin" constant="8" id="r2F-oV-tAr"/>
+                                        <constraint firstItem="Xa8-aj-tbI" firstAttribute="top" secondItem="Gqm-8S-pnj" secondAttribute="topMargin" id="rnn-LE-Ue0"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="tintColor" red="0.40000000000000002" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <outlet property="lblHostname" destination="h9U-bb-Dec" id="Crp-Fp-gzV"/>
+                                    <outlet property="lblName" destination="Xa8-aj-tbI" id="69I-EG-J2x"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Wer-7b-FmE" id="H8a-aK-cyy"/>
+                            <outlet property="delegate" destination="Wer-7b-FmE" id="9dz-0l-6dH"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="Xby-5W-GPi">
+                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="done" id="edl-Uo-sdR">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="done:" destination="Wer-7b-FmE" id="9Ky-hj-FUH"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="usl-rF-Mye" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="317" y="119"/>
+        </scene>
+        <!--ZeroConfBrowserNVC-->
+        <scene sceneID="FNF-O9-FEE">
+            <objects>
+                <navigationController storyboardIdentifier="ZeroConfBrowserNVC" title="ZeroConfBrowserNVC" automaticallyAdjustsScrollViewInsets="NO" id="fdm-mB-Ih3" customClass="NYXNavigationController" customModule="MPDRemote" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="RFK-8T-L1K">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" red="0.40000000000000002" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Wer-7b-FmE" kind="relationship" relationship="rootViewController" id="VsK-4f-2ZJ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hv3-6h-DfW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-568.125" y="104.5774647887324"/>
         </scene>
     </scenes>
     <resources>

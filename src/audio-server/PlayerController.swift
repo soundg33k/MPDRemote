@@ -58,6 +58,8 @@ final class PlayerController
 	init()
 	{
 		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.player", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+
+		NotificationCenter.default.addObserver(self, selector:#selector(audioServerConfigurationDidChange(_:)), name:NSNotification.Name.audioServerConfigurationDidChange, object:nil)
 	}
 
 	// MARK: - Public
@@ -92,6 +94,15 @@ final class PlayerController
 			_connection = nil
 		}
 		return ret
+	}
+
+	func reinitialize() -> Bool
+	{
+		_stopTimer()
+		_connection.delegate = nil
+		_connection.disconnect()
+		_connection = nil
+		return initialize()
 	}
 
 	// MARK: - Playing
@@ -235,8 +246,11 @@ final class PlayerController
 
 	private func _stopTimer()
 	{
-		_timer.cancel()
-		_timer = nil
+		if let _ = _timer
+		{
+			_timer.cancel()
+			_timer = nil
+		}
 	}
 
 	private func _playerInformations()
@@ -267,6 +281,16 @@ final class PlayerController
 		currentAlbum = album
 		DispatchQueue.main.async {
 			NotificationCenter.default.post(name: .currentPlayingTrack, object:nil, userInfo:infos)
+		}
+	}
+
+	// MARK: - Notifications
+	@objc func audioServerConfigurationDidChange(_ aNotification: Notification)
+	{
+		if let server = aNotification.object as? AudioServer
+		{
+			self.server = server
+			_ = self.reinitialize()
 		}
 	}
 }

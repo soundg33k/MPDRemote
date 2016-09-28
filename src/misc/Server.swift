@@ -1,4 +1,4 @@
-// AudioServer.swift
+// Server.swift
 // Copyright (c) 2016 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,29 +23,32 @@
 import Foundation
 
 
-enum AudioServerType : Int
-{
-	case mpd
-}
-
-
-final class AudioServer : Server
+class Server : NSObject, NSCoding
 {
 	// MARK: - Properties
-	// Server type, only mpd supported
-	var type: AudioServerType = .mpd
+	// Server name
+	var name: String
+	// Server IP / hostname
+	var hostname: String
+	// Server port
+	var port: UInt16
+	// Server password
+	var password: String = ""
 
 	// MARK: - Initializers
-	init(name: String, hostname: String, port: UInt16, type: AudioServerType)
+	init(name: String, hostname: String, port: UInt16)
 	{
-		super.init(name:name, hostname:hostname, port:port)
-		self.type = type
+		self.name = name
+		self.hostname = hostname
+		self.port = port
 	}
 
-	init(name: String, hostname: String, port: UInt16, password: String, type: AudioServerType)
+	init(name: String, hostname: String, port: UInt16, password: String)
 	{
-		super.init(name:name, hostname:hostname, port:port, password:password)
-		self.type = type
+		self.name = name
+		self.hostname = hostname
+		self.port = port
+		self.password = password
 	}
 
 	// MARK: - NSCoding
@@ -56,14 +59,21 @@ final class AudioServer : Server
 			let password = decoder.decodeObject(forKey: "password") as? String
 			else { return nil }
 
-		let type = decoder.decodeInteger(forKey: "type")
 		let port = decoder.decodeInteger(forKey: "port")
-		self.init(name:name, hostname:hostname, port:UInt16(port), password:password, type:AudioServerType(rawValue: type)!)
+		self.init(name:name, hostname:hostname, port:UInt16(port), password:password)
 	}
 
-	override func encode(with coder: NSCoder)
+	func encode(with coder: NSCoder)
 	{
-		coder.encode(type.rawValue, forKey:"type")
-		super.encode(with: coder)
+		coder.encode(name, forKey:"name")
+		coder.encode(hostname, forKey:"hostname")
+		coder.encode(Int(port), forKey:"port")
+		coder.encode(password, forKey:"password")
 	}
+}
+
+// MARK: - Operators
+func == (lhs: Server, rhs: Server) -> Bool
+{
+	return (lhs.name == rhs.name && lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.password == rhs.password)
 }

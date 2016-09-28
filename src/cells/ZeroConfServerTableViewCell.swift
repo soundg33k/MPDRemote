@@ -1,4 +1,4 @@
-// CoverWebServer.swift
+// ZeroConfServerTableViewCell.swift
 // Copyright (c) 2016 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,45 +20,20 @@
 // THE SOFTWARE.
 
 
-import Foundation
+import UIKit
 
 
-final class CoverWebServer : Server
+final class ZeroConfServerTableViewCell : UITableViewCell
 {
 	// MARK: - Properties
-	// Name of the cover files
-	var coverName: String = "cover.jpg"
+	// Track number
+	@IBOutlet private(set) var lblName: UILabel!
+	// Track title
+	@IBOutlet private(set) var lblHostname: UILabel!
 
 	// MARK: - Initializers
-	init(name: String, hostname: String, port: UInt16, coverName: String)
+	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(name: name, hostname: hostname, port: port)
-		self.coverName = coverName
-	}
-
-	init(name: String, hostname: String, port: UInt16, password: String, coverName: String)
-	{
-		super.init(name: name, hostname: hostname, port: port, password: password)
-		self.coverName = coverName
-	}
-
-	// MARK: - NSCoding
-	required convenience init?(coder decoder: NSCoder)
-	{
-		guard let name = decoder.decodeObject(forKey: "name") as? String,
-			let hostname = decoder.decodeObject(forKey: "hostname") as? String,
-			let password = decoder.decodeObject(forKey: "password") as? String,
-			let coverName = decoder.decodeObject(forKey: "covername") as? String
-			else { return nil }
-
-		let port = decoder.decodeInteger(forKey: "port")
-
-		self.init(name:name, hostname:hostname, port:UInt16(port), password:password, coverName: coverName)
-	}
-
-	override func encode(with coder: NSCoder)
-	{
-		coder.encode(coverName, forKey:"covername")
-		super.encode(with: coder)
+		super.init(coder: aDecoder)
 	}
 }

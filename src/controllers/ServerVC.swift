@@ -46,10 +46,6 @@ final class ServerVC : MenuTVC
 	private var webServer: CoverWebServer?
 	// Indicate that the keyboard is visible, flag
 	private var _keyboardVisible = false
-	// Zeroconf browser
-	private var serviceBrowser: NetServiceBrowser!
-	// List of ZC servers found
-	fileprivate var zcList = [NetService]()
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -85,11 +81,7 @@ final class ServerVC : MenuTVC
 		}
 		else
 		{
-			Logger.dlog("[+] No MPD server registered yet.")
-
-			serviceBrowser = NetServiceBrowser()
-			serviceBrowser.delegate = self
-			serviceBrowser.searchForServices(ofType: "_mpd._tcp.", inDomain:"")
+			Logger.alog("[+] No audio server registered yet.")
 		}
 
 		if let webServerAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer)
@@ -101,22 +93,10 @@ final class ServerVC : MenuTVC
 		}
 		else
 		{
-			Logger.dlog("[+] No WEB server registered yet.")
+			Logger.alog("[+] No web server registered yet.")
 		}
 
 		_updateFields()
-	}
-
-	override func viewWillDisappear(_ animated: Bool)
-	{
-		super.viewWillDisappear(animated)
-
-		// Stop zeroconf
-		zcList.removeAll()
-		if let s = serviceBrowser
-		{
-			s.stop()
-		}
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -166,13 +146,16 @@ final class ServerVC : MenuTVC
 			password = strPassword
 		}
 
-		let mpdServer = password.length > 0 ? AudioServer(type:.mpd, name:serverName, hostname:ip, port:port, password:password) : AudioServer(type:.mpd, name:serverName, hostname:ip, port:port)
+		//let mpdServer = password.length > 0 ? AudioServer(name:serverName, hostname:ip, port:port, password:password, type:.mpd) : AudioServer(type:.mpd, name:serverName, hostname:ip, port:port)
+		let mpdServer = AudioServer(name:serverName, hostname:ip, port:port, password:password, type:.mpd)
 		let cnn = MPDConnection(server:mpdServer)
 		if cnn.connect()
 		{
 			self.mpdServer = mpdServer
 			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: mpdServer)
 			UserDefaults.standard.set(serverAsData, forKey:kNYXPrefMPDServer)
+
+			NotificationCenter.default.post(name: .audioServerConfigurationDidChange, object: mpdServer)
 		}
 		else
 		{
@@ -194,12 +177,12 @@ final class ServerVC : MenuTVC
 				port = p
 			}
 
-			let webServer = CoverWebServer(hostname:strURL, port:port)
 			var coverName = "cover.jpg"
 			if let cn = tfWEBCoverName.text , cn.length > 0
 			{
 				coverName = cn
 			}
+			let webServer = CoverWebServer(name:"CoverServer", hostname:strURL, port:port, coverName: coverName)
 			webServer.coverName = coverName
 			self.webServer = webServer
 			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: webServer)
@@ -211,6 +194,15 @@ final class ServerVC : MenuTVC
 		}
 
 		UserDefaults.standard.synchronize()
+	}
+
+	@IBAction func browserZeroConfServers(_ sender: AnyObject?)
+	{
+		let sb = UIStoryboard(name: "main", bundle: nil)
+		let nvc = sb.instantiateViewController(withIdentifier: "ZeroConfBrowserNVC") as! NYXNavigationController
+		let vc = nvc.topViewController as! ZeroConfBrowserTVC
+		vc.delegate = self
+		self.navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
 	// MARK: - Notifications
@@ -276,13 +268,50 @@ final class ServerVC : MenuTVC
 		}
 	}
 
-	func _resolvZeroconfServices()
+	func _clearCache(confirm: Bool)
 	{
-		if let service = zcList.first
-		{
-			service.delegate = self
-			service.resolve(withTimeout: 5)
+		let clearBlock = { () -> Void in
+			let fileManager = FileManager()
+			let cachesDirectoryURL = fileManager.urls(for:.cachesDirectory, in:.userDomainMask).last!
+			let coversDirectoryName = UserDefaults.standard.string(forKey: kNYXPrefDirectoryCovers)!
+			let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
+
+			do
+			{
+				try fileManager.removeItem(at: coversDirectoryURL)
+				try fileManager.createDirectory(at: coversDirectoryURL, withIntermediateDirectories:true, attributes:nil)
+			}
+			catch _
+			{
+				Logger.alog("[!] Can't delete cover cache :<")
+			}
 		}
+
+		if confirm
+		{
+			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_purge_cache_title"), message:NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle:.alert)
+			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_cancel"), style:.cancel) { (action) in
+			}
+			alertController.addAction(cancelAction)
+			let okAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.destructive) { (action) in
+				clearBlock()
+			}
+			alertController.addAction(okAction)
+			present(alertController, animated:true, completion:nil)
+		}
+		else
+		{
+			clearBlock()
+		}
+	}
+}
+
+// MARK: - 
+extension ServerVC : ZeroConfBrowserTVCDelegate
+{
+	func audioServerDidChange()
+	{
+		_clearCache(confirm: false)
 	}
 }
 
@@ -293,28 +322,7 @@ extension ServerVC
 	{
 		if indexPath.section == 1 && indexPath.row == 3
 		{
-			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_purge_cache_title"), message:NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle:.alert)
-			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_cancel"), style:.cancel) { (action) in
-			}
-			alertController.addAction(cancelAction)
-			let okAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.destructive) { (action) in
-				let fileManager = FileManager()
-				let cachesDirectoryURL = fileManager.urls(for:.cachesDirectory, in:.userDomainMask).last!
-				let coversDirectoryName = UserDefaults.standard.string(forKey: kNYXPrefDirectoryCovers)!
-				let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
-				
-				do
-				{
-					try fileManager.removeItem(at: coversDirectoryURL)
-					try fileManager.createDirectory(at: coversDirectoryURL, withIntermediateDirectories:true, attributes:nil)
-				}
-				catch _
-				{
-					Logger.alog("[!] Can't delete cover cache :<")
-				}
-			}
-			alertController.addAction(okAction)
-			present(alertController, animated:true, completion:nil)
+			_clearCache(confirm: true)
 		}
 		tableView.deselectRow(at: indexPath, animated:true)
 	}
@@ -354,94 +362,5 @@ extension ServerVC : UITextFieldDelegate
 			textField.resignFirstResponder()
 		}
 		return true
-	}
-}
-
-// MARK: - NSNetServiceBrowserDelegate
-extension ServerVC : NetServiceBrowserDelegate
-{
-	func netServiceBrowserWillSearch(_ browser: NetServiceBrowser)
-	{
-		Logger.dlog("netServiceBrowserWillSearch")
-	}
-	func netServiceBrowserDidStopSearch(_ browser: NetServiceBrowser)
-	{
-		Logger.dlog("netServiceBrowserDidStopSearch")
-	}
-	func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String : NSNumber])
-	{
-		Logger.dlog("didNotSearch : \(errorDict)")
-	}
-	func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)
-	{
-		Logger.dlog("didFindService")
-		zcList.append(service)
-		if !moreComing
-		{
-			_resolvZeroconfServices()
-		}
-		
-	}
-	func netServiceBrowser(_ browser: NetServiceBrowser, didRemove service: NetService, moreComing: Bool)
-	{
-		Logger.dlog("didRemoveService")
-	}
-}
-
-// MARK: - NSNetServiceDelegate
-extension ServerVC : NetServiceDelegate
-{
-	func netServiceDidResolveAddress(_ sender: NetService)
-	{
-		Logger.dlog("netServiceDidResolveAddress: \(sender.name)")
-		
-		guard let addresses = sender.addresses else {return}
-		
-		var found = false
-		var tmpIP = ""
-		for addressBytes in addresses where found == false
-		{
-			let inetAddressPointer = (addressBytes as NSData).bytes.assumingMemoryBound(to: sockaddr_in.self)
-			var inetAddress = inetAddressPointer.pointee
-			if inetAddress.sin_family == sa_family_t(AF_INET)
-			{
-				let ipStringBuffer = UnsafeMutablePointer<Int8>.allocate(capacity: Int(INET6_ADDRSTRLEN))
-				let ipString = inet_ntop(Int32(inetAddress.sin_family), &inetAddress.sin_addr, ipStringBuffer, UInt32(INET6_ADDRSTRLEN))
-				if let ip = String(validatingUTF8: ipString!)
-				{
-					tmpIP = ip
-					found = true
-				}
-				ipStringBuffer.deallocate(capacity: Int(INET6_ADDRSTRLEN))
-			}
-			else if inetAddress.sin_family == sa_family_t(AF_INET6)
-			{
-				let inetAddressPointer6 = (addressBytes as NSData).bytes.assumingMemoryBound(to: sockaddr_in6.self)
-				var inetAddress6 = inetAddressPointer6.pointee
-				let ipStringBuffer = UnsafeMutablePointer<Int8>.allocate(capacity: Int(INET6_ADDRSTRLEN))
-				let ipString = inet_ntop(Int32(inetAddress6.sin6_family), &inetAddress6.sin6_addr, ipStringBuffer, UInt32(INET6_ADDRSTRLEN))
-				if let ip = String(validatingUTF8: ipString!)
-				{
-					tmpIP = ip
-					found = true
-				}
-				ipStringBuffer.deallocate(capacity: Int(INET6_ADDRSTRLEN))
-			}
-
-			if found
-			{
-				tfMPDName.text = sender.name
-				tfMPDPort.text = String(sender.port)
-				tfMPDHostname.text = tmpIP
-			}
-		}
-	}
-	func netService(_ sender: NetService, didNotResolve errorDict: [String : NSNumber])
-	{
-		Logger.dlog("didNotResolve \(sender)")
-	}
-	func netServiceDidStop(_ sender: NetService)
-	{
-		Logger.dlog("netServiceDidStop \(sender.name)")
 	}
 }

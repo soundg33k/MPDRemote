@@ -586,7 +586,7 @@ extension RootVC : UICollectionViewDataSource
 		if let cover = UIImage.loadFromFileURL(coverURL)
 		{
 			cell.image = cover
-			//ImageCache.shared[album.uuid] = cover
+			ImageCache.shared[album.uuid] = cover
 		}
 		else
 		{

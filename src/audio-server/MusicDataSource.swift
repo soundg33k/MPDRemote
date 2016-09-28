@@ -49,6 +49,8 @@ final class MusicDataSource
 	init()
 	{
 		self._queue = DispatchQueue(label:"io.whine.mpdremote.queue.datasource", qos:.default, attributes:[], autoreleaseFrequency:.inherit, target: nil)
+
+		NotificationCenter.default.addObserver(self, selector:#selector(audioServerConfigurationDidChange(_:)), name:NSNotification.Name.audioServerConfigurationDidChange, object:nil)
 	}
 
 	// MARK: - Public
@@ -83,6 +85,15 @@ final class MusicDataSource
 			_connection = nil
 		}
 		return ret
+	}
+
+	func reinitialize() -> Bool
+	{
+		_stopTimer()
+		_connection.delegate = nil
+		_connection.disconnect()
+		_connection = nil
+		return initialize()
 	}
 
 	func getListForDisplayType(_ displayType: DisplayType, callback: @escaping () -> Void)
@@ -260,13 +271,26 @@ final class MusicDataSource
 
 	private func _stopTimer()
 	{
-		_timer.cancel()
-		_timer = nil
+		if let _ = _timer
+		{
+			_timer.cancel()
+			_timer = nil
+		}
 	}
 
 	private func _playerStatus()
 	{
 		_connection.getStatus()
+	}
+
+	// MARK: - Notifications
+	@objc func audioServerConfigurationDidChange(_ aNotification: Notification)
+	{
+		if let server = aNotification.object as? AudioServer
+		{
+			self.server = server
+			_ = self.reinitialize()
+		}
 	}
 }
 
