@@ -19,6 +19,7 @@
 "lbl_repeat_disable" = "Disable repeat";
 "lbl_header_server_cfg" = "Server configuration";
 "lbl_header_server_zeroconf" = "Nearby servers";
+"lbl_search_zeroconf" = "Search nearby servers";
 
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";

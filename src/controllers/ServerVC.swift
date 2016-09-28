@@ -63,6 +63,14 @@ final class ServerVC : MenuTVC
 		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
 		navigationItem.titleView = titleView
 
+		if let buttons = self.navigationItem.rightBarButtonItems
+		{
+			if let search = buttons.filter({$0.tag == 10}).first
+			{
+				search.accessibilityLabel = NYXLocalizedString("lbl_search_zeroconf")
+			}
+		}
+
 		// Keyboard appearance notifications
 		NotificationCenter.default.addObserver(self, selector:#selector(keyboardDidShowNotification(_:)), name:NSNotification.Name.UIKeyboardDidShow, object:nil)
 		NotificationCenter.default.addObserver(self, selector:#selector(keyboardDidHideNotification(_:)), name:NSNotification.Name.UIKeyboardDidHide, object:nil)
