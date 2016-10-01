@@ -32,6 +32,8 @@ final class TrackTableViewCell : UITableViewCell
 	@IBOutlet private(set) var lblTitle: UILabel!
 	// Track duration
 	@IBOutlet private(set) var lblDuration: UILabel!
+	// Separator
+	@IBOutlet private(set) var separator: UIView!
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)

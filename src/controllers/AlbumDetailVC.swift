@@ -187,9 +187,12 @@ extension AlbumDetailVC : UITableViewDataSource
 				cell.lblTitle.text = ""
 				cell.lblTrack.text = ""
 				cell.lblDuration.text = ""
+				cell.separator.isHidden = true
 				cell.selectionStyle = .none
 				return cell
 			}
+			cell.separator.backgroundColor = UIColor.fromRGB(0xE4E4E4)
+			cell.separator.isHidden = false
 
 			let track = tracks[indexPath.row]
 			cell.lblTrack.text = String(track.trackNumber)

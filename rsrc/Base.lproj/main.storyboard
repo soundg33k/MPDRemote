@@ -615,7 +615,7 @@
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vhM-Uy-mym" userLabel="Dummy">
                                 <subviews>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="0Ky-LK-XYa">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="0Ky-LK-XYa">
                                         <color key="backgroundColor" red="0.92549019610000005" green="0.92549019610000005" blue="0.92549019610000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="separatorColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <inset key="separatorInset" minX="8" minY="0.0" maxX="8" maxY="0.0"/>
@@ -625,7 +625,7 @@
                                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7Qs-RZ-9Lm" id="iVJ-43-goD">
-                                                    <frame key="frameInset" width="375" height="43.5"/>
+                                                    <frame key="frameInset" width="375" height="44"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="XX" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zId-vD-Frm">
@@ -669,15 +669,24 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ctb-3S-mzr">
+                                                            <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="1" id="fyg-mr-usp"/>
+                                                            </constraints>
+                                                        </view>
                                                     </subviews>
                                                     <color key="backgroundColor" red="0.92549019610000005" green="0.92549019610000005" blue="0.92549019610000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstItem="jhj-ds-y0q" firstAttribute="top" secondItem="iVJ-43-goD" secondAttribute="top" constant="13" id="76G-GX-3j9"/>
                                                         <constraint firstItem="ER2-gk-3jY" firstAttribute="leading" secondItem="jhj-ds-y0q" secondAttribute="trailing" constant="8" id="APG-0W-MEj"/>
                                                         <constraint firstItem="jhj-ds-y0q" firstAttribute="leading" secondItem="zId-vD-Frm" secondAttribute="trailing" constant="8" id="Qhu-K9-r0n"/>
+                                                        <constraint firstAttribute="bottom" secondItem="ctb-3S-mzr" secondAttribute="bottom" id="RNH-yG-4cb"/>
                                                         <constraint firstAttribute="trailing" secondItem="ER2-gk-3jY" secondAttribute="trailing" constant="8" id="dYC-hh-zTZ"/>
+                                                        <constraint firstAttribute="trailing" secondItem="ctb-3S-mzr" secondAttribute="trailing" constant="8" id="hGh-8V-6Dg"/>
                                                         <constraint firstItem="zId-vD-Frm" firstAttribute="top" secondItem="iVJ-43-goD" secondAttribute="top" constant="15" id="lrp-El-krP"/>
                                                         <constraint firstItem="zId-vD-Frm" firstAttribute="leading" secondItem="iVJ-43-goD" secondAttribute="leading" constant="8" id="oNg-Wc-bLF"/>
+                                                        <constraint firstItem="ctb-3S-mzr" firstAttribute="leading" secondItem="iVJ-43-goD" secondAttribute="leading" constant="10" id="r5f-Fq-VTh"/>
                                                         <constraint firstItem="ER2-gk-3jY" firstAttribute="top" secondItem="iVJ-43-goD" secondAttribute="top" constant="15" id="wIe-IC-7XD"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
@@ -686,6 +695,7 @@
                                                     <outlet property="lblDuration" destination="ER2-gk-3jY" id="mko-Vz-U8t"/>
                                                     <outlet property="lblTitle" destination="jhj-ds-y0q" id="Fae-2U-zZH"/>
                                                     <outlet property="lblTrack" destination="zId-vD-Frm" id="F4w-ZG-V34"/>
+                                                    <outlet property="separator" destination="ctb-3S-mzr" id="azs-l1-ihD"/>
                                                 </connections>
                                             </tableViewCell>
                                         </prototypes>
