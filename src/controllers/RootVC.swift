@@ -592,11 +592,11 @@ extension RootVC : UICollectionViewDataSource
 		cell.accessibilityLabel = album.name
 
 		// If image is in cache, bail out quickly
-		/*if let cachedImage = ImageCache.shared[album.uuid]
+		if let cachedImage = ImageCache.shared[album.uuid]
 		{
 			cell.image = cachedImage
 			return
-		}*/
+		}
 		cell.image = nil
 
 		// Get local URL for cover
@@ -814,7 +814,6 @@ extension RootVC : UICollectionViewDataSource
 			if let block = callback
 			{
 				block(cover, thumbnail)
-
 			}
 		}
 		_downloadOperations[key] = downloadOperation
