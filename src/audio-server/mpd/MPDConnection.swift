@@ -58,7 +58,7 @@ final class MPDConnection : AudioServerConnection
 		_connection = mpd_connection_new(server.hostname, UInt32(server.port), _timeout * 1000)
 		if mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			_connection = nil
 			return false
 		}
@@ -70,7 +70,7 @@ final class MPDConnection : AudioServerConnection
 		{
 			if !mpd_run_password(_connection, server.password)
 			{
-				Logger.dlog(_getErrorMessageForConnection(_connection!))
+				Logger.dlog(getErrorMessageForConnection(_connection!))
 				mpd_connection_free(_connection)
 				_connection = nil
 				return false
@@ -94,12 +94,12 @@ final class MPDConnection : AudioServerConnection
 	// MARK: - Get infos about tracks / albums / etc…
 	func getListForDisplayType(_ displayType: DisplayType) -> [AnyObject]
 	{
-		let tagType = _mpdTagTypeFromDisplayType(displayType)
+		let tagType = mpdTagTypeFromDisplayType(displayType)
 
 		var list = [AnyObject]()
 		if (!mpd_search_db_tags(_connection, tagType) || !mpd_search_commit(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 
@@ -126,7 +126,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 
 		return list
@@ -136,17 +136,17 @@ final class MPDConnection : AudioServerConnection
 	{
 		if (!mpd_search_db_tags(_connection, MPD_TAG_ALBUM))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return nil
 		}
 		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return nil
 		}
 		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return nil
 		}
 
@@ -168,7 +168,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 
 		return Album(name:name)
@@ -180,17 +180,17 @@ final class MPDConnection : AudioServerConnection
 
 		if (!mpd_search_db_tags(_connection, MPD_TAG_ALBUM))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 
@@ -212,7 +212,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 
 		return list
@@ -224,17 +224,17 @@ final class MPDConnection : AudioServerConnection
 
 		if (!mpd_search_db_tags(_connection, MPD_TAG_ALBUM))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist.name))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 
@@ -256,7 +256,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 
 		return list
@@ -268,17 +268,17 @@ final class MPDConnection : AudioServerConnection
 
 		if (!mpd_search_db_tags(_connection, MPD_TAG_ARTIST))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return list
 		}
 
@@ -297,7 +297,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 
 		return list
@@ -308,17 +308,17 @@ final class MPDConnection : AudioServerConnection
 		var path: String? = nil
 		if (!mpd_search_db_songs(_connection, true))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return path
 		}
 		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return path
 		}
 		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return path
 		}
 
@@ -338,7 +338,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 
 		return path
@@ -348,25 +348,25 @@ final class MPDConnection : AudioServerConnection
 	{
 		if (!mpd_search_db_songs(_connection, true))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return nil
 		}
 		if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return nil
 		}
 		if album.artist.length > 0
 		{
 			if (!mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM_ARTIST, album.artist))
 			{
-				Logger.dlog(_getErrorMessageForConnection(_connection!))
+				Logger.dlog(getErrorMessageForConnection(_connection!))
 				return nil
 			}
 		}
 		if (!mpd_search_commit(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return nil
 		}
 
@@ -374,7 +374,7 @@ final class MPDConnection : AudioServerConnection
 		var song = mpd_recv_song(_connection)
 		while song != nil
 		{
-			if let track = _trackFromMPDSongObject(song!)
+			if let track = trackFromMPDSongObject(song!)
 			{
 				list.append(track)
 			}
@@ -383,7 +383,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 
 		return list
@@ -395,17 +395,17 @@ final class MPDConnection : AudioServerConnection
 		// Find album artist
 		if !mpd_search_db_tags(_connection, MPD_TAG_ALBUM_ARTIST)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 		if !mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 		if !mpd_search_commit(_connection)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 		let tmpArtist = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM_ARTIST)
@@ -420,24 +420,24 @@ final class MPDConnection : AudioServerConnection
 		mpd_return_pair(_connection, tmpArtist)
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 
 		// Find album year
 		if !mpd_search_db_tags(_connection, MPD_TAG_DATE)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 		if !mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 		if !mpd_search_commit(_connection)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 		let tmpDate = mpd_recv_pair_tag(_connection, MPD_TAG_DATE)
@@ -457,24 +457,24 @@ final class MPDConnection : AudioServerConnection
 		mpd_return_pair(_connection, tmpDate)
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 
 		// Find album genre
 		if !mpd_search_db_tags(_connection, MPD_TAG_GENRE)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 		if !mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 		if !mpd_search_commit(_connection)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return metadatas
 		}
 		let tmpGenre = mpd_recv_pair_tag(_connection, MPD_TAG_GENRE)
@@ -489,7 +489,7 @@ final class MPDConnection : AudioServerConnection
 		mpd_return_pair(_connection, tmpGenre)
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || !mpd_response_finish(_connection))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 
 		return metadatas
@@ -515,7 +515,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		if !mpd_run_clear(_connection)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return
 		}
 
@@ -526,14 +526,14 @@ final class MPDConnection : AudioServerConnection
 		{
 			if !mpd_run_add(_connection, track.uri)
 			{
-				Logger.dlog(_getErrorMessageForConnection(_connection!))
+				Logger.dlog(getErrorMessageForConnection(_connection!))
 				return
 			}
 		}
 
 		if !mpd_run_play_pos(_connection, random ? arc4random_uniform(UInt32(tracks.count)) : 0)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 	}
 	
@@ -545,7 +545,7 @@ final class MPDConnection : AudioServerConnection
 			{
 				if !mpd_run_add(_connection, track.uri)
 				{
-					Logger.dlog(_getErrorMessageForConnection(_connection!))
+					Logger.dlog(getErrorMessageForConnection(_connection!))
 					return
 				}
 			}
@@ -558,7 +558,7 @@ final class MPDConnection : AudioServerConnection
 				{
 					if !mpd_run_add(_connection, track.uri)
 					{
-						Logger.dlog(_getErrorMessageForConnection(_connection!))
+						Logger.dlog(getErrorMessageForConnection(_connection!))
 						return
 					}
 				}
@@ -575,7 +575,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		if !mpd_run_next(_connection)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 	}
 
@@ -583,7 +583,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		if !mpd_run_previous(_connection)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 	}
 
@@ -591,7 +591,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		if !mpd_run_random(_connection, random)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 	}
 
@@ -599,7 +599,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		if !mpd_run_repeat(_connection, loop)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 	}
 
@@ -607,7 +607,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		if !mpd_run_seek_pos(_connection, trackPosition, UInt32(position))
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 	}
 
@@ -615,7 +615,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		if !mpd_run_set_volume(_connection, volume)
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 	}
 
@@ -625,7 +625,7 @@ final class MPDConnection : AudioServerConnection
 		let ret = mpd_run_status(_connection)
 		if ret == nil
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 	}
 
@@ -645,11 +645,11 @@ final class MPDConnection : AudioServerConnection
 		}
 
 		let elapsed = mpd_status_get_elapsed_time(status)
-		guard let track = _trackFromMPDSongObject(song!) else
+		guard let track = trackFromMPDSongObject(song!) else
 		{
 			return nil
 		}
-		let state = _statusFromMPDStateObject(mpd_status_get_state(status))
+		let state = statusFromMPDStateObject(mpd_status_get_state(status))
 		let tmp = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0)
 		let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:tmp!), count: Int(strlen(tmp)), deallocator: .none)
 		if let name = String(data:dataTemp, encoding:.utf8)
@@ -670,7 +670,7 @@ final class MPDConnection : AudioServerConnection
 		let ret = mpd_run_stats(_connection)
 		if ret == nil
 		{
-			Logger.dlog(_getErrorMessageForConnection(_connection!))
+			Logger.dlog(getErrorMessageForConnection(_connection!))
 			return [:]
 		}
 
@@ -686,7 +686,7 @@ final class MPDConnection : AudioServerConnection
 	}
 
 	// MARK: - Private
-	private func _getErrorMessageForConnection(_ connection: OpaquePointer) -> String
+	private func getErrorMessageForConnection(_ connection: OpaquePointer) -> String
 	{
 		let err = mpd_connection_get_error_message(_connection)
 		let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:err!), count: Int(strlen(err)), deallocator: .none)
@@ -697,7 +697,7 @@ final class MPDConnection : AudioServerConnection
 		return "NO ERROR MESSAGE"
 	}
 
-	private func _trackFromMPDSongObject(_ song: OpaquePointer) -> Track?
+	private func trackFromMPDSongObject(_ song: OpaquePointer) -> Track?
 	{
 		// title
 		var tmp = mpd_song_get_tag(song, MPD_TAG_TITLE, 0)
@@ -740,7 +740,7 @@ final class MPDConnection : AudioServerConnection
 		return track
 	}
 
-	private func _statusFromMPDStateObject(_ state: mpd_state) -> PlayerStatus
+	private func statusFromMPDStateObject(_ state: mpd_state) -> PlayerStatus
 	{
 		switch state
 		{
@@ -755,7 +755,7 @@ final class MPDConnection : AudioServerConnection
 		}
 	}
 
-	private func _mpdTagTypeFromDisplayType(_ displayType: DisplayType) -> mpd_tag_type
+	private func mpdTagTypeFromDisplayType(_ displayType: DisplayType) -> mpd_tag_type
 	{
 		switch displayType
 		{

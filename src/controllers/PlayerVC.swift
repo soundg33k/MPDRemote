@@ -155,7 +155,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			}
 		}
 
-		_updatePlayPauseButton()
+		updatePlayPauseButton()
 	}
 
 	override func viewWillDisappear(_ animated: Bool)
@@ -280,11 +280,11 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 
 	func playerStatusChangedNotification(_ aNotification: Notification?)
 	{
-		_updatePlayPauseButton()
+		updatePlayPauseButton()
 	}
 
 	// MARK: - Private
-	private func _updatePlayPauseButton()
+	private func updatePlayPauseButton()
 	{
 		if PlayerController.shared.status == .paused
 		{

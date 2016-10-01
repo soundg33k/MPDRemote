@@ -56,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool
 	{
 		// Register default preferences
-		_registerDefaultPreferences()
+		registerDefaultPreferences()
 
 		// URL cache
 		URLCache.shared = URLCache(memoryCapacity:(4 * 1024 * 1024), diskCapacity:(32 * 1024 * 1024), diskPath:nil)
@@ -73,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	}
 
 	// MARK: - Private
-	private func _registerDefaultPreferences()
+	private func registerDefaultPreferences()
 	{
 		let coversDirectoryPath = "covers"
 		let columns = CGFloat(3)

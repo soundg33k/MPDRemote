@@ -78,7 +78,7 @@ final class MusicDataSource
 		if ret
 		{
 			_connection.delegate = self
-			_startTimer(20)
+			startTimer(20)
 		}
 		else
 		{
@@ -89,7 +89,7 @@ final class MusicDataSource
 
 	func reinitialize() -> Bool
 	{
-		_stopTimer()
+		stopTimer()
 		_connection.delegate = nil
 		_connection.disconnect()
 		_connection = nil
@@ -259,17 +259,17 @@ final class MusicDataSource
 	}
 
 	// MARK: - Private
-	private func _startTimer(_ interval: Int)
+	private func startTimer(_ interval: Int)
 	{
 		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
 		_timer.scheduleRepeating(deadline: .now(), interval:.seconds(interval))
 		_timer.setEventHandler {
-			self._playerStatus()
+			self.playerStatus()
 		}
 		_timer.resume()
 	}
 
-	private func _stopTimer()
+	private func stopTimer()
 	{
 		if let _ = _timer
 		{
@@ -278,7 +278,7 @@ final class MusicDataSource
 		}
 	}
 
-	private func _playerStatus()
+	private func playerStatus()
 	{
 		_connection.getStatus()
 	}

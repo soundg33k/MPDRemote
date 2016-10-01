@@ -67,7 +67,7 @@ final class StatsVC : MenuTVC
 		MusicDataSource.shared.getStats { (stats: [String : String]) in
 			DispatchQueue.main.async {
 				self.stats = stats
-				self._updateLabels()
+				self.updateLabels()
 			}
 		}
 	}
@@ -83,7 +83,7 @@ final class StatsVC : MenuTVC
 	}
 
 	// MARK: - Private
-	private func _updateLabels()
+	private func updateLabels()
 	{
 		lblAlbums.text = stats["albums"] ?? "0"
 
@@ -93,15 +93,15 @@ final class StatsVC : MenuTVC
 
 		var seconds = UInt(stats["dbplaytime"] ?? "0")!
 		var duration = Duration(seconds:seconds)
-		lblDBPlaytime.text = _formatDuration(duration)
+		lblDBPlaytime.text = formatDuration(duration)
 
 		seconds = UInt(stats["mpduptime"] ?? "0")!
 		duration = Duration(seconds:seconds)
-		lblMPDUptime.text = _formatDuration(duration)
+		lblMPDUptime.text = formatDuration(duration)
 
 		seconds = UInt(stats["mpdplaytime"] ?? "0")!
 		duration = Duration(seconds:seconds)
-		lblMPDPlaytime.text = _formatDuration(duration)
+		lblMPDPlaytime.text = formatDuration(duration)
 
 		let tt = stats["mpddbupdate"] != nil ? TimeInterval(stats["mpddbupdate"]!) : TimeInterval(0)
 		let df = DateFormatter()
@@ -110,7 +110,7 @@ final class StatsVC : MenuTVC
 		lblMPDDBLastUpdate.text = bla
 	}
 
-	private func _formatDuration(_ duration: Duration) -> String
+	private func formatDuration(_ duration: Duration) -> String
 	{
 		if duration.seconds > 86400
 		{

@@ -76,9 +76,9 @@ final class ZeroConfExplorer : NSObject
 	}
 
 	// MARK: - Private
-	fileprivate func _resolvZeroconfService(service: NetService)
+	fileprivate func resolvZeroconfService(service: NetService)
 	{
-		if let server = services[service] , _isResolved(server)
+		if let server = services[service] , isResolved(server)
 		{
 			return
 		}
@@ -87,7 +87,7 @@ final class ZeroConfExplorer : NSObject
 		service.resolve(withTimeout: 5)
 	}
 
-	fileprivate func _isResolved(_ server: Server) -> Bool
+	fileprivate func isResolved(_ server: Server) -> Bool
 	{
 		return server.hostname != "" && server.port != 0
 	}
@@ -117,7 +117,7 @@ extension ZeroConfExplorer : NetServiceBrowserDelegate
 	{
 		Logger.dlog("didFindService")
 		services[service] = Server(name: service.name, hostname: "", port: 0)
-		_resolvZeroconfService(service: service)
+		resolvZeroconfService(service: service)
 	}
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didRemove service: NetService, moreComing: Bool)

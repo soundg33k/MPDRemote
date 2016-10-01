@@ -85,14 +85,14 @@ final class KawaiiColors
 	{
 		// Find edge color
 		var imageColors = [CountedObject<UIColor>]()
-		edgeColor = _findEdgeColor(&imageColors)
+		edgeColor = findEdgeColor(&imageColors)
 		if edgeColor == nil
 		{
 			edgeColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
 		}
 
 		// Find other colors
-		_findContrastingColors(imageColors)
+		findContrastingColors(imageColors)
 
 		// Sanitize
 		let darkBackground = edgeColor.isDarkColor()
@@ -113,7 +113,7 @@ final class KawaiiColors
 	}
 
 	// MARK: - Private
-	private func _findEdgeColor(_ colors: inout [CountedObject<UIColor>]) -> UIColor?
+	private func findEdgeColor(_ colors: inout [CountedObject<UIColor>]) -> UIColor?
 	{
 		// Get raw image pixels
 		guard let cgImage = image.cgImage else
@@ -226,7 +226,7 @@ final class KawaiiColors
 		}
 	}
 
-	private func _findContrastingColors(_ colors: [CountedObject<UIColor>])
+	private func findContrastingColors(_ colors: [CountedObject<UIColor>])
 	{
 		var sortedColors = [CountedObject<UIColor>]()
 		let findDarkTextColor = !edgeColor.isDarkColor()

@@ -104,7 +104,7 @@ final class ServerVC : MenuTVC
 			Logger.alog("[+] No web server registered yet.")
 		}
 
-		_updateFields()
+		updateFields()
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -245,7 +245,7 @@ final class ServerVC : MenuTVC
 	}
 
 	// MARK: - Private
-	func _updateFields()
+	fileprivate func updateFields()
 	{
 		if let server = mpdServer
 		{
@@ -276,7 +276,7 @@ final class ServerVC : MenuTVC
 		}
 	}
 
-	func _clearCache(confirm: Bool)
+	fileprivate func clearCache(confirm: Bool)
 	{
 		let clearBlock = { () -> Void in
 			let fileManager = FileManager()
@@ -319,7 +319,7 @@ extension ServerVC : ZeroConfBrowserTVCDelegate
 {
 	func audioServerDidChange()
 	{
-		_clearCache(confirm: false)
+		clearCache(confirm: false)
 	}
 }
 
@@ -330,7 +330,7 @@ extension ServerVC
 	{
 		if indexPath.section == 1 && indexPath.row == 3
 		{
-			_clearCache(confirm: true)
+			clearCache(confirm: true)
 		}
 		tableView.deselectRow(at: indexPath, animated:true)
 	}

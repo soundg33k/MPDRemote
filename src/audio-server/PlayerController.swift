@@ -87,7 +87,7 @@ final class PlayerController
 		if ret
 		{
 			_connection.delegate = self
-			_startTimer(1)
+			startTimer(1)
 		}
 		else
 		{
@@ -98,7 +98,7 @@ final class PlayerController
 
 	func reinitialize() -> Bool
 	{
-		_stopTimer()
+		stopTimer()
 		_connection.delegate = nil
 		_connection.disconnect()
 		_connection = nil
@@ -234,17 +234,17 @@ final class PlayerController
 	}
 
 	// MARK: - Private
-	private func _startTimer(_ interval: Int)
+	private func startTimer(_ interval: Int)
 	{
 		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
 		_timer.scheduleRepeating(deadline: .now(), interval:.seconds(interval))
 		_timer.setEventHandler {
-			self._playerInformations()
+			self.playerInformations()
 		}
 		_timer.resume()
 	}
 
-	private func _stopTimer()
+	private func stopTimer()
 	{
 		if let _ = _timer
 		{
@@ -253,7 +253,7 @@ final class PlayerController
 		}
 	}
 
-	private func _playerInformations()
+	private func playerInformations()
 	{
 		guard let infos = _connection.getPlayerInfos() else {return}
 		let status = PlayerStatus(rawValue:infos[kPlayerStatusKey] as! Int)!

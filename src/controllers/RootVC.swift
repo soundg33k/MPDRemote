@@ -160,7 +160,7 @@ final class RootVC : MenuVC
 					MusicDataSource.shared.getListForDisplayType(_displayType) {
 						DispatchQueue.main.async {
 							self.collectionView.reloadData()
-							self._updateNavigationTitle()
+							self.updateNavigationTitle()
 						}
 					}
 
@@ -187,7 +187,7 @@ final class RootVC : MenuVC
 		// Since we are in search mode, show the bar
 		if searching
 		{
-			_hideNavigationBar(animated:true)
+			hideNavigationBar(animated:true)
 		}
 
 		// Deselect cell
@@ -207,7 +207,7 @@ final class RootVC : MenuVC
 				DispatchQueue.main.async {
 					self.collectionView.reloadData()
 					self.collectionView.setContentOffset(CGPoint.zero, animated:false) // Scroll to top
-					self._updateNavigationTitle()
+					self.updateNavigationTitle()
 				}
 			}
 			_serverChanged = false
@@ -483,7 +483,7 @@ final class RootVC : MenuVC
 	}
 
 	// MARK: - Private
-	func _showNavigationBar(animated: Bool = true)
+	fileprivate func showNavigationBar(animated: Bool = true)
 	{
 		searchBar.endEditing(true)
 		let bar = (navigationController?.navigationBar)!
@@ -494,7 +494,7 @@ final class RootVC : MenuVC
 		})
 	}
 
-	func _hideNavigationBar(animated: Bool = true)
+	fileprivate func hideNavigationBar(animated: Bool = true)
 	{
 		let bar = (navigationController?.navigationBar)!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:.curveEaseOut, animations:{
@@ -505,7 +505,7 @@ final class RootVC : MenuVC
 		})
 	}
 
-	func _updateNavigationTitle()
+	fileprivate func updateNavigationTitle()
 	{
 		let p = NSMutableParagraphStyle()
 		p.alignment = .center
@@ -527,6 +527,28 @@ final class RootVC : MenuVC
 		titleView.setAttributedTitle(astr1, for:.normal)
 		let astr2 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr2, for:.highlighted)
+	}
+
+	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
+	{
+		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
+		let key = album.uuid
+		weak var weakOperation = downloadOperation
+		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+			if let op = weakOperation
+			{
+				if !op.isCancelled
+				{
+					self._downloadOperations.removeValue(forKey: key)
+				}
+			}
+			if let block = callback
+			{
+				block(cover, thumbnail)
+			}
+		}
+		_downloadOperations[key] = downloadOperation
+		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
 
 	// MARK: - Notifications
@@ -616,7 +638,7 @@ extension RootVC : UICollectionViewDataSource
 		{
 			if album.path != nil
 			{
-				_downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+				downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 						{
@@ -628,7 +650,7 @@ extension RootVC : UICollectionViewDataSource
 			else
 			{
 				MusicDataSource.shared.getPathForAlbum(album) {
-					self._downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+					self.downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 							{
@@ -679,7 +701,7 @@ extension RootVC : UICollectionViewDataSource
 				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 				if album.path != nil
 				{
-					_downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+					downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 							{
@@ -691,7 +713,7 @@ extension RootVC : UICollectionViewDataSource
 				else
 				{
 					MusicDataSource.shared.getPathForAlbum(album) {
-						self._downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+						self.downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 							DispatchQueue.main.async {
 								if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 								{
@@ -758,7 +780,7 @@ extension RootVC : UICollectionViewDataSource
 					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						_downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
+						downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 							let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 							DispatchQueue.main.async {
 								if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
@@ -771,7 +793,7 @@ extension RootVC : UICollectionViewDataSource
 					else
 					{
 						MusicDataSource.shared.getPathForAlbum(album) {
-							self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
+							self.downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
 								DispatchQueue.main.async {
 									if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
@@ -797,28 +819,6 @@ extension RootVC : UICollectionViewDataSource
 			}
 		}
 	}
-
-	func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
-	{
-		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
-		let key = album.uuid
-		weak var weakOperation = downloadOperation
-		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
-			if let op = weakOperation
-			{
-				if !op.isCancelled
-				{
-					self._downloadOperations.removeValue(forKey: key)
-				}
-			}
-			if let block = callback
-			{
-				block(cover, thumbnail)
-			}
-		}
-		_downloadOperations[key] = downloadOperation
-		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
-	}
 }
 
 // MARK: - UICollectionViewDelegate
@@ -837,7 +837,7 @@ extension RootVC : UICollectionViewDelegate
 		// Hide the searchbar
 		if searchBarVisible
 		{
-			_showNavigationBar(animated:true)
+			showNavigationBar(animated:true)
 		}
 
 		switch _displayType
@@ -926,7 +926,7 @@ extension RootVC : UIScrollViewDelegate
 		{
 			if scrollView.contentOffset.y > 0.0
 			{
-				_showNavigationBar(animated:true)
+				showNavigationBar(animated:true)
 			}
 			return
 		}
@@ -966,7 +966,7 @@ extension RootVC : UISearchBarDelegate
 		searching = false
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
-		_showNavigationBar(animated:true)
+		showNavigationBar(animated:true)
 		//searchBarVisible = false
 		collectionView.reloadData()
 	}
@@ -1044,7 +1044,7 @@ extension RootVC : TypeChoiceViewDelegate
 				self.collectionView.reloadData()
 				self.changeTypeAction(nil)
 				self.collectionView.setContentOffset(CGPoint.zero, animated:true) // Scroll to top
-				self._updateNavigationTitle()
+				self.updateNavigationTitle()
 			}
 		}
 	}
@@ -1078,7 +1078,7 @@ extension RootVC
 			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			MusicDataSource.shared.getPathForAlbum(randomAlbum) {
-				self._downloadCoverForAlbum(randomAlbum, cropSize:cropSize.cgSizeValue, callback:{ (cover: UIImage, thumbnail: UIImage) in
+				self.downloadCoverForAlbum(randomAlbum, cropSize:cropSize.cgSizeValue, callback:{ (cover: UIImage, thumbnail: UIImage) in
 					let size = CGSize(self.view.width - 64.0, self.view.width - 64.0)
 					let cropped = cover.imageCroppedToFitSize(size)
 					DispatchQueue.main.async {

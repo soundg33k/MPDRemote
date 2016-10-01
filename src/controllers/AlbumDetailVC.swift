@@ -93,21 +93,21 @@ final class AlbumDetailVC : UIViewController
 		navigationBar.layer.masksToBounds = false
 
 		// Update header
-		_updateHeader()
+		updateHeader()
 
 		// Get songs list if needed
 		if album.songs == nil
 		{
 			MusicDataSource.shared.getSongsForAlbum(album) {
 				DispatchQueue.main.async {
-					self._updateNavigationTitle()
+					self.updateNavigationTitle()
 					self.tableView.reloadData()
 				}
 			}
 		}
 		else
 		{
-			_updateNavigationTitle()
+			updateNavigationTitle()
 			tableView.reloadData()
 		}
 	}
@@ -134,7 +134,7 @@ final class AlbumDetailVC : UIViewController
 	}
 
 	// MARK: - Private
-	private func _updateHeader()
+	private func updateHeader()
 	{
 		// Update header view
 		self.headerView.updateHeaderWithAlbum(album)
@@ -144,13 +144,13 @@ final class AlbumDetailVC : UIViewController
 		{
 			MusicDataSource.shared.getMetadatasForAlbum(album) {
 				DispatchQueue.main.async {
-					self._updateHeader()
+					self.updateHeader()
 				}
 			}
 		}
 	}
 
-	private func _updateNavigationTitle()
+	private func updateNavigationTitle()
 	{
 		if let tracks = album.songs
 		{

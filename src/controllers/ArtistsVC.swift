@@ -71,7 +71,7 @@ final class ArtistsVC : UITableViewController
 			self.artists = artists
 			DispatchQueue.main.async {
 				self.tableView.reloadData()
-				self._updateNavigationTitle()
+				self.updateNavigationTitle()
 			}
 		}
 	}
@@ -96,11 +96,30 @@ final class ArtistsVC : UITableViewController
 	}
 
 	// MARK: - Private
-	private func _updateNavigationTitle()
+	private func updateNavigationTitle()
 	{
 		let attrs = NSMutableAttributedString(string:genre.name + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
 		attrs.append(NSAttributedString(string:"\(artists.count) \(artists.count > 1 ? NYXLocalizedString("lbl_artists").lowercased() : NYXLocalizedString("lbl_artist").lowercased())", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
 		titleView.attributedText = attrs
+	}
+
+	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:@escaping (_ thumbnail: UIImage) -> Void)
+	{
+		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
+		let key = album.uuid
+		weak var weakOperation = downloadOperation
+		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+			if let op = weakOperation
+			{
+				if !op.isCancelled
+				{
+					self._downloadOperations.removeValue(forKey: key)
+				}
+			}
+			callback(thumbnail)
+		}
+		_downloadOperations[key] = downloadOperation
+		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
 }
 
@@ -175,7 +194,7 @@ extension ArtistsVC
 					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						_downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
+						downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
 							let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 							DispatchQueue.main.async {
 								if let c = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
@@ -188,7 +207,7 @@ extension ArtistsVC
 					else
 					{
 						MusicDataSource.shared.getPathForAlbum(album) {
-							self._downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
+							self.downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
 								let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
 								DispatchQueue.main.async {
 									if let c = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
@@ -214,25 +233,6 @@ extension ArtistsVC
 			}
 		}
 		return cell
-	}
-
-	private func _downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:@escaping (_ thumbnail: UIImage) -> Void)
-	{
-		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
-		let key = album.uuid
-		weak var weakOperation = downloadOperation
-		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
-			if let op = weakOperation
-			{
-				if !op.isCancelled
-				{
-					self._downloadOperations.removeValue(forKey: key)
-				}
-			}
-			callback(thumbnail)
-		}
-		_downloadOperations[key] = downloadOperation
-		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
 }
 
