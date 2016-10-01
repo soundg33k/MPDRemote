@@ -54,9 +54,11 @@ final class RootVC : MenuVC
 	// Keep track of download operations to eventually cancel them
 	fileprivate var _downloadOperations = [UUID : Operation]()
 	// View to change the type of items in the collection view
-	fileprivate  var _typeChoiceView: TypeChoiceView! = nil
+	fileprivate var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
 	fileprivate var _displayType = DisplayType(rawValue:UserDefaults.standard.integer(forKey: kNYXPrefDisplayType))!
+	// Audio server changed
+	fileprivate var _serverChanged = false
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -132,6 +134,8 @@ final class RootVC : MenuVC
 		collectionView.addGestureRecognizer(doubleTap)
 
 		_ = MiniPlayerView.shared.visible
+
+		NotificationCenter.default.addObserver(self, selector:#selector(audioServerConfigurationDidChange(_:)), name:NSNotification.Name.audioServerConfigurationDidChange, object:nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -193,6 +197,20 @@ final class RootVC : MenuVC
 			{
 				collectionView.deselectItem(at: indexPath, animated:true)
 			}
+		}
+
+		// Audio server changed
+		if _serverChanged
+		{
+			// Refresh view
+			MusicDataSource.shared.getListForDisplayType(_displayType) {
+				DispatchQueue.main.async {
+					self.collectionView.reloadData()
+					self.collectionView.setContentOffset(CGPoint.zero, animated:false) // Scroll to top
+					self._updateNavigationTitle()
+				}
+			}
+			_serverChanged = false
 		}
 	}
 
@@ -509,6 +527,12 @@ final class RootVC : MenuVC
 		titleView.setAttributedTitle(astr1, for:.normal)
 		let astr2 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr2, for:.highlighted)
+	}
+
+	// MARK: - Notifications
+	func audioServerConfigurationDidChange(_ aNotification: Notification)
+	{
+		_serverChanged = true
 	}
 }
 
