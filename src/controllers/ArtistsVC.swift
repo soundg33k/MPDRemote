@@ -141,6 +141,7 @@ extension ArtistsVC
 			cell.dummyView.backgroundColor = tableView.backgroundColor
 			cell.lblArtist.backgroundColor = tableView.backgroundColor
 			cell.lblAlbums.backgroundColor = tableView.backgroundColor
+			cell.coverView.backgroundColor = tableView.backgroundColor
 			cell.coverView.image = nil
 			cell.lblArtist.text = ""
 			cell.lblAlbums.text = ""
@@ -150,6 +151,7 @@ extension ArtistsVC
 		cell.dummyView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		cell.lblArtist.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		cell.lblAlbums.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.coverView.backgroundColor = UIColor.fromRGB(0x444444)
 
 		let artist = artists[indexPath.row]
 		cell.lblArtist.text = artist.name
@@ -161,6 +163,7 @@ extension ArtistsVC
 			cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
 			return cell
 		}
+		cell.coverView.image = nil
 
 		if artist.albums.count > 0
 		{
@@ -189,7 +192,6 @@ extension ArtistsVC
 				}
 				else
 				{
-					cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
 					let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
 					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 					if album.path != nil

@@ -681,6 +681,7 @@ extension RootVC : UICollectionViewDataSource
 				cell.image = cachedImage
 				return
 			}
+			cell.image = nil
 
 			// Get local URL for cover
 			guard let coverURL = album.localCoverURL else
@@ -726,6 +727,7 @@ extension RootVC : UICollectionViewDataSource
 		}
 		else
 		{
+			cell.image = nil
 			MusicDataSource.shared.getAlbumForGenre(genre) {
 				DispatchQueue.main.async {
 					if let _ = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
@@ -759,6 +761,7 @@ extension RootVC : UICollectionViewDataSource
 					cell.image = cachedImage
 					return
 				}
+				cell.image = nil
 
 				// Get local URL for cover
 				guard let coverURL = album.localCoverURL else
@@ -808,6 +811,7 @@ extension RootVC : UICollectionViewDataSource
 		}
 		else
 		{
+			cell.image = nil
 			MusicDataSource.shared.getAlbumsForArtist(artist) {
 				DispatchQueue.main.async {
 					if let _ = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell

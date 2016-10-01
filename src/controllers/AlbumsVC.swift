@@ -143,6 +143,7 @@ extension AlbumsVC
 		{
 			cell.dummyView.backgroundColor = tableView.backgroundColor
 			cell.lblAlbum.backgroundColor = tableView.backgroundColor
+			cell.coverView.backgroundColor = tableView.backgroundColor
 			cell.coverView.image = nil
 			cell.lblAlbum.text = ""
 			cell.selectionStyle = .none
@@ -150,6 +151,7 @@ extension AlbumsVC
 		}
 		cell.dummyView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		cell.lblAlbum.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.coverView.backgroundColor = UIColor.fromRGB(0x444444)
 
 		let album = artist.albums[indexPath.row]
 		cell.lblAlbum.text = album.name
@@ -161,6 +163,7 @@ extension AlbumsVC
 			cell.coverView.image = generateCoverForAlbum(album, size: cell.coverView.size)
 			return cell
 		}
+		cell.coverView.image = nil
 
 		// Get local URL for cover
 		guard let coverURL = album.localCoverURL else
@@ -184,7 +187,6 @@ extension AlbumsVC
 		}
 		else
 		{
-			cell.coverView.image = generateCoverForAlbum(album, size: cell.coverView.size)
 			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			if album.path != nil
