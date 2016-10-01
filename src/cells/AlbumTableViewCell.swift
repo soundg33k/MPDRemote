@@ -26,12 +26,12 @@ import UIKit
 final class AlbumTableViewCell : UITableViewCell
 {
 	// MARK: - Public properties
+	// Separator
+	@IBOutlet private(set) var dummyView: UIView!
 	// Album cover
 	@IBOutlet private(set) var coverView: UIImageView!
 	// Album name
-	@IBOutlet private(set) var lblAlbum: TopAlignedLabel!
-	// Separator
-	@IBOutlet private(set) var separator: UIView!
+	@IBOutlet private(set) var lblAlbum: UILabel!
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)

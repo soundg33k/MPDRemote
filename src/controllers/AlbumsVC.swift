@@ -122,18 +122,18 @@ extension AlbumsVC
 		// Dummy to let some space for the mini player
 		if indexPath.row == artist.albums.count
 		{
+			cell.dummyView.backgroundColor = tableView.backgroundColor
+			cell.lblAlbum.backgroundColor = tableView.backgroundColor
 			cell.coverView.image = nil
 			cell.lblAlbum.text = ""
-			cell.separator.isHidden = true
-			cell.accessoryType = .none
 			cell.selectionStyle = .none
 			return cell
 		}
+		cell.dummyView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.lblAlbum.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 
 		let album = artist.albums[indexPath.row]
 		cell.lblAlbum.text = album.name
-		cell.separator.isHidden = false
-		cell.accessoryType = .disclosureIndicator
 		cell.accessibilityLabel = "\(album.name)"
 
 		// No server for covers
@@ -258,6 +258,6 @@ extension AlbumsVC
 		{
 			return 44.0 // dummy cell
 		}
-		return 74.0
+		return 68.0
 	}
 }

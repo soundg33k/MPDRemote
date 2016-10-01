@@ -26,15 +26,14 @@ import UIKit
 final class ArtistTableViewCell : UITableViewCell
 {
 	// MARK: - Public properties
+	@IBOutlet private(set) var dummyView: UIView!
 	// Album cover
 	@IBOutlet private(set) var coverView: UIImageView!
 	// Artist name
-	@IBOutlet private(set) var lblArtist: TopAlignedLabel!
+	@IBOutlet private(set) var lblArtist: UILabel!
 	// Number of albums
-	@IBOutlet private(set) var lblAlbums: TopAlignedLabel!
-	// Separator
-	@IBOutlet private(set) var separator: UIView!
-
+	@IBOutlet private(set) var lblAlbums: UILabel!
+	
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
 	{

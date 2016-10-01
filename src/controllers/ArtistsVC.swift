@@ -119,19 +119,21 @@ extension ArtistsVC
 		// Dummy to let some space for the mini player
 		if indexPath.row == artists.count
 		{
+			cell.dummyView.backgroundColor = tableView.backgroundColor
+			cell.lblArtist.backgroundColor = tableView.backgroundColor
+			cell.lblAlbums.backgroundColor = tableView.backgroundColor
+			cell.coverView.image = nil
 			cell.lblArtist.text = ""
 			cell.lblAlbums.text = ""
-			cell.separator.isHidden = true
-			cell.coverView.image = nil
-			cell.accessoryType = .none
 			cell.selectionStyle = .none
 			return cell
 		}
+		cell.dummyView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.lblArtist.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.lblAlbums.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 
 		let artist = artists[indexPath.row]
 		cell.lblArtist.text = artist.name
-		cell.separator.isHidden = false
-		cell.accessoryType = .disclosureIndicator
 		cell.accessibilityLabel = "\(artist.name), \(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercased() : NYXLocalizedString("lbl_album").lowercased())"
 
 		// No server for covers
@@ -272,6 +274,6 @@ extension ArtistsVC
 		{
 			return 44.0
 		}
-		return 58.0
+		return 52.0
 	}
 }
