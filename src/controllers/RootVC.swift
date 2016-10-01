@@ -117,7 +117,6 @@ final class RootVC : MenuVC
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
 		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
-		//collectionView.prefetchDataSource = self
 		collectionView.isPrefetchingEnabled = false
 
 		// Longpress
@@ -876,46 +875,6 @@ extension RootVC : UICollectionViewDelegate
 		}
 	}
 }
-
-// MARK: - UICollectionViewDataSourcePrefetching
-/*extension RootVC : UICollectionViewDataSourcePrefetching
-{
-	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath])
-	{
-		if _displayType != .albums || searching
-		{
-			return
-		}
-
-		let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
-		let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
-		for ip in indexPaths
-		{
-			let album = MusicDataSource.shared.albums[ip.row]
-			_downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue, callback: nil)
-		}
-	}
-
-	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath])
-	{
-		if _displayType != .albums || searching
-		{
-			return
-		}
-
-		for ip in indexPaths
-		{
-			let album = MusicDataSource.shared.albums[ip.row]
-			let key = album.uuid
-			if let op = _downloadOperations[key] as! CoverOperation?
-			{
-				op.cancel()
-				_downloadOperations.removeValue(forKey: key)
-				Logger.dlog("[+] Cancelling \(op)")
-			}
-		}
-	}
-}*/
 
 // MARK: - UIScrollViewDelegate
 extension RootVC : UIScrollViewDelegate
