@@ -73,6 +73,20 @@ struct Duration
 		s -= minutes * 60
 		return (days, hours, minutes, s)
 	}
+
+	func monthsRepresentation() -> (months: UInt, days: UInt, hours: UInt, minutes: UInt, seconds: UInt)
+	{
+		var s = seconds
+		let months = s / 2678400
+		s -= months * 2678400
+		let days = s / 86400
+		s -= days * 86400
+		let hours = s / 3600
+		s -= hours * 3600
+		let minutes = s / 60
+		s -= minutes * 60
+		return (months, days, hours, minutes, s)
+	}
 }
 
 // MARK: - Comparisons

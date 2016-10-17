@@ -111,6 +111,11 @@ final class StatsVC : MenuTVC
 
 	private func formatDuration(_ duration: Duration) -> String
 	{
+		if duration.seconds > 2678400
+		{
+			let d = duration.monthsRepresentation()
+			return "\(d.months)m \(d.days)d \(d.hours)h \(d.minutes)m \(d.seconds)s"
+		}
 		if duration.seconds > 86400
 		{
 			let d = duration.daysRepresentation()
