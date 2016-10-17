@@ -58,7 +58,7 @@ final class ArtistsVC : UITableViewController
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)
+		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		navigationItem.titleView = titleView
 	}
 

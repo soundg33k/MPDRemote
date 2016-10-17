@@ -193,7 +193,7 @@ extension AlbumDetailVC : UITableViewDataSource
 				cell.selectionStyle = .none
 				return cell
 			}
-			cell.separator.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			cell.separator.backgroundColor = UIColor.fromRGB(0xE4E4E4)
 			cell.separator.isHidden = false
 
 			let track = tracks[indexPath.row]
