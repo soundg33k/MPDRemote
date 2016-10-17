@@ -61,9 +61,8 @@ final class ZeroConfBrowserTVC : UITableViewController
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = navigationController?.navigationBar.tintColor
+		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		titleView.text = NYXLocalizedString("lbl_header_server_zeroconf")
-		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
 		navigationItem.titleView = titleView
 	}
 
@@ -86,7 +85,7 @@ final class ZeroConfBrowserTVC : UITableViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .lightContent
+		return .default
 	}
 
 	// MARK: - IBActions

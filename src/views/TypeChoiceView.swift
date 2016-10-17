@@ -41,14 +41,14 @@ final class TypeChoiceView : UIView
 	override init(frame: CGRect)
 	{
 		super.init(frame:frame)
-		self.backgroundColor = UIColor.fromRGB(0x131313)
+		self.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 
 		// TableView
 		self.tableView = UITableView(frame:CGRect(CGPoint.zero, frame.size), style:.plain)
 		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.type")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
-		self.tableView.backgroundColor = UIColor.fromRGB(0x131313)
+		self.tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
 		self.tableView.isScrollEnabled = false
@@ -75,7 +75,7 @@ extension TypeChoiceView : UITableViewDataSource
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.type", for:indexPath)
 		cell.selectionStyle = .none
-		cell.backgroundColor = UIColor.fromRGB(0x131313)
+		cell.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		cell.textLabel?.textAlignment = .center
 		var title = ""
 		var selected = false
@@ -97,12 +97,12 @@ extension TypeChoiceView : UITableViewDataSource
 		if selected
 		{
 			cell.textLabel?.font = UIFont(name:"HelveticaNeue-Medium", size:16.0)
-			cell.textLabel?.textColor = UIColor.fromRGB(0xCC0000)
+			cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 		}
 		else
 		{
 			cell.textLabel?.font = UIFont(name:"HelveticaNeue", size:15.0)
-			cell.textLabel?.textColor = UIColor.fromRGB(0xECECEC)
+			cell.textLabel?.textColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
 		return cell
 	}

@@ -42,7 +42,7 @@ class MenuVC : UIViewController
 		super.init(coder:aDecoder)
 
 		// Hamburger button
-		let b = UIBarButtonItem(image:#imageLiteral(resourceName: "btn-hamb").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), style:.plain, target:self, action:#selector(showLeftViewAction(_:)))
+		let b = UIBarButtonItem(image:#imageLiteral(resourceName: "btn-hamb").imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), style:.plain, target:self, action:#selector(showLeftViewAction(_:)))
 		b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 		self.navigationItem.leftBarButtonItem = b
 	}

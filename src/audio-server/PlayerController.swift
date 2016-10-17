@@ -23,15 +23,6 @@
 import Foundation
 
 
-enum PlayerStatus : Int
-{
-	case playing
-	case paused
-	case stopped
-	case unknown
-}
-
-
 final class PlayerController
 {
 	// MARK: - Public properties
@@ -40,7 +31,7 @@ final class PlayerController
 	// MPD server
 	var server: AudioServer! = nil
 	// Player status (playing, paused, stopped)
-	private(set) var status: PlayerStatus = .unknown
+	private(set) var currentStatus: PlayerStatus = .unknown
 	// Current playing track
 	private(set) var currentTrack: Track? = nil
 	// Current playing album
@@ -99,9 +90,12 @@ final class PlayerController
 	func reinitialize() -> Bool
 	{
 		stopTimer()
-		_connection.delegate = nil
-		_connection.disconnect()
-		_connection = nil
+		if _connection != nil
+		{
+			_connection.delegate = nil
+			_connection.disconnect()
+			_connection = nil
+		}
 		return initialize()
 	}
 
@@ -256,7 +250,7 @@ final class PlayerController
 	private func playerInformations()
 	{
 		guard let infos = _connection.getPlayerInfos() else {return}
-		let status = PlayerStatus(rawValue:infos[kPlayerStatusKey] as! Int)!
+		let status = infos[kPlayerStatusKey] as! Int
 		let track = infos[kPlayerTrackKey] as! Track
 		let album = infos[kPlayerAlbumKey] as! Album
 
@@ -269,14 +263,14 @@ final class PlayerController
 		}
 
 		// Status changed
-		if status != status
+		if currentStatus.rawValue != status
 		{
 			DispatchQueue.main.async {
 				NotificationCenter.default.post(name: .playerStatusChanged, object:nil, userInfo:infos)
 			}
 		}
 
-		self.status = status
+		self.currentStatus = PlayerStatus(rawValue: status)!
 		currentTrack = track
 		currentAlbum = album
 		DispatchQueue.main.async {

@@ -36,6 +36,7 @@ final class RootVC : MenuVC
 	// Top constraint for collection view
 	@IBOutlet fileprivate var topConstraint: NSLayoutConstraint!
 	// Search bar
+	fileprivate var searchView: UIView! = nil
 	fileprivate var searchBar: UISearchBar! = nil
 	// Button in the navigationbar
 	fileprivate var titleView: UIButton! = nil
@@ -71,14 +72,13 @@ final class RootVC : MenuVC
 		let navigationBar = (navigationController?.navigationBar)!
 
 		// Searchbar
-		let searchView = UIView(frame:CGRect(0.0, 0.0, navigationBar.width, 64.0))
-		searchView.backgroundColor = navigationBar.barTintColor
-		navigationController?.view.insertSubview(searchView, belowSubview:navigationBar)
+		searchView = UIView(frame:CGRect(0.0, -64.0, navigationBar.width, 64.0))
+		searchView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		searchBar = UISearchBar(frame:navigationBar.frame)
 		searchBar.searchBarStyle = .minimal
 		searchBar.barTintColor = searchView.backgroundColor
 		searchBar.tintColor = navigationBar.tintColor
-		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
+		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)
 		searchBar.showsCancelButton = true
 		searchBar.delegate = self
 		searchView.addSubview(searchBar)
@@ -93,8 +93,9 @@ final class RootVC : MenuVC
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
 		btnRandom = UIButton(type:.custom)
 		btnRandom.frame = CGRect((navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
-		btnRandom.setImage(imageRandom.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:.normal)
-		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
+		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.normal)
+		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.highlighted)
+		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), for:.touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
@@ -105,8 +106,9 @@ final class RootVC : MenuVC
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		btnRepeat = UIButton(type:.custom)
 		btnRepeat.frame = CGRect((navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:.normal)
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
+		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.normal)
+		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.highlighted)
+		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), for:.touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
@@ -184,10 +186,14 @@ final class RootVC : MenuVC
 		}
 
 		// Since we are in search mode, show the bar
-		if searching
+		if searchView.superview == nil
+		{
+			navigationController?.view.addSubview(searchView)
+		}
+		/*if searching
 		{
 			hideNavigationBar(animated:true)
-		}
+		}*/
 
 		// Deselect cell
 		if let idxs = collectionView.indexPathsForSelectedItems
@@ -219,6 +225,11 @@ final class RootVC : MenuVC
 
 		APP_DELEGATE().operationQueue.cancelAllOperations()
 		_downloadOperations.removeAll()
+
+		if searchView.superview != nil
+		{
+			searchView.removeFromSuperview()
+		}
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -228,7 +239,7 @@ final class RootVC : MenuVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .lightContent
+		return .default
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -426,16 +437,18 @@ final class RootVC : MenuVC
 	{
 		if _typeChoiceView == nil
 		{
-			_typeChoiceView = TypeChoiceView(frame:CGRect(0.0, 0.0, collectionView.width, 132.0))
+			_typeChoiceView = TypeChoiceView(frame:CGRect(0.0, kNYXTopInset, collectionView.width, 132.0))
 			_typeChoiceView.delegate = self
 		}
 
 		if _typeChoiceView.superview != nil
 		{ // Is visible
+			self.collectionView.contentInset = UIEdgeInsets(top: kNYXTopInset, left: 0.0, bottom: 0.0, right: 0.0)
 			topConstraint.constant = 0.0;
 			UIView.animate(withDuration: 0.3, delay:0.0, options:.curveEaseOut, animations:{
-				self.view.backgroundColor = UIColor.fromRGB(0xECECEC)
+				self.view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 				self.view.layoutIfNeeded()
+				self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at:.top, animated: false)
 			}, completion:{ finished in
 				self._typeChoiceView.removeFromSuperview()
 			})
@@ -444,10 +457,11 @@ final class RootVC : MenuVC
 		{ // Is hidden
 			_typeChoiceView.tableView.reloadData()
 			view.insertSubview(_typeChoiceView, belowSubview:collectionView)
-			topConstraint.constant = self._typeChoiceView.height;
+			topConstraint.constant = _typeChoiceView.bottom;
 
 			UIView.animate(withDuration: 0.2, delay:0.0, options:.curveEaseOut, animations:{
-				self.view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+				self.collectionView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
+				self.view.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 				//self.view.layoutIfNeeded()
 			}, completion:nil)
 		}
@@ -485,9 +499,8 @@ final class RootVC : MenuVC
 	fileprivate func showNavigationBar(animated: Bool = true)
 	{
 		searchBar.endEditing(true)
-		let bar = (navigationController?.navigationBar)!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:.curveEaseOut, animations:{
-			bar.y = 20.0
+			self.searchView.y = -self.searchView.height
 		}, completion:{ finished in
 			self.searchBarVisible = false
 		})
@@ -495,9 +508,8 @@ final class RootVC : MenuVC
 
 	fileprivate func hideNavigationBar(animated: Bool = true)
 	{
-		let bar = (navigationController?.navigationBar)!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:.curveEaseOut, animations:{
-			bar.y = -48.0
+			self.searchView.y = 0.0
 		}, completion:{ finished in
 			self.searchBarVisible = true
 			self.searchBar.becomeFirstResponder()
@@ -522,9 +534,9 @@ final class RootVC : MenuVC
 				let n = MusicDataSource.shared.artists.count
 				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_artists") : NYXLocalizedString("lbl_artist"))"
 		}
-		let astr1 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
+		let astr1 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr1, for:.normal)
-		let astr2 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : UIColor.fromRGB(0xCC0000), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
+		let astr2 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr2, for:.highlighted)
 	}
 
@@ -838,10 +850,10 @@ extension RootVC : UICollectionViewDelegate
 		}
 
 		// Hide the searchbar
-		if searchBarVisible
+		/*if searchBarVisible
 		{
 			showNavigationBar(animated:true)
-		}
+		}*/
 
 		switch _displayType
 		{
@@ -893,24 +905,29 @@ extension RootVC : UIScrollViewDelegate
 			}
 			return
 		}
-		let bar = (navigationController?.navigationBar)!
-		if scrollView.contentOffset.y <= 0.0
+
+		if scrollView.contentOffset.y < -scrollView.contentInset.top
 		{
-			bar.y = 20.0 + scrollView.contentOffset.y
+			if scrollView.contentOffset.y < -(searchView.height + scrollView.contentInset.top)
+			{
+				searchView.y = 0.0
+			}
+			else
+			{
+				searchView.y = -searchView.height + (fabs(scrollView.contentOffset.y) - scrollView.contentInset.top)
+			}
 		}
 		else
 		{
-			bar.y = 20.0
+			searchView.y = -searchView.height
 		}
 	}
 
 	func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
 	{
-		if scrollView.contentOffset.y <= -44.0
+		if scrollView.contentOffset.y <= -(searchView.height + scrollView.contentInset.top)
 		{
 			searchBarVisible = true
-			let bar = (navigationController?.navigationBar)!
-			bar.y = -48.0
 			searchBar.becomeFirstResponder()
 		}
 		else
@@ -1006,7 +1023,7 @@ extension RootVC : TypeChoiceViewDelegate
 			DispatchQueue.main.async {
 				self.collectionView.reloadData()
 				self.changeTypeAction(nil)
-				self.collectionView.setContentOffset(CGPoint.zero, animated:true) // Scroll to top
+				self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at:.top, animated: false) // Scroll to top
 				self.updateNavigationTitle()
 			}
 		}

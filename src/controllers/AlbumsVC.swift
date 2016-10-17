@@ -57,8 +57,7 @@ final class AlbumsVC : UITableViewController
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = navigationController?.navigationBar.tintColor
-		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
+		titleView.textColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)
 		navigationItem.titleView = titleView
 	}
 
@@ -86,7 +85,7 @@ final class AlbumsVC : UITableViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .lightContent
+		return .default
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -151,7 +150,7 @@ extension AlbumsVC
 		}
 		cell.dummyView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		cell.lblAlbum.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		cell.coverView.backgroundColor = UIColor.fromRGB(0x444444)
+		cell.coverView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 
 		let album = artist.albums[indexPath.row]
 		cell.lblAlbum.text = album.name

@@ -58,9 +58,8 @@ final class ServerVC : MenuTVC
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = navigationController?.navigationBar.tintColor
+		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		titleView.text = NYXLocalizedString("lbl_header_server_cfg")
-		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
 		navigationItem.titleView = titleView
 
 		if let buttons = self.navigationItem.rightBarButtonItems
@@ -114,7 +113,7 @@ final class ServerVC : MenuTVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .lightContent
+		return .default
 	}
 
 	// MARK: - Buttons actions

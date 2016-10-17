@@ -88,13 +88,13 @@ final class RootCollectionViewCell : UICollectionViewCell
 	override init(frame: CGRect)
 	{
 		super.init(frame:frame)
-		self.backgroundColor = UIColor.fromRGB(0xECECEC)
+		self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		self.isAccessibilityElement = true
 
 		self.imageView = UIImageView(frame:CGRect(CGPoint.zero, frame.width, frame.height - 20.0))
 		self.imageView.isAccessibilityElement = false
-		self.imageView.backgroundColor = UIColor.fromRGB(0x444444)
-		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).cgColor
+		self.imageView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		self.imageView.layer.borderColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
 
@@ -102,7 +102,7 @@ final class RootCollectionViewCell : UICollectionViewCell
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
 		self.label.textAlignment = .center
-		self.label.textColor = UIColor.fromRGB(0x444444)
+		self.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
 		self.contentView.addSubview(self.label)
 	}
@@ -110,13 +110,13 @@ final class RootCollectionViewCell : UICollectionViewCell
 	required init?(coder aDecoder: NSCoder)
 	{
 		super.init(coder:aDecoder)
-		self.backgroundColor = UIColor.fromRGB(0xECECEC)
+		self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		self.isAccessibilityElement = true
 
 		self.imageView = UIImageView(frame:CGRect(CGPoint.zero, frame.width, frame.height - 20.0))
 		self.imageView.isAccessibilityElement = false
-		self.imageView.backgroundColor = UIColor.fromRGB(0x444444)
-		self.imageView.layer.borderColor = UIColor.fromRGB(0x444444).cgColor
+		self.imageView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		self.imageView.layer.borderColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
 
@@ -124,7 +124,7 @@ final class RootCollectionViewCell : UICollectionViewCell
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
 		self.label.textAlignment = .center
-		self.label.textColor = UIColor.fromRGB(0x444444)
+		self.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
 		self.contentView.addSubview(self.label)
 	}

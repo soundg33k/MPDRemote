@@ -247,8 +247,8 @@ final class MiniPlayerView : UIView, PTappable
 	{
 		if let infos = aNotification.userInfo
 		{
-			let state = PlayerStatus(rawValue:infos[kPlayerStatusKey] as! Int)!
-			if state == .playing
+			let state = infos[kPlayerStatusKey] as! Int
+			if state == PlayerStatus.playing.rawValue
 			{
 				btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for:.normal)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
@@ -258,7 +258,7 @@ final class MiniPlayerView : UIView, PTappable
 				btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate), for:.normal)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 			}
-			btnPlay.tag = state.rawValue
+			btnPlay.tag = state
 		}
 	}
 }

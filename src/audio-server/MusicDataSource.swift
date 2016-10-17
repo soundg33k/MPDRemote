@@ -90,9 +90,12 @@ final class MusicDataSource
 	func reinitialize() -> Bool
 	{
 		stopTimer()
-		_connection.delegate = nil
-		_connection.disconnect()
-		_connection = nil
+		if _connection != nil
+		{
+			_connection.delegate = nil
+			_connection.disconnect()
+			_connection = nil
+		}
 		return initialize()
 	}
 
@@ -264,7 +267,7 @@ final class MusicDataSource
 		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
 		_timer.scheduleRepeating(deadline: .now(), interval:.seconds(interval))
 		_timer.setEventHandler {
-			self.playerStatus()
+			self.getlayerStatus()
 		}
 		_timer.resume()
 	}
@@ -278,7 +281,7 @@ final class MusicDataSource
 		}
 	}
 
-	private func playerStatus()
+	private func getlayerStatus()
 	{
 		_connection.getStatus()
 	}

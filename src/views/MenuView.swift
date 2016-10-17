@@ -72,7 +72,7 @@ final class MenuView : UIView
 		// Blur effect
 		self.blurEffectView = UIVisualEffectView(effect:UIBlurEffect(style:.light))
 		self.blurEffectView.frame = self.bounds
-		self.layer.shadowColor = UIColor.fromRGB(0xAAAAAA).cgColor
+		self.layer.shadowColor = #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1).cgColor
 		self.layer.shadowPath = UIBezierPath(rect:CGRect(frame.width - 1.5, 4.0, 2.0, frame.height)).cgPath
 		self.layer.shadowRadius = 1.0
 		self.layer.shadowOpacity = 1.0
@@ -177,7 +177,7 @@ extension MenuView : UITableViewDataSource
 		}
 		if selected
 		{
-			cell.ivLogo.image = cell.ivLogo.image?.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor))
+			cell.ivLogo.image = cell.ivLogo.image?.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))
 		}
 
 		return cell

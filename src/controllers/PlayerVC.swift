@@ -63,7 +63,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		super.viewDidLoad()
 
 		// Slider track position
-		UISlider.appearance().setThumbImage(#imageLiteral(resourceName: "slider-thumb"), for:.normal)
 		sliderPosition.addTarget(self, action:#selector(changeTrackPositionAction(_:)), for:.touchUpInside)
 
 		// Slider volume
@@ -75,25 +74,27 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnPlay.addTarget(PlayerController.shared, action:#selector(PlayerController.togglePause), for:.touchUpInside)
 
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:.normal)
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next").imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), for:.highlighted)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for:.highlighted)
 		btnNext.addTarget(PlayerController.shared, action:#selector(PlayerController.requestNextTrack), for:.touchUpInside)
 
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:.normal)
-		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), for:.highlighted)
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for:.highlighted)
 		btnPrevious.addTarget(PlayerController.shared, action:#selector(PlayerController.requestPreviousTrack), for:.touchUpInside)
 
 		let loop = UserDefaults.standard.bool(forKey: kNYXPrefRepeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:.normal)
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
+		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.normal)
+		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.highlighted)
+		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), for:.touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
 		let random = UserDefaults.standard.bool(forKey: kNYXPrefRandom)
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
-		btnRandom.setImage(imageRandom.imageTintedWithColor(UIColor.fromRGB(0xCC0000))?.withRenderingMode(.alwaysOriginal), for:.normal)
-		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
+		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.normal)
+		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.highlighted)
+		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), for:.touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
@@ -286,18 +287,18 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// MARK: - Private
 	private func updatePlayPauseButton()
 	{
-		if PlayerController.shared.status == .paused
+		if PlayerController.shared.currentStatus == .paused
 		{
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
 			btnPlay.setImage(imgPlay.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:.normal)
-			btnPlay.setImage(imgPlay.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), for:.highlighted)
+			btnPlay.setImage(imgPlay.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for:.highlighted)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 		}
 		else
 		{
 			let imgPause = #imageLiteral(resourceName: "btn-pause")
 			btnPlay.setImage(imgPause.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:.normal)
-			btnPlay.setImage(imgPause.imageTintedWithColor(UIColor.fromRGB(kNYXAppColor)), for:.highlighted)
+			btnPlay.setImage(imgPause.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for:.highlighted)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 	}

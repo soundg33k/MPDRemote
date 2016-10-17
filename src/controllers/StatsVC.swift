@@ -54,9 +54,8 @@ final class StatsVC : MenuTVC
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = navigationController?.navigationBar.tintColor
+		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		titleView.text = NYXLocalizedString("lbl_section_stats")
-		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
 		navigationItem.titleView = titleView
 	}
 
@@ -79,7 +78,7 @@ final class StatsVC : MenuTVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .lightContent
+		return .default
 	}
 
 	// MARK: - Private

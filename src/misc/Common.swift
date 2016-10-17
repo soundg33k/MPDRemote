@@ -35,6 +35,8 @@ public let kNYXPrefRepeat = "kNYXPrefRepeat"
 public let kNYXPrefVolume = "kNYXPrefVolume"
 public let kNYXPrefDisplayType = "kNYXPrefDisplayType"
 
+public let kNYXTopInset: CGFloat = 64.0
+
 /* App color */
 public let kNYXAppColor = Int(0x660000)
 

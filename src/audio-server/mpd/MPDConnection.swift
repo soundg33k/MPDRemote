@@ -649,14 +649,14 @@ final class MPDConnection : AudioServerConnection
 		{
 			return nil
 		}
-		let state = statusFromMPDStateObject(mpd_status_get_state(status))
+		let state = statusFromMPDStateObject(mpd_status_get_state(status)).rawValue
 		let tmp = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0)
 		let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:tmp!), count: Int(strlen(tmp)), deallocator: .none)
 		if let name = String(data:dataTemp, encoding:.utf8)
 		{
 			if let album = delegate?.albumMatchingName(name)
 			{
-				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state.rawValue]
+				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state]
 			}
 		}
 

@@ -29,6 +29,15 @@ public let kPlayerElapsedKey = "elapsed"
 public let kPlayerStatusKey = "status"
 
 
+public enum PlayerStatus : Int
+{
+	case playing = 0
+	case paused = 1
+	case stopped = 2
+	case unknown = -1
+}
+
+
 protocol AudioServerConnectionDelegate : class
 {
 	func albumMatchingName(_ name: String) -> Album?

@@ -38,6 +38,8 @@ final class AlbumDetailVC : UIViewController
 	@IBOutlet private var dummyView: UIView! = nil
 	// Tableview for song list
 	@IBOutlet private var tableView: UITableView! = nil
+	//
+	@IBOutlet private var colorView: UIView! = nil
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 
@@ -60,8 +62,7 @@ final class AlbumDetailVC : UIViewController
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = navigationController?.navigationBar.tintColor
-		titleView.backgroundColor = navigationController?.navigationBar.barTintColor
+		titleView.textColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)
 		navigationItem.titleView = titleView
 
 		// Album header view
@@ -130,7 +131,7 @@ final class AlbumDetailVC : UIViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .lightContent
+		return .default
 	}
 
 	// MARK: - Private
@@ -138,6 +139,7 @@ final class AlbumDetailVC : UIViewController
 	{
 		// Update header view
 		self.headerView.updateHeaderWithAlbum(album)
+		colorView.backgroundColor = self.headerView.backgroundColor
 
 		// Don't have all the metadatas
 		if album.artist.length == 0
@@ -191,7 +193,7 @@ extension AlbumDetailVC : UITableViewDataSource
 				cell.selectionStyle = .none
 				return cell
 			}
-			cell.separator.backgroundColor = UIColor.fromRGB(0xE4E4E4)
+			cell.separator.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
 			cell.separator.isHidden = false
 
 			let track = tracks[indexPath.row]
