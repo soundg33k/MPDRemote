@@ -104,7 +104,7 @@ final class StatsVC : MenuTVC
 
 		let tt = stats["mpddbupdate"] != nil ? TimeInterval(stats["mpddbupdate"]!) : TimeInterval(0)
 		let df = DateFormatter()
-		df.dateFormat = "dd MMM yyyy, HH:mm"
+		df.dateFormat = "dd/MM/yy HH:mm"
 		let bla = df.string(from: Date(timeIntervalSince1970:tt!))
 		lblMPDDBLastUpdate.text = bla
 	}
