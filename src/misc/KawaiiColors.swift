@@ -64,19 +64,19 @@ final class KawaiiColors
 
 	convenience init(image: UIImage, precision: Int)
 	{
-		self.init(image:image)
+		self.init(image: image)
 		self.precision = clamp(precision, lower:8, upper:256)
 	}
 
 	convenience init(image: UIImage, samplingEdge: SamplingEdge)
 	{
-		self.init(image:image)
+		self.init(image: image)
 		self.samplingEdge = samplingEdge
 	}
 
 	convenience init(image: UIImage, precision: Int, samplingEdge: SamplingEdge)
 	{
-		self.init(image:image, precision:precision)
+		self.init(image: image, precision: precision)
 		self.samplingEdge = samplingEdge
 	}
 
@@ -95,7 +95,7 @@ final class KawaiiColors
 		findContrastingColors(imageColors)
 
 		// Sanitize
-		let darkBackground = edgeColor.isDarkColor()
+		let darkBackground = edgeColor.isDark()
 		if primaryColor == nil
 		{
 			primaryColor = darkBackground ? #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
@@ -123,18 +123,16 @@ final class KawaiiColors
 		let width = cgImage.width
 		let height = cgImage.height
 
-		guard let bmContext = BitmapContext.RGBABitmapContext(width:width, height:height, withAlpha:false) else
+		guard let bmContext = CGContext.RGBABitmapContext(width: width, height: height, withAlpha: false) else
 		{
 			return nil
 		}
 		bmContext.draw(cgImage, in: CGRect(0.0, 0.0, CGFloat(width), CGFloat(height)))
 		guard let data = bmContext.data else
-			//if data == nil
 		{
 			return nil
 		}
 		let pixels = data.assumingMemoryBound(to: RGBAPixel.self)
-		//let pixels = UnsafeMutablePointer<RGBAPixel>(data)!
 
 		let pp = precision
 		let scale = UInt8(256 / pp)
@@ -171,15 +169,15 @@ final class KawaiiColors
 					var count = rawImageColors[r][g][b]
 					if count > __threshold
 					{
-						let color = UIColor(red:CGFloat(r) / ppf, green:CGFloat(g) / ppf, blue:CGFloat(b) / ppf, alpha:1.0)
-						colors.append(CountedObject(object:color, count:count))
+						let color = UIColor(red: CGFloat(r) / ppf, green: CGFloat(g) / ppf, blue: CGFloat(b) / ppf, alpha: 1.0)
+						colors.append(CountedObject(object: color, count: count))
 					}
 
 					count = rawEdgeColors[r][g][b]
 					if count > __threshold
 					{
-						let color = UIColor(red:CGFloat(r) / ppf, green:CGFloat(g) / ppf, blue:CGFloat(b) / ppf, alpha:1.0)
-						edgeColors.append(CountedObject(object:color, count:count))
+						let color = UIColor(red: CGFloat(r) / ppf, green: CGFloat(g) / ppf, blue: CGFloat(b) / ppf, alpha: 1.0)
+						edgeColors.append(CountedObject(object: color, count: count))
 					}
 				}
 			}
@@ -229,16 +227,16 @@ final class KawaiiColors
 	private func findContrastingColors(_ colors: [CountedObject<UIColor>])
 	{
 		var sortedColors = [CountedObject<UIColor>]()
-		let findDarkTextColor = !edgeColor.isDarkColor()
+		let findDarkTextColor = !edgeColor.isDark()
 
 		for countedColor in colors
 		{
 			let cc = countedColor.object.colorWithMinimumSaturation(0.15)
 
-			if cc.isDarkColor() == findDarkTextColor
+			if cc.isDark() == findDarkTextColor
 			{
 				let colorCount = countedColor.count
-				sortedColors.append(CountedObject(object:cc, count:colorCount))
+				sortedColors.append(CountedObject(object: cc, count: colorCount))
 			}
 		}
 
@@ -252,14 +250,14 @@ final class KawaiiColors
 
 			if primaryColor == nil
 			{
-				if curColor.isContrastingColor(edgeColor)
+				if curColor.isContrasted(fromColor: edgeColor)
 				{
 					primaryColor = curColor
 				}
 			}
 			else if secondaryColor == nil
 			{
-				if !primaryColor.isDistinct(curColor) || !curColor.isContrastingColor(edgeColor)
+				if !primaryColor.isDistinct(fromColor: curColor) || !curColor.isContrasted(fromColor: edgeColor)
 				{
 					continue
 				}
@@ -267,7 +265,7 @@ final class KawaiiColors
 			}
 			else if thirdColor == nil
 			{
-				if !secondaryColor.isDistinct(curColor) || !primaryColor.isDistinct(curColor) || !curColor.isContrastingColor(edgeColor)
+				if !secondaryColor.isDistinct(fromColor: curColor) || !primaryColor.isDistinct(fromColor: curColor) || !curColor.isContrasted(fromColor: edgeColor)
 				{
 					continue
 				}

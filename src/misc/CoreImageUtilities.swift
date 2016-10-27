@@ -30,12 +30,12 @@ final class CoreImageUtilities
 	static let shared = CoreImageUtilities()
 	// Software context
 	private(set) lazy var swContext: CIContext = {
-		let swContext = CIContext(options:[kCIContextUseSoftwareRenderer : true])
+		let swContext = CIContext(options: [kCIContextUseSoftwareRenderer : true])
 		return swContext
 	}()
 	// Hardware context
 	private(set) lazy var hwContext: CIContext = {
-		let hwContext = CIContext(options:[kCIContextUseSoftwareRenderer : false])
+		let hwContext = CIContext(options: [kCIContextUseSoftwareRenderer : false])
 		return hwContext
 	}()
 }

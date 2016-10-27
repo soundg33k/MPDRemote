@@ -50,7 +50,7 @@ final class PlayerController
 	{
 		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.player", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
-		NotificationCenter.default.addObserver(self, selector:#selector(audioServerConfigurationDidChange(_:)), name:NSNotification.Name.audioServerConfigurationDidChange, object:nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object:nil)
 	}
 
 	// MARK: - Public
@@ -73,7 +73,7 @@ final class PlayerController
 		}
 
 		// Connect
-		_connection = MPDConnection(server:server)
+		_connection = MPDConnection(server: server)
 		let ret = _connection.connect()
 		if ret
 		{
@@ -108,7 +108,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playAlbum(album, random:random, loop:loop)
+			self._connection.playAlbum(album, random: random, loop: loop)
 		}
 	}
 
@@ -120,7 +120,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playTracks(tracks, random:random, loop:loop)
+			self._connection.playTracks(tracks, random: random, loop: loop)
 		}
 	}
 
@@ -210,7 +210,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.setTrackPosition(position, trackPosition:trackPosition)
+			self._connection.setTrackPosition(position, trackPosition: trackPosition)
 		}
 	}
 
@@ -231,7 +231,7 @@ final class PlayerController
 	private func startTimer(_ interval: Int)
 	{
 		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
-		_timer.scheduleRepeating(deadline: .now(), interval:.seconds(interval))
+		_timer.scheduleRepeating(deadline: .now(), interval: .seconds(interval))
 		_timer.setEventHandler {
 			self.playerInformations()
 		}
@@ -258,7 +258,7 @@ final class PlayerController
 		if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
 		{
 			DispatchQueue.main.async {
-				NotificationCenter.default.post(name: .playingTrackChanged, object:nil, userInfo:infos)
+				NotificationCenter.default.post(name: .playingTrackChanged, object: nil, userInfo: infos)
 			}
 		}
 
@@ -266,7 +266,7 @@ final class PlayerController
 		if currentStatus.rawValue != status
 		{
 			DispatchQueue.main.async {
-				NotificationCenter.default.post(name: .playerStatusChanged, object:nil, userInfo:infos)
+				NotificationCenter.default.post(name: .playerStatusChanged, object: nil, userInfo: infos)
 			}
 		}
 
@@ -274,7 +274,7 @@ final class PlayerController
 		currentTrack = track
 		currentAlbum = album
 		DispatchQueue.main.async {
-			NotificationCenter.default.post(name: .currentPlayingTrack, object:nil, userInfo:infos)
+			NotificationCenter.default.post(name: .currentPlayingTrack, object: nil, userInfo: infos)
 		}
 	}
 

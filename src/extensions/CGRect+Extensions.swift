@@ -103,55 +103,55 @@ extension CGRect
 	// MARK: - Points
 	public var topLeft: CGPoint
 	{
-		get {return CGPoint(x:left, y:top)}
+		get {return CGPoint(x: left, y: top)}
 		set {left = newValue.x; top = newValue.y}
 	}
 
 	public var topCenter: CGPoint
 	{
-		get {return CGPoint(x:centerX, y:top)}
+		get {return CGPoint(x: centerX, y: top)}
 		set {centerX = newValue.x; top = newValue.y}
 	}
 
 	public var topRight: CGPoint
 	{
-		get {return CGPoint(x:right, y:top)}
+		get {return CGPoint(x: right, y: top)}
 		set {right = newValue.x; top = newValue.y}
 	}
 
 	public var centerLeft: CGPoint
 	{
-		get {return CGPoint(x:left, y:centerY)}
+		get {return CGPoint(x: left, y: centerY)}
 		set {left = newValue.x; centerY = newValue.y}
 	}
 
 	public var center: CGPoint
 	{
-		get {return CGPoint(x:centerX, y:centerY)}
+		get {return CGPoint(x: centerX, y: centerY)}
 		set {centerX = newValue.x; centerY = newValue.y}
 	}
 
 	public var centerRight: CGPoint
 	{
-		get {return CGPoint(x:right, y:centerY)}
+		get {return CGPoint(x: right, y: centerY)}
 		set {right = newValue.x; centerY = newValue.y}
 	}
 
 	public var bottomLeft: CGPoint
 	{
-		get {return CGPoint(x:left, y:bottom)}
+		get {return CGPoint(x: left, y: bottom)}
 		set {left = newValue.x; bottom = newValue.y}
 	}
 
 	public var bottomCenter: CGPoint
 	{
-		get {return CGPoint(x:centerX, y:bottom)}
+		get {return CGPoint(x: centerX, y: bottom)}
 		set {centerX = newValue.x; bottom = newValue.y}
 	}
 
 	public var bottomRight: CGPoint
 	{
-		get {return CGPoint(x:right, y:bottom)}
+		get {return CGPoint(x: right, y: bottom)}
 		set {right = newValue.x; bottom = newValue.y}
 	}
 }

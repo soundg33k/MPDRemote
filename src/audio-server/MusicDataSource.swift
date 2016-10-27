@@ -48,9 +48,9 @@ final class MusicDataSource
 	// MARK: - Initializers
 	init()
 	{
-		self._queue = DispatchQueue(label:"io.whine.mpdremote.queue.datasource", qos:.default, attributes:[], autoreleaseFrequency:.inherit, target: nil)
+		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.datasource", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target:  nil)
 
-		NotificationCenter.default.addObserver(self, selector:#selector(audioServerConfigurationDidChange(_:)), name:NSNotification.Name.audioServerConfigurationDidChange, object:nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
 	}
 
 	// MARK: - Public
@@ -73,7 +73,7 @@ final class MusicDataSource
 		}
 
 		// Connect
-		_connection = MPDConnection(server:server)
+		_connection = MPDConnection(server: server)
 		let ret = _connection.connect()
 		if ret
 		{
@@ -108,7 +108,7 @@ final class MusicDataSource
 
 		_queue.async {
 			let list = self._connection.getListForDisplayType(displayType)
-			let set = CharacterSet(charactersIn:".?!:;/+=-*'\"")
+			let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
 			switch (displayType)
 			{
 				case .albums:
@@ -161,7 +161,7 @@ final class MusicDataSource
 
 		_queue.async {
 			let list = self._connection.getAlbumsForArtist(artist)
-			let set = CharacterSet(charactersIn:".?!:;/+=-*'\"")
+			let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
 			artist.albums = list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 			callback()
 		}
@@ -176,7 +176,7 @@ final class MusicDataSource
 
 		_queue.async {
 			let list = self._connection.getArtistsForGenre(genre)
-			let set = CharacterSet(charactersIn:".?!:;/+=-*'\"")
+			let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
 			callback(list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)}))
 		}
 	}
@@ -265,7 +265,7 @@ final class MusicDataSource
 	private func startTimer(_ interval: Int)
 	{
 		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
-		_timer.scheduleRepeating(deadline: .now(), interval:.seconds(interval))
+		_timer.scheduleRepeating(deadline: .now(), interval: .seconds(interval))
 		_timer.setEventHandler {
 			self.getlayerStatus()
 		}

@@ -31,9 +31,4 @@ extension CGPoint
 		self.x = x
 		self.y = y
 	}
-
-	func ceil() -> CGPoint
-	{
-		return CGPoint(CoreGraphics.ceil(x), CoreGraphics.ceil(y))
-	}
 }

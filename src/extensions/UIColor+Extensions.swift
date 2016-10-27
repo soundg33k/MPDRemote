@@ -25,30 +25,32 @@ import UIKit
 
 extension UIColor
 {
-	class func fromRGBA(_ RGB: Int, alpha: CGFloat) -> UIColor
+	// MARK: - Initializers
+	public convenience init(rgb: Int32, alpha: CGFloat)
 	{
-		let red = ((CGFloat)((RGB & 0xFF0000) >> 16)) / 255
-		let green = ((CGFloat)((RGB & 0xFF00) >> 8)) / 255
-		let blue = ((CGFloat)(RGB & 0xFF)) / 255
-		return UIColor(red:red, green:green, blue:blue, alpha:alpha)
+		let red = ((CGFloat)((rgb & 0xFF0000) >> 16)) / 255
+		let green = ((CGFloat)((rgb & 0x00FF00) >> 8)) / 255
+		let blue = ((CGFloat)(rgb & 0x0000FF)) / 255
+
+		self.init(red: red, green: green, blue: blue, alpha: alpha)
 	}
 
-	class func fromRGB(_ RGB: Int) -> UIColor
+	public convenience init(rgb: Int32)
 	{
-		return UIColor.fromRGBA(RGB, alpha:1.0)
+		self.init(rgb: rgb, alpha: 1.0)
 	}
 
-	func invertedColor() -> UIColor
+	func inverted() -> UIColor
 	{
 		var r: CGFloat = 0.0, g: CGFloat = 0.0, b: CGFloat = 0.0, a: CGFloat = 0.0
-		getRed(&r, green:&g, blue:&b, alpha:&a)
-		return UIColor(red:1.0 - r, green:1.0 - g, blue:1.0 - b, alpha:1.0)
+		getRed(&r, green: &g, blue: &b, alpha: &a)
+		return UIColor(red: 1.0 - r, green: 1.0 - g, blue: 1.0 - b, alpha: 1.0)
 	}
 
 	func isBlackOrWhite() -> Bool
 	{
 		var r: CGFloat = 0.0, g: CGFloat = 0.0, b: CGFloat = 0.0, a: CGFloat = 0.0
-		getRed(&r, green:&g, blue:&b, alpha:&a)
+		getRed(&r, green: &g, blue: &b, alpha: &a)
 		if (r > 0.91 && g > 0.91 && b > 0.91)
 		{
 			return true // white
@@ -60,10 +62,10 @@ extension UIColor
 		return false
 	}
 
-	func isDarkColor() -> Bool
+	func isDark() -> Bool
 	{
 		var r: CGFloat = 0.0, g: CGFloat = 0.0, b: CGFloat = 0.0, a: CGFloat = 0.0
-		getRed(&r, green:&g, blue:&b, alpha:&a)
+		getRed(&r, green: &g, blue: &b, alpha: &a)
 
 		let lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
 
@@ -78,25 +80,23 @@ extension UIColor
 	func colorWithMinimumSaturation(_ minSaturation: CGFloat) -> UIColor
 	{
 		var h: CGFloat = 0.0, s: CGFloat = 0.0, v: CGFloat = 0.0, a: CGFloat = 0.0
-		getHue(&h, saturation:&s, brightness:&v, alpha:&a)
+		getHue(&h, saturation: &s, brightness: &v, alpha: &a)
 
 		if (s < minSaturation)
 		{
-			return UIColor(hue:h, saturation:s, brightness:v, alpha:a)
+			return UIColor(hue: h, saturation: s, brightness: v, alpha: a)
 		}
 
 		return self
 	}
 
-	func isDistinct(_ compareColor: UIColor) -> Bool
+	func isDistinct(fromColor compareColor: UIColor) -> Bool
 	{
-		let convertedColor = self
-		let convertedCompareColor = compareColor
 		var r1: CGFloat = 0.0, g1: CGFloat = 0.0, b1: CGFloat = 0.0, a1: CGFloat = 0.0
 		var r2: CGFloat = 0.0, g2: CGFloat = 0.0, b2: CGFloat = 0.0, a2: CGFloat = 0.0
 
-		convertedColor.getRed(&r1, green:&g1, blue:&b1, alpha:&a1)
-		convertedCompareColor.getRed(&r2, green:&g2, blue:&b2, alpha:&a2)
+		self.getRed(&r1, green: &g1, blue: &b1, alpha: &a1)
+		compareColor.getRed(&r2, green: &g2, blue: &b2, alpha: &a2)
 
 		let threshold: CGFloat = 0.25
 
@@ -117,12 +117,12 @@ extension UIColor
 		return false
 	}
 
-	func isContrastingColor(_ color: UIColor) -> Bool
+	func isContrasted(fromColor color: UIColor) -> Bool
 	{
 		var r1: CGFloat = 0.0, g1: CGFloat = 0.0, b1: CGFloat = 0.0, a1: CGFloat = 0.0
 		var r2: CGFloat = 0.0, g2: CGFloat = 0.0, b2: CGFloat = 0.0, a2: CGFloat = 0.0
-		getRed(&r1, green:&g1, blue:&b1, alpha:&a1)
-		color.getRed(&r2, green:&g2, blue:&b2, alpha:&a2)
+		getRed(&r1, green: &g1, blue: &b1, alpha: &a1)
+		color.getRed(&r2, green: &g2, blue: &b2, alpha: &a2)
 
 		let lum1 = 0.2126 * r1 + 0.7152 * g1 + 0.0722 * b1
 		let lum2 = 0.2126 * r2 + 0.7152 * g2 + 0.0722 * b2
@@ -138,4 +138,9 @@ extension UIColor
 		}
 		return contrast > 1.6
 	}
+}
+
+prefix func ~(c: UIColor) -> UIColor
+{
+	return c.inverted()
 }

@@ -92,11 +92,11 @@ final class MPDConnection : AudioServerConnection
 	}
 
 	// MARK: - Get infos about tracks / albums / etc…
-	func getListForDisplayType(_ displayType: DisplayType) -> [AnyObject]
+	func getListForDisplayType(_ displayType: DisplayType) -> [Any]
 	{
 		let tagType = mpdTagTypeFromDisplayType(displayType)
 
-		var list = [AnyObject]()
+		var list = [Any]()
 		if (!mpd_search_db_tags(_connection, tagType) || !mpd_search_commit(_connection))
 		{
 			Logger.dlog(getErrorMessageForConnection(_connection!))
@@ -106,17 +106,17 @@ final class MPDConnection : AudioServerConnection
 		var pair = mpd_recv_pair_tag(_connection, tagType)
 		while pair != nil
 		{
-			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
+			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating: (pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
 			if let name = String(data: dataTemp, encoding: .utf8)
 			{
 				switch displayType
 				{
 					case .albums:
-						list.append(Album(name:name))
+						list.append(Album(name: name))
 					case .genres:
-						list.append(Genre(name:name))
+						list.append(Genre(name: name))
 					case .artists:
-						list.append(Artist(name:name))
+						list.append(Artist(name: name))
 				}
 			}
 
@@ -157,8 +157,8 @@ final class MPDConnection : AudioServerConnection
 			return nil
 		}
 
-		let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
-		guard let name = String(data:dataTemp, encoding:.utf8) else
+		let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: (pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
+		guard let name = String(data: dataTemp, encoding: .utf8) else
 		{
 			Logger.dlog("[!] Invalid name.")
 			mpd_return_pair(_connection, pair)
@@ -171,7 +171,7 @@ final class MPDConnection : AudioServerConnection
 			Logger.dlog(getErrorMessageForConnection(_connection!))
 		}
 
-		return Album(name:name)
+		return Album(name: name)
 	}
 
 	func getAlbumsForGenre(_ genre: Genre) -> [Album]
@@ -197,8 +197,8 @@ final class MPDConnection : AudioServerConnection
 		var pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		while pair != nil
 		{
-			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
-			if let name = String(data:dataTemp, encoding:.utf8)
+			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: (pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
+			if let name = String(data: dataTemp, encoding: .utf8)
 			{
 				if let album = delegate?.albumMatchingName(name)
 				{
@@ -241,8 +241,8 @@ final class MPDConnection : AudioServerConnection
 		var pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		while pair != nil
 		{
-			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
-			if let name = String(data:dataTemp, encoding:.utf8)
+			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: (pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
+			if let name = String(data: dataTemp, encoding: .utf8)
 			{
 				if let album = delegate?.albumMatchingName(name)
 				{
@@ -285,10 +285,10 @@ final class MPDConnection : AudioServerConnection
 		var pair = mpd_recv_pair_tag(_connection, MPD_TAG_ARTIST)
 		while pair != nil
 		{
-			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
-			if let name = String(data:dataTemp, encoding:.utf8)
+			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: (pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
+			if let name = String(data: dataTemp, encoding: .utf8)
 			{
-				list.append(Artist(name:name))
+				list.append(Artist(name: name))
 			}
 			
 			mpd_return_pair(_connection, pair)
@@ -328,10 +328,10 @@ final class MPDConnection : AudioServerConnection
 			let uri = mpd_song_get_uri(song)
 			if uri != nil
 			{
-				let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:uri!), count: Int(strlen(uri)), deallocator: .none)
-				if let name = String(data:dataTemp, encoding:.utf8)
+				let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: uri!), count: Int(strlen(uri)), deallocator: .none)
+				if let name = String(data: dataTemp, encoding: .utf8)
 				{
-					path = URL(fileURLWithPath:name).deletingLastPathComponent().path
+					path = URL(fileURLWithPath: name).deletingLastPathComponent().path
 				}
 			}
 		}
@@ -411,8 +411,8 @@ final class MPDConnection : AudioServerConnection
 		let tmpArtist = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM_ARTIST)
 		if tmpArtist != nil
 		{
-			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(tmpArtist?.pointee.value)!), count: Int(strlen(tmpArtist?.pointee.value)), deallocator: .none)
-			if let name = String(data:dataTemp, encoding:.utf8)
+			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: (tmpArtist?.pointee.value)!), count: Int(strlen(tmpArtist?.pointee.value)), deallocator: .none)
+			if let name = String(data: dataTemp, encoding: .utf8)
 			{
 				metadatas["artist"] = name
 			}
@@ -448,8 +448,8 @@ final class MPDConnection : AudioServerConnection
 			{
 				l = 4
 			}
-			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(tmpDate?.pointee.value)!), count: l, deallocator: .none)
-			if let year = String(data:dataTemp, encoding:.utf8)
+			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: (tmpDate?.pointee.value)!), count: l, deallocator: .none)
+			if let year = String(data: dataTemp, encoding: .utf8)
 			{
 				metadatas["year"] = year
 			}
@@ -480,8 +480,8 @@ final class MPDConnection : AudioServerConnection
 		let tmpGenre = mpd_recv_pair_tag(_connection, MPD_TAG_GENRE)
 		if tmpGenre != nil
 		{
-			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:(tmpGenre?.pointee.value)!), count: Int(strlen(tmpGenre?.pointee.value)), deallocator: .none)
-			if let genre = String(data:dataTemp, encoding:.utf8)
+			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: (tmpGenre?.pointee.value)!), count: Int(strlen(tmpGenre?.pointee.value)), deallocator: .none)
+			if let genre = String(data: dataTemp, encoding: .utf8)
 			{
 				metadatas["genre"] = genre
 			}
@@ -500,13 +500,13 @@ final class MPDConnection : AudioServerConnection
 	{
 		if let songs = album.songs
 		{
-			playTracks(songs, random:random, loop:loop)
+			playTracks(songs, random: random, loop: loop)
 		}
 		else
 		{
 			if let songs = getSongsForAlbum(album)
 			{
-				playTracks(songs, random:random, loop:loop)
+				playTracks(songs, random: random, loop: loop)
 			}
 		}
 	}
@@ -629,7 +629,7 @@ final class MPDConnection : AudioServerConnection
 		}
 	}
 
-	func getPlayerInfos() -> [String: Any]?
+	func getPlayerInfos() -> [String : Any]?
 	{
 		let song = mpd_run_current_song(_connection)
 		if song == nil
@@ -651,8 +651,8 @@ final class MPDConnection : AudioServerConnection
 		}
 		let state = statusFromMPDStateObject(mpd_status_get_state(status)).rawValue
 		let tmp = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0)
-		let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:tmp!), count: Int(strlen(tmp)), deallocator: .none)
-		if let name = String(data:dataTemp, encoding:.utf8)
+		let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating:tmp!), count: Int(strlen(tmp)), deallocator: .none)
+		if let name = String(data: dataTemp, encoding: .utf8)
 		{
 			if let album = delegate?.albumMatchingName(name)
 			{
@@ -689,8 +689,8 @@ final class MPDConnection : AudioServerConnection
 	private func getErrorMessageForConnection(_ connection: OpaquePointer) -> String
 	{
 		let err = mpd_connection_get_error_message(_connection)
-		let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:err!), count: Int(strlen(err)), deallocator: .none)
-		if let msg = String(data:dataTemp, encoding:.utf8)
+		let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: err!), count: Int(strlen(err)), deallocator: .none)
+		if let msg = String(data: dataTemp, encoding: .utf8)
 		{
 			return msg
 		}
@@ -701,22 +701,22 @@ final class MPDConnection : AudioServerConnection
 	{
 		// title
 		var tmp = mpd_song_get_tag(song, MPD_TAG_TITLE, 0)
-		let dataTemp1 = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:tmp!), count: Int(strlen(tmp)), deallocator: .none)
-		guard let title = String(data:dataTemp1, encoding:.utf8) else
+		let dataTemp1 = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmp!), count: Int(strlen(tmp)), deallocator: .none)
+		guard let title = String(data: dataTemp1, encoding: .utf8) else
 		{
 			return nil
 		}
 		// artist
 		tmp = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0)
-		let dataTemp2 = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:tmp!), count: Int(strlen(tmp)), deallocator: .none)
-		guard let artist = String(data:dataTemp2, encoding:.utf8) else
+		let dataTemp2 = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmp!), count: Int(strlen(tmp)), deallocator: .none)
+		guard let artist = String(data: dataTemp2, encoding: .utf8) else
 		{
 			return nil
 		}
 		// track number
 		tmp = mpd_song_get_tag(song, MPD_TAG_TRACK, 0)
-		let dataTemp3 = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:tmp!), count: Int(strlen(tmp)), deallocator: .none)
-		guard var trackNumber = String(data:dataTemp3, encoding:.utf8) else
+		let dataTemp3 = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmp!), count: Int(strlen(tmp)), deallocator: .none)
+		guard var trackNumber = String(data: dataTemp3, encoding: .utf8) else
 		{
 			return nil
 		}
@@ -725,8 +725,8 @@ final class MPDConnection : AudioServerConnection
 		let duration = mpd_song_get_duration(song)
 		// uri
 		tmp = mpd_song_get_uri(song)
-		let dataTemp4 = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating:tmp!), count: Int(strlen(tmp)), deallocator: .none)
-		guard let uri = String(data:dataTemp4, encoding:.utf8) else
+		let dataTemp4 = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmp!), count: Int(strlen(tmp)), deallocator: .none)
+		guard let uri = String(data: dataTemp4, encoding: .utf8) else
 		{
 			return nil
 		}
@@ -735,7 +735,7 @@ final class MPDConnection : AudioServerConnection
 
 		// create track
 		let trackNumInt = Int(trackNumber) ?? 1
-		let track = Track(title:title, artist:artist, duration:Duration(seconds:UInt(duration)), trackNumber:trackNumInt, uri:uri)
+		let track = Track(title: title, artist: artist, duration: Duration(seconds: UInt(duration)), trackNumber: trackNumInt, uri: uri)
 		track.position = pos
 		return track
 	}

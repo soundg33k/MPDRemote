@@ -39,10 +39,10 @@ class MenuVC : UIViewController
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder:aDecoder)
+		super.init(coder: aDecoder)
 
 		// Hamburger button
-		let b = UIBarButtonItem(image:#imageLiteral(resourceName: "btn-hamb").imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), style:.plain, target:self, action:#selector(showLeftViewAction(_:)))
+		let b = UIBarButtonItem(image:#imageLiteral(resourceName: "btn-hamb").tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
 		b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 		self.navigationItem.leftBarButtonItem = b
 	}
@@ -52,15 +52,17 @@ class MenuVC : UIViewController
 	{
 		super.viewDidLoad()
 
-		menuView = MenuView(frame:CGRect(MENU_MIN_X, 64.0, MENU_WIDTH, view.height - 64.0))
+		menuView = MenuView(frame: CGRect(MENU_MIN_X, 64.0, MENU_WIDTH, view.height - 64.0))
 		menuView.menuDelegate = self
 		menuView.visible = false
 		navigationController!.view.addSubview(menuView)
 
-		panGestureMenu = UIScreenEdgePanGestureRecognizer(target:self, action:#selector(panFromEdge(_:)))
+		panGestureMenu = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(panFromEdge(_:)))
 		panGestureMenu.edges = .left
 		panGestureMenu.delegate = self
 		view.addGestureRecognizer(panGestureMenu)
+
+		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -70,13 +72,13 @@ class MenuVC : UIViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .lightContent
+		return isNightModeEnabled() ? .lightContent : .default
 	}
 
 	// MARK : Button action
-	func showLeftViewAction(_ sender: AnyObject?)
+	func showLeftViewAction(_ sender: Any?)
 	{
-		UIView.animate(withDuration: 0.25, delay:0.0, options:.curveEaseOut, animations:{
+		UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveEaseOut, animations: {
 			let x = self.menuView.visible ? -(self.menuView.frame.width + 2.0) : 0.0
 			self.menuView.frame = CGRect(x, self.menuView.frame.y, self.menuView.frame.size)
 		}, completion:{ finished in
@@ -110,7 +112,7 @@ class MenuVC : UIViewController
 			case .ended:
 				let cmp = menuView.frame.x
 				let limit = (MENU_MIN_X / 2.6)
-				UIView.animate(withDuration: 0.35, delay:0.0, options:.curveEaseOut, animations:{
+				UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
 					self.menuView.frame.x = (cmp >= limit) ? 0.0 : MENU_MIN_X
 				}, completion:{ finished in
 					let v = (cmp >= limit)
@@ -121,6 +123,23 @@ class MenuVC : UIViewController
 				break
 		}
 	}
+
+	// MARK: - Notifications
+	func nightModeSettingDidChange(_ aNotification: Notification?)
+	{
+		/*if isNightModeEnabled()
+		{
+			let b = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb").tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
+			b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
+			self.navigationItem.leftBarButtonItem = b
+		}
+		else
+		{
+			let b = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
+			b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
+			self.navigationItem.leftBarButtonItem = b
+		}*/
+	}
 }
 
 // MARK: - MenuViewDelegate
@@ -128,7 +147,7 @@ extension MenuVC : MenuViewDelegate
 {
 	func menuViewShouldClose(_ menuView: UIView)
 	{
-		UIView.animate(withDuration: 0.25, delay:0.0, options:UIViewAnimationOptions(), animations:{
+		UIView.animate(withDuration: 0.25, delay: 0.0, options: UIViewAnimationOptions(), animations: {
 			self.menuView.frame = CGRect(MENU_MIN_X, self.menuView.frame.y, menuView.frame.size)
 		}, completion:{ finished in
 			self.menuView.visible = false

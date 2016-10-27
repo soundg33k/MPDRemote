@@ -31,34 +31,6 @@ extension String
 		return characters.count
 	}
 
-	var range: NSRange
-	{
-		return NSRange(location:0, length:length)
-	}
-
-	// MARK: - Base64 encode
-	func base64Encode() -> String
-	{
-		if let utf8str = data(using: String.Encoding.utf8)
-		{
-			return utf8str.base64EncodedString(options: .lineLength64Characters)
-		}
-		return ""
-	}
-
-	// MARK: - Base64 decode
-	func base64Decode() -> String
-	{
-		if let base64data = Data(base64Encoded:self, options:[])
-		{
-			if let str = String(data:base64data, encoding:String.Encoding.utf8)
-			{
-				return str
-			}
-		}
-		return ""
-	}
-
 	// MARK: - Hash functions
 	func md5() -> String
 	{
@@ -71,18 +43,18 @@ extension String
 		var ret = ""
 		for i in 0 ..< Int(CC_MD5_DIGEST_LENGTH)
 		{
-			ret += String(format:"%02x", digest[i])
+			ret += String(format: "%02x", digest[i])
 		}
 		return ret
 	}
 
-	func djb2() -> Int
+	func djb2() -> Int32
 	{
-		return utf8.reduce(5381){($0 << 5) &+ $0 &+ Int($1)}
+		return utf8.reduce(5381){($0 << 5) &+ $0 &+ Int32($1)}
 	}
 }
 
 func NYXLocalizedString(_ key: String) -> String
 {
-	return NSLocalizedString(key, comment:"")
+	return NSLocalizedString(key, comment: "")
 }

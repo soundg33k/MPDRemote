@@ -23,8 +23,8 @@
 import UIKit
 
 
-private var __startX = CGFloat(0.0)
-private let __numberOfRows = 3
+private var __startX: CGFloat = 0.0
+private let __numberOfRows = 4
 
 
 protocol MenuViewDelegate : class
@@ -59,7 +59,7 @@ final class MenuView : UIView
 	// Pan gesture
 	private var pan: UIPanGestureRecognizer! = nil
 	// Minimum x for the menu
-	private var _menuMinX = CGFloat(0.0)
+	private var _menuMinX: CGFloat = 0.0
 
 	// MARK: - Initializers
 	override init(frame: CGRect)
@@ -70,36 +70,33 @@ final class MenuView : UIView
 		_menuMinX = -(frame.size.width + 2.0)
 
 		// Blur effect
-		self.blurEffectView = UIVisualEffectView(effect:UIBlurEffect(style:.light))
+		self.blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: isNightModeEnabled() ? .dark : .light))
 		self.blurEffectView.frame = self.bounds
-		self.layer.shadowColor = #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1).cgColor
-		self.layer.shadowPath = UIBezierPath(rect:CGRect(frame.width - 1.5, 4.0, 2.0, frame.height)).cgPath
-		self.layer.shadowRadius = 1.0
-		self.layer.shadowOpacity = 1.0
-		self.layer.masksToBounds = false
 		self.addSubview(self.blurEffectView)
 
 		// TableView
-		self.tableView = UITableView(frame:CGRect(CGPoint.zero, frame.size), style:.plain)
-		self.tableView.register(MenuViewTableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.menu")
+		self.tableView = UITableView(frame: CGRect(.zero, frame.size), style: .plain)
+		self.tableView.register(MenuViewTableViewCell.classForCoder(), forCellReuseIdentifier: "io.whine.mpdremote.cell.menu")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
 		self.tableView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
 		self.tableView.isScrollEnabled = false
-		self.tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		self.tableView.separatorInset = UIEdgeInsets.zero
-		self.tableView.layoutMargins = UIEdgeInsets.zero
+		self.tableView.separatorColor = isNightModeEnabled() ? #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		self.tableView.separatorInset = .zero
+		self.tableView.layoutMargins = .zero
 		self.blurEffectView.contentView.addSubview(self.tableView)
 
 		// Pan
-		self.pan = UIPanGestureRecognizer(target:self, action:#selector(MenuView.pan(_:)))
+		self.pan = UIPanGestureRecognizer(target: self, action: #selector(MenuView.pan(_:)))
 		self.pan.delegate = self
 		self.pan.isEnabled = false
 		self.addGestureRecognizer(self.pan)
 
 		self.tableView.reloadData()
+
+		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
 	}
 
 	required init?(coder aDecoder: NSCoder)
@@ -129,7 +126,7 @@ final class MenuView : UIView
 			case .ended:
 				let cmp = x
 				let limit = (_menuMinX / 2.6)
-				UIView.animate(withDuration: 0.35, delay:0.0, options:.curveEaseOut, animations:{
+				UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
 					self.x = (cmp >= limit) ? 0.0 : self._menuMinX
 				}, completion:{ finished in
 					let v = (cmp >= limit)
@@ -143,6 +140,22 @@ final class MenuView : UIView
 				break
 		}
 	}
+
+	// MARK: - Notifications
+	func nightModeSettingDidChange(_ aNotification: Notification?)
+	{
+		if isNightModeEnabled()
+		{
+			self.tableView.separatorColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			self.blurEffectView.effect = UIBlurEffect(style: .dark)
+		}
+		else
+		{
+			self.tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			self.blurEffectView.effect = UIBlurEffect(style: .light)
+		}
+		self.tableView.reloadData()
+	}
 }
 
 // MARK: - UITableViewDataSource
@@ -155,7 +168,7 @@ extension MenuView : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.menu", for:indexPath) as! MenuViewTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.menu", for: indexPath) as! MenuViewTableViewCell
 		
 		var selected = false
 		switch (indexPath.row)
@@ -172,12 +185,20 @@ extension MenuView : UITableViewDataSource
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_stats")
 				cell.ivLogo.image = #imageLiteral(resourceName: "img-stats")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().statsVC)
+			case 3:
+				cell.accessibilityLabel = NYXLocalizedString("lbl_section_settings")
+				cell.ivLogo.image = #imageLiteral(resourceName: "img-settings")
+				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().settingsVC)
 			default:
 				break
 		}
+		if isNightModeEnabled()
+		{
+			cell.ivLogo.image = cell.ivLogo.image?.tinted(withColor: #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1))?.withRenderingMode(.alwaysOriginal)
+		}
 		if selected
 		{
-			cell.ivLogo.image = cell.ivLogo.image?.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))
+			cell.ivLogo.image = cell.ivLogo.image?.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))
 		}
 
 		return cell
@@ -189,7 +210,7 @@ extension MenuView : UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		tableView.deselectRow(at: indexPath, animated:false)
+		tableView.deselectRow(at: indexPath, animated: false)
 		var newTopViewController: UIViewController! = nil
 		switch (indexPath.row)
 		{
@@ -199,6 +220,8 @@ extension MenuView : UITableViewDelegate
 				newTopViewController = APP_DELEGATE().serverVC
 			case 2:
 				newTopViewController = APP_DELEGATE().statsVC
+			case 3:
+				newTopViewController = APP_DELEGATE().settingsVC
 			case __numberOfRows:
 				return
 			default:

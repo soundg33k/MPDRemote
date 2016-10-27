@@ -45,22 +45,22 @@ final class RootCollectionViewCell : UICollectionViewCell
 		{
 			if longPressed
 			{
-				UIView.animate(withDuration: 0.25, delay:0.0, options:.curveEaseOut, animations:{
-					self.label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
+				UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveEaseOut, animations: {
+					self.label.font = UIFont(name: "AvenirNextCondensed-DemiBold", size: 10.0)
 					let anim = CABasicAnimation(keyPath: "borderWidth")
 					anim.fromValue = 0
 					anim.toValue = 1
 					anim.duration = CATransaction.animationDuration()
-					anim.timingFunction = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseInEaseOut)
+					anim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
 					self.imageView.layer.add(anim, forKey: "kawaii-anim")
 					if let img = self.image
 					{
-						guard let ciimg = CIImage(image:img) else {return}
-						guard let filter = CIFilter(name:"CIUnsharpMask") else {return}
+						guard let ciimg = CIImage(image: img) else {return}
+						guard let filter = CIFilter(name: "CIUnsharpMask") else {return}
 						filter.setDefaults()
-						filter.setValue(ciimg, forKey:kCIInputImageKey)
+						filter.setValue(ciimg, forKey: kCIInputImageKey)
 						guard let result = filter.value(forKey: kCIOutputImageKey) as! CIImage? else {return}
-						self.imageView.image = UIImage(ciImage:result)
+						self.imageView.image = UIImage(ciImage: result)
 					}
 				}, completion:{ finished in
 					self.imageView.layer.borderWidth = 1
@@ -68,13 +68,13 @@ final class RootCollectionViewCell : UICollectionViewCell
 			}
 			else
 			{
-				UIView.animate(withDuration: 0.25, delay:0.0, options:.curveEaseOut, animations:{
-					self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+				UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveEaseOut, animations: {
+					self.label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
 					let anim = CABasicAnimation(keyPath: "borderWidth")
 					anim.fromValue = 1
 					anim.toValue = 0
 					anim.duration = CATransaction.animationDuration()
-					anim.timingFunction = CAMediaTimingFunction(name:kCAMediaTimingFunctionEaseInEaseOut)
+					anim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
 					self.imageView.layer.add(anim, forKey: "kawaii-anim")
 					self.imageView.image = self.image
 				}, completion:{ finished in
@@ -87,14 +87,14 @@ final class RootCollectionViewCell : UICollectionViewCell
 	// MARK: - Initializers
 	override init(frame: CGRect)
 	{
-		super.init(frame:frame)
-		self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		super.init(frame: frame)
+		self.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		self.isAccessibilityElement = true
 
-		self.imageView = UIImageView(frame:CGRect(CGPoint.zero, frame.width, frame.height - 20.0))
+		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20.0))
 		self.imageView.isAccessibilityElement = false
 		self.imageView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-		self.imageView.layer.borderColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1).cgColor
+		self.imageView.layer.borderColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
 
@@ -102,30 +102,30 @@ final class RootCollectionViewCell : UICollectionViewCell
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
 		self.label.textAlignment = .center
-		self.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-		self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+		self.label.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1) : #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		self.label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
 		self.contentView.addSubview(self.label)
 	}
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder:aDecoder)
-		self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		super.init(coder: aDecoder)
+		self.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		self.isAccessibilityElement = true
 
-		self.imageView = UIImageView(frame:CGRect(CGPoint.zero, frame.width, frame.height - 20.0))
+		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20.0))
 		self.imageView.isAccessibilityElement = false
 		self.imageView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-		self.imageView.layer.borderColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1).cgColor
+		self.imageView.layer.borderColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
 
-		self.label = UILabel(frame:CGRect(0.0, self.imageView.bottom, frame.width, 20.0))
+		self.label = UILabel(frame: CGRect(0.0, self.imageView.bottom, frame.width, 20.0))
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
 		self.label.textAlignment = .center
-		self.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-		self.label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+		self.label.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1) : #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		self.label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
 		self.contentView.addSubview(self.label)
 	}
 
@@ -136,12 +136,12 @@ final class RootCollectionViewCell : UICollectionViewCell
 		{
 			if isSelected
 			{
-				label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
+				label.font = UIFont(name: "AvenirNextCondensed-DemiBold", size: 10.0)
 				imageView.layer.borderWidth = 0.5
 			}
 			else
 			{
-				label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+				label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
 				imageView.layer.borderWidth = 0.0
 			}
 		}
@@ -153,12 +153,12 @@ final class RootCollectionViewCell : UICollectionViewCell
 		{
 			if isHighlighted
 			{
-				label.font = UIFont(name:"AvenirNextCondensed-DemiBold", size:10.0)
+				label.font = UIFont(name: "AvenirNextCondensed-DemiBold", size: 10.0)
 				imageView.layer.borderWidth = 0.5
 			}
 			else
 			{
-				label.font = UIFont(name:"AvenirNextCondensed-Medium", size:10.0)
+				label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
 				imageView.layer.borderWidth = 0.0
 			}
 		}

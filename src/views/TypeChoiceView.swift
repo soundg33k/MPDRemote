@@ -40,12 +40,12 @@ final class TypeChoiceView : UIView
 	// MARK: - Initializers
 	override init(frame: CGRect)
 	{
-		super.init(frame:frame)
+		super.init(frame: frame)
 		self.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 
 		// TableView
-		self.tableView = UITableView(frame:CGRect(CGPoint.zero, frame.size), style:.plain)
-		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier:"io.whine.mpdremote.cell.type")
+		self.tableView = UITableView(frame: CGRect(.zero, frame.size), style: .plain)
+		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "io.whine.mpdremote.cell.type")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
 		self.tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
@@ -73,7 +73,7 @@ extension TypeChoiceView : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.type", for:indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.type", for: indexPath)
 		cell.selectionStyle = .none
 		cell.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		cell.textLabel?.textAlignment = .center
@@ -96,12 +96,12 @@ extension TypeChoiceView : UITableViewDataSource
 		cell.textLabel?.text = title
 		if selected
 		{
-			cell.textLabel?.font = UIFont(name:"HelveticaNeue-Medium", size:16.0)
+			cell.textLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 16.0)
 			cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 		}
 		else
 		{
-			cell.textLabel?.font = UIFont(name:"HelveticaNeue", size:15.0)
+			cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 15.0)
 			cell.textLabel?.textColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
 		return cell
@@ -124,7 +124,7 @@ extension TypeChoiceView : UITableViewDelegate
 			default:
 				break
 		}
-		tableView.deselectRow(at: indexPath, animated:false)
+		tableView.deselectRow(at: indexPath, animated: false)
 	}
 
 	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
@@ -134,7 +134,7 @@ extension TypeChoiceView : UITableViewDelegate
 
 		cell.y = cell.y + tableView.height
 
-		UIView.animate(withDuration: 0.5, delay:0.1 * Double(indexPath.row), usingSpringWithDamping:0.8, initialSpringVelocity:10.0, options:UIViewAnimationOptions(), animations:{
+		UIView.animate(withDuration: 0.5, delay: 0.1 * Double(indexPath.row), usingSpringWithDamping: 0.8, initialSpringVelocity: 10.0, options: UIViewAnimationOptions(), animations: {
 			cell.frame = cellRect
 		}, completion:nil)
 	}

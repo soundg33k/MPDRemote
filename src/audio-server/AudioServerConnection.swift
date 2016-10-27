@@ -56,7 +56,7 @@ protocol AudioServerConnection
 	func disconnect()
 
 	// MARK: - Get infos about tracks / albums / etc…
-	func getListForDisplayType(_ displayType: DisplayType) -> [AnyObject]
+	func getListForDisplayType(_ displayType: DisplayType) -> [Any]
 	func getAlbumForGenre(_ genre: Genre) -> Album?
 	func getAlbumsForGenre(_ genre: Genre) -> [Album]
 	func getAlbumsForArtist(_ artist: Artist) -> [Album]
@@ -79,7 +79,7 @@ protocol AudioServerConnection
 
 	// MARK: - Player status
 	func getStatus()
-	func getPlayerInfos() -> [String: Any]?
+	func getPlayerInfos() -> [String : Any]?
 
 	// MARK: - Stats
 	func getStats() -> [String : String]

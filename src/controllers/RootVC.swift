@@ -25,7 +25,7 @@ import UIKit
 
 private let __sideSpan = CGFloat(10.0)
 private let __columns = 3
-private let __insets = UIEdgeInsets(top:__sideSpan, left:__sideSpan, bottom:__sideSpan, right:__sideSpan)
+private let __insets = UIEdgeInsets(top: __sideSpan, left: __sideSpan, bottom: __sideSpan, right: __sideSpan)
 
 
 final class RootVC : MenuVC
@@ -49,7 +49,7 @@ final class RootVC : MenuVC
 	// Is currently searching, flag
 	fileprivate var searching = false
 	// Search results
-	fileprivate var searchResults = [AnyObject]()
+	fileprivate var searchResults = [Any]()
 	// Long press gesture is recognized, flag
 	fileprivate var longPressRecognized = false
 	// Keep track of download operations to eventually cancel them
@@ -57,7 +57,7 @@ final class RootVC : MenuVC
 	// View to change the type of items in the collection view
 	fileprivate var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
-	fileprivate var _displayType = DisplayType(rawValue:UserDefaults.standard.integer(forKey: kNYXPrefDisplayType))!
+	fileprivate var _displayType = DisplayType(rawValue: UserDefaults.standard.integer(forKey: kNYXPrefDisplayType))!
 	// Audio server changed
 	fileprivate var _serverChanged = false
 
@@ -66,69 +66,72 @@ final class RootVC : MenuVC
 	{
 		super.viewDidLoad()
 		// Remove back button label
-		navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
+		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+		navigationController?.navigationBar.barStyle = isNightModeEnabled() ? .black : .default
 
 		// Customize navbar
 		let navigationBar = (navigationController?.navigationBar)!
 
 		// Searchbar
-		searchView = UIView(frame:CGRect(0.0, -64.0, navigationBar.width, 64.0))
-		searchView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		searchBar = UISearchBar(frame:navigationBar.frame)
+		searchView = UIView(frame: CGRect(0.0, -64.0, navigationBar.width, 64.0))
+		searchView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		searchBar = UISearchBar(frame: navigationBar.frame)
 		searchBar.searchBarStyle = .minimal
-		searchBar.barTintColor = searchView.backgroundColor
-		searchBar.tintColor = navigationBar.tintColor
-		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)
+		searchBar.barTintColor = isNightModeEnabled() ? #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		searchBar.tintColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 		searchBar.showsCancelButton = true
 		searchBar.delegate = self
 		searchView.addSubview(searchBar)
 
 		// Navigation bar title
-		titleView = UIButton(frame:CGRect(0.0, 0.0, 100.0, navigationBar.height))
-		titleView.addTarget(self, action:#selector(changeTypeAction(_:)), for:.touchUpInside)
+		titleView = UIButton(frame: CGRect(0.0, 0.0, 100.0, navigationBar.height))
+		titleView.addTarget(self, action: #selector(changeTypeAction(_:)), for: .touchUpInside)
 		navigationItem.titleView = titleView
 
 		// Random button
 		let random = UserDefaults.standard.bool(forKey: kNYXPrefRandom)
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
-		btnRandom = UIButton(type:.custom)
+		btnRandom = UIButton(type: .custom)
 		btnRandom.frame = CGRect((navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
-		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.normal)
-		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.highlighted)
-		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
+		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
+		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.4513868093, green: 0.9930960536, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRandom.isSelected = random
-		btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), for:.touchUpInside)
+		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 		navigationController?.navigationBar.addSubview(btnRandom)
 
 		// Repeat button
 		let loop = UserDefaults.standard.bool(forKey: kNYXPrefRepeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
-		btnRepeat = UIButton(type:.custom)
+		btnRepeat = UIButton(type: .custom)
 		btnRepeat.frame = CGRect((navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.normal)
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.highlighted)
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.4513868093, green: 0.9930960536, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRepeat.isSelected = loop
-		btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), for:.touchUpInside)
+		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 		navigationController?.navigationBar.addSubview(btnRepeat)
 
 		// Create collection view
-		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier:"io.whine.mpdremote.cell.album")
+		collectionView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		collectionView.indicatorStyle = isNightModeEnabled() ? .white : .black
+		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "io.whine.mpdremote.cell.album")
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
 		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
 		collectionView.isPrefetchingEnabled = false
 
 		// Longpress
-		let longPress = UILongPressGestureRecognizer(target:self, action:#selector(longPress(_:)))
+		let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
 		longPress.minimumPressDuration = 0.5
 		longPress.delaysTouchesBegan = true
 		collectionView.addGestureRecognizer(longPress)
 
 		// Double tap
-		let doubleTap = UITapGestureRecognizer(target:self, action:#selector(doubleTap(_:)))
+		let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
 		doubleTap.numberOfTapsRequired = 2
 		doubleTap.numberOfTouchesRequired = 1
 		doubleTap.delaysTouchesBegan = true
@@ -136,7 +139,7 @@ final class RootVC : MenuVC
 
 		_ = MiniPlayerView.shared.visible
 
-		NotificationCenter.default.addObserver(self, selector:#selector(audioServerConfigurationDidChange(_:)), name:NSNotification.Name.audioServerConfigurationDidChange, object:nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -171,10 +174,10 @@ final class RootVC : MenuVC
 				}
 				else
 				{
-					let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_server_need_check"), preferredStyle:.alert)
-					let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.cancel, handler:nil)
+					let alertController = UIAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_server_need_check"), preferredStyle: .alert)
+					let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: nil)
 					alertController.addAction(cancelAction)
-					present(alertController, animated:true, completion:nil)
+					present(alertController, animated: true, completion: nil)
 				}
 			}
 			else
@@ -200,7 +203,7 @@ final class RootVC : MenuVC
 		{
 			for indexPath in idxs
 			{
-				collectionView.deselectItem(at: indexPath, animated:true)
+				collectionView.deselectItem(at: indexPath, animated: true)
 			}
 		}
 
@@ -211,7 +214,7 @@ final class RootVC : MenuVC
 			MusicDataSource.shared.getListForDisplayType(_displayType) {
 				DispatchQueue.main.async {
 					self.collectionView.reloadData()
-					self.collectionView.setContentOffset(CGPoint.zero, animated:false) // Scroll to top
+					self.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
 					self.updateNavigationTitle()
 				}
 			}
@@ -239,7 +242,7 @@ final class RootVC : MenuVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return isNightModeEnabled() ? .lightContent : .default
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -281,13 +284,13 @@ final class RootVC : MenuVC
 			{
 				case .albums:
 					let album = searching ? searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
-					PlayerController.shared.playAlbum(album, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
+					PlayerController.shared.playAlbum(album, random: UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop: UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 				case .artists:
 					let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					MusicDataSource.shared.getAlbumsForArtist(artist) {
 						MusicDataSource.shared.getSongsForAlbums(artist.albums) {
 							let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
+							PlayerController.shared.playTracks(ar, random: UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop: UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 						}
 					}
 				case .genres:
@@ -295,7 +298,7 @@ final class RootVC : MenuVC
 					MusicDataSource.shared.getAlbumsForGenre(genre) {
 						MusicDataSource.shared.getSongsForAlbums(genre.albums) {
 							let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
+							PlayerController.shared.playTracks(ar, random: UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop: UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 						}
 					}
 			}
@@ -317,8 +320,8 @@ final class RootVC : MenuVC
 			let cell = collectionView.cellForItem(at: indexPath) as! RootCollectionViewCell
 			cell.longPressed = true
 
-			let alertController = UIAlertController(title:nil, message:nil, preferredStyle:.actionSheet)
-			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_cancel"), style:.cancel) { (action) in
+			let alertController = UIAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
 				self.longPressRecognized = false
 				cell.longPressed = false
 				MiniPlayerView.shared.stayHidden = false
@@ -329,21 +332,21 @@ final class RootVC : MenuVC
 			{
 				case .albums:
 					let album = searching ? searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
-					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.default) { (action) in
-						PlayerController.shared.playAlbum(album, random:false, loop:false)
+					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
+						PlayerController.shared.playAlbum(album, random: false, loop: false)
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
-					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.default) { (action) in
-						PlayerController.shared.playAlbum(album, random:true, loop:false)
+					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
+						PlayerController.shared.playAlbum(album, random: true, loop: false)
 						self.longPressRecognized = false
 						cell.longPressed = false
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
-					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.default) { (action) in
+					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
 						PlayerController.shared.addAlbumToQueue(album)
 						self.longPressRecognized = false
 						cell.longPressed = false
@@ -352,11 +355,11 @@ final class RootVC : MenuVC
 					alertController.addAction(addQueueAction)
 				case .artists:
 					let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
-					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.default) { (action) in
+					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForArtist(artist) {
 							MusicDataSource.shared.getSongsForAlbums(artist.albums) {
 								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
-								PlayerController.shared.playTracks(ar, random:false, loop:false)
+								PlayerController.shared.playTracks(ar, random: false, loop: false)
 							}
 						}
 						self.longPressRecognized = false
@@ -364,11 +367,11 @@ final class RootVC : MenuVC
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
-					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.default) { (action) in
+					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForArtist(artist) {
 							MusicDataSource.shared.getSongsForAlbums(artist.albums) {
 								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
-								PlayerController.shared.playTracks(ar, random:true, loop:false)
+								PlayerController.shared.playTracks(ar, random: true, loop: false)
 							}
 						}
 						self.longPressRecognized = false
@@ -376,7 +379,7 @@ final class RootVC : MenuVC
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
-					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.default) { (action) in
+					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForArtist(artist) {
 							for album in artist.albums
 							{
@@ -390,11 +393,11 @@ final class RootVC : MenuVC
 					alertController.addAction(addQueueAction)
 				case .genres:
 					let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
-					let playAction = UIAlertAction(title:NYXLocalizedString("lbl_play"), style:.default) { (action) in
+					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForGenre(genre) {
 							MusicDataSource.shared.getSongsForAlbums(genre.albums) {
 								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
-								PlayerController.shared.playTracks(ar, random:false, loop:false)
+								PlayerController.shared.playTracks(ar, random: false, loop: false)
 							}
 						}
 						self.longPressRecognized = false
@@ -402,11 +405,11 @@ final class RootVC : MenuVC
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
-					let shuffleAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_shuffle"), style:.default) { (action) in
+					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForGenre(genre) {
 							MusicDataSource.shared.getSongsForAlbums(genre.albums) {
 								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
-								PlayerController.shared.playTracks(ar, random:true, loop:false)
+								PlayerController.shared.playTracks(ar, random: true, loop: false)
 							}
 						}
 						self.longPressRecognized = false
@@ -414,7 +417,7 @@ final class RootVC : MenuVC
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
-					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style:.default) { (action) in
+					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForGenre(genre) {
 							for album in genre.albums
 							{
@@ -428,7 +431,7 @@ final class RootVC : MenuVC
 					alertController.addAction(addQueueAction)
 			}
 
-			present(alertController, animated:true, completion:nil)
+			present(alertController, animated: true, completion: nil)
 		}
 	}
 
@@ -437,15 +440,15 @@ final class RootVC : MenuVC
 	{
 		if _typeChoiceView == nil
 		{
-			_typeChoiceView = TypeChoiceView(frame:CGRect(0.0, kNYXTopInset, collectionView.width, 132.0))
+			_typeChoiceView = TypeChoiceView(frame: CGRect(0.0, kNYXTopInset, collectionView.width, 132.0))
 			_typeChoiceView.delegate = self
 		}
 
 		if _typeChoiceView.superview != nil
 		{ // Is visible
 			self.collectionView.contentInset = UIEdgeInsets(top: kNYXTopInset, left: 0.0, bottom: 0.0, right: 0.0)
-			topConstraint.constant = 0.0;
-			UIView.animate(withDuration: 0.3, delay:0.0, options:.curveEaseOut, animations:{
+			topConstraint.constant = 0.0
+			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
 				self.view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 				self.view.layoutIfNeeded()
 				self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at:.top, animated: false)
@@ -459,15 +462,15 @@ final class RootVC : MenuVC
 			view.insertSubview(_typeChoiceView, belowSubview:collectionView)
 			topConstraint.constant = _typeChoiceView.bottom;
 
-			UIView.animate(withDuration: 0.2, delay:0.0, options:.curveEaseOut, animations:{
-				self.collectionView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
+			UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
+				self.collectionView.contentInset = .zero
 				self.view.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 				//self.view.layoutIfNeeded()
 			}, completion:nil)
 		}
 	}
 
-	func toggleRandomAction(_ sender: AnyObject?)
+	func toggleRandomAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
 		let random = !prefs.bool(forKey: kNYXPrefRandom)
@@ -475,13 +478,13 @@ final class RootVC : MenuVC
 		btnRandom.isSelected = random
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		prefs.set(random, forKey:kNYXPrefRandom)
+		prefs.set(random, forKey: kNYXPrefRandom)
 		prefs.synchronize()
 
 		PlayerController.shared.setRandom(random)
 	}
 
-	func toggleRepeatAction(_ sender: AnyObject?)
+	func toggleRepeatAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
 		let loop = !prefs.bool(forKey: kNYXPrefRepeat)
@@ -489,7 +492,7 @@ final class RootVC : MenuVC
 		btnRepeat.isSelected = loop
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		prefs.set(loop, forKey:kNYXPrefRepeat)
+		prefs.set(loop, forKey: kNYXPrefRepeat)
 		prefs.synchronize()
 
 		PlayerController.shared.setRepeat(loop)
@@ -499,7 +502,7 @@ final class RootVC : MenuVC
 	fileprivate func showNavigationBar(animated: Bool = true)
 	{
 		searchBar.endEditing(true)
-		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:.curveEaseOut, animations:{
+		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: .curveEaseOut, animations: {
 			self.searchView.y = -self.searchView.height
 		}, completion:{ finished in
 			self.searchBarVisible = false
@@ -508,7 +511,7 @@ final class RootVC : MenuVC
 
 	fileprivate func hideNavigationBar(animated: Bool = true)
 	{
-		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay:0.0, options:.curveEaseOut, animations:{
+		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: .curveEaseOut, animations: {
 			self.searchView.y = 0.0
 		}, completion:{ finished in
 			self.searchBarVisible = true
@@ -534,15 +537,15 @@ final class RootVC : MenuVC
 				let n = MusicDataSource.shared.artists.count
 				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_artists") : NYXLocalizedString("lbl_artist"))"
 		}
-		let astr1 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
-		titleView.setAttributedTitle(astr1, for:.normal)
-		let astr2 = NSAttributedString(string:title, attributes:[NSForegroundColorAttributeName : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1), NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!, NSParagraphStyleAttributeName : p])
-		titleView.setAttributedTitle(astr2, for:.highlighted)
+		let astr1 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
+		titleView.setAttributedTitle(astr1, for: .normal)
+		let astr2 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
+		titleView.setAttributedTitle(astr2, for: .highlighted)
 	}
 
 	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
 	{
-		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
+		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
 		let key = album.uuid
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
@@ -566,6 +569,32 @@ final class RootVC : MenuVC
 	func audioServerConfigurationDidChange(_ aNotification: Notification)
 	{
 		_serverChanged = true
+	}
+
+	override func nightModeSettingDidChange(_ aNotification: Notification?)
+	{
+		super.nightModeSettingDidChange(aNotification)
+
+		if isNightModeEnabled()
+		{
+			navigationController?.navigationBar.barStyle = .black
+			collectionView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			searchView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			searchBar.barTintColor = #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)
+			collectionView.indicatorStyle = .white
+		}
+		else
+		{
+			navigationController?.navigationBar.barStyle = .default
+			collectionView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			searchView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+			searchBar.barTintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			collectionView.indicatorStyle = .black
+		}
+
+		collectionView.reloadData()
+		updateNavigationTitle()
+		setNeedsStatusBarAppearanceUpdate()
 	}
 }
 
@@ -592,7 +621,7 @@ extension RootVC : UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "io.whine.mpdremote.cell.album", for:indexPath) as! RootCollectionViewCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "io.whine.mpdremote.cell.album", for: indexPath) as! RootCollectionViewCell
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
 
@@ -606,13 +635,13 @@ extension RootVC : UICollectionViewDataSource
 		{
 			case .albums:
 				let album = searching ? searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
-				_configureCellForAlbum(cell, indexPath:indexPath, album:album)
+				_configureCellForAlbum(cell, indexPath: indexPath, album: album)
 			case .genres:
 				let genre = searching ? searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
-				_configureCellForGenre(cell, indexPath:indexPath, genre:genre)
+				_configureCellForGenre(cell, indexPath: indexPath, genre: genre)
 			case .artists:
 				let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
-				_configureCellForArtist(cell, indexPath:indexPath, artist:artist)
+				_configureCellForArtist(cell, indexPath: indexPath, artist: artist)
 		}
 
 		return cell
@@ -649,7 +678,7 @@ extension RootVC : UICollectionViewDataSource
 		{
 			if album.path != nil
 			{
-				downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+				downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 						{
@@ -661,7 +690,7 @@ extension RootVC : UICollectionViewDataSource
 			else
 			{
 				MusicDataSource.shared.getPathForAlbum(album) {
-					self.downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+					self.downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 							{
@@ -713,7 +742,7 @@ extension RootVC : UICollectionViewDataSource
 				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 				if album.path != nil
 				{
-					downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+					downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 							{
@@ -725,7 +754,7 @@ extension RootVC : UICollectionViewDataSource
 				else
 				{
 					MusicDataSource.shared.getPathForAlbum(album) {
-						self.downloadCoverForAlbum(album, cropSize:cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+						self.downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 							DispatchQueue.main.async {
 								if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 								{
@@ -794,8 +823,8 @@ extension RootVC : UICollectionViewDataSource
 					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
-							let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
+						downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
+							let cropped = thumbnail.smartCropped(toSize: cell.imageView.size)
 							DispatchQueue.main.async {
 								if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 								{
@@ -807,8 +836,8 @@ extension RootVC : UICollectionViewDataSource
 					else
 					{
 						MusicDataSource.shared.getPathForAlbum(album) {
-							self.downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
-								let cropped = thumbnail.imageCroppedToFitSize(cell.imageView.size)
+							self.downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
+								let cropped = thumbnail.smartCropped(toSize: cell.imageView.size)
 								DispatchQueue.main.async {
 									if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 									{
@@ -844,7 +873,7 @@ extension RootVC : UICollectionViewDelegate
 		// If menu is visible ignore default behavior and hide it
 		if menuView.visible
 		{
-			collectionView.deselectItem(at: indexPath, animated:false)
+			collectionView.deselectItem(at: indexPath, animated: false)
 			showLeftViewAction(nil)
 			return
 		}
@@ -901,7 +930,7 @@ extension RootVC : UIScrollViewDelegate
 		{
 			if scrollView.contentOffset.y > 0.0
 			{
-				showNavigationBar(animated:true)
+				showNavigationBar(animated: true)
 			}
 			return
 		}
@@ -946,7 +975,7 @@ extension RootVC : UISearchBarDelegate
 		searching = false
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
-		showNavigationBar(animated:true)
+		showNavigationBar(animated: true)
 		//searchBarVisible = false
 		collectionView.reloadData()
 	}
@@ -1015,7 +1044,7 @@ extension RootVC : TypeChoiceViewDelegate
 		}
 		_displayType = type
 
-		UserDefaults.standard.set(type.rawValue, forKey:kNYXPrefDisplayType)
+		UserDefaults.standard.set(type.rawValue, forKey: kNYXPrefDisplayType)
 		UserDefaults.standard.synchronize()
 
 		// Refresh view
@@ -1023,7 +1052,7 @@ extension RootVC : TypeChoiceViewDelegate
 			DispatchQueue.main.async {
 				self.collectionView.reloadData()
 				self.changeTypeAction(nil)
-				self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at:.top, animated: false) // Scroll to top
+				self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
 				self.updateNavigationTitle()
 			}
 		}
@@ -1046,27 +1075,27 @@ extension RootVC
 			if randomAlbum.songs == nil
 			{
 				MusicDataSource.shared.getSongsForAlbum(randomAlbum) {
-					PlayerController.shared.playAlbum(randomAlbum, random:false, loop:false)
+					PlayerController.shared.playAlbum(randomAlbum, random: false, loop: false)
 				}
 			}
 			else
 			{
-				PlayerController.shared.playAlbum(randomAlbum, random:false, loop:false)
+				PlayerController.shared.playAlbum(randomAlbum, random: false, loop: false)
 			}
 
 			// Briefly display cover of album
 			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			MusicDataSource.shared.getPathForAlbum(randomAlbum) {
-				self.downloadCoverForAlbum(randomAlbum, cropSize:cropSize.cgSizeValue, callback:{ (cover: UIImage, thumbnail: UIImage) in
+				self.downloadCoverForAlbum(randomAlbum, cropSize: cropSize.cgSizeValue, callback: { (cover: UIImage, thumbnail: UIImage) in
 					let size = CGSize(self.view.width - 64.0, self.view.width - 64.0)
-					let cropped = cover.imageCroppedToFitSize(size)
+					let cropped = cover.smartCropped(toSize: size)
 					DispatchQueue.main.async {
-						let iv = UIImageView(frame:CGRect((self.view.width - 64.0) * 0.5, (self.view.height - 64.0) * 0.5, 64.0, 64.0))
+						let iv = UIImageView(frame: CGRect((self.view.width - 64.0) * 0.5, (self.view.height - 64.0) * 0.5, 64.0, 64.0))
 						iv.image = cropped
 						iv.alpha = 0.0
 						self.view.addSubview(iv)
-						UIView.animate(withDuration: 1.0, delay:0.0, options:.curveEaseIn, animations:{
+						UIView.animate(withDuration: 1.0, delay: 0.0, options: .curveEaseIn, animations: {
 							iv.frame = CGRect((self.view.width - size.width) * 0.5, (self.view.height - size.height) * 0.5, size)
 							iv.alpha = 1.0
 						}, completion:{ finished in

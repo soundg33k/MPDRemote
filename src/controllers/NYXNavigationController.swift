@@ -27,21 +27,37 @@ final class NYXNavigationController : UINavigationController
 {
 	override var shouldAutorotate: Bool
 	{
-		return (topViewController?.shouldAutorotate)!
+		if let topViewController = self.topViewController
+		{
+			return topViewController.shouldAutorotate
+		}
+		return false
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
-		return (topViewController?.supportedInterfaceOrientations)!
+		if let topViewController = self.topViewController
+		{
+			return topViewController.supportedInterfaceOrientations
+		}
+		return .all
 	}
 
 	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation
 	{
-		return (topViewController?.preferredInterfaceOrientationForPresentation)!
+		if let topViewController = self.topViewController
+		{
+			return topViewController.preferredInterfaceOrientationForPresentation
+		}
+		return .portrait
 	}
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return (topViewController?.preferredStatusBarStyle)!
+		if let topViewController = self.topViewController
+		{
+			return topViewController.preferredStatusBarStyle
+		}
+		return .default
 	}
 }

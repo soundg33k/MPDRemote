@@ -40,8 +40,7 @@ func generateCoverForArtist(_ artist: Artist, size: CGSize) -> UIImage?
 
 private func generateCoverFromString(_ string: String, size: CGSize) -> UIImage?
 {
-	let backgroundColor = UIColor.fromRGB(string.djb2())
-	let fontColor = backgroundColor.invertedColor()
-	let cover = UIImage.fromString(string, font:UIFont(name:"Chalkduster", size:size.width / 4.0)!, fontColor:fontColor, backgroundColor:backgroundColor, maxSize:size)
+	let backgroundColor = UIColor(rgb: string.djb2())
+	let cover = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: size.width / 4.0)!, fontColor: ~backgroundColor, backgroundColor: backgroundColor, maxSize: size)
 	return cover
 }

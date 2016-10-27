@@ -36,10 +36,10 @@ final class MenuViewTableViewCell : UITableViewCell
 		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		self.isAccessibilityElement = true
 		self.selectionStyle = .none
-		self.layoutMargins = UIEdgeInsets.zero
+		self.layoutMargins = .zero
 
 		let logoSize = CGSize(96.0, 96.0)
-		self.ivLogo = UIImageView(frame:CGRect((230.0 - logoSize.width) * 0.5, (128.0 - logoSize.height) * 0.5, logoSize))
+		self.ivLogo = UIImageView(frame: CGRect((230.0 - logoSize.width) * 0.5, (128.0 - logoSize.height) * 0.5, logoSize))
 		self.contentView.addSubview(self.ivLogo)
 	}
 
@@ -49,10 +49,10 @@ final class MenuViewTableViewCell : UITableViewCell
 		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		self.isAccessibilityElement = true
 		self.selectionStyle = .none
-		self.layoutMargins = UIEdgeInsets.zero
+		self.layoutMargins = .zero
 
 		let logoSize = CGSize(96.0, 96.0)
-		self.ivLogo = UIImageView(frame:CGRect((230.0 - logoSize.width) * 0.5, (128.0 - logoSize.height) * 0.5, logoSize))
+		self.ivLogo = UIImageView(frame: CGRect((230.0 - logoSize.width) * 0.5, (128.0 - logoSize.height) * 0.5, logoSize))
 		self.contentView.addSubview(self.ivLogo)
 	}
 }

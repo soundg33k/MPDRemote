@@ -58,11 +58,11 @@ final class AlbumDetailVC : UIViewController
 		super.viewDidLoad()
 
 		// Navigation bar title
-		titleView = UILabel(frame:CGRect(CGPoint.zero, 100.0, 44.0))
+		titleView = UILabel(frame: CGRect(.zero, 100.0, 44.0))
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)
+		titleView.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		navigationItem.titleView = titleView
 
 		// Album header view
@@ -71,14 +71,18 @@ final class AlbumDetailVC : UIViewController
 		headerHeightConstraint.constant = coverSize.cgSizeValue.height
 
 		// Dummy tableview host, to create a nice shadow effect
-		dummyView.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, 5.0, view.width + 4.0, 4.0)).cgPath
+		dummyView.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, 5.0, view.width + 4.0, 4.0)).cgPath
 		dummyView.layer.shadowRadius = 3.0
 		dummyView.layer.shadowOpacity = 1.0
 		dummyView.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
 		dummyView.layer.masksToBounds = false
 
 		// Tableview
+		tableView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		tableView.tableFooterView = UIView()
+		tableView.indicatorStyle = isNightModeEnabled() ? .white : .black
+
+		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -87,7 +91,7 @@ final class AlbumDetailVC : UIViewController
 
 		// Add navbar shadow
 		let navigationBar = navigationController!.navigationBar
-		navigationBar.layer.shadowPath = UIBezierPath(rect:CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).cgPath
+		navigationBar.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).cgPath
 		navigationBar.layer.shadowRadius = 3.0
 		navigationBar.layer.shadowOpacity = 1.0
 		navigationBar.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
@@ -131,7 +135,7 @@ final class AlbumDetailVC : UIViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return isNightModeEnabled() ? .lightContent : .default
 	}
 
 	// MARK: - Private
@@ -156,12 +160,30 @@ final class AlbumDetailVC : UIViewController
 	{
 		if let tracks = album.songs
 		{
-			let total = tracks.reduce(Duration(seconds:0)){$0 + $1.duration}
+			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
-			let attrs = NSMutableAttributedString(string:"\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
-			attrs.append(NSAttributedString(string:"\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
+			let attrs = NSMutableAttributedString(string: "\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n", attributes:[NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
+			attrs.append(NSAttributedString(string: "\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 			titleView.attributedText = attrs
 		}
+	}
+
+	// MARK: - Notifications
+	func nightModeSettingDidChange(_ aNotification: Notification?)
+	{
+		if isNightModeEnabled()
+		{
+			titleView.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
+			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			tableView.indicatorStyle = .white
+		}
+		else
+		{
+			titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			tableView.indicatorStyle = .black
+		}
+		tableView.reloadData()
 	}
 }
 
@@ -179,7 +201,12 @@ extension AlbumDetailVC : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.track", for:indexPath) as! TrackTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.track", for: indexPath) as! TrackTableViewCell
+		cell.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		cell.contentView.backgroundColor = cell.backgroundColor
+		cell.lblTitle.backgroundColor = cell.backgroundColor
+		cell.lblTrack.backgroundColor = cell.backgroundColor
+		cell.lblDuration.backgroundColor = cell.backgroundColor
 
 		if let tracks = album.songs
 		{
@@ -193,8 +220,12 @@ extension AlbumDetailVC : UITableViewDataSource
 				cell.selectionStyle = .none
 				return cell
 			}
-			cell.separator.backgroundColor = UIColor.fromRGB(0xE4E4E4)
+
+			cell.separator.backgroundColor = isNightModeEnabled() ? UIColor(rgb: 0x1C1C1C) : UIColor(rgb: 0xE4E4E4)
 			cell.separator.isHidden = false
+			cell.lblTitle.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			cell.lblTrack.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			cell.lblDuration.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 
 			let track = tracks[indexPath.row]
 			cell.lblTrack.text = String(track.trackNumber)
@@ -225,7 +256,7 @@ extension AlbumDetailVC : UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		tableView.deselectRow(at: indexPath, animated:true)
+		tableView.deselectRow(at: indexPath, animated: true)
 
 		// Dummy cell
 		guard let tracks = album.songs else {return}
@@ -246,6 +277,6 @@ extension AlbumDetailVC : UITableViewDelegate
 		}
 
 		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		PlayerController.shared.playTracks(b, random:UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop:UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
+		PlayerController.shared.playTracks(b, random: UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop: UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 	}
 }

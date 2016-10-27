@@ -29,13 +29,13 @@ final class Logger
 	{
 #if NYX_DEBUG
 			let stringItem = items.map{"\($0)"}.joined(separator: separator)
-			Swift.print("[\(function)]:\(line) \(stringItem)", terminator:terminator)
+			Swift.print("[\(function)]:\(line) \(stringItem)", terminator: terminator)
 #endif
 	}
 
 	class func alog(_ items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = #file, _ function: String = #function, _ line: Int = #line)
 	{
 		let stringItem = items.map{"\($0)"}.joined(separator: separator)
-		Swift.print("\(stringItem)", terminator:terminator)
+		Swift.print("\(stringItem)", terminator: terminator)
 	}
 }

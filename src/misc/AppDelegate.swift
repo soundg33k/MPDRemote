@@ -51,6 +51,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		let vc = sb.instantiateViewController(withIdentifier: "StatsNVC")
 		return vc
 	}()
+	// Settings VC
+	private(set) lazy var settingsVC: UIViewController = {
+		let sb = UIStoryboard(name: "main", bundle: nil)
+		let vc = sb.instantiateViewController(withIdentifier: "SettingsNVC")
+		return vc
+	}()
 
 	// MARK: - UIApplicationDelegate
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool
@@ -59,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		registerDefaultPreferences()
 
 		// URL cache
-		URLCache.shared = URLCache(memoryCapacity:(4 * 1024 * 1024), diskCapacity:(32 * 1024 * 1024), diskPath:nil)
+		URLCache.shared = URLCache(memoryCapacity: (4 * 1024 * 1024), diskCapacity: (32 * 1024 * 1024), diskPath: nil)
 
 		// Global operation queue
 		operationQueue = OperationQueue()
@@ -67,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 		homeVC = window?.rootViewController
 
-		NotificationCenter.default.addObserver(self, selector:#selector(miniPlayShouldExpandNotification(_:)), name:.miniPlayerShouldExpand, object:nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(miniPlayShouldExpandNotification(_:)), name: .miniPlayerShouldExpand, object: nil)
 
 		return true
 	}
@@ -82,26 +88,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		let defaults: [String: Any] =
 		[
 			kNYXPrefDirectoryCovers : coversDirectoryPath,
-			kNYXPrefCoverSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize:CGSize(width, width))),
+			kNYXPrefCoverSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width, width))),
 			kNYXPrefRandom : false,
 			kNYXPrefRepeat : false,
 			kNYXPrefVolume : 100,
 			kNYXPrefDisplayType : DisplayType.albums.rawValue,
+			kNYXPrefNightMode : false,
 		]
 
 		let fileManager = FileManager()
 		let cachesDirectoryURL = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).last!
 
-		try! fileManager.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories:true, attributes:nil)
+		try! fileManager.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
 
-		UserDefaults.standard.register(defaults:defaults)
+		UserDefaults.standard.register(defaults: defaults)
 		UserDefaults.standard.synchronize()
 	}
 
 	// MARK: - Notifications
 	func miniPlayShouldExpandNotification(_ aNotification: Notification)
 	{
-		window?.rootViewController?.present(playerVC, animated:true, completion:nil)
+		window?.rootViewController?.present(playerVC, animated: true, completion: nil)
 		MiniPlayerView.shared.stayHidden = true
 		MiniPlayerView.shared.hide()
 	}

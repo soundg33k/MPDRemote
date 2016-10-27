@@ -42,6 +42,16 @@ final class StatsVC : MenuTVC
 	@IBOutlet private var lblMPDPlaytime: UILabel! = nil
 	// Last update timestamp
 	@IBOutlet private var lblMPDDBLastUpdate: UILabel! = nil
+	// Cell Labels
+	@IBOutlet private var lblCellAlbums: UILabel! = nil
+	@IBOutlet private var lblCellArtists: UILabel! = nil
+	@IBOutlet private var lblCellSongs: UILabel! = nil
+	@IBOutlet private var lblCellDBPlaytime: UILabel! = nil
+	@IBOutlet private var lblCellMPDUptime: UILabel! = nil
+	@IBOutlet private var lblCellMPDPlaytime: UILabel! = nil
+	@IBOutlet private var lblCellMPDDBLastUpdate: UILabel! = nil
+	// Navigation title
+	private var titleView: UILabel!
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -49,8 +59,8 @@ final class StatsVC : MenuTVC
 		super.viewDidLoad()
 
 		// Navigation bar title
-		let titleView = UILabel(frame:CGRect(0.0, 0.0, 100.0, 44.0))
-		titleView.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
+		titleView = UILabel(frame: CGRect(0.0, 0.0, 100.0, 44.0))
+		titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
@@ -62,6 +72,8 @@ final class StatsVC : MenuTVC
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
+
+		self.nightModeSettingDidChange(nil)
 
 		MusicDataSource.shared.getStats { (stats: [String : String]) in
 			DispatchQueue.main.async {
@@ -78,7 +90,7 @@ final class StatsVC : MenuTVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return isNightModeEnabled() ? .lightContent : .default
 	}
 
 	// MARK: - Private
@@ -91,21 +103,21 @@ final class StatsVC : MenuTVC
 		lblSongs.text = stats["songs"] ?? "0"
 
 		var seconds = UInt(stats["dbplaytime"] ?? "0")!
-		var duration = Duration(seconds:seconds)
+		var duration = Duration(seconds: seconds)
 		lblDBPlaytime.text = formatDuration(duration)
 
 		seconds = UInt(stats["mpduptime"] ?? "0")!
-		duration = Duration(seconds:seconds)
+		duration = Duration(seconds: seconds)
 		lblMPDUptime.text = formatDuration(duration)
 
 		seconds = UInt(stats["mpdplaytime"] ?? "0")!
-		duration = Duration(seconds:seconds)
+		duration = Duration(seconds: seconds)
 		lblMPDPlaytime.text = formatDuration(duration)
 
 		let tt = stats["mpddbupdate"] != nil ? TimeInterval(stats["mpddbupdate"]!) : TimeInterval(0)
 		let df = DateFormatter()
 		df.dateFormat = "dd/MM/yy HH:mm"
-		let bla = df.string(from: Date(timeIntervalSince1970:tt!))
+		let bla = df.string(from: Date(timeIntervalSince1970: tt!))
 		lblMPDDBLastUpdate.text = bla
 	}
 
@@ -132,5 +144,72 @@ final class StatsVC : MenuTVC
 			return "\(d.minutes)m \(d.seconds)s"
 		}
 		return "\(duration.seconds)s"
+	}
+
+	// MARK: - Notifications
+	override func nightModeSettingDidChange(_ aNotification: Notification?)
+	{
+		super.nightModeSettingDidChange(aNotification)
+
+		if isNightModeEnabled()
+		{
+			navigationController?.navigationBar.barStyle = .black
+			titleView.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
+			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			tableView.separatorColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			for i in 0...tableView.numberOfSections - 1
+			{
+				for j in 0...tableView.numberOfRows(inSection: i) - 1
+				{
+					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
+					{
+						cell.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+					}
+				}
+			}
+
+			lblAlbums.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			lblArtists.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			lblSongs.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			lblDBPlaytime.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			lblMPDUptime.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			lblMPDPlaytime.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			lblMPDDBLastUpdate.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+		}
+		else
+		{
+			navigationController?.navigationBar.barStyle = .default
+			titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			tableView.separatorColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			for i in 0...tableView.numberOfSections - 1
+			{
+				for j in 0...tableView.numberOfRows(inSection: i) - 1
+				{
+					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
+					{
+						cell.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+					}
+				}
+			}
+
+			lblAlbums.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			lblArtists.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			lblSongs.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			lblDBPlaytime.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			lblMPDUptime.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			lblMPDPlaytime.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			lblMPDDBLastUpdate.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		}
+
+		lblCellAlbums.textColor = titleView.textColor
+		lblCellArtists.textColor = titleView.textColor
+		lblCellSongs.textColor = titleView.textColor
+		lblCellDBPlaytime.textColor = titleView.textColor
+		lblCellMPDUptime.textColor = titleView.textColor
+		lblCellMPDPlaytime.textColor = titleView.textColor
+		lblCellMPDDBLastUpdate.textColor = titleView.textColor
+
+		setNeedsStatusBarAppearanceUpdate()
 	}
 }

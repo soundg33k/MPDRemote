@@ -53,12 +53,12 @@ final class CoverWebServer : Server
 
 		let port = decoder.decodeInteger(forKey: "port")
 
-		self.init(name:name, hostname:hostname, port:UInt16(port), password:password, coverName: coverName)
+		self.init(name: name, hostname: hostname, port: UInt16(port), password: password, coverName: coverName)
 	}
 
 	override func encode(with coder: NSCoder)
 	{
-		coder.encode(coverName, forKey:"covername")
+		coder.encode(coverName, forKey: "covername")
 		super.encode(with: coder)
 	}
 }

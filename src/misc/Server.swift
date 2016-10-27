@@ -60,15 +60,15 @@ class Server : NSObject, NSCoding
 			else { return nil }
 
 		let port = decoder.decodeInteger(forKey: "port")
-		self.init(name:name, hostname:hostname, port:UInt16(port), password:password)
+		self.init(name: name, hostname: hostname, port: UInt16(port), password: password)
 	}
 
 	func encode(with coder: NSCoder)
 	{
-		coder.encode(name, forKey:"name")
-		coder.encode(hostname, forKey:"hostname")
-		coder.encode(Int(port), forKey:"port")
-		coder.encode(password, forKey:"password")
+		coder.encode(name, forKey: "name")
+		coder.encode(hostname, forKey: "hostname")
+		coder.encode(Int(port), forKey: "port")
+		coder.encode(password, forKey: "password")
 	}
 }
 

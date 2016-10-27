@@ -52,7 +52,7 @@ final class CoverOperation : Operation
 	}
 	// Session
 	private var localURLSession: Foundation.URLSession {
-		return Foundation.URLSession(configuration:localURLSessionConfiguration, delegate:self, delegateQueue:nil)
+		return Foundation.URLSession(configuration: localURLSessionConfiguration, delegate: self, delegateQueue: nil)
 	}
 
 	// MARK : Public properties
@@ -118,21 +118,21 @@ final class CoverOperation : Operation
 		coverURLAsString = coverURLAsString.addingPercentEncoding(withAllowedCharacters: allowedCharacters)!
 		let urlAsString = server.hostname + ":\(server.port)" + coverURLAsString
 
-		let request = NSMutableURLRequest(url:URL(string:urlAsString)!)
-		request.addValue("image/*", forHTTPHeaderField:"Accept")
+		var request = URLRequest(url: URL(string: urlAsString)!)
+		request.addValue("image/*", forHTTPHeaderField: "Accept")
 
-		sessionTask = localURLSession.dataTask(with: request as URLRequest)
+		sessionTask = localURLSession.dataTask(with: request)
 		sessionTask!.resume()
 	}
 
 	// MARK: - Private
 	func processData()
 	{
-		guard let cover = UIImage(data:incomingData as Data) else
+		guard let cover = UIImage(data: incomingData as Data) else
 		{
 			return
 		}
-		guard let thumbnail = cover.imageCroppedToFitSize(cropSize) else
+		guard let thumbnail = cover.smartCropped(toSize: cropSize) else
 		{
 			return
 		}
@@ -151,8 +151,8 @@ final class CoverOperation : Operation
 	private func generateCover()
 	{
 		let width = UIScreen.main.bounds.width - 64.0
-		guard let cover = generateCoverForAlbum(album, size:CGSize(width, width)) else {return}
-		guard let thumbnail = cover.imageCroppedToFitSize(cropSize) else {return}
+		guard let cover = generateCoverForAlbum(album, size: CGSize(width, width)) else {return}
+		guard let thumbnail = cover.smartCropped(toSize: cropSize) else {return}
 		guard let saveURL = album.localCoverURL else
 		{
 			return

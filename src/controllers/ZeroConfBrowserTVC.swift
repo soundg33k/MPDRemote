@@ -44,7 +44,7 @@ final class ZeroConfBrowserTVC : UITableViewController
 	// MARK: - Initializer
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder:aDecoder)
+		super.init(coder: aDecoder)
 
 		self._explorer = ZeroConfExplorer()
 		self._explorer.delegate = self
@@ -56,14 +56,27 @@ final class ZeroConfBrowserTVC : UITableViewController
 		super.viewDidLoad()
 
 		// Navigation bar title
-		let titleView = UILabel(frame:CGRect(0.0, 0.0, 100.0, 44.0))
-		titleView.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
+		let titleView = UILabel(frame: CGRect(0.0, 0.0, 100.0, 44.0))
+		titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		titleView.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		titleView.text = NYXLocalizedString("lbl_header_server_zeroconf")
 		navigationItem.titleView = titleView
+
+		if isNightModeEnabled()
+		{
+			navigationController?.navigationBar.barStyle = .black
+			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			tableView.separatorColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		}
+		else
+		{
+			navigationController?.navigationBar.barStyle = .default
+			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			tableView.separatorColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		}
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -85,7 +98,7 @@ final class ZeroConfBrowserTVC : UITableViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return isNightModeEnabled() ? .lightContent : .default
 	}
 
 	// MARK: - IBActions
@@ -95,7 +108,7 @@ final class ZeroConfBrowserTVC : UITableViewController
 	}
 
 	// MARK: - Private
-	func currentAudioServer() -> AudioServer?
+	fileprivate func currentAudioServer() -> AudioServer?
 	{
 		if let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 		{
@@ -118,7 +131,10 @@ extension ZeroConfBrowserTVC
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.zeroconf", for:indexPath) as! ZeroConfServerTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.zeroconf", for: indexPath) as! ZeroConfServerTableViewCell
+		cell.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.lblName.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		cell.lblHostname.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 
 		let server = _servers[indexPath.row]
 		cell.lblName.text = server.name
@@ -160,9 +176,9 @@ extension ZeroConfBrowserTVC
 		}
 
 		// Different server, update
-		let mpdServer = AudioServer(name:selectedServer.name, hostname:selectedServer.hostname, port:selectedServer.port, password:"", type:.mpd)
+		let mpdServer = AudioServer(name: selectedServer.name, hostname: selectedServer.hostname, port: selectedServer.port, password: "", type: .mpd)
 		let serverAsData = NSKeyedArchiver.archivedData(withRootObject: mpdServer)
-		UserDefaults.standard.set(serverAsData, forKey:kNYXPrefMPDServer)
+		UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
 		UserDefaults.standard.synchronize()
 
 		self.tableView.reloadData()

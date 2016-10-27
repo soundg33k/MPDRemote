@@ -40,7 +40,7 @@ final class ArtistsVC : UITableViewController
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder:aDecoder)
+		super.init(coder: aDecoder)
 	}
 
 	// MARK: - UIViewController
@@ -48,18 +48,22 @@ final class ArtistsVC : UITableViewController
 	{
 		super.viewDidLoad()
 		// Remove back button label
-		navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
-
-		// Tableview
-		tableView.tableFooterView = UIView()
+		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
 		// Navigation bar title
-		titleView = UILabel(frame:CGRect(CGPoint.zero, 100.0, 44.0))
+		titleView = UILabel(frame: CGRect(.zero, 100.0, 44.0))
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		titleView.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		navigationItem.titleView = titleView
+
+		// Tableview
+		tableView.tableFooterView = UIView()
+		tableView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		tableView.indicatorStyle = isNightModeEnabled() ? .white : .black
+
+		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -82,7 +86,7 @@ final class ArtistsVC : UITableViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return isNightModeEnabled() ? .lightContent : .default
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -97,14 +101,14 @@ final class ArtistsVC : UITableViewController
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
-		let attrs = NSMutableAttributedString(string:genre.name + "\n", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue-Medium", size:14.0)!])
-		attrs.append(NSAttributedString(string:"\(artists.count) \(artists.count > 1 ? NYXLocalizedString("lbl_artists").lowercased() : NYXLocalizedString("lbl_artist").lowercased())", attributes:[NSFontAttributeName : UIFont(name:"HelveticaNeue", size:13.0)!]))
+		let attrs = NSMutableAttributedString(string: genre.name + "\n", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
+		attrs.append(NSAttributedString(string: "\(artists.count) \(artists.count > 1 ? NYXLocalizedString("lbl_artists").lowercased() : NYXLocalizedString("lbl_artist").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 		titleView.attributedText = attrs
 	}
 
 	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:@escaping (_ thumbnail: UIImage) -> Void)
 	{
-		let downloadOperation = CoverOperation(album:album, cropSize:cropSize)
+		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
 		let key = album.uuid
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
@@ -120,6 +124,24 @@ final class ArtistsVC : UITableViewController
 		_downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
+
+	// MARK: - Notifications
+	func nightModeSettingDidChange(_ aNotification: Notification?)
+	{
+		if isNightModeEnabled()
+		{
+			titleView.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
+			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			tableView.indicatorStyle = .white
+		}
+		else
+		{
+			titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			tableView.indicatorStyle = .black
+		}
+		tableView.reloadData()
+	}
 }
 
 // MARK: - UITableViewDataSource
@@ -132,7 +154,9 @@ extension ArtistsVC
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.artist", for:indexPath) as! ArtistTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.artist", for: indexPath) as! ArtistTableViewCell
+		cell.backgroundColor = tableView.backgroundColor
+		cell.contentView.backgroundColor = cell.backgroundColor
 
 		// Dummy to let some space for the mini player
 		if indexPath.row == artists.count
@@ -147,10 +171,12 @@ extension ArtistsVC
 			cell.selectionStyle = .none
 			return cell
 		}
-		cell.dummyView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		cell.lblArtist.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		cell.lblAlbums.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		cell.coverView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		cell.dummyView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.lblArtist.backgroundColor = cell.dummyView.backgroundColor
+		cell.lblAlbums.backgroundColor = cell.dummyView.backgroundColor
+		cell.coverView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.4756349325, green: 0.4756467342, blue: 0.4756404161, alpha: 1) : #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		cell.lblArtist.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		cell.lblAlbums.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 
 		let artist = artists[indexPath.row]
 		cell.lblArtist.text = artist.name
@@ -166,7 +192,7 @@ extension ArtistsVC
 
 		if artist.albums.count > 0
 		{
-			cell.lblAlbums.text = "\(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercased() : NYXLocalizedString("lbl_album").lowercased())"
+			cell.lblAlbums.text = artist.albums.count > 1 ? "\(artist.albums.count) \(NYXLocalizedString("lbl_albums").lowercased())" : "\(artist.albums.count) \(NYXLocalizedString("lbl_album").lowercased())"
 			if let album = artist.albums.first
 			{
 				// Get local URL for cover
@@ -180,7 +206,7 @@ extension ArtistsVC
 				if let cover = UIImage.loadFromFileURL(coverURL)
 				{
 					DispatchQueue.global(qos: .userInitiated).async {
-						let cropped = cover.imageCroppedToFitSize(cell.coverView.size)
+						let cropped = cover.smartCropped(toSize: cell.coverView.size)
 						DispatchQueue.main.async {
 							if let c = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
 							{
@@ -195,8 +221,8 @@ extension ArtistsVC
 					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 					if album.path != nil
 					{
-						downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
-							let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
+						downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (thumbnail: UIImage) in
+							let cropped = thumbnail.smartCropped(toSize: cell.coverView.size)
 							DispatchQueue.main.async {
 								if let c = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
 								{
@@ -208,8 +234,8 @@ extension ArtistsVC
 					else
 					{
 						MusicDataSource.shared.getPathForAlbum(album) {
-							self.downloadCoverForAlbum(album, cropSize:cropSize.cgSizeValue) { (thumbnail: UIImage) in
-								let cropped = thumbnail.imageCroppedToFitSize(cell.coverView.size)
+							self.downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (thumbnail: UIImage) in
+								let cropped = thumbnail.smartCropped(toSize: cell.coverView.size)
 								DispatchQueue.main.async {
 									if let c = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
 									{
@@ -224,11 +250,12 @@ extension ArtistsVC
 		}
 		else
 		{
+			cell.lblAlbums.text = ""
 			MusicDataSource.shared.getAlbumsForArtist(artist) {
 				DispatchQueue.main.async {
 					if let _ = self.tableView.cellForRow(at: indexPath) as? ArtistTableViewCell
 					{
-						self.tableView.reloadRows(at: [indexPath], with:.none)
+						self.tableView.reloadRows(at: [indexPath], with: .none)
 					}
 				}
 			}

@@ -31,7 +31,6 @@
 		1E5653A51C908A310049C02D /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E56537E1C908A310049C02D /* UIDevice+Extensions.swift */; };
 		1E5653A61C908A310049C02D /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E56537F1C908A310049C02D /* UIImage+Extensions.swift */; };
 		1E5653A71C908A310049C02D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653811C908A310049C02D /* AppDelegate.swift */; };
-		1E5653A81C908A310049C02D /* BitmapContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653821C908A310049C02D /* BitmapContext.swift */; };
 		1E5653A91C908A310049C02D /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653831C908A310049C02D /* Common.swift */; };
 		1E5653AA1C908A310049C02D /* CountedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653841C908A310049C02D /* CountedObject.swift */; };
 		1E5653AB1C908A310049C02D /* KawaiiColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653851C908A310049C02D /* KawaiiColors.swift */; };
@@ -56,6 +55,7 @@
 		1EDF75591CB54E130071818E /* AlbumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDF75581CB54E130071818E /* AlbumTableViewCell.swift */; };
 		4303DE9A1D9036660083C686 /* AudioServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4303DE931D9036660083C686 /* AudioServerConnection.swift */; };
 		4303DE9B1D9036660083C686 /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4303DE951D9036660083C686 /* MPDConnection.swift */; };
+		430B0EED1DBE33980008B684 /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430B0EEC1DBE33980008B684 /* CGContext+Extensions.swift */; };
 		4334E51B1D0ED5C5004553A3 /* InteractableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */; };
 		43366FC71D9ABD880016AD9C /* ZeroConfBrowserTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43366FC61D9ABD880016AD9C /* ZeroConfBrowserTVC.swift */; };
 		434C97121D94136200B5FCAD /* MusicDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434C97111D94136200B5FCAD /* MusicDataSource.swift */; };
@@ -69,6 +69,7 @@
 		43A8CA671D157F0D0002B3D9 /* MenuTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A8CA661D157F0D0002B3D9 /* MenuTVC.swift */; };
 		43AD0AF91D9AB4260067D3C6 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AD0AF81D9AB4260067D3C6 /* Server.swift */; };
 		43B35C2F1D9BCAAA00592E23 /* ZeroConfExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */; };
+		43BE32401DB5083A0062A7B1 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BE323F1DB5083A0062A7B1 /* SettingsVC.swift */; };
 		43DCAFA31D9193C500D0B908 /* AudioServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA21D9193C500D0B908 /* AudioServer.swift */; };
 		43DCAFA51D91940C00D0B908 /* CoverWebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */; };
 		43E187531D1BEF7400C19ECD /* main-ipad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43E187511D1BEF7400C19ECD /* main-ipad.storyboard */; };
@@ -102,7 +103,6 @@
 		1E56537E1C908A310049C02D /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		1E56537F1C908A310049C02D /* UIImage+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
 		1E5653811C908A310049C02D /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1E5653821C908A310049C02D /* BitmapContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitmapContext.swift; sourceTree = "<group>"; };
 		1E5653831C908A310049C02D /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		1E5653841C908A310049C02D /* CountedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountedObject.swift; sourceTree = "<group>"; };
 		1E5653851C908A310049C02D /* KawaiiColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KawaiiColors.swift; sourceTree = "<group>"; };
@@ -177,6 +177,7 @@
 		1EDF75581CB54E130071818E /* AlbumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTableViewCell.swift; sourceTree = "<group>"; };
 		4303DE931D9036660083C686 /* AudioServerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioServerConnection.swift; sourceTree = "<group>"; };
 		4303DE951D9036660083C686 /* MPDConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDConnection.swift; sourceTree = "<group>"; };
+		430B0EEC1DBE33980008B684 /* CGContext+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+Extensions.swift"; sourceTree = "<group>"; };
 		430C2EEB1D18172900D7F1A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/main.strings; sourceTree = "<group>"; };
 		430C2EED1D18173200D7F1A3 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/main.strings; sourceTree = "<group>"; };
 		4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InteractableImageView.swift; sourceTree = "<group>"; };
@@ -192,6 +193,7 @@
 		43A8CA661D157F0D0002B3D9 /* MenuTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTVC.swift; sourceTree = "<group>"; };
 		43AD0AF81D9AB4260067D3C6 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfExplorer.swift; sourceTree = "<group>"; };
+		43BE323F1DB5083A0062A7B1 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		43DCAFA21D9193C500D0B908 /* AudioServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioServer.swift; sourceTree = "<group>"; };
 		43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverWebServer.swift; sourceTree = "<group>"; };
 		43E187521D1BEF7400C19ECD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/main-ipad.storyboard"; sourceTree = "<group>"; };
@@ -357,6 +359,7 @@
 				1E441D4A1CAC048C009DCEF4 /* PlayerVC.swift */,
 				1E5653751C908A310049C02D /* RootVC.swift */,
 				1E5653761C908A310049C02D /* ServerVC.swift */,
+				43BE323F1DB5083A0062A7B1 /* SettingsVC.swift */,
 				1E2EFCA61CBF9A1700906CF2 /* StatsVC.swift */,
 				43366FC61D9ABD880016AD9C /* ZeroConfBrowserTVC.swift */,
 			);
@@ -367,6 +370,7 @@
 			isa = PBXGroup;
 			children = (
 				1E5653781C908A310049C02D /* Array+Extensions.swift */,
+				430B0EEC1DBE33980008B684 /* CGContext+Extensions.swift */,
 				1E5653791C908A310049C02D /* CGPoint+Extensions.swift */,
 				1E56537A1C908A310049C02D /* CGRect+Extensions.swift */,
 				1E56537B1C908A310049C02D /* CGSize+Extensions.swift */,
@@ -385,7 +389,6 @@
 			children = (
 				435B63711D1AC11C0029FCE5 /* AlbumCoverGenerator.swift */,
 				1E5653811C908A310049C02D /* AppDelegate.swift */,
-				1E5653821C908A310049C02D /* BitmapContext.swift */,
 				1E5653831C908A310049C02D /* Common.swift */,
 				1E4CD4371C96CB9A00785FD2 /* CoreImageUtilities.swift */,
 				1E5653841C908A310049C02D /* CountedObject.swift */,
@@ -585,9 +588,9 @@
 				1EDF75571CB54DB40071818E /* AlbumsVC.swift in Sources */,
 				1E5653B91C908A310049C02D /* TopAlignedLabel.swift in Sources */,
 				1E5653A91C908A310049C02D /* Common.swift in Sources */,
+				43BE32401DB5083A0062A7B1 /* SettingsVC.swift in Sources */,
 				4355DCB41D0EB0750000232D /* Tappable.swift in Sources */,
 				1E5653A01C908A310049C02D /* CGPoint+Extensions.swift in Sources */,
-				1E5653A81C908A310049C02D /* BitmapContext.swift in Sources */,
 				1E56539F1C908A310049C02D /* Array+Extensions.swift in Sources */,
 				1E5653AB1C908A310049C02D /* KawaiiColors.swift in Sources */,
 				1E5653AE1C908A310049C02D /* Album.swift in Sources */,
@@ -601,6 +604,7 @@
 				4303DE9A1D9036660083C686 /* AudioServerConnection.swift in Sources */,
 				1E5653A41C908A310049C02D /* UIColor+Extensions.swift in Sources */,
 				43366FC71D9ABD880016AD9C /* ZeroConfBrowserTVC.swift in Sources */,
+				430B0EED1DBE33980008B684 /* CGContext+Extensions.swift in Sources */,
 				43DCAFA51D91940C00D0B908 /* CoverWebServer.swift in Sources */,
 				436736561D9AC68D00ECBCFB /* ZeroConfServerTableViewCell.swift in Sources */,
 				1E56539D1C908A310049C02D /* RootVC.swift in Sources */,
@@ -778,6 +782,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free2;
 				PRODUCT_NAME = MPDRemote;
 				PROVISIONING_PROFILE = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
 				SWIFT_VERSION = 3.0;
@@ -818,6 +823,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free2;
 				PRODUCT_NAME = MPDRemote;
 				PROVISIONING_PROFILE = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

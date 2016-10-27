@@ -34,6 +34,7 @@ public let kNYXPrefRandom = "kNYXPrefRandom"
 public let kNYXPrefRepeat = "kNYXPrefRepeat"
 public let kNYXPrefVolume = "kNYXPrefVolume"
 public let kNYXPrefDisplayType = "kNYXPrefDisplayType"
+public let kNYXPrefNightMode = "kNYXPrefNightMode"
 
 public let kNYXTopInset: CGFloat = 64.0
 
@@ -60,4 +61,10 @@ extension Notification.Name
 	static let miniPlayerViewDidHide = Notification.Name("kNYXNotificationMiniPlayerViewDidHide")
 	static let miniPlayerShouldExpand = Notification.Name("kNYXNotificationMiniPlayerShouldExpand")
 	static let audioServerConfigurationDidChange = Notification.Name("kNYXNotificationAudioServerConfigurationDidChange")
+	static let nightModeSettingDidChange = Notification.Name("kNYXNotificationNightModeSettingDidChange")
+}
+
+func isNightModeEnabled() -> Bool
+{
+	return UserDefaults.standard.bool(forKey: kNYXPrefNightMode)
 }

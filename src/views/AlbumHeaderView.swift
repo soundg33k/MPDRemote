@@ -49,12 +49,12 @@ final class AlbumHeaderView : UIView
 	override func draw(_ dirtyRect: CGRect)
 	{
 		guard let _ = image else {return}
-		let imageRect = CGRect(CGPoint.zero, coverSize)
-		image.draw(in: imageRect, blendMode:.sourceAtop, alpha:1.0)
+		let imageRect = CGRect(.zero, coverSize)
+		image.draw(in: imageRect, blendMode: .sourceAtop, alpha: 1.0)
 
 		let context = UIGraphicsGetCurrentContext()
 		context?.saveGState()
-		context?.clip(to:imageRect)
+		context?.clip(to: imageRect)
 
 		let startPoint = CGPoint(imageRect.minX, imageRect.midY)
 		let endPoint = CGPoint(imageRect.maxX, imageRect.midY)
@@ -73,7 +73,7 @@ final class AlbumHeaderView : UIView
 		var image: UIImage? = nil
 		if let coverURL = album.localCoverURL
 		{
-			if let cover = UIImage(contentsOfFile:coverURL.path)
+			if let cover = UIImage(contentsOfFile: coverURL.path)
 			{
 				image = cover
 			}
@@ -91,7 +91,7 @@ final class AlbumHeaderView : UIView
 		self.image = image
 
 		// Analyze colors
-		let x = KawaiiColors(image:image!, precision:8, samplingEdge:.right)
+		let x = KawaiiColors(image: image!, precision: 8, samplingEdge: .right)
 		x.analyze()
 		backgroundColor = x.edgeColor
 		lblTitle.textColor = x.primaryColor
@@ -108,7 +108,7 @@ final class AlbumHeaderView : UIView
 		// Update frame for title / artist
 		let s = album.name as NSString
 		let width = frame.width - (coverSize.width + 8.0)
-		let r = s.boundingRect(with: CGSize(width, 40.0), options:.usesLineFragmentOrigin, attributes:[NSFontAttributeName : lblTitle.font], context:nil)
+		let r = s.boundingRect(with: CGSize(width, 40.0), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName : lblTitle.font], context: nil)
 		lblTitle.frame = CGRect(coverSize.width + 4.0, 4.0, ceil(r.width), ceil(r.height))
 		lblArtist.frame = CGRect(coverSize.width + 4.0, lblTitle.bottom + 4.0, width - (coverSize.width + 8.0), 18.0)
 
@@ -122,7 +122,7 @@ final class AlbumHeaderView : UIView
 		if let tracks = album.songs
 		{
 			stra += "\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n"
-			let total = tracks.reduce(Duration(seconds:0)){$0 + $1.duration}
+			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
 			stra += "\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")\n"
 		}

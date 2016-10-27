@@ -50,7 +50,7 @@ final class ImageCache
 		{
 			if let img = newValue
 			{
-				_cache.setObject(img, forKey:key as AnyObject)
+				_cache.setObject(img, forKey: key as AnyObject)
 			}
 		}
 	}

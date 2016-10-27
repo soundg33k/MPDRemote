@@ -26,6 +26,8 @@ import UIKit
 final class PlayerVC : UIViewController, InteractableImageViewDelegate
 {
 	// MARK: - Private properties
+	// Blur view
+	@IBOutlet private var blurEffectView: UIVisualEffectView! = nil
 	// Cover view
 	@IBOutlet private var coverView: InteractableImageView! = nil
 	// Track title
@@ -63,40 +65,40 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		super.viewDidLoad()
 
 		// Slider track position
-		sliderPosition.addTarget(self, action:#selector(changeTrackPositionAction(_:)), for:.touchUpInside)
+		sliderPosition.addTarget(self, action: #selector(changeTrackPositionAction(_:)), for: .touchUpInside)
 
 		// Slider volume
 		sliderVolume.value = Float(UserDefaults.standard.integer(forKey: kNYXPrefVolume))
-		sliderVolume.addTarget(self, action:#selector(changeVolumeAction(_:)), for:.touchUpInside)
-		ivVolumeLo.image = #imageLiteral(resourceName: "img-volume-lo").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
-		ivVolumeHi.image = #imageLiteral(resourceName: "img-volume-hi").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
+		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
+		ivVolumeLo.image = #imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
+		ivVolumeHi.image = #imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
 
-		btnPlay.addTarget(PlayerController.shared, action:#selector(PlayerController.togglePause), for:.touchUpInside)
+		btnPlay.addTarget(PlayerController.shared, action: #selector(PlayerController.togglePause), for: .touchUpInside)
 
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:.normal)
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next").imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for:.highlighted)
-		btnNext.addTarget(PlayerController.shared, action:#selector(PlayerController.requestNextTrack), for:.touchUpInside)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		btnNext.addTarget(PlayerController.shared, action: #selector(PlayerController.requestNextTrack), for: .touchUpInside)
 
-		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:.normal)
-		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for:.highlighted)
-		btnPrevious.addTarget(PlayerController.shared, action:#selector(PlayerController.requestPreviousTrack), for:.touchUpInside)
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		btnPrevious.addTarget(PlayerController.shared, action: #selector(PlayerController.requestPreviousTrack), for: .touchUpInside)
 
 		let loop = UserDefaults.standard.bool(forKey: kNYXPrefRepeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.normal)
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.highlighted)
-		btnRepeat.setImage(imageRepeat.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRepeat.isSelected = loop
-		btnRepeat.addTarget(self, action:#selector(toggleRepeatAction(_:)), for:.touchUpInside)
+		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
 		let random = UserDefaults.standard.bool(forKey: kNYXPrefRandom)
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
-		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.normal)
-		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.highlighted)
-		btnRandom.setImage(imageRandom.imageTintedWithColor(#colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for:.selected)
+		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
+		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRandom.isSelected = random
-		btnRandom.addTarget(self, action:#selector(toggleRandomAction(_:)), for:.touchUpInside)
+		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
 		coverView.makeTappable()
@@ -104,11 +106,11 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		coverView.makeRightSwippable()
 		coverView.delegate = self
 		// Useless motion effect
-		var motionEffect = UIInterpolatingMotionEffect(keyPath:"center.x", type:.tiltAlongHorizontalAxis)
+		var motionEffect = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
 		motionEffect.minimumRelativeValue = 20.0
 		motionEffect.maximumRelativeValue = -20.0
 		coverView.addMotionEffect(motionEffect)
-		motionEffect = UIInterpolatingMotionEffect(keyPath:"center.y", type:.tiltAlongVerticalAxis)
+		motionEffect = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
 		motionEffect.minimumRelativeValue = 20.0
 		motionEffect.maximumRelativeValue = -20.0
 		coverView.addMotionEffect(motionEffect)
@@ -118,9 +120,12 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		super.viewWillAppear(animated)
 
-		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackNotification(_:)), name:.currentPlayingTrack, object:nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(playingTrackChangedNotification(_:)), name:.playingTrackChanged, object:nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(playerStatusChangedNotification(_:)), name:.playerStatusChanged, object:nil)
+		nightModeSettingDidChange(nil)
+
+		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
 
 		if let track = PlayerController.shared.currentTrack, let album = PlayerController.shared.currentAlbum
 		{
@@ -132,7 +137,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 
 			if album.path != nil
 			{
-				let op = CoverOperation(album:album, cropSize:coverView.size)
+				let op = CoverOperation(album: album, cropSize: coverView.size)
 				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						self.coverView.image = cover
@@ -144,7 +149,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			else
 			{
 				MusicDataSource.shared.getPathForAlbum(album) {
-					let op = CoverOperation(album:album, cropSize:self.coverView.size)
+					let op = CoverOperation(album: album, cropSize: self.coverView.size)
 					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.coverView.image = cover
@@ -163,9 +168,9 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		super.viewWillDisappear(animated)
 
-		NotificationCenter.default.removeObserver(self, name:.currentPlayingTrack, object:nil)
-		NotificationCenter.default.removeObserver(self, name:.playingTrackChanged, object:nil)
-		NotificationCenter.default.removeObserver(self, name:.playerStatusChanged, object:nil)
+		NotificationCenter.default.removeObserver(self, name: .currentPlayingTrack, object: nil)
+		NotificationCenter.default.removeObserver(self, name: .playingTrackChanged, object: nil)
+		NotificationCenter.default.removeObserver(self, name: .playerStatusChanged, object: nil)
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -186,7 +191,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// MARK: - InteractableImageViewDelegate
 	func didTap()
 	{
-		dismiss(animated: true, completion:nil)
+		dismiss(animated: true, completion: nil)
 		MiniPlayerView.shared.stayHidden = false
 		MiniPlayerView.shared.show()
 	}
@@ -200,7 +205,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	}
 
 	// MARK: - Buttons actions
-	func toggleRandomAction(_ sender: AnyObject?)
+	func toggleRandomAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
 		let random = !prefs.bool(forKey: kNYXPrefRandom)
@@ -208,13 +213,13 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnRandom.isSelected = random
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		prefs.set(random, forKey:kNYXPrefRandom)
+		prefs.set(random, forKey: kNYXPrefRandom)
 		prefs.synchronize()
 
 		PlayerController.shared.setRandom(random)
 	}
 
-	func toggleRepeatAction(_ sender: AnyObject?)
+	func toggleRepeatAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
 		let loop = !prefs.bool(forKey: kNYXPrefRepeat)
@@ -222,7 +227,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnRepeat.isSelected = loop
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		prefs.set(loop, forKey:kNYXPrefRepeat)
+		prefs.set(loop, forKey: kNYXPrefRepeat)
 		prefs.synchronize()
 
 		PlayerController.shared.setRepeat(loop)
@@ -232,7 +237,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		if let track = PlayerController.shared.currentTrack
 		{
-			PlayerController.shared.setTrackPosition(Int(sliderPosition.value), trackPosition:track.position)
+			PlayerController.shared.setTrackPosition(Int(sliderPosition.value), trackPosition: track.position)
 		}
 	}
 
@@ -240,7 +245,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		let volume = Int(ceil(sliderVolume.value))
 		let prefs = UserDefaults.standard
-		prefs.set(volume, forKey:kNYXPrefVolume)
+		prefs.set(volume, forKey: kNYXPrefVolume)
 		prefs.synchronize()
 		sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
 
@@ -257,11 +262,11 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 
 		if !sliderPosition.isSelected && !sliderPosition.isHighlighted
 		{
-			sliderPosition.setValue(Float(elapsed), animated:true)
+			sliderPosition.setValue(Float(elapsed), animated: true)
 			sliderPosition.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((sliderPosition.value * 100.0) / sliderPosition.maximumValue))%"
 		}
 
-		let elapsedDuration = Duration(seconds:elapsed)
+		let elapsedDuration = Duration(seconds: elapsed)
 		let remainingDuration = track.duration - elapsedDuration
 		lblElapsedDuration.text = elapsedDuration.minutesRepresentationAsString()
 		lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
@@ -284,21 +289,34 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		updatePlayPauseButton()
 	}
 
+	func nightModeSettingDidChange(_ aNotification: Notification?)
+	{
+		if isNightModeEnabled()
+		{
+			blurEffectView.effect = UIBlurEffect(style: .dark)
+
+		}
+		else
+		{
+			blurEffectView.effect = UIBlurEffect(style: .light)
+		}
+	}
+
 	// MARK: - Private
 	private func updatePlayPauseButton()
 	{
 		if PlayerController.shared.currentStatus == .paused
 		{
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
-			btnPlay.setImage(imgPlay.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:.normal)
-			btnPlay.setImage(imgPlay.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for:.highlighted)
+			btnPlay.setImage(imgPlay.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+			btnPlay.setImage(imgPlay.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 		}
 		else
 		{
 			let imgPause = #imageLiteral(resourceName: "btn-pause")
-			btnPlay.setImage(imgPause.imageTintedWithColor(#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for:.normal)
-			btnPlay.setImage(imgPause.imageTintedWithColor(#colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for:.highlighted)
+			btnPlay.setImage(imgPause.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+			btnPlay.setImage(imgPause.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 	}

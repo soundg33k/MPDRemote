@@ -38,13 +38,13 @@ final class AudioServer : Server
 	// MARK: - Initializers
 	init(name: String, hostname: String, port: UInt16, type: AudioServerType)
 	{
-		super.init(name:name, hostname:hostname, port:port)
+		super.init(name: name, hostname: hostname, port: port)
 		self.type = type
 	}
 
 	init(name: String, hostname: String, port: UInt16, password: String, type: AudioServerType)
 	{
-		super.init(name:name, hostname:hostname, port:port, password:password)
+		super.init(name: name, hostname: hostname, port: port, password: password)
 		self.type = type
 	}
 
@@ -58,12 +58,12 @@ final class AudioServer : Server
 
 		let type = decoder.decodeInteger(forKey: "type")
 		let port = decoder.decodeInteger(forKey: "port")
-		self.init(name:name, hostname:hostname, port:UInt16(port), password:password, type:AudioServerType(rawValue: type)!)
+		self.init(name: name, hostname: hostname, port: UInt16(port), password: password, type: AudioServerType(rawValue: type)!)
 	}
 
 	override func encode(with coder: NSCoder)
 	{
-		coder.encode(type.rawValue, forKey:"type")
+		coder.encode(type.rawValue, forKey: "type")
 		super.encode(with: coder)
 	}
 }

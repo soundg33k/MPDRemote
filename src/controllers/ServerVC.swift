@@ -40,12 +40,23 @@ final class ServerVC : MenuTVC
 	@IBOutlet fileprivate var tfWEBPort: UITextField!
 	// Cover name
 	@IBOutlet fileprivate var tfWEBCoverName: UITextField!
+	// Cell Labels
+	@IBOutlet private var lblCellMPDName: UILabel! = nil
+	@IBOutlet private var lblCellMPDHostname: UILabel! = nil
+	@IBOutlet private var lblCellMPDPort: UILabel! = nil
+	@IBOutlet private var lblCellMPDPassword: UILabel! = nil
+	@IBOutlet private var lblCellWEBHostname: UILabel! = nil
+	@IBOutlet private var lblCellWEBPort: UILabel! = nil
+	@IBOutlet private var lblCellWEBCoverName: UILabel! = nil
+	@IBOutlet private var lblClearCache: UILabel! = nil
 	// MPD Server
 	private var mpdServer: AudioServer?
 	// WEB Server for covers
 	private var webServer: CoverWebServer?
 	// Indicate that the keyboard is visible, flag
 	private var _keyboardVisible = false
+	// Navigation title
+	private var titleView: UILabel!
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -53,8 +64,8 @@ final class ServerVC : MenuTVC
 		super.viewDidLoad()
 
 		// Navigation bar title
-		let titleView = UILabel(frame:CGRect(0.0, 0.0, 100.0, 44.0))
-		titleView.font = UIFont(name:"HelveticaNeue-Medium", size:14.0)
+		titleView = UILabel(frame: CGRect(0.0, 0.0, 100.0, 44.0))
+		titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
@@ -71,13 +82,15 @@ final class ServerVC : MenuTVC
 		}
 
 		// Keyboard appearance notifications
-		NotificationCenter.default.addObserver(self, selector:#selector(keyboardDidShowNotification(_:)), name:NSNotification.Name.UIKeyboardDidShow, object:nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(keyboardDidHideNotification(_:)), name:NSNotification.Name.UIKeyboardDidHide, object:nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShowNotification(_:)), name: .UIKeyboardDidShow, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHideNotification(_:)), name: .UIKeyboardDidHide, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
+
+		self.nightModeSettingDidChange(nil)
 
 		if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 		{
@@ -113,11 +126,11 @@ final class ServerVC : MenuTVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return isNightModeEnabled() ? .lightContent : .default
 	}
 
 	// MARK: - Buttons actions
-	@IBAction func validateSettingsAction(_ sender: AnyObject?)
+	@IBAction func validateSettingsAction(_ sender: Any?)
 	{
 		view.endEditing(true)
 
@@ -131,11 +144,11 @@ final class ServerVC : MenuTVC
 		// Check MPD hostname / ip
 		guard let ip = tfMPDHostname.text , ip.length > 0 else
 		{
-			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle:.alert)
-			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.cancel) { (action) in
+			let alertController = UIAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel) { (action) in
 			}
 			alertController.addAction(cancelAction)
-			present(alertController, animated:true, completion:nil)
+			present(alertController, animated: true, completion: nil)
 			return
 		}
 
@@ -153,25 +166,24 @@ final class ServerVC : MenuTVC
 			password = strPassword
 		}
 
-		//let mpdServer = password.length > 0 ? AudioServer(name:serverName, hostname:ip, port:port, password:password, type:.mpd) : AudioServer(type:.mpd, name:serverName, hostname:ip, port:port)
-		let mpdServer = AudioServer(name:serverName, hostname:ip, port:port, password:password, type:.mpd)
-		let cnn = MPDConnection(server:mpdServer)
+		let mpdServer = AudioServer(name: serverName, hostname: ip, port: port, password: password, type: .mpd)
+		let cnn = MPDConnection(server: mpdServer)
 		if cnn.connect()
 		{
 			self.mpdServer = mpdServer
 			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: mpdServer)
-			UserDefaults.standard.set(serverAsData, forKey:kNYXPrefMPDServer)
+			UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
 
 			NotificationCenter.default.post(name: .audioServerConfigurationDidChange, object: mpdServer)
 		}
 		else
 		{
 			UserDefaults.standard.removeObject(forKey: kNYXPrefMPDServer)
-			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle:.alert)
-			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.cancel) { (action) in
+			let alertController = UIAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle: .alert)
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel) { (action) in
 			}
 			alertController.addAction(cancelAction)
-			present(alertController, animated:true, completion:nil)
+			present(alertController, animated: true, completion: nil)
 		}
 		cnn.disconnect()
 
@@ -189,11 +201,11 @@ final class ServerVC : MenuTVC
 			{
 				coverName = cn
 			}
-			let webServer = CoverWebServer(name:"CoverServer", hostname:strURL, port:port, coverName: coverName)
+			let webServer = CoverWebServer(name: "CoverServer", hostname: strURL, port: port, coverName: coverName)
 			webServer.coverName = coverName
 			self.webServer = webServer
 			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: webServer)
-			UserDefaults.standard.set(serverAsData, forKey:kNYXPrefWEBServer)
+			UserDefaults.standard.set(serverAsData, forKey: kNYXPrefWEBServer)
 		}
 		else
 		{
@@ -203,7 +215,7 @@ final class ServerVC : MenuTVC
 		UserDefaults.standard.synchronize()
 	}
 
-	@IBAction func browserZeroConfServers(_ sender: AnyObject?)
+	@IBAction func browserZeroConfServers(_ sender: Any?)
 	{
 		let sb = UIStoryboard(name: "main", bundle: nil)
 		let nvc = sb.instantiateViewController(withIdentifier: "ZeroConfBrowserNVC") as! NYXNavigationController
@@ -220,25 +232,39 @@ final class ServerVC : MenuTVC
 			return
 		}
 
-		let info = (aNotification as NSNotification).userInfo!
-		let value = info[UIKeyboardFrameEndUserInfoKey]!
-		let rawFrame = (value as AnyObject).cgRectValue
-		let keyboardFrame = view.convert(rawFrame!, from:nil)
+		guard let info = aNotification.userInfo else
+		{
+			return
+		}
+
+		guard let value = info[UIKeyboardFrameEndUserInfoKey] as! NSValue? else
+		{
+			return
+		}
+
+		let keyboardFrame = view.convert(value.cgRectValue, from: nil)
 		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height - keyboardFrame.height)
 		_keyboardVisible = true
 	}
 
 	func keyboardDidHideNotification(_ aNotification: Notification)
 	{
-		if !_keyboardVisible
+		if _keyboardVisible == false
 		{
 			return
 		}
 
-		let info = (aNotification as NSNotification).userInfo!
-		let value = info[UIKeyboardFrameEndUserInfoKey]!
-		let rawFrame = (value as AnyObject).cgRectValue
-		let keyboardFrame = view.convert(rawFrame!, from:nil)
+		guard let info = aNotification.userInfo else
+		{
+			return
+		}
+
+		guard let value = info[UIKeyboardFrameEndUserInfoKey] as! NSValue? else
+		{
+			return
+		}
+
+		let keyboardFrame = view.convert(value.cgRectValue, from: nil)
 		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height + keyboardFrame.height)
 		_keyboardVisible = false
 	}
@@ -279,14 +305,14 @@ final class ServerVC : MenuTVC
 	{
 		let clearBlock = { () -> Void in
 			let fileManager = FileManager()
-			let cachesDirectoryURL = fileManager.urls(for:.cachesDirectory, in:.userDomainMask).last!
+			let cachesDirectoryURL = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).last!
 			let coversDirectoryName = UserDefaults.standard.string(forKey: kNYXPrefDirectoryCovers)!
 			let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
 
 			do
 			{
 				try fileManager.removeItem(at: coversDirectoryURL)
-				try fileManager.createDirectory(at: coversDirectoryURL, withIntermediateDirectories:true, attributes:nil)
+				try fileManager.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
 			}
 			catch _
 			{
@@ -296,20 +322,99 @@ final class ServerVC : MenuTVC
 
 		if confirm
 		{
-			let alertController = UIAlertController(title:NYXLocalizedString("lbl_alert_purge_cache_title"), message:NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle:.alert)
-			let cancelAction = UIAlertAction(title:NYXLocalizedString("lbl_cancel"), style:.cancel) { (action) in
+			let alertController = UIAlertController(title: NYXLocalizedString("lbl_alert_purge_cache_title"), message:NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle: .alert)
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
 			}
 			alertController.addAction(cancelAction)
-			let okAction = UIAlertAction(title:NYXLocalizedString("lbl_ok"), style:.destructive) { (action) in
+			let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
 				clearBlock()
 			}
 			alertController.addAction(okAction)
-			present(alertController, animated:true, completion:nil)
+			present(alertController, animated: true, completion: nil)
 		}
 		else
 		{
 			clearBlock()
 		}
+	}
+
+	// MARK: - Notifications
+	override func nightModeSettingDidChange(_ aNotification: Notification?)
+	{
+		super.nightModeSettingDidChange(aNotification)
+
+		if isNightModeEnabled()
+		{
+			navigationController?.navigationBar.barStyle = .black
+			titleView.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
+			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			tableView.separatorColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			for i in 0...tableView.numberOfSections - 1
+			{
+				for j in 0...tableView.numberOfRows(inSection: i) - 1
+				{
+					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
+					{
+						cell.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+					}
+				}
+			}
+			self.lblClearCache.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+
+			tfMPDName.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			tfMPDHostname.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			tfMPDPort.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			tfMPDPassword.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			tfWEBHostname.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			tfWEBCoverName.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+			tfWEBPort.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+
+			tfMPDName.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_defaultname"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.5741485357, green: 0.5741624236, blue: 0.574154973, alpha: 1)])
+			tfMPDHostname.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_host"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.5741485357, green: 0.5741624236, blue: 0.574154973, alpha: 1)])
+			tfMPDPassword.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_optional"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.5741485357, green: 0.5741624236, blue: 0.574154973, alpha: 1)])
+			tfWEBHostname.attributedPlaceholder = NSAttributedString(string: "http://mpd.local", attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.5741485357, green: 0.5741624236, blue: 0.574154973, alpha: 1)])
+		}
+		else
+		{
+			navigationController?.navigationBar.barStyle = .default
+			titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			tableView.separatorColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			for i in 0...tableView.numberOfSections - 1
+			{
+				for j in 0...tableView.numberOfRows(inSection: i) - 1
+				{
+					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
+					{
+						cell.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+					}
+				}
+			}
+			self.lblClearCache.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+
+			tfMPDName.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			tfMPDHostname.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			tfMPDPort.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			tfMPDPassword.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			tfWEBHostname.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			tfWEBCoverName.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			tfWEBPort.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+
+			tfMPDName.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_defaultname"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)])
+			tfMPDHostname.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_host"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)])
+			tfMPDPassword.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_optional"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)])
+			tfWEBHostname.attributedPlaceholder = NSAttributedString(string: "http://mpd.local", attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)])
+		}
+
+		lblCellMPDName.textColor = titleView.textColor
+		lblCellMPDHostname.textColor = titleView.textColor
+		lblCellMPDPort.textColor = titleView.textColor
+		lblCellMPDPassword.textColor = titleView.textColor
+		lblCellWEBHostname.textColor = titleView.textColor
+		lblCellWEBCoverName.textColor = titleView.textColor
+		lblCellWEBPort.textColor = titleView.textColor
+
+		setNeedsStatusBarAppearanceUpdate()
 	}
 }
 
@@ -331,7 +436,7 @@ extension ServerVC
 		{
 			clearCache(confirm: true)
 		}
-		tableView.deselectRow(at: indexPath, animated:true)
+		tableView.deselectRow(at: indexPath, animated: true)
 	}
 }
 

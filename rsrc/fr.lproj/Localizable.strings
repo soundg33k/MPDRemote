@@ -47,6 +47,8 @@
 "lbl_section_settings" = "Réglages";
 "lbl_section_database" = "Base de données";
 
+"lbl_pref_nightmode" = "Mode nuit";
+
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";
 "lbl_genre" = "Genre";
