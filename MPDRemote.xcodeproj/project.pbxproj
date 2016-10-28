@@ -786,6 +786,7 @@
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -828,6 +829,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
