@@ -23,6 +23,9 @@
 import UIKit
 
 
+private let headerSectionHeight: CGFloat = 32.0
+
+
 final class StatsVC : MenuTVC
 {
 	// MARK: - Private properties
@@ -218,6 +221,40 @@ final class StatsVC : MenuTVC
 		lblCellMPDPlaytime.textColor = titleView.textColor
 		lblCellMPDDBLastUpdate.textColor = titleView.textColor
 
+		tableView.reloadData()
+
 		setNeedsStatusBarAppearanceUpdate()
+	}
+}
+
+// MARK: - UITableViewDelegate
+extension StatsVC
+{
+	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+	{
+		let dummy = UIView(frame: CGRect(0.0, 0.0, tableView.width, headerSectionHeight))
+		dummy.backgroundColor = tableView.backgroundColor
+
+		let label = UILabel(frame: CGRect(10.0, 0.0, dummy.width - 20.0, dummy.height))
+		label.backgroundColor = dummy.backgroundColor
+		label.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1) : #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		label.font = UIFont.systemFont(ofSize: 15.0)
+		dummy.addSubview(label)
+
+		if section == 0
+		{
+			label.text = NYXLocalizedString("lbl_stats_section_db").uppercased()
+		}
+		else
+		{
+			label.text = NYXLocalizedString("lbl_stats_section_server").uppercased()
+		}
+
+		return dummy
+	}
+
+	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+	{
+		return headerSectionHeight
 	}
 }

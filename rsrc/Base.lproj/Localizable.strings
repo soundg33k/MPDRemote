@@ -43,6 +43,8 @@
 "lbl_server_coverclearcache" = "Clear cache";
 "lbl_server_section_cover" = "Cover Art";
 "lbl_server_section_server" = "MPD server";
+"lbl_stats_section_db" = "Database (MPD)";
+"lbl_stats_section_server" = "Server (MPD)";
 
 "lbl_section_home" = "Home";
 "lbl_section_server" = "Server";

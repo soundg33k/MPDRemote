@@ -156,7 +156,6 @@ extension SettingsVC
 		else
 		{
 			label.text = NYXLocalizedString("lbl_version").uppercased()
-
 		}
 
 		return dummy
