@@ -20,6 +20,8 @@
 "lbl_header_server_cfg" = "Configuration serveur";
 "lbl_header_server_zeroconf" = "Serveurs découverts";
 "lbl_search_zeroconf" = "Chercher des serveurs à proximité";
+"lbl_appearance" = "Apparence";
+"lbl_version" = "Version";
 
 "lbl_alert_playalbum_shuffle" = "Aléatoire";
 "lbl_alert_playalbum_addqueue" = "Ajouter à la liste";

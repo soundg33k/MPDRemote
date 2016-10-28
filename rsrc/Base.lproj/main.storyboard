@@ -1703,10 +1703,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection id="0PA-N3-Mir">
+                            <tableViewSection headerTitle="Appearance" id="0PA-N3-Mir">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="5P7-sM-ig6">
-                                        <rect key="frame" x="0.0" y="99" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="120" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5P7-sM-ig6" id="6HK-av-fA3">
                                             <frame key="frameInset" width="375" height="44"/>
@@ -1743,6 +1743,29 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="Version" id="bg9-bq-Ook">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="hFK-ZA-ZeW">
+                                        <rect key="frame" x="0.0" y="221" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hFK-ZA-ZeW" id="ArT-zK-rf3">
+                                            <frame key="frameInset" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version (build)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Z4-BF-YdL">
+                                                    <fontDescription key="fontDescription" name="AmericanTypewriter" family="American Typewriter" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="9Z4-BF-YdL" firstAttribute="centerY" secondItem="ArT-zK-rf3" secondAttribute="centerY" id="SFD-y4-6ny"/>
+                                                <constraint firstItem="9Z4-BF-YdL" firstAttribute="centerX" secondItem="ArT-zK-rf3" secondAttribute="centerX" id="hwx-mG-hVN"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="NNC-tO-Tiv" id="Pcg-Ag-gvS"/>
@@ -1752,6 +1775,7 @@
                     <navigationItem key="navigationItem" title="SettingsTVC" id="ieq-mV-EpJ"/>
                     <connections>
                         <outlet property="lblNightMode" destination="5yX-p0-uJA" id="kzX-yq-EoH"/>
+                        <outlet property="lblVersion" destination="9Z4-BF-YdL" id="v6x-7P-Ko8"/>
                         <outlet property="swNightMode" destination="KEZ-Xz-utp" id="H0f-CA-A3e"/>
                     </connections>
                 </tableViewController>
