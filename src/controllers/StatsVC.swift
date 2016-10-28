@@ -67,6 +67,14 @@ final class StatsVC : MenuTVC
 		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		titleView.text = NYXLocalizedString("lbl_section_stats")
 		navigationItem.titleView = titleView
+
+		lblCellAlbums.text = NYXLocalizedString("lbl_albums")
+		lblCellArtists.text = NYXLocalizedString("lbl_artists")
+		lblCellSongs.text = NYXLocalizedString("lbl_songs")
+		lblCellDBPlaytime.text = NYXLocalizedString("lbl_total_playtime")
+		lblCellMPDUptime.text = NYXLocalizedString("lbl_server_uptime")
+		lblCellMPDPlaytime.text = NYXLocalizedString("lbl_server_playtime")
+		lblCellMPDDBLastUpdate.text = NYXLocalizedString("lbl_server_lastdbupdate")
 	}
 
 	override func viewWillAppear(_ animated: Bool)

@@ -52,6 +52,8 @@ final class SettingsVC : MenuTVC
 		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		titleView.text = NYXLocalizedString("lbl_section_settings")
 		navigationItem.titleView = titleView
+
+		lblNightMode.text = NYXLocalizedString("lbl_nightmode")
 	}
 
 	override func viewWillAppear(_ animated: Bool)

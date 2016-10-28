@@ -81,6 +81,16 @@ final class ServerVC : MenuTVC
 			}
 		}
 
+		lblCellMPDName.text = NYXLocalizedString("lbl_server_name")
+		lblCellMPDHostname.text = NYXLocalizedString("lbl_server_host")
+		lblCellMPDPort.text = NYXLocalizedString("lbl_server_port")
+		lblCellMPDPassword.text = NYXLocalizedString("lbl_server_password")
+		lblCellWEBHostname.text = NYXLocalizedString("lbl_server_coverurl")
+		lblCellWEBPort.text = NYXLocalizedString("lbl_server_port")
+		lblCellWEBCoverName.text = NYXLocalizedString("lbl_server_covername")
+		lblClearCache.text = NYXLocalizedString("lbl_server_coverclearcache")
+		tfMPDName.placeholder = NYXLocalizedString("lbl_server_defaultname")
+
 		// Keyboard appearance notifications
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShowNotification(_:)), name: .UIKeyboardDidShow, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHideNotification(_:)), name: .UIKeyboardDidHide, object: nil)

@@ -22,6 +22,7 @@
 "lbl_search_zeroconf" = "Search nearby servers";
 "lbl_appearance" = "Appearance";
 "lbl_version" = "Version";
+"lbl_nightmode" = "Night mode";
 
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";
