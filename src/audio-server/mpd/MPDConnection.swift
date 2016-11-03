@@ -106,7 +106,7 @@ final class MPDConnection : AudioServerConnection
 		var pair = mpd_recv_pair_tag(_connection, tagType)
 		while pair != nil
 		{
-			let dataTemp = Data(bytesNoCopy:UnsafeMutableRawPointer(mutating: (pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
+			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: (pair?.pointee.value)!), count: Int(strlen(pair?.pointee.value)), deallocator: .none)
 			if let name = String(data: dataTemp, encoding: .utf8)
 			{
 				switch displayType

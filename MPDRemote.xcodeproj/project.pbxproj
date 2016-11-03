@@ -497,6 +497,11 @@
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = 3VD3GSF4M4;
 						LastSwiftMigration = 0800;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -755,6 +760,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -773,7 +779,7 @@
 					"$(PROJECT_DIR)/external/mpdclient-src",
 				);
 				OTHER_SWIFT_FLAGS = "-D NYX_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free2;
+				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free3;
 				PRODUCT_NAME = MPDRemote;
 				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -798,6 +804,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -815,7 +822,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/external/mpdclient-src",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free2;
+				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free3;
 				PRODUCT_NAME = MPDRemote;
 				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
