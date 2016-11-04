@@ -169,6 +169,7 @@ extension ArtistsVC
 			cell.lblArtist.text = ""
 			cell.lblAlbums.text = ""
 			cell.selectionStyle = .none
+			cell.lblAlbums.tag = 789
 			return cell
 		}
 		cell.dummyView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
