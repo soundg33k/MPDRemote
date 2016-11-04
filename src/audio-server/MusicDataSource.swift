@@ -51,6 +51,7 @@ final class MusicDataSource
 		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.datasource", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target:  nil)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: .UIApplicationDidEnterBackground, object:nil)
 	}
 
 	// MARK: - Public
@@ -87,7 +88,7 @@ final class MusicDataSource
 		return ret
 	}
 
-	func reinitialize() -> Bool
+	func deinitialize()
 	{
 		stopTimer()
 		if _connection != nil
@@ -96,6 +97,11 @@ final class MusicDataSource
 			_connection.disconnect()
 			_connection = nil
 		}
+	}
+
+	func reinitialize() -> Bool
+	{
+		deinitialize()
 		return initialize()
 	}
 
@@ -294,6 +300,11 @@ final class MusicDataSource
 			self.server = server
 			_ = self.reinitialize()
 		}
+	}
+
+	@objc func applicationDidEnterBackground(_ aNotification: Notification)
+	{
+		deinitialize()
 	}
 }
 
