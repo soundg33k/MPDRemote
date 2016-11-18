@@ -321,3 +321,66 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		}
 	}
 }
+
+
+final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControllerAnimatedTransitioning
+{
+	var presenting: Bool = true
+
+	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval
+	{
+		return 0.8
+	}
+
+	func animateTransition(using transitionContext: UIViewControllerContextTransitioning)
+	{
+		let containerView = transitionContext.containerView
+		let bounds = UIScreen.main.bounds
+
+		if presenting
+		{
+			let toViewController = transitionContext.viewController(forKey: .to)! as! PlayerVC
+			containerView.addSubview(toViewController.view)
+
+			let iv = UIImageView(frame: CGRect(0, bounds.height - playerViewHeight, playerViewHeight, playerViewHeight))
+			iv.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0)
+			iv.image = MiniPlayerView.shared.imageView.image
+			containerView.addSubview(iv)
+
+			toViewController.view.alpha = 0.0
+			MiniPlayerView.shared.stayHidden = true
+			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+				iv.frame = CGRect(32, 104, bounds.width - 64, bounds.width - 64)
+				MiniPlayerView.shared.hide()
+			}, completion: { finished in
+				UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
+					toViewController.view.alpha = 1.0
+					iv.alpha = 0.0
+				}, completion: { finished in
+					transitionContext.completeTransition(true)
+				})
+			})
+		}
+		else
+		{
+			let fromViewController = transitionContext.viewController(forKey: .from)!
+
+			let iv = UIImageView(frame: CGRect(32, 104, bounds.width - 64, bounds.width - 64))
+			iv.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0)
+			iv.image = MiniPlayerView.shared.imageView.image
+			iv.alpha = 0.0
+			containerView.addSubview(iv)
+
+			UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
+				fromViewController.view.alpha = 0.0
+				iv.alpha = 1.0
+			}, completion: { finished in
+				UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+					iv.frame = CGRect(0, bounds.height - playerViewHeight, playerViewHeight, playerViewHeight)
+				}, completion: { finished in
+					transitionContext.completeTransition(true)
+				})
+			})
+		}
+	}
+}

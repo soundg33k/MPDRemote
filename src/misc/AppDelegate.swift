@@ -73,8 +73,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 		homeVC = window?.rootViewController
 
-		NotificationCenter.default.addObserver(self, selector: #selector(miniPlayShouldExpandNotification(_:)), name: .miniPlayerShouldExpand, object: nil)
-
 		return true
 	}
 
@@ -103,13 +101,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 		UserDefaults.standard.register(defaults: defaults)
 		UserDefaults.standard.synchronize()
-	}
-
-	// MARK: - Notifications
-	func miniPlayShouldExpandNotification(_ aNotification: Notification)
-	{
-		window?.rootViewController?.present(playerVC, animated: true, completion: nil)
-		MiniPlayerView.shared.stayHidden = true
-		MiniPlayerView.shared.hide()
 	}
 }

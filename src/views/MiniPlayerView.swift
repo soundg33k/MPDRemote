@@ -35,11 +35,12 @@ final class MiniPlayerView : UIView, PTappable
 	private(set) var visible = false
 	// Player should stay hidden, regardless of playback status
 	var stayHidden = false
+	// Album cover
+	private(set) var imageView: UIImageView!
 
 	// MARK: - Private properties
 	fileprivate var blurEffectView: UIVisualEffectView!
-	// Album cover
-	private var imageView: UIImageView!
+
 	// Dummy acessible view for title
 	private var accessibleView: UIView!
 	// Track title

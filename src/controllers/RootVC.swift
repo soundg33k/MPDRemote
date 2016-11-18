@@ -140,6 +140,7 @@ final class RootVC : MenuVC
 		_ = MiniPlayerView.shared.visible
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(miniPlayShouldExpandNotification(_:)), name: .miniPlayerShouldExpand, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -247,6 +248,8 @@ final class RootVC : MenuVC
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
 	{
+		super.prepare(for: segue, sender: sender)
+		
 		if segue.identifier == "root-albums-to-detail-album"
 		{
 			let row = collectionView.indexPathsForSelectedItems![0].row
@@ -267,6 +270,12 @@ final class RootVC : MenuVC
 			let artist = searching ? searchResults[row] as! Artist : MusicDataSource.shared.artists[row]
 			let vc = segue.destination as! AlbumsVC
 			vc.artist = artist
+		}
+		else if segue.identifier == "root-to-player"
+		{
+			let vc = segue.destination as! PlayerVC
+			vc.transitioningDelegate = self
+			vc.modalPresentationStyle = .custom
 		}
 	}
 
@@ -595,6 +604,13 @@ final class RootVC : MenuVC
 		collectionView.reloadData()
 		updateNavigationTitle()
 		setNeedsStatusBarAppearanceUpdate()
+	}
+
+	func miniPlayShouldExpandNotification(_ aNotification: Notification)
+	{
+		performSegue(withIdentifier: "root-to-player", sender: self)
+		//MiniPlayerView.shared.stayHidden = true
+		//MiniPlayerView.shared.hide()
 	}
 }
 
@@ -1107,5 +1123,23 @@ extension RootVC
 				})
 			}
 		}
+	}
+}
+
+// MARK: - UIViewControllerTransitioningDelegate
+extension RootVC : UIViewControllerTransitioningDelegate
+{
+	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning?
+	{
+		let c = PlayerVCCustomPresentAnimationController()
+		c.presenting = true
+		return c
+	}
+
+	func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning?
+	{
+		let c = PlayerVCCustomPresentAnimationController()
+		c.presenting = false
+		return c
 	}
 }
