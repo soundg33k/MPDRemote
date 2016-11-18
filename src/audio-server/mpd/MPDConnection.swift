@@ -38,7 +38,7 @@ final class MPDConnection : AudioServerConnection
 	// mpd_connection object
 	private var _connection: OpaquePointer? = nil
 	// Timeout in seconds
-	private let _timeout = UInt32(30)
+	private let _timeout = UInt32(10)
 
 	// MARK: - Initializers
 	init(server: AudioServer)
