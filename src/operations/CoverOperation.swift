@@ -84,7 +84,7 @@ final class CoverOperation : Operation
 		// No path for album, abort
 		guard let path = album.path else
 		{
-			Logger.alog("[!] No album path defined.")
+			Logger.dlog("[!] No album path defined.")
 			isFinished = true
 			return
 		}
@@ -92,14 +92,14 @@ final class CoverOperation : Operation
 		// No mpd server configured, abort
 		guard let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
 		{
-			Logger.alog("[!] No WEB server configured.")
+			Logger.dlog("[!] No WEB server configured.")
 			generateCover()
 			isFinished = true
 			return
 		}
 		guard let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! CoverWebServer? else
 		{
-			Logger.alog("[!] No WEB server configured.")
+			Logger.dlog("[!] No WEB server configured.")
 			generateCover()
 			isFinished = true
 			return
@@ -107,7 +107,7 @@ final class CoverOperation : Operation
 		// No cover stuff configured, abort
 		if server.hostname.length <= 0 || server.coverName.length <= 0
 		{
-			Logger.alog("[!] No web server configured, can't download covers.")
+			Logger.dlog("[!] No web server configured, can't download covers.")
 			generateCover()
 			isFinished = true
 			return
