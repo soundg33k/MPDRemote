@@ -8,7 +8,7 @@ There is no persistence layer apart from cover caching.
 
 - Browse by Albums / Artists / Genres
 - Search
-- Play / pause, shuffle, repeat
+- Play / pause, shuffle & repeat, volume control, track position control
 - Shake to play a random album
 - Add album / artist / genre to play queue
 - VoiceOver compliant
@@ -17,8 +17,8 @@ There is no persistence layer apart from cover caching.
 
 ### TODO
 
-- [ ] Optimize things? Not slow anyway, works well on my iPhone 5 with 3000+ albums 
-- [ ] Add some settings?
+- [ ] Handling of playlists
+- [ ] Optimize things? Not slow anyway, works well on my iPhone 5 with 3000+ albums
 - [ ] iPad version
 - [ ] Persistence layer? probably not since it's quite fast on a local network and my 40K musical library evolve quite often
 - [ ] Better icons for consistency, I took random free icons on the net. Problem is my skills in design are (void*)0.
