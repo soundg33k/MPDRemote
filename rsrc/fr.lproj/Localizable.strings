@@ -60,6 +60,8 @@
 "lbl_genres" = "Genres";
 "lbl_artist" = "Artiste";
 "lbl_artists" = "Artistes";
+"lbl_playlist" = "Liste";
+"lbl_playlists" = "Listes";
 "lbl_song" = "Chanson";
 "lbl_songs" = "Chansons";
 "lbl_total_playtime" = "Durée totale";

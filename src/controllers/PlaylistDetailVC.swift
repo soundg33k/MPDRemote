@@ -1,4 +1,4 @@
-// AlbumDetailVC.swift
+// PlaylistDetailVC.swift
 // Copyright (c) 2016 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,22 +23,22 @@
 import UIKit
 
 
-final class AlbumDetailVC : UIViewController
+final class PlaylistDetailVC : UIViewController
 {
 	// MARK: - Public properties
 	// Selected album
-	var album: Album
+	var playlist: Playlist
 
 	// MARK: - Private properties
 	// Header view (cover + album name, artist)
-	@IBOutlet private var headerView: AlbumHeaderView! = nil
+	@IBOutlet private var headerView: UIImageView! = nil
 	// Header height constraint
 	@IBOutlet private var headerHeightConstraint: NSLayoutConstraint! = nil
 	// Dummy view for shadow
 	@IBOutlet private var dummyView: UIView! = nil
 	// Tableview for song list
 	@IBOutlet private var tableView: UITableView! = nil
-	//
+	// Underlaying color view
 	@IBOutlet private var colorView: UIView! = nil
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
@@ -47,7 +47,7 @@ final class AlbumDetailVC : UIViewController
 	required init?(coder aDecoder: NSCoder)
 	{
 		// Dummy
-		self.album = Album(name: "")
+		self.playlist = Playlist(name: "")
 
 		super.init(coder:aDecoder)
 	}
@@ -67,7 +67,6 @@ final class AlbumDetailVC : UIViewController
 
 		// Album header view
 		let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!) as! NSValue
-		headerView.coverSize = coverSize.cgSizeValue
 		headerHeightConstraint.constant = coverSize.cgSizeValue.height
 
 		// Dummy tableview host, to create a nice shadow effect
@@ -101,9 +100,9 @@ final class AlbumDetailVC : UIViewController
 		updateHeader()
 
 		// Get songs list if needed
-		if album.tracks == nil
+		if playlist.tracks == nil
 		{
-			MusicDataSource.shared.getTracksForAlbum(album) {
+			MusicDataSource.shared.getTracksForPlaylist(playlist) {
 				DispatchQueue.main.async {
 					self.updateNavigationTitle()
 					self.tableView.reloadData()
@@ -142,23 +141,19 @@ final class AlbumDetailVC : UIViewController
 	private func updateHeader()
 	{
 		// Update header view
-		headerView.updateHeaderWithAlbum(album)
-		colorView.backgroundColor = headerView.backgroundColor
+		let backgroundColor = UIColor(rgb: playlist.name.djb2())
+		headerView.backgroundColor = backgroundColor
+		colorView.backgroundColor = backgroundColor
 
-		// Don't have all the metadatas
-		if album.artist.length == 0
+		if let img = generateCoverFromString(playlist.name, size: headerView.size)
 		{
-			MusicDataSource.shared.getMetadatasForAlbum(album) {
-				DispatchQueue.main.async {
-					self.updateHeader()
-				}
-			}
+			headerView.image = img
 		}
 	}
 
 	private func updateNavigationTitle()
 	{
-		if let tracks = album.tracks
+		if let tracks = playlist.tracks
 		{
 			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
@@ -188,11 +183,11 @@ final class AlbumDetailVC : UIViewController
 }
 
 // MARK: - UITableViewDataSource
-extension AlbumDetailVC : UITableViewDataSource
+extension PlaylistDetailVC : UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		if let tracks = album.tracks
+		if let tracks = playlist.tracks
 		{
 			return tracks.count + 1 // dummy
 		}
@@ -208,7 +203,7 @@ extension AlbumDetailVC : UITableViewDataSource
 		cell.lblTrack.backgroundColor = cell.backgroundColor
 		cell.lblDuration.backgroundColor = cell.backgroundColor
 
-		if let tracks = album.tracks
+		if let tracks = playlist.tracks
 		{
 			// Dummy to let some space for the mini player
 			if indexPath.row == tracks.count
@@ -252,14 +247,14 @@ extension AlbumDetailVC : UITableViewDataSource
 }
 
 // MARK: - UITableViewDelegate
-extension AlbumDetailVC : UITableViewDelegate
+extension PlaylistDetailVC : UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
 		tableView.deselectRow(at: indexPath, animated: true)
 
 		// Dummy cell
-		guard let tracks = album.tracks else {return}
+		guard let tracks = playlist.tracks else {return}
 		if indexPath.row >= tracks.count
 		{
 			return

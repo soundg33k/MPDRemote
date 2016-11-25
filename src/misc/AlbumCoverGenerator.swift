@@ -38,7 +38,12 @@ func generateCoverForArtist(_ artist: Artist, size: CGSize) -> UIImage?
 	return generateCoverFromString(artist.name, size: size)
 }
 
-private func generateCoverFromString(_ string: String, size: CGSize) -> UIImage?
+func generateCoverForPlaylist(_ playlist: Playlist, size: CGSize) -> UIImage?
+{
+	return generateCoverFromString(playlist.name, size: size)
+}
+
+func generateCoverFromString(_ string: String, size: CGSize) -> UIImage?
 {
 	let backgroundColor = UIColor(rgb: string.djb2())
 	let cover = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: size.width / 4.0)!, fontColor: ~backgroundColor, backgroundColor: backgroundColor, maxSize: size)

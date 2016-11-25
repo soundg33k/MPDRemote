@@ -58,12 +58,9 @@ final class PlayerController
 	func initialize() -> Bool
 	{
 		// Sanity check 1
-		if _connection != nil
+		if _connection != nil && _connection.isConnected
 		{
-			if _connection.connected
-			{
-				return true
-			}
+			return true
 		}
 
 		// Sanity check 2
@@ -74,7 +71,7 @@ final class PlayerController
 		}
 
 		// Connect
-		_connection = MPDConnection(server: server)
+		_connection = MPDConnection(server)
 		let ret = _connection.connect()
 		if ret
 		{
@@ -108,7 +105,7 @@ final class PlayerController
 	// MARK: - Playing
 	func playAlbum(_ album: Album, random: Bool, loop: Bool)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -120,7 +117,7 @@ final class PlayerController
 
 	func playTracks(_ tracks: [Track], random: Bool, loop: Bool)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -130,10 +127,22 @@ final class PlayerController
 		}
 	}
 
+	func playPlaylist(_ playlist: Playlist, random: Bool, loop: Bool)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async {
+			self._connection.playPlaylist(playlist, random: random, loop: loop)
+		}
+	}
+
 	// MARK: - Pausing
 	@objc func togglePause()
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -146,7 +155,7 @@ final class PlayerController
 	// MARK: - Add to queue
 	func addAlbumToQueue(_ album: Album)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -159,7 +168,7 @@ final class PlayerController
 	// MARK: - Repeat
 	func setRepeat(_ loop: Bool)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -172,7 +181,7 @@ final class PlayerController
 	// MARK: - Random
 	func setRandom(_ random: Bool)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -185,7 +194,7 @@ final class PlayerController
 	// MARK: - Tracks navigation
 	@objc func requestNextTrack()
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -197,7 +206,7 @@ final class PlayerController
 
 	@objc func requestPreviousTrack()
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -210,7 +219,7 @@ final class PlayerController
 	// MARK: - Track position
 	func setTrackPosition(_ position: Int, trackPosition: UInt32)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -223,7 +232,7 @@ final class PlayerController
 	// MARK: - Volume
 	func setVolume(_ volume: Int)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}

@@ -68,7 +68,7 @@ extension TypeChoiceView : UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		return 3
+		return 4
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
@@ -90,6 +90,9 @@ extension TypeChoiceView : UITableViewDataSource
 			case 2:
 				title = NYXLocalizedString("lbl_genres")
 				selected = UserDefaults.standard.integer(forKey: kNYXPrefDisplayType) == DisplayType.genres.rawValue
+			case 3:
+				title = NYXLocalizedString("lbl_playlists")
+				selected = UserDefaults.standard.integer(forKey: kNYXPrefDisplayType) == DisplayType.playlists.rawValue
 			default:
 				break
 		}
@@ -121,6 +124,8 @@ extension TypeChoiceView : UITableViewDelegate
 				delegate?.didSelectType(.artists)
 			case 2:
 				delegate?.didSelectType(.genres)
+			case 3:
+				delegate?.didSelectType(.playlists)
 			default:
 				break
 		}

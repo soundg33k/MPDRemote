@@ -180,7 +180,7 @@ final class ServerVC : MenuTVC
 		}
 
 		let mpdServer = AudioServer(name: serverName, hostname: ip, port: port, password: password, type: .mpd)
-		let cnn = MPDConnection(server: mpdServer)
+		let cnn = MPDConnection(mpdServer)
 		if cnn.connect()
 		{
 			self.mpdServer = mpdServer

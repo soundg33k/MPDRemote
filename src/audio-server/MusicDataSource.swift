@@ -36,6 +36,9 @@ final class MusicDataSource
 	private(set) var genres = [Genre]()
 	// Artists list
 	private(set) var artists = [Artist]()
+	// Playlists list
+	private(set) var playlists = [Playlist]()
+
 
 	// MARK: - Private properties
 	// MPD Connection
@@ -58,12 +61,9 @@ final class MusicDataSource
 	func initialize() -> Bool
 	{
 		// Sanity check 1
-		if _connection != nil
+		if _connection != nil && _connection.isConnected
 		{
-			if _connection.connected
-			{
-				return true
-			}
+			return true
 		}
 
 		// Sanity check 2
@@ -74,7 +74,7 @@ final class MusicDataSource
 		}
 
 		// Connect
-		_connection = MPDConnection(server: server)
+		_connection = MPDConnection(server)
 		let ret = _connection.connect()
 		if ret
 		{
@@ -107,7 +107,7 @@ final class MusicDataSource
 
 	func getListForDisplayType(_ displayType: DisplayType, callback: @escaping () -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -123,6 +123,8 @@ final class MusicDataSource
 					self.genres = (list as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 				case .artists:
 					self.artists = (list as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+				case .playlists:
+					self.playlists = (list as! [Playlist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 			}
 			callback()
 		}
@@ -130,7 +132,7 @@ final class MusicDataSource
 
 	func getAlbumForGenre(_ genre: Genre, callback: @escaping () -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -146,7 +148,7 @@ final class MusicDataSource
 
 	func getAlbumsForGenre(_ genre: Genre, callback: @escaping () -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -160,7 +162,7 @@ final class MusicDataSource
 
 	func getAlbumsForArtist(_ artist: Artist, callback: @escaping () -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -175,7 +177,7 @@ final class MusicDataSource
 
 	func getArtistsForGenre(_ genre: Genre, callback: @escaping ([Artist]) -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -189,7 +191,7 @@ final class MusicDataSource
 
 	func getPathForAlbum(_ album: Album, callback: @escaping () -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -200,22 +202,22 @@ final class MusicDataSource
 		}
 	}
 
-	func getSongsForAlbum(_ album: Album, callback: @escaping () -> Void)
+	func getTracksForAlbum(_ album: Album, callback: @escaping () -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
 
 		_queue.async {
-			album.songs = self._connection.getSongsForAlbum(album)
+			album.tracks = self._connection.getTracksForAlbum(album)
 			callback()
 		}
 	}
 
-	func getSongsForAlbums(_ albums: [Album], callback: @escaping () -> Void)
+	func getTracksForAlbums(_ albums: [Album], callback: @escaping () -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -223,15 +225,28 @@ final class MusicDataSource
 		_queue.async {
 			for album in albums
 			{
-				album.songs = self._connection.getSongsForAlbum(album)
+				album.tracks = self._connection.getTracksForAlbum(album)
 			}
+			callback()
+		}
+	}
+
+	func getTracksForPlaylist(_ playlist: Playlist, callback: @escaping () -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async {
+			playlist.tracks = self._connection.getTracksForPlaylist(playlist)
 			callback()
 		}
 	}
 
 	func getMetadatasForAlbum(_ album: Album, callback: @escaping () -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
@@ -256,7 +271,7 @@ final class MusicDataSource
 
 	func getStats(_ callback: @escaping ([String : String]) -> Void)
 	{
-		if _connection == nil || !_connection.connected
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}

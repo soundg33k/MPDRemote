@@ -96,7 +96,7 @@ final class RootVC : MenuVC
 		btnRandom.frame = CGRect((navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.4513868093, green: 0.9930960536, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
+		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
@@ -109,7 +109,7 @@ final class RootVC : MenuVC
 		btnRepeat.frame = CGRect((navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.4513868093, green: 0.9930960536, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
@@ -277,6 +277,13 @@ final class RootVC : MenuVC
 			vc.transitioningDelegate = self
 			vc.modalPresentationStyle = .custom
 		}
+		else if segue.identifier == "root-playlists-to-detail-playlist"
+		{
+			let row = collectionView.indexPathsForSelectedItems![0].row
+			let playlist = searching ? searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
+			let vc = segue.destination as! PlaylistDetailVC
+			vc.playlist = playlist
+		}
 	}
 
 	// MARK: - Gestures
@@ -297,19 +304,22 @@ final class RootVC : MenuVC
 				case .artists:
 					let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					MusicDataSource.shared.getAlbumsForArtist(artist) {
-						MusicDataSource.shared.getSongsForAlbums(artist.albums) {
-							let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
+						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+							let ar = artist.albums.flatMap({$0.tracks}).flatMap({$0})
 							PlayerController.shared.playTracks(ar, random: UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop: UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 						}
 					}
 				case .genres:
 					let genre = searching ? searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 					MusicDataSource.shared.getAlbumsForGenre(genre) {
-						MusicDataSource.shared.getSongsForAlbums(genre.albums) {
-							let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
+						MusicDataSource.shared.getTracksForAlbums(genre.albums) {
+							let ar = genre.albums.flatMap({$0.tracks}).flatMap({$0})
 							PlayerController.shared.playTracks(ar, random: UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop: UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 						}
 					}
+				case .playlists:
+					let playlist = searching ? searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+					PlayerController.shared.playPlaylist(playlist, random: UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop: UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
 			}
 		}
 	}
@@ -366,8 +376,8 @@ final class RootVC : MenuVC
 					let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForArtist(artist) {
-							MusicDataSource.shared.getSongsForAlbums(artist.albums) {
-								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
+							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+								let ar = artist.albums.flatMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, random: false, loop: false)
 							}
 						}
@@ -378,8 +388,8 @@ final class RootVC : MenuVC
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForArtist(artist) {
-							MusicDataSource.shared.getSongsForAlbums(artist.albums) {
-								let ar = artist.albums.flatMap({$0.songs}).flatMap({$0})
+							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+								let ar = artist.albums.flatMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, random: true, loop: false)
 							}
 						}
@@ -404,8 +414,8 @@ final class RootVC : MenuVC
 					let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForGenre(genre) {
-							MusicDataSource.shared.getSongsForAlbums(genre.albums) {
-								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
+							MusicDataSource.shared.getTracksForAlbums(genre.albums) {
+								let ar = genre.albums.flatMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, random: false, loop: false)
 							}
 						}
@@ -416,8 +426,8 @@ final class RootVC : MenuVC
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForGenre(genre) {
-							MusicDataSource.shared.getSongsForAlbums(genre.albums) {
-								let ar = genre.albums.flatMap({$0.songs}).flatMap({$0})
+							MusicDataSource.shared.getTracksForAlbums(genre.albums) {
+								let ar = genre.albums.flatMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, random: true, loop: false)
 							}
 						}
@@ -438,6 +448,22 @@ final class RootVC : MenuVC
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(addQueueAction)
+				case .playlists:
+					let playlist = self.searching ? self.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
+						PlayerController.shared.playPlaylist(playlist, random: false, loop: false)
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(playAction)
+					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
+						PlayerController.shared.playPlaylist(playlist, random: true, loop: false)
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(shuffleAction)
 			}
 
 			present(alertController, animated: true, completion: nil)
@@ -449,7 +475,7 @@ final class RootVC : MenuVC
 	{
 		if _typeChoiceView == nil
 		{
-			_typeChoiceView = TypeChoiceView(frame: CGRect(0.0, kNYXTopInset, collectionView.width, 132.0))
+			_typeChoiceView = TypeChoiceView(frame: CGRect(0.0, kNYXTopInset, collectionView.width, 176.0))
 			_typeChoiceView.delegate = self
 		}
 
@@ -545,6 +571,9 @@ final class RootVC : MenuVC
 			case .artists:
 				let n = MusicDataSource.shared.artists.count
 				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_artists") : NYXLocalizedString("lbl_artist"))"
+			case .playlists:
+				let n = MusicDataSource.shared.playlists.count
+				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_playlists") : NYXLocalizedString("lbl_playlist"))"
 		}
 		let astr1 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr1, for: .normal)
@@ -609,8 +638,6 @@ final class RootVC : MenuVC
 	func miniPlayShouldExpandNotification(_ aNotification: Notification)
 	{
 		performSegue(withIdentifier: "root-to-player", sender: self)
-		//MiniPlayerView.shared.stayHidden = true
-		//MiniPlayerView.shared.hide()
 	}
 }
 
@@ -632,6 +659,8 @@ extension RootVC : UICollectionViewDataSource
 				return MusicDataSource.shared.genres.count
 			case .artists:
 				return MusicDataSource.shared.artists.count
+			case .playlists:
+				return MusicDataSource.shared.playlists.count
 		}
 	}
 
@@ -660,6 +689,9 @@ extension RootVC : UICollectionViewDataSource
 			case .artists:
 				let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 				_configureCellForArtist(cell, indexPath: indexPath, artist: artist)
+			case .playlists:
+				let playlist = searching ? searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+				_configureCellForPlaylist(cell, indexPath: indexPath, playlist: playlist)
 		}
 
 		return cell
@@ -683,7 +715,7 @@ extension RootVC : UICollectionViewDataSource
 		guard let coverURL = album.localCoverURL else
 		{
 			Logger.alog("[!] No cover file URL for \(album)") // should not happen
-			cell.image = generateCoverForAlbum(album, size: cell.imageView.size)
+			cell.image = nil
 			return
 		}
 
@@ -726,12 +758,6 @@ extension RootVC : UICollectionViewDataSource
 		cell.label.text = genre.name
 		cell.accessibilityLabel = genre.name
 
-		if UserDefaults.standard.data(forKey: kNYXPrefWEBServer) == nil
-		{
-			cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
-			return
-		}
-
 		if let album = genre.albums.first
 		{
 			// If image is in cache, bail out quickly
@@ -746,7 +772,7 @@ extension RootVC : UICollectionViewDataSource
 			guard let coverURL = album.localCoverURL else
 			{
 				Logger.alog("[!] No cover URL for \(album)") // should not happen
-				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
+				cell.image = nil
 				return
 			}
 
@@ -757,7 +783,6 @@ extension RootVC : UICollectionViewDataSource
 			}
 			else
 			{
-				cell.image = generateCoverForGenre(genre, size: cell.imageView.size)
 				if album.path != nil
 				{
 					downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
@@ -804,12 +829,6 @@ extension RootVC : UICollectionViewDataSource
 		cell.label.text = artist.name
 		cell.accessibilityLabel = artist.name
 
-		if UserDefaults.standard.data(forKey: kNYXPrefWEBServer) == nil
-		{
-			cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
-			return
-		}
-
 		if artist.albums.count > 0
 		{
 			if let album = artist.albums.first
@@ -826,7 +845,7 @@ extension RootVC : UICollectionViewDataSource
 				guard let coverURL = album.localCoverURL else
 				{
 					Logger.alog("[!] No cover URL for \(album)") // should not happen
-					cell.image = generateCoverForArtist(artist, size: cell.imageView.size)
+					cell.image = nil
 					return
 				}
 
@@ -881,6 +900,13 @@ extension RootVC : UICollectionViewDataSource
 			}
 		}
 	}
+
+	private func _configureCellForPlaylist(_ cell: RootCollectionViewCell, indexPath: IndexPath, playlist: Playlist)
+	{
+		cell.label.text = playlist.name
+		cell.accessibilityLabel = playlist.name
+		cell.image = generateCoverForPlaylist(playlist, size: cell.imageView.size)
+	}
 }
 
 // MARK: - UICollectionViewDelegate
@@ -910,6 +936,8 @@ extension RootVC : UICollectionViewDelegate
 				performSegue(withIdentifier: "root-genres-to-artists", sender: self)
 			case .artists:
 				performSegue(withIdentifier: "root-artists-to-albums", sender: self)
+			case .playlists:
+				performSegue(withIdentifier: "root-playlists-to-detail-playlist", sender: self)
 		}
 	}
 
@@ -1016,6 +1044,8 @@ extension RootVC : UISearchBarDelegate
 				searchResults = MusicDataSource.shared.genres
 			case .artists:
 				searchResults = MusicDataSource.shared.artists
+			case .playlists:
+				searchResults = MusicDataSource.shared.playlists
 		}
 	}
 
@@ -1043,6 +1073,11 @@ extension RootVC : UISearchBarDelegate
 				if MusicDataSource.shared.artists.count > 0
 				{
 					searchResults = MusicDataSource.shared.artists.filter({$0.name.lowercased().contains(searchText.lowercased())})
+				}
+			case .playlists:
+				if MusicDataSource.shared.playlists.count > 0
+				{
+					searchResults = MusicDataSource.shared.playlists.filter({$0.name.lowercased().contains(searchText.lowercased())})
 				}
 		}
 		collectionView.reloadData()
@@ -1090,9 +1125,9 @@ extension RootVC
 		if motion == .motionShake
 		{
 			let randomAlbum = MusicDataSource.shared.albums.randomItem()
-			if randomAlbum.songs == nil
+			if randomAlbum.tracks == nil
 			{
-				MusicDataSource.shared.getSongsForAlbum(randomAlbum) {
+				MusicDataSource.shared.getTracksForAlbum(randomAlbum) {
 					PlayerController.shared.playAlbum(randomAlbum, random: false, loop: false)
 				}
 			}

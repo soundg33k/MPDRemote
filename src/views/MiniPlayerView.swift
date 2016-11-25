@@ -134,7 +134,7 @@ final class MiniPlayerView : UIView, PTappable
 	// MARK: - Public
 	func setInfoFromTrack(_ track: Track, ofAlbum album: Album)
 	{
-		lblTitle.text = track.title
+		lblTitle.text = track.name
 		lblArtist.text = track.artist
 
 		guard let url = album.localCoverURL else {return}
@@ -235,7 +235,7 @@ final class MiniPlayerView : UIView, PTappable
 			let album = infos[kPlayerAlbumKey] as! Album
 			let elapsed = infos[kPlayerElapsedKey] as! Int
 
-			if track.title != lblTitle.text
+			if track.name != lblTitle.text
 			{
 				setInfoFromTrack(track, ofAlbum: album)
 			}
@@ -244,7 +244,7 @@ final class MiniPlayerView : UIView, PTappable
 			UIView.animate(withDuration: 0.5) {
 				self.progressView.width = ratio * CGFloat(elapsed)
 			}
-			accessibleView.accessibilityLabel = "\(track.title) \(NYXLocalizedString("lbl_by")) \(track.artist)\n\((100 * elapsed) / Int(track.duration.seconds))% \(NYXLocalizedString("lbl_played"))"
+			accessibleView.accessibilityLabel = "\(track.name) \(NYXLocalizedString("lbl_by")) \(track.artist)\n\((100 * elapsed) / Int(track.duration.seconds))% \(NYXLocalizedString("lbl_played"))"
 		}
 	}
 

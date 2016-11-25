@@ -1,4 +1,4 @@
-// Track.swift
+// Playlist.swift
 // Copyright (c) 2016 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,46 +23,21 @@
 import Foundation
 
 
-final class Track : MusicalEntity
+final class Playlist : MusicalEntity
 {
 	// MARK: - Public properties
-	// Track artist
-	var artist: String
-	// Track duration
-	var duration: Duration
-	// Track number
-	var trackNumber: Int
-	// Track uri
-	var uri: String
-	// Position in the queue
-	var position: UInt32 = 0
+	// Album tracks
+	var tracks: [Track]? = nil
 
 	// MARK: - Initializers
-	init(name: String, artist: String, duration: Duration, trackNumber: Int, uri: String)
+	override init(name: String)
 	{
-		self.artist = artist
-		self.duration = duration
-		self.trackNumber = trackNumber
-		self.uri = uri
 		super.init(name: name)
 	}
 }
 
-extension Track : CustomStringConvertible
-{
-	var description: String
-	{
-		return "Title: <\(name)>\nArtist: <\(artist)>\nDuration: <\(duration)>\nTrack: <\(trackNumber)>\nURI: <\(uri)>\nPosition: <\(position)>"
-	}
-}
-
 // MARK: - Operators
-func == (lhs: Track, rhs: Track) -> Bool
+func == (lhs: Playlist, rhs: Playlist) -> Bool
 {
-	return (lhs.name == rhs.name) && (lhs.artist == rhs.artist) && (lhs.duration == rhs.duration) && (lhs.uri == rhs.uri)
-}
-
-func != (lhs: Track, rhs: Track) -> Bool
-{
-	return !(lhs == rhs)
+	return (lhs.name == rhs.name)
 }

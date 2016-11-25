@@ -47,6 +47,7 @@ enum DisplayType : Int
 	case albums
 	case artists
 	case genres
+	case playlists
 }
 
 /* Notifications names */

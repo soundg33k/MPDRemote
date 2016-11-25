@@ -23,18 +23,16 @@
 import Foundation
 
 
-final class Artist
+final class Artist : MusicalEntity
 {
 	// MARK: - Public properties
-	// Artist name
-	var name: String
 	// Albums list reference
 	var albums = [Album]()
 
 	// MARK: - Initializers
-	init(name: String)
+	override init(name: String)
 	{
-		self.name = name
+		super.init(name: name)
 	}
 }
 

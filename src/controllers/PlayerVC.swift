@@ -129,7 +129,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 
 		if let track = PlayerController.shared.currentTrack, let album = PlayerController.shared.currentAlbum
 		{
-			lblTrackTitle.text = track.title
+			lblTrackTitle.text = track.name
 			lblTrackArtist.text = track.artist
 			lblAlbumName.text = album.name
 			sliderPosition.maximumValue = Float(track.duration.seconds)
@@ -278,7 +278,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		{
 			return
 		}
-		lblTrackTitle.text = track.title
+		lblTrackTitle.text = track.name
 		lblTrackArtist.text = track.artist
 		lblAlbumName.text = album.name
 		sliderPosition.maximumValue = Float(track.duration.seconds)

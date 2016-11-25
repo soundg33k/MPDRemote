@@ -119,7 +119,7 @@ final class AlbumHeaderView : UIView
 
 		// Accessibility
 		var stra = "\(album.name) \(NYXLocalizedString("lbl_by")) \(album.artist)\n"
-		if let tracks = album.songs
+		if let tracks = album.tracks
 		{
 			stra += "\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n"
 			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}

@@ -23,11 +23,9 @@
 import UIKit
 
 
-final class Album
+final class Album : MusicalEntity
 {
 	// MARK: - Public properties
-	// Album name
-	let name: String
 	// Album artist
 	var artist: String = ""
 	// Album genre
@@ -37,7 +35,7 @@ final class Album
 	// Album path
 	var path: String? = nil
 	// Album tracks
-	var songs: [Track]? = nil
+	var tracks: [Track]? = nil
 	// Album UUID
 	let uuid: UUID
 	// Local URL for the cover
@@ -48,10 +46,10 @@ final class Album
 	}()
 
 	// MARK: - Initializers
-	init(name: String)
+	override init(name: String)
 	{
-		self.name = name
 		self.uuid = UUID()
+		super.init(name: name)
 	}
 
 	convenience init(name: String, artist: String)

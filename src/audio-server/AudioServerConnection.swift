@@ -49,25 +49,30 @@ protocol AudioServerConnection
 	// Delegate
 	weak var delegate: AudioServerConnectionDelegate? {get set}
 	// Connected flag
-	var connected: Bool {get}
+	var isConnected: Bool {get}
 
 	// MARK: - Connection
 	func connect() -> Bool
 	func disconnect()
 
 	// MARK: - Get infos about tracks / albums / etc…
-	func getListForDisplayType(_ displayType: DisplayType) -> [Any]
+	func getListForDisplayType(_ displayType: DisplayType) -> [MusicalEntity]
 	func getAlbumForGenre(_ genre: Genre) -> Album?
 	func getAlbumsForGenre(_ genre: Genre) -> [Album]
 	func getAlbumsForArtist(_ artist: Artist) -> [Album]
 	func getArtistsForGenre(_ genre: Genre) -> [Artist]
 	func getPathForAlbum(_ album: Album) -> String?
-	func getSongsForAlbum(_ album: Album) -> [Track]?
+	func getTracksForAlbum(_ album: Album) -> [Track]?
+	func getTracksForPlaylist(_ playlist: Playlist) -> [Track]?
 	func getMetadatasForAlbum(_ album: Album) -> [String : Any]
+
+	// MARK: - Playlists
+	func getPlaylists() -> [Playlist]
 
 	// MARK: - Play / Queue
 	func playAlbum(_ album: Album, random: Bool, loop: Bool)
 	func playTracks(_ tracks: [Track], random: Bool, loop: Bool)
+	func playPlaylist(_ playlist: Playlist, random: Bool, loop: Bool)
 	func addAlbumToQueue(_ album: Album)
 	func togglePause() -> Bool
 	func nextTrack()
