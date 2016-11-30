@@ -121,10 +121,10 @@ final class AlbumHeaderView : UIView
 		var stra = "\(album.name) \(NYXLocalizedString("lbl_by")) \(album.artist)\n"
 		if let tracks = album.tracks
 		{
-			stra += "\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n"
+			stra += "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n"
 			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
-			stra += "\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")\n"
+			stra += "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))\n"
 		}
 		accessibilityLabel = stra
 	}

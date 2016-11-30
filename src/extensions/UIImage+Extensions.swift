@@ -133,7 +133,7 @@ extension UIImage
 		let goodSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, osef, nil, trueMaxSize, &osef).ceilled()
 		let rect = CGRect((trueMaxSize.width - goodSize.width) * 0.5, (trueMaxSize.height - goodSize.height) * 0.5, goodSize.width, goodSize.height)
 		let path = CGPath(rect: rect, transform: nil)
-		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location:0, length:0), path, nil)
+		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
 
 		// Create the context and fill it
 		guard let bmContext = CGContext.ARGBBitmapContext(width: Int(trueMaxSize.width), height: Int(trueMaxSize.height), withAlpha: true) else
@@ -142,6 +142,50 @@ extension UIImage
 		}
 		bmContext.setFillColor(backgroundColor.cgColor)
 		bmContext.fill(CGRect(.zero, trueMaxSize))
+
+		// Draw the text
+		bmContext.setAllowsAntialiasing(true)
+		bmContext.setAllowsFontSmoothing(true)
+		bmContext.interpolationQuality = .high
+		CTFrameDraw(frame, bmContext)
+
+		// Save
+		if let imageRef = bmContext.makeImage()
+		{
+			let img = UIImage(cgImage: imageRef)
+			return img
+		}
+		else
+		{
+			return nil
+		}
+	}
+
+	class func fromString(_ string: String, font: UIFont, fontColor: UIColor, gradient: CGGradient, maxSize: CGSize) -> UIImage?
+	{
+		// Create an attributed string with string and font information
+		let paragraphStyle = NSMutableParagraphStyle()
+		paragraphStyle.lineBreakMode = .byWordWrapping
+		paragraphStyle.alignment = .center
+		let attributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : fontColor, NSParagraphStyleAttributeName : paragraphStyle]
+		let attrString = NSAttributedString(string: string, attributes: attributes)
+		let scale = UIScreen.main.scale
+		let trueMaxSize = maxSize * scale
+
+		// Figure out how big an image we need
+		let framesetter = CTFramesetterCreateWithAttributedString(attrString)
+		var osef = CFRange(location: 0, length: 0)
+		let goodSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, osef, nil, trueMaxSize, &osef).ceilled()
+		let rect = CGRect((trueMaxSize.width - goodSize.width) * 0.5, (trueMaxSize.height - goodSize.height) * 0.5, goodSize.width, goodSize.height)
+		let path = CGPath(rect: rect, transform: nil)
+		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
+
+		// Create the context and fill it
+		guard let bmContext = CGContext.ARGBBitmapContext(width: Int(trueMaxSize.width), height: Int(trueMaxSize.height), withAlpha: true) else
+		{
+			return nil
+		}
+		bmContext.drawLinearGradient(gradient, start: CGPoint(0, trueMaxSize.height), end: .zero, options: [])
 
 		// Draw the text
 		bmContext.setAllowsAntialiasing(true)

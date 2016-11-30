@@ -40,7 +40,7 @@ final class ImageCache
 	}
 
 	// MARK: - Subscripting
-	subscript(key: UUID) -> UIImage?
+	subscript(key: String) -> UIImage?
 	{
 		get
 		{

@@ -151,13 +151,31 @@ final class CoverOperation : Operation
 	private func generateCover()
 	{
 		let width = UIScreen.main.bounds.width - 64.0
-		guard let cover = generateCoverForAlbum(album, size: CGSize(width, width)) else {return}
-		guard let thumbnail = cover.smartCropped(toSize: cropSize) else {return}
+		guard let cover = generateCoverForAlbum(album, size: CGSize(width, width)) else
+		{
+			return
+		}
+		guard let thumbnail = cover.smartCropped(toSize: cropSize) else
+		{
+			return
+		}
 		guard let saveURL = album.localCoverURL else
 		{
 			return
 		}
-		try! UIImageJPEGRepresentation(thumbnail, 0.7)?.write(to: saveURL, options: [.atomicWrite])
+		guard let jpeg = UIImageJPEGRepresentation(thumbnail, 0.7) else
+		{
+			Logger.dlog("UIImageJPEGRepresentation")
+			return
+		}
+		do
+		{
+			try jpeg.write(to: saveURL, options: [.atomicWrite])
+		}
+		catch _
+		{
+			Logger.dlog("save error")
+		}
 		if let cpl = cplBlock
 		{
 			cpl(cover, thumbnail)

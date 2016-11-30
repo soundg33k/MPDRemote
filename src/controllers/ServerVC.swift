@@ -312,6 +312,8 @@ final class ServerVC : MenuTVC
 			tfWEBPort.text = "80"
 			tfWEBCoverName.text = "cover.jpg"
 		}
+
+		updateCacheLabel()
 	}
 
 	fileprivate func clearCache(confirm: Bool)
@@ -331,6 +333,7 @@ final class ServerVC : MenuTVC
 			{
 				Logger.alog("[!] Can't delete cover cache :<")
 			}
+			self.updateCacheLabel()
 		}
 
 		if confirm
@@ -349,6 +352,13 @@ final class ServerVC : MenuTVC
 		{
 			clearBlock()
 		}
+	}
+
+	fileprivate func updateCacheLabel()
+	{
+		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return}
+		let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
+		lblClearCache.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(size) / 1048576.0))\(NYXLocalizedString("lbl_megabytes")))"
 	}
 
 	// MARK: - Notifications

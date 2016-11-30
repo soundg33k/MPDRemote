@@ -35,7 +35,7 @@ final class ArtistsVC : UITableViewController
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 	// Keep track of download operations to eventually cancel them
-	fileprivate var _downloadOperations = [UUID : Operation]()
+	fileprivate var _downloadOperations = [String : Operation]()
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -102,14 +102,14 @@ final class ArtistsVC : UITableViewController
 	private func updateNavigationTitle()
 	{
 		let attrs = NSMutableAttributedString(string: genre.name + "\n", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-		attrs.append(NSAttributedString(string: "\(artists.count) \(artists.count > 1 ? NYXLocalizedString("lbl_artists").lowercased() : NYXLocalizedString("lbl_artist").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+		attrs.append(NSAttributedString(string: "\(artists.count) \(artists.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 		titleView.attributedText = attrs
 	}
 
 	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:@escaping (_ thumbnail: UIImage) -> Void)
 	{
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
-		let key = album.uuid
+		let key = album.uniqueIdentifier
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 			if let op = weakOperation
@@ -181,7 +181,7 @@ extension ArtistsVC
 
 		let artist = artists[indexPath.row]
 		cell.lblArtist.text = artist.name
-		cell.accessibilityLabel = "\(artist.name), \(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercased() : NYXLocalizedString("lbl_album").lowercased())"
+		cell.accessibilityLabel = "\(artist.name), \(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())"
 
 		// No server for covers
 		if UserDefaults.standard.data(forKey: kNYXPrefWEBServer) == nil
@@ -193,7 +193,7 @@ extension ArtistsVC
 
 		if artist.albums.count > 0
 		{
-			cell.lblAlbums.text = artist.albums.count > 1 ? "\(artist.albums.count) \(NYXLocalizedString("lbl_albums").lowercased())" : "\(artist.albums.count) \(NYXLocalizedString("lbl_album").lowercased())"
+			cell.lblAlbums.text = "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())"
 			if let album = artist.albums.first
 			{
 				// Get local URL for cover
@@ -288,7 +288,7 @@ extension ArtistsVC
 		// Remove download cover operation if still in queue
 		let artist = artists[indexPath.row]
 		guard let album = artist.albums.first else {return}
-		let key = album.uuid
+		let key = album.uniqueIdentifier
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()

@@ -198,7 +198,7 @@ extension MenuView : UITableViewDataSource
 		}
 		if selected
 		{
-			cell.ivLogo.image = cell.ivLogo.image?.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))
+			cell.ivLogo.image = cell.ivLogo.image?.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))
 		}
 
 		return cell

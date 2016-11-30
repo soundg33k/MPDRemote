@@ -49,7 +49,7 @@ final class AlbumDetailVC : UIViewController
 		// Dummy
 		self.album = Album(name: "")
 
-		super.init(coder:aDecoder)
+		super.init(coder: aDecoder)
 	}
 
 	// MARK: - UIViewController
@@ -162,8 +162,8 @@ final class AlbumDetailVC : UIViewController
 		{
 			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
-			let attrs = NSMutableAttributedString(string: "\(tracks.count) \(NYXLocalizedString("lbl_track"))\(tracks.count > 1 ? "s" : "")\n", attributes:[NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-			attrs.append(NSAttributedString(string: "\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "")", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+			let attrs = NSMutableAttributedString(string: "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n", attributes:[NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
+			attrs.append(NSAttributedString(string: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 			titleView.attributedText = attrs
 		}
 	}
@@ -238,11 +238,11 @@ extension AlbumDetailVC : UITableViewDataSource
 			var stra = "\(NYXLocalizedString("lbl_track")) \(track.trackNumber), \(track.name)\n"
 			if minutes > 0
 			{
-				stra += "\(minutes) \(NYXLocalizedString("lbl_minute"))\(minutes > 1 ? "s" : "") "
+				stra += "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes")) "
 			}
 			if seconds > 0
 			{
-				stra += "\(seconds) \(NYXLocalizedString("lbl_second"))\(seconds > 1 ? "s" : "")"
+				stra += "\(seconds) \(seconds == 1 ? NYXLocalizedString("lbl_second") : NYXLocalizedString("lbl_seconds"))"
 			}
 			cell.accessibilityLabel = stra
 		}
@@ -256,7 +256,9 @@ extension AlbumDetailVC : UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		tableView.deselectRow(at: indexPath, animated: true)
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+			tableView.deselectRow(at: indexPath, animated: true)
+		})
 
 		// Dummy cell
 		guard let tracks = album.tracks else {return}

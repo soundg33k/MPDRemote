@@ -3,10 +3,14 @@
 "lbl_optional" = "Optionnel";
 "lbl_by" = "par";
 "lbl_played" = "joué";
+"lbl_megabytes" = "Mo";
 
 "lbl_track" = "piste";
+"lbl_tracks" = "pistes";
 "lbl_minute" = "minute";
+"lbl_minutes" = "minutes";
 "lbl_second" = "seconde";
+"lbl_seconds" = "secondes";
 "lbl_play" = "Lire";
 "lbl_pause" = "Mettre en pause";
 "lbl_next_track" = "Piste suivante";

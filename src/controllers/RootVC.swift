@@ -53,7 +53,7 @@ final class RootVC : MenuVC
 	// Long press gesture is recognized, flag
 	fileprivate var longPressRecognized = false
 	// Keep track of download operations to eventually cancel them
-	fileprivate var _downloadOperations = [UUID : Operation]()
+	fileprivate var _downloadOperations = [String : Operation]()
 	// View to change the type of items in the collection view
 	fileprivate var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
@@ -95,8 +95,8 @@ final class RootVC : MenuVC
 		btnRandom = UIButton(type: .custom)
 		btnRandom.frame = CGRect((navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
+		btnRandom.setImage(imageRandom.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnRandom.setImage(imageRandom.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
@@ -108,8 +108,8 @@ final class RootVC : MenuVC
 		btnRepeat = UIButton(type: .custom)
 		btnRepeat.frame = CGRect((navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
@@ -270,12 +270,6 @@ final class RootVC : MenuVC
 			let artist = searching ? searchResults[row] as! Artist : MusicDataSource.shared.artists[row]
 			let vc = segue.destination as! AlbumsVC
 			vc.artist = artist
-		}
-		else if segue.identifier == "root-to-player"
-		{
-			let vc = segue.destination as! PlayerVC
-			vc.transitioningDelegate = self
-			vc.modalPresentationStyle = .custom
 		}
 		else if segue.identifier == "root-playlists-to-detail-playlist"
 		{
@@ -564,27 +558,27 @@ final class RootVC : MenuVC
 		{
 			case .albums:
 				let n = MusicDataSource.shared.albums.count
-				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_albums") : NYXLocalizedString("lbl_album"))"
+				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_album") : NYXLocalizedString("lbl_albums"))"
 			case .genres:
 				let n = MusicDataSource.shared.genres.count
-				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_genres") : NYXLocalizedString("lbl_genre"))"
+				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_genre") : NYXLocalizedString("lbl_genres"))"
 			case .artists:
 				let n = MusicDataSource.shared.artists.count
-				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_artists") : NYXLocalizedString("lbl_artist"))"
+				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_artist") : NYXLocalizedString("lbl_artists"))"
 			case .playlists:
 				let n = MusicDataSource.shared.playlists.count
-				title = "\(n) \(n > 1 ? NYXLocalizedString("lbl_playlists") : NYXLocalizedString("lbl_playlist"))"
+				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_playlist") : NYXLocalizedString("lbl_playlists"))"
 		}
 		let astr1 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr1, for: .normal)
-		let astr2 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
+		let astr2 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) :  #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr2, for: .highlighted)
 	}
 
 	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
 	{
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
-		let key = album.uuid
+		let key = album.uniqueIdentifier
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 			if let op = weakOperation
@@ -637,7 +631,7 @@ final class RootVC : MenuVC
 
 	func miniPlayShouldExpandNotification(_ aNotification: Notification)
 	{
-		performSegue(withIdentifier: "root-to-player", sender: self)
+		self.navigationController?.performSegue(withIdentifier: "root-to-player", sender: self.navigationController)
 	}
 }
 
@@ -704,7 +698,7 @@ extension RootVC : UICollectionViewDataSource
 		cell.accessibilityLabel = album.name
 
 		// If image is in cache, bail out quickly
-		if let cachedImage = ImageCache.shared[album.uuid]
+		if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
 		{
 			cell.image = cachedImage
 			return
@@ -722,7 +716,7 @@ extension RootVC : UICollectionViewDataSource
 		if let cover = UIImage.loadFromFileURL(coverURL)
 		{
 			cell.image = cover
-			ImageCache.shared[album.uuid] = cover
+			ImageCache.shared[album.uniqueIdentifier] = cover
 		}
 		else
 		{
@@ -761,7 +755,7 @@ extension RootVC : UICollectionViewDataSource
 		if let album = genre.albums.first
 		{
 			// If image is in cache, bail out quickly
-			if let cachedImage = ImageCache.shared[album.uuid]
+			if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
 			{
 				cell.image = cachedImage
 				return
@@ -779,7 +773,7 @@ extension RootVC : UICollectionViewDataSource
 			if let cover = UIImage.loadFromFileURL(coverURL)
 			{
 				cell.image = cover
-				ImageCache.shared[album.uuid] = cover
+				ImageCache.shared[album.uniqueIdentifier] = cover
 			}
 			else
 			{
@@ -834,7 +828,7 @@ extension RootVC : UICollectionViewDataSource
 			if let album = artist.albums.first
 			{
 				// If image is in cache, bail out quickly
-				if let cachedImage = ImageCache.shared[album.uuid]
+				if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
 				{
 					cell.image = cachedImage
 					return
@@ -852,7 +846,7 @@ extension RootVC : UICollectionViewDataSource
 				if let cover = UIImage.loadFromFileURL(coverURL)
 				{
 					cell.image = cover
-					ImageCache.shared[album.uuid] = cover
+					ImageCache.shared[album.uniqueIdentifier] = cover
 				}
 				else
 				{
@@ -957,7 +951,7 @@ extension RootVC : UICollectionViewDelegate
 
 		// Remove download cover operation if still in queue
 		let album = src[indexPath.row]
-		let key = album.uuid
+		let key = album.uniqueIdentifier
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			_downloadOperations.removeValue(forKey: key)
@@ -1162,7 +1156,7 @@ extension RootVC
 }
 
 // MARK: - UIViewControllerTransitioningDelegate
-extension RootVC : UIViewControllerTransitioningDelegate
+extension NYXNavigationController : UIViewControllerTransitioningDelegate
 {
 	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning?
 	{
@@ -1176,5 +1170,15 @@ extension RootVC : UIViewControllerTransitioningDelegate
 		let c = PlayerVCCustomPresentAnimationController()
 		c.presenting = false
 		return c
+	}
+
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+	{
+		if segue.identifier == "root-to-player"
+		{
+			let vc = segue.destination as! PlayerVC
+			vc.transitioningDelegate = self
+			vc.modalPresentationStyle = .custom
+		}
 	}
 }

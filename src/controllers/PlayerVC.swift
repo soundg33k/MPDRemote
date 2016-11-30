@@ -120,12 +120,9 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		super.viewWillAppear(animated)
 
-		nightModeSettingDidChange(nil)
-
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
 
 		if let track = PlayerController.shared.currentTrack, let album = PlayerController.shared.currentAlbum
 		{
@@ -287,19 +284,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	func playerStatusChangedNotification(_ aNotification: Notification?)
 	{
 		updatePlayPauseButton()
-	}
-
-	func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		if isNightModeEnabled()
-		{
-			blurEffectView.effect = UIBlurEffect(style: .dark)
-
-		}
-		else
-		{
-			blurEffectView.effect = UIBlurEffect(style: .light)
-		}
 	}
 
 	// MARK: - Private

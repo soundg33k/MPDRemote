@@ -76,6 +76,7 @@
 		43DCAFA51D91940C00D0B908 /* CoverWebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */; };
 		43E187531D1BEF7400C19ECD /* main-ipad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43E187511D1BEF7400C19ECD /* main-ipad.storyboard */; };
 		43EA923B1D100C380074389A /* main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43EA92391D100C380074389A /* main.storyboard */; };
+		43EEC0501DEEEC3500DA6A00 /* FileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EEC04F1DEEEC3500DA6A00 /* FileManager+Extensions.swift */; };
 		43F92A891DE58EF600192F1F /* MusicalEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F92A881DE58EF600192F1F /* MusicalEntity.swift */; };
 /* End PBXBuildFile section */
 
@@ -200,6 +201,7 @@
 		43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverWebServer.swift; sourceTree = "<group>"; };
 		43E187521D1BEF7400C19ECD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/main-ipad.storyboard"; sourceTree = "<group>"; };
 		43EA923A1D100C380074389A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/main.storyboard; sourceTree = "<group>"; };
+		43EEC04F1DEEEC3500DA6A00 /* FileManager+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager+Extensions.swift"; sourceTree = "<group>"; };
 		43F92A881DE58EF600192F1F /* MusicalEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicalEntity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -378,6 +380,7 @@
 				1E5653791C908A310049C02D /* CGPoint+Extensions.swift */,
 				1E56537A1C908A310049C02D /* CGRect+Extensions.swift */,
 				1E56537B1C908A310049C02D /* CGSize+Extensions.swift */,
+				43EEC04F1DEEEC3500DA6A00 /* FileManager+Extensions.swift */,
 				1E56537C1C908A310049C02D /* String+Extensions.swift */,
 				1E56537D1C908A310049C02D /* UIColor+Extensions.swift */,
 				1E56537E1C908A310049C02D /* UIDevice+Extensions.swift */,
@@ -583,6 +586,7 @@
 				1EB93AA01CB3A82700EA5339 /* TypeChoiceView.swift in Sources */,
 				1EB93AA61CB4113300EA5339 /* Artist.swift in Sources */,
 				1E86D3DD1CB7B0C90001E203 /* Genre.swift in Sources */,
+				43EEC0501DEEEC3500DA6A00 /* FileManager+Extensions.swift in Sources */,
 				1E3424361C948E8D009F6BF8 /* Duration.swift in Sources */,
 				43AD0AF91D9AB4260067D3C6 /* Server.swift in Sources */,
 				1E5E45C91C92D20C00B3CB02 /* UIView+Extensions.swift in Sources */,

@@ -1,4 +1,4 @@
-// NYXNavigationController.swift
+// FileManager+Extensions.swift
 // Copyright (c) 2016 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,48 +20,38 @@
 // THE SOFTWARE.
 
 
-import UIKit
+import Foundation
 
 
-final class NYXNavigationController : UINavigationController
+extension FileManager
 {
-	override var shouldAutorotate: Bool
+	func sizeOfDirectoryAtURL(_ directoryURL: URL) -> Int
 	{
-		if let topViewController = self.topViewController
-		{
-			return topViewController.shouldAutorotate
-		}
-		return false
-	}
+		var result = 0
+		let props = [URLResourceKey.localizedNameKey, URLResourceKey.creationDateKey, URLResourceKey.localizedTypeDescriptionKey]
 
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
-		if let topViewController = self.topViewController
+		do
 		{
-			return topViewController.supportedInterfaceOrientations
+			let ar = try self.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: props, options: [])
+			for url in ar
+			{
+				var isDir: ObjCBool = false
+				self.fileExists(atPath: url.path, isDirectory: &isDir)
+				if isDir.boolValue
+				{
+					result += self.sizeOfDirectoryAtURL(url)
+				}
+				else
+				{
+					result += try self.attributesOfItem(atPath: url.path)[FileAttributeKey.size] as! Int
+				}
+			}
 		}
-		return .all
-	}
+		catch _
+		{
+			Logger.alog("[!] Cant' get directory size")
+		}
 
-	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation
-	{
-		if let topViewController = self.topViewController
-		{
-			return topViewController.preferredInterfaceOrientationForPresentation
-		}
-		return .portrait
-	}
-
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		if let presentedViewController = self.presentedViewController
-		{
-			return presentedViewController.preferredStatusBarStyle
-		}
-		if let topViewController = self.topViewController
-		{
-			return topViewController.preferredStatusBarStyle
-		}
-		return .default
+		return result
 	}
 }

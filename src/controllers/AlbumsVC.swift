@@ -33,7 +33,7 @@ final class AlbumsVC : UITableViewController
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
 	// Keep track of download operations to eventually cancel them
-	fileprivate var _downloadOperations = [UUID : Operation]()
+	fileprivate var _downloadOperations = [String : Operation]()
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -105,14 +105,14 @@ final class AlbumsVC : UITableViewController
 	private func updateNavigationTitle()
 	{
 		let attrs = NSMutableAttributedString(string: artist.name + "\n", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-		attrs.append(NSAttributedString(string: "\(artist.albums.count) \(artist.albums.count > 1 ? NYXLocalizedString("lbl_albums").lowercased() : NYXLocalizedString("lbl_album").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+		attrs.append(NSAttributedString(string: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 		titleView.attributedText = attrs
 	}
 
 	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:@escaping (_ thumbnail: UIImage) -> Void)
 	{
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
-		let key = album.uuid
+		let key = album.uniqueIdentifier
 		weak var weakOperation = downloadOperation
 		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
 			if let op = weakOperation
@@ -270,7 +270,7 @@ extension AlbumsVC
 
 		// Remove download cover operation if still in queue
 		let album = artist.albums[indexPath.row]
-		let key = album.uuid
+		let key = album.uniqueIdentifier
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			op.cancel()
