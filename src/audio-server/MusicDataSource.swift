@@ -282,6 +282,21 @@ final class MusicDataSource
 		}
 	}
 
+	func currentCollection(_ displayType: DisplayType) -> [MusicalEntity]
+	{
+		switch (displayType)
+		{
+			case .albums:
+				return albums
+			case .genres:
+				return genres
+			case .artists:
+				return artists
+			case .playlists:
+				return playlists
+		}
+	}
+
 	// MARK: - Private
 	private func startTimer(_ interval: Int)
 	{

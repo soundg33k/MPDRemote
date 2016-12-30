@@ -28,7 +28,7 @@ final class CoverOperation : Operation
 {
 	// MARK: - Private properties
 	// isFinished override
-	private var junk: Bool = false
+	private var junk = false
 	override var isFinished: Bool {
 		get {
 			return junk
@@ -41,7 +41,7 @@ final class CoverOperation : Operation
 	}
 
 	// Downloaded data
-	let incomingData = NSMutableData()
+	var incomingData = Data()
 	// Task
 	var sessionTask: URLSessionTask?
 	// Session configuration
@@ -61,7 +61,7 @@ final class CoverOperation : Operation
 	// Size of the thumbnail to create
 	let cropSize: CGSize
 	// Custom completion block
-	var cplBlock: ((UIImage, UIImage) -> Void)? = nil
+	var callback: ((UIImage, UIImage) -> Void)? = nil
 
 	// MARK: - Initializers
 	init(album: Album, cropSize: CGSize)
@@ -113,12 +113,24 @@ final class CoverOperation : Operation
 			return
 		}
 
-		let allowedCharacters = CharacterSet(charactersIn:"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_/.")
-		var coverURLAsString = path + "/" + server.coverName
-		coverURLAsString = coverURLAsString.addingPercentEncoding(withAllowedCharacters: allowedCharacters)!
-		let urlAsString = server.hostname + ":\(server.port)" + coverURLAsString
+		let allowedCharacters = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_/.")
+		let fullCoverFileURL = URL(fileURLWithPath: path).appendingPathComponent(server.coverName)
+		guard let fullCoverFilePath = fullCoverFileURL.path.addingPercentEncoding(withAllowedCharacters: allowedCharacters) else
+		{
+			Logger.dlog("[!] URL error <\(fullCoverFileURL)>")
+			isFinished = true
+			return
+		}
 
-		var request = URLRequest(url: URL(string: urlAsString)!)
+		let urlAsString = "\(server.hostname):\(server.port)\(fullCoverFilePath)"
+		guard let finalURL = URL(string: urlAsString) else
+		{
+			Logger.dlog("[!] URL error <\(urlAsString)>")
+			isFinished = true
+			return
+		}
+
+		var request = URLRequest(url: finalURL)
 		request.addValue("image/*", forHTTPHeaderField: "Accept")
 
 		sessionTask = localURLSession.dataTask(with: request)
@@ -128,7 +140,7 @@ final class CoverOperation : Operation
 	// MARK: - Private
 	func processData()
 	{
-		guard let cover = UIImage(data: incomingData as Data) else
+		guard let cover = UIImage(data: incomingData) else
 		{
 			return
 		}
@@ -142,9 +154,9 @@ final class CoverOperation : Operation
 		}
 		try! UIImageJPEGRepresentation(thumbnail, 0.7)?.write(to: saveURL, options: [.atomicWrite])
 
-		if let cpl = cplBlock
+		if let block = callback
 		{
-			cpl(cover, thumbnail)
+			block(cover, thumbnail)
 		}
 	}
 
@@ -176,9 +188,9 @@ final class CoverOperation : Operation
 		{
 			Logger.dlog("save error")
 		}
-		if let cpl = cplBlock
+		if let block = callback
 		{
-			cpl(cover, thumbnail)
+			block(cover, thumbnail)
 		}
 	}
 }
@@ -221,9 +233,9 @@ extension CoverOperation : URLSessionDelegate
 			return
 		}
 
-		if error != nil
+		if let err = error
 		{
-			Logger.alog("[!] Failed to receive response: \(error?.localizedDescription)")
+			Logger.alog("[!] Failed to receive response: \(err.localizedDescription)")
 			isFinished = true
 			return
 		}

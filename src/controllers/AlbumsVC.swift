@@ -114,7 +114,7 @@ final class AlbumsVC : UITableViewController
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
 		let key = album.uniqueIdentifier
 		weak var weakOperation = downloadOperation
-		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+		downloadOperation.callback = {(cover: UIImage, thumbnail: UIImage) in
 			if let op = weakOperation
 			{
 				if !op.isCancelled

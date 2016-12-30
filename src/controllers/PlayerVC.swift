@@ -29,7 +29,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// Blur view
 	@IBOutlet private var blurEffectView: UIVisualEffectView! = nil
 	// Cover view
-	@IBOutlet private var coverView: InteractableImageView! = nil
+	@IBOutlet fileprivate var coverView: InteractableImageView! = nil
 	// Track title
 	@IBOutlet private var lblTrackTitle: UILabel! = nil
 	// Track artist name
@@ -135,7 +135,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			if album.path != nil
 			{
 				let op = CoverOperation(album: album, cropSize: coverView.size)
-				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+				op.callback = {(cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						self.coverView.image = cover
 						iv?.image = cover
@@ -147,7 +147,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			{
 				MusicDataSource.shared.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: self.coverView.size)
-					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+					op.callback = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.coverView.image = cover
 							iv?.image = cover
@@ -329,29 +329,37 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 			let iv = UIImageView(frame: CGRect(0, bounds.height - playerViewHeight, playerViewHeight, playerViewHeight))
 			iv.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0)
 			iv.image = MiniPlayerView.shared.imageView.image
+			if let coverURL = PlayerController.shared.currentAlbum?.localCoverURL
+			{
+				if let cover = UIImage.loadFromFileURL(coverURL)
+				{
+					iv.image = cover
+				}
+			}
+			toViewController.coverView.image = iv.image
 			containerView.addSubview(iv)
 
 			toViewController.view.alpha = 0.0
 			MiniPlayerView.shared.stayHidden = true
 			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
-				iv.frame = CGRect(32, 104, bounds.width - 64, bounds.width - 64)
+				iv.frame = CGRect(32, 100, bounds.width - 64, bounds.width - 64)
 				MiniPlayerView.shared.hide()
 			}, completion: { finished in
 				UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
 					toViewController.view.alpha = 1.0
-					iv.alpha = 0.0
 				}, completion: { finished in
+					iv.removeFromSuperview()
 					transitionContext.completeTransition(true)
 				})
 			})
 		}
 		else
 		{
-			let fromViewController = transitionContext.viewController(forKey: .from)!
+			let fromViewController = transitionContext.viewController(forKey: .from) as! PlayerVC
 
-			let iv = UIImageView(frame: CGRect(32, 104, bounds.width - 64, bounds.width - 64))
+			let iv = UIImageView(frame: CGRect(32, 100, bounds.width - 64, bounds.width - 64))
 			iv.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0)
-			iv.image = MiniPlayerView.shared.imageView.image
+			iv.image = fromViewController.coverView.image
 			iv.alpha = 0.0
 			containerView.addSubview(iv)
 
@@ -363,6 +371,9 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 					iv.frame = CGRect(0, bounds.height - playerViewHeight, playerViewHeight, playerViewHeight)
 				}, completion: { finished in
 					transitionContext.completeTransition(true)
+					iv.removeFromSuperview()
+					let toViewController = transitionContext.viewController(forKey: .to)!
+					toViewController.setNeedsStatusBarAppearanceUpdate()
 				})
 			})
 		}

@@ -194,11 +194,7 @@ final class RootVC : MenuVC
 		{
 			navigationController?.view.addSubview(searchView)
 		}
-		/*if searching
-		{
-			hideNavigationBar(animated:true)
-		}*/
-
+		
 		// Deselect cell
 		if let idxs = collectionView.indexPathsForSelectedItems
 		{
@@ -480,7 +476,14 @@ final class RootVC : MenuVC
 			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
 				self.view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 				self.view.layoutIfNeeded()
-				self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at:.top, animated: false)
+				if MusicDataSource.shared.currentCollection(self._displayType).count == 0
+				{
+					self.collectionView.contentOffset = CGPoint(0, 64)
+				}
+				else
+				{
+					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+				}
 			}, completion:{ finished in
 				self._typeChoiceView.removeFromSuperview()
 			})
@@ -580,7 +583,7 @@ final class RootVC : MenuVC
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
 		let key = album.uniqueIdentifier
 		weak var weakOperation = downloadOperation
-		downloadOperation.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+		downloadOperation.callback = {(cover: UIImage, thumbnail: UIImage) in
 			if let op = weakOperation
 			{
 				if !op.isCancelled
@@ -1099,7 +1102,14 @@ extension RootVC : TypeChoiceViewDelegate
 			DispatchQueue.main.async {
 				self.collectionView.reloadData()
 				self.changeTypeAction(nil)
-				self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
+				if MusicDataSource.shared.currentCollection(type).count == 0
+				{
+					self.collectionView.contentOffset = CGPoint(0, 64)
+				}
+				else
+				{
+					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
+				}
 				self.updateNavigationTitle()
 			}
 		}

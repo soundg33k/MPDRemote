@@ -1,4 +1,4 @@
-// UIDevice+Extensions.swift
+// Number+Extensions.swift
 // Copyright (c) 2016 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,18 +20,18 @@
 // THE SOFTWARE.
 
 
-import UIKit
+import Foundation
 
 
-extension UIDevice
+extension Int
 {
-	class func isPad() -> Bool
+	func KB() -> Int
 	{
-		return current.userInterfaceIdiom == .pad
+		return self * 1024
 	}
 
-	class func isPhone() -> Bool
+	func MB() -> Int
 	{
-		return current.userInterfaceIdiom == .phone
+		return self * 1024 * 1024
 	}
 }

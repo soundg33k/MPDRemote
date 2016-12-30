@@ -23,7 +23,7 @@
 import Foundation
 
 
-class MusicalEntity
+class MusicalEntity : Hashable
 {
 	// MARK: - Public properties
 	// Name
@@ -34,9 +34,16 @@ class MusicalEntity
 	{
 		self.name = name
 	}
+
+	// MARK: - Hashable
+	var hashValue: Int {
+		get {
+			return name.hashValue
+		}
+	}
 }
 
-// MARK: - Operators
+// MARK: - Equatable
 func == (lhs: MusicalEntity, rhs: MusicalEntity) -> Bool
 {
 	return (lhs.name == rhs.name)

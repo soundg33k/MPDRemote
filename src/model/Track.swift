@@ -59,7 +59,7 @@ extension Track : CustomStringConvertible
 // MARK: - Operators
 func == (lhs: Track, rhs: Track) -> Bool
 {
-	return (lhs.name == rhs.name) && (lhs.artist == rhs.artist) && (lhs.duration == rhs.duration) && (lhs.uri == rhs.uri)
+	return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.duration == rhs.duration && lhs.uri == rhs.uri)
 }
 
 func != (lhs: Track, rhs: Track) -> Bool

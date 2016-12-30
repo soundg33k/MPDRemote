@@ -152,7 +152,7 @@ final class MiniPlayerView : UIView, PTappable
 			if album.path != nil
 			{
 				let op = CoverOperation(album: album, cropSize: cropSize.cgSizeValue)
-				op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+				op.callback = {(cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						self.setInfoFromTrack(track, ofAlbum: album)
 					}
@@ -163,7 +163,7 @@ final class MiniPlayerView : UIView, PTappable
 			{
 				MusicDataSource.shared.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: cropSize.cgSizeValue)
-					op.cplBlock = {(cover: UIImage, thumbnail: UIImage) in
+					op.callback = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.setInfoFromTrack(track, ofAlbum: album)
 						}

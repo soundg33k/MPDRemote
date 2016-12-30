@@ -23,7 +23,7 @@
 import UIKit
 
 
-class InteractableImageView : UIImageView, PTappable, PLeftSwippable, PRightSwippable, PUpSwippable, PDownSwippable
+final class InteractableImageView : UIImageView, PTappable, PLeftSwippable, PRightSwippable, PUpSwippable, PDownSwippable
 {
 	// MARK: - Public properties
 	// Delegate

@@ -67,3 +67,9 @@ extension Album : CustomStringConvertible
 		return "\nName: <\(name)>\nArtist: <\(artist)>\nGenre: <\(genre)>\nYear: <\(year)>\nPath: <\(path)>\n"
 	}
 }
+
+// MARK: - Equatable
+func == (lhs: Album, rhs: Album) -> Bool
+{
+	return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.year == rhs.year && lhs.genre == rhs.genre)
+}

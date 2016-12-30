@@ -32,13 +32,27 @@ final class CoverWebServer : Server
 	// MARK: - Initializers
 	init(name: String, hostname: String, port: UInt16, coverName: String)
 	{
-		super.init(name: name, hostname: hostname, port: port)
+		if hostname.hasPrefix("http://")
+		{
+			super.init(name: name, hostname: hostname, port: port)
+		}
+		else
+		{
+			super.init(name: name, hostname: "http://" + hostname, port: port)
+		}
 		self.coverName = coverName
 	}
 
 	init(name: String, hostname: String, port: UInt16, password: String, coverName: String)
 	{
-		super.init(name: name, hostname: hostname, port: port, password: password)
+		if hostname.hasPrefix("http://")
+		{
+			super.init(name: name, hostname: hostname, port: port, password: password)
+		}
+		else
+		{
+			super.init(name: name, hostname: "http://" + hostname, port: port, password: password)
+		}
 		self.coverName = coverName
 	}
 

@@ -76,7 +76,7 @@ final class PlayerController
 		if ret
 		{
 			_connection.delegate = self
-			startTimer(1)
+			startTimer(500)
 		}
 		else
 		{
@@ -246,7 +246,7 @@ final class PlayerController
 	private func startTimer(_ interval: Int)
 	{
 		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
-		_timer.scheduleRepeating(deadline: .now(), interval: .seconds(interval))
+		_timer.scheduleRepeating(deadline: .now(), interval: .milliseconds(interval))
 		_timer.setEventHandler {
 			self.playerInformations()
 		}

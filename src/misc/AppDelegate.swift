@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		registerDefaultPreferences()
 
 		// URL cache
-		URLCache.shared = URLCache(memoryCapacity: (4 * 1024 * 1024), diskCapacity: (32 * 1024 * 1024), diskPath: nil)
+		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
 
 		// Global operation queue
 		operationQueue = OperationQueue()
