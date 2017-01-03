@@ -27,6 +27,7 @@
 "lbl_appearance" = "Appearance";
 "lbl_version" = "Version";
 "lbl_nightmode" = "Night mode";
+"lbl_behaviour" = "Behaviour";
 
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";
@@ -57,6 +58,7 @@
 "lbl_section_database" = "Database";
 
 "lbl_pref_nightmode" = "Night mode";
+"lbl_pref_shaketoplayrandom" = "Shake to play random album";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";

@@ -35,6 +35,10 @@ final class SettingsVC : MenuTVC
 	@IBOutlet private var lblNightMode: UILabel!
 	// Version label
 	@IBOutlet private var lblVersion: UILabel!
+	// Shake to play label
+	@IBOutlet private var lblShake: UILabel!
+	// Shake to play switch
+	@IBOutlet private var swShake: UISwitch!
 	// Navigation title
 	private var titleView: UILabel!
 
@@ -53,7 +57,8 @@ final class SettingsVC : MenuTVC
 		titleView.text = NYXLocalizedString("lbl_section_settings")
 		navigationItem.titleView = titleView
 
-		lblNightMode.text = NYXLocalizedString("lbl_nightmode")
+		lblNightMode.text = NYXLocalizedString("lbl_pref_nightmode")
+		lblShake.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -62,6 +67,7 @@ final class SettingsVC : MenuTVC
 
 		self.nightModeSettingDidChange(nil)
 		swNightMode.isOn = isNightModeEnabled()
+		swShake.isOn = UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
 
 		let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
 		let build = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as! String
@@ -85,6 +91,13 @@ final class SettingsVC : MenuTVC
 		UserDefaults.standard.synchronize()
 
 		NotificationCenter.default.post(name: .nightModeSettingDidChange, object: nil)
+	}
+
+	@IBAction func toggleShakeToPlay(_ sender: Any?)
+	{
+		let shake = UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
+		UserDefaults.standard.set(!shake, forKey: kNYXPrefShakeToPlayRandomAlbum)
+		UserDefaults.standard.synchronize()
 	}
 
 	// MARK: - Notifications
@@ -127,6 +140,7 @@ final class SettingsVC : MenuTVC
 			}
 		}
 		lblNightMode.textColor = titleView.textColor
+		lblShake.textColor = titleView.textColor
 		lblVersion.textColor = titleView.textColor
 
 		tableView.reloadData()
@@ -149,13 +163,16 @@ extension SettingsVC
 		label.font = UIFont.systemFont(ofSize: 15.0)
 		dummy.addSubview(label)
 
-		if section == 0
+		switch section
 		{
-			label.text = NYXLocalizedString("lbl_appearance").uppercased()
-		}
-		else
-		{
-			label.text = NYXLocalizedString("lbl_version").uppercased()
+			case 0:
+				label.text = NYXLocalizedString("lbl_appearance").uppercased()
+			case 1:
+				label.text = NYXLocalizedString("lbl_behaviour").uppercased()
+			case 2:
+				label.text = NYXLocalizedString("lbl_version").uppercased()
+			default:
+				break
 		}
 
 		return dummy

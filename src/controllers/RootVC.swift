@@ -1126,6 +1126,11 @@ extension RootVC
 
 	override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?)
 	{
+		if UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum) == false
+		{
+			return
+		}
+		
 		if motion == .motionShake
 		{
 			let randomAlbum = MusicDataSource.shared.albums.randomItem()

@@ -92,6 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 			kNYXPrefVolume : 100,
 			kNYXPrefDisplayType : DisplayType.albums.rawValue,
 			kNYXPrefNightMode : false,
+			kNYXPrefShakeToPlayRandomAlbum : false,
 		]
 
 		let fileManager = FileManager()

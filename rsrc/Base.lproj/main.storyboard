@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Lmo-Om-6fy">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Lmo-Om-6fy">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
@@ -2032,16 +2032,58 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Version" id="bg9-bq-Ook">
+                            <tableViewSection headerTitle="Behaviour" id="bg9-bq-Ook">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="hFK-ZA-ZeW">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="hFK-ZA-ZeW">
                                         <rect key="frame" x="0.0" y="155.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hFK-ZA-ZeW" id="ArT-zK-rf3">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version (build)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Z4-BF-YdL">
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mZ0-c0-8vQ">
+                                                    <rect key="frame" x="310" y="6" width="51" height="31"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="49" id="5B3-ct-zsh"/>
+                                                        <constraint firstAttribute="height" constant="31" id="ee8-9T-PYK"/>
+                                                    </constraints>
+                                                    <color key="tintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="onTintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <connections>
+                                                        <action selector="toggleShakeToPlay:" destination="NNC-tO-Tiv" eventType="valueChanged" id="tnK-mZ-9NN"/>
+                                                    </connections>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Shake to play random album" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Qq-Sh-Y4z">
+                                                    <rect key="frame" x="16" y="0.0" width="240" height="44"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="240" id="114-GW-bPH"/>
+                                                        <constraint firstAttribute="height" constant="44" id="xac-xu-Sxc"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="mZ0-c0-8vQ" secondAttribute="trailing" constant="16" id="Bag-a6-ndC"/>
+                                                <constraint firstItem="8Qq-Sh-Y4z" firstAttribute="leading" secondItem="ArT-zK-rf3" secondAttribute="leading" constant="16" id="T44-8M-0rq"/>
+                                                <constraint firstItem="mZ0-c0-8vQ" firstAttribute="top" secondItem="ArT-zK-rf3" secondAttribute="top" constant="6" id="iy3-ik-GGF"/>
+                                                <constraint firstItem="8Qq-Sh-Y4z" firstAttribute="top" secondItem="ArT-zK-rf3" secondAttribute="top" id="oh2-0I-GhQ"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Version" id="kt3-iO-BOv">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="sSi-Un-oqM">
+                                        <rect key="frame" x="0.0" y="255.5" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sSi-Un-oqM" id="cfM-KF-LnC">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version (build)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xiW-g3-bQk">
                                                     <rect key="frame" x="129.5" y="13" width="116" height="18.5"/>
                                                     <fontDescription key="fontDescription" name="AmericanTypewriter" family="American Typewriter" pointSize="16"/>
                                                     <nil key="textColor"/>
@@ -2049,8 +2091,8 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="9Z4-BF-YdL" firstAttribute="centerY" secondItem="ArT-zK-rf3" secondAttribute="centerY" id="SFD-y4-6ny"/>
-                                                <constraint firstItem="9Z4-BF-YdL" firstAttribute="centerX" secondItem="ArT-zK-rf3" secondAttribute="centerX" id="hwx-mG-hVN"/>
+                                                <constraint firstItem="xiW-g3-bQk" firstAttribute="centerY" secondItem="cfM-KF-LnC" secondAttribute="centerY" id="U7h-BC-CAF"/>
+                                                <constraint firstItem="xiW-g3-bQk" firstAttribute="centerX" secondItem="cfM-KF-LnC" secondAttribute="centerX" id="vHb-iz-sNI"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -2065,8 +2107,10 @@
                     <navigationItem key="navigationItem" title="SettingsTVC" id="ieq-mV-EpJ"/>
                     <connections>
                         <outlet property="lblNightMode" destination="5yX-p0-uJA" id="kzX-yq-EoH"/>
-                        <outlet property="lblVersion" destination="9Z4-BF-YdL" id="v6x-7P-Ko8"/>
+                        <outlet property="lblShake" destination="8Qq-Sh-Y4z" id="bvG-mk-gOW"/>
+                        <outlet property="lblVersion" destination="xiW-g3-bQk" id="9hS-BD-0I5"/>
                         <outlet property="swNightMode" destination="KEZ-Xz-utp" id="H0f-CA-A3e"/>
+                        <outlet property="swShake" destination="mZ0-c0-8vQ" id="CpD-Ta-uhI"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hcV-ak-pL4" userLabel="First Responder" sceneMemberID="firstResponder"/>
