@@ -218,7 +218,7 @@ extension ArtistsVC
 				}
 				else
 				{
-					let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!
+					let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!
 					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 					if album.path != nil
 					{

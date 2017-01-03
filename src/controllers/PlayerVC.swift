@@ -68,7 +68,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		sliderPosition.addTarget(self, action: #selector(changeTrackPositionAction(_:)), for: .touchUpInside)
 
 		// Slider volume
-		sliderVolume.value = Float(UserDefaults.standard.integer(forKey: kNYXPrefVolume))
+		sliderVolume.value = Float(UserDefaults.standard.integer(forKey: kNYXPrefMPDVolume))
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
 		ivVolumeLo.image = #imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
 		ivVolumeHi.image = #imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
@@ -83,7 +83,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
 		btnPrevious.addTarget(PlayerController.shared, action: #selector(PlayerController.requestPreviousTrack), for: .touchUpInside)
 
-		let loop = UserDefaults.standard.bool(forKey: kNYXPrefRepeat)
+		let loop = UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
@@ -92,7 +92,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		let random = UserDefaults.standard.bool(forKey: kNYXPrefRandom)
+		let random = UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle)
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
@@ -205,12 +205,12 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	func toggleRandomAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
-		let random = !prefs.bool(forKey: kNYXPrefRandom)
+		let random = !prefs.bool(forKey: kNYXPrefMPDShuffle)
 
 		btnRandom.isSelected = random
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		prefs.set(random, forKey: kNYXPrefRandom)
+		prefs.set(random, forKey: kNYXPrefMPDShuffle)
 		prefs.synchronize()
 
 		PlayerController.shared.setRandom(random)
@@ -219,12 +219,12 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	func toggleRepeatAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
-		let loop = !prefs.bool(forKey: kNYXPrefRepeat)
+		let loop = !prefs.bool(forKey: kNYXPrefMPDRepeat)
 
 		btnRepeat.isSelected = loop
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		prefs.set(loop, forKey: kNYXPrefRepeat)
+		prefs.set(loop, forKey: kNYXPrefMPDRepeat)
 		prefs.synchronize()
 
 		PlayerController.shared.setRepeat(loop)
@@ -242,7 +242,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	{
 		let volume = Int(ceil(sliderVolume.value))
 		let prefs = UserDefaults.standard
-		prefs.set(volume, forKey: kNYXPrefVolume)
+		prefs.set(volume, forKey: kNYXPrefMPDVolume)
 		prefs.synchronize()
 		sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
 

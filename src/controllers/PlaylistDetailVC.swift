@@ -66,7 +66,7 @@ final class PlaylistDetailVC : UIViewController
 		navigationItem.titleView = titleView
 
 		// Album header view
-		let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.data(forKey: kNYXPrefCoverSize)!) as! NSValue
+		let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!) as! NSValue
 		headerHeightConstraint.constant = coverSize.cgSizeValue.height
 
 		// Dummy tableview host, to create a nice shadow effect
@@ -274,6 +274,6 @@ extension PlaylistDetailVC : UITableViewDelegate
 		}
 
 		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		PlayerController.shared.playTracks(b, random: UserDefaults.standard.bool(forKey: kNYXPrefRandom), loop: UserDefaults.standard.bool(forKey: kNYXPrefRepeat))
+		PlayerController.shared.playTracks(b, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
 	}
 }

@@ -26,16 +26,16 @@ import UIKit
 func APP_DELEGATE() -> AppDelegate {return UIApplication.shared.delegate as! AppDelegate}
 
 /* Preferences keys */
-public let kNYXPrefDirectoryCovers = "app-covers-directory"
-public let kNYXPrefCoverSize = "app-covers-size"
+public let kNYXPrefCoversDirectory = "app-covers-directory"
+public let kNYXPrefCoversSize = "app-covers-size"
 public let kNYXPrefDisplayType = "app-display-type"
 public let kNYXPrefNightMode = "app-night-mode"
 public let kNYXPrefShakeToPlayRandomAlbum = "app-shake-to-play"
-public let kNYXPrefMPDServer = "mpd-server-infos"
-public let kNYXPrefRandom = "mpd-play-random"
-public let kNYXPrefRepeat = "mpd-play-repeat"
-public let kNYXPrefVolume = "mpd-play-volume"
-public let kNYXPrefWEBServer = "web-server-infos"
+public let kNYXPrefMPDServer = "mpd-server"
+public let kNYXPrefMPDShuffle = "mpd-shuffle"
+public let kNYXPrefMPDRepeat = "mpd-repeat"
+public let kNYXPrefMPDVolume = "mpd-volume"
+public let kNYXPrefWEBServer = "web-server"
 
 public let kNYXTopInset: CGFloat = 64.0
 

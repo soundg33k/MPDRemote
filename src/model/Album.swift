@@ -41,7 +41,7 @@ final class Album : MusicalEntity
 	// Local URL for the cover
 	lazy var localCoverURL: URL? = {
 		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return nil}
-		guard let coverDirectoryPath = UserDefaults.standard.string(forKey: kNYXPrefDirectoryCovers) else {return nil}
+		guard let coverDirectoryPath = UserDefaults.standard.string(forKey: kNYXPrefCoversDirectory) else {return nil}
 		return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory: true).appendingPathComponent(self.uniqueIdentifier + ".jpg")
 	}()
 

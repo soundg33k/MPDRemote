@@ -103,7 +103,7 @@ final class PlayerController
 	}
 
 	// MARK: - Playing
-	func playAlbum(_ album: Album, random: Bool, loop: Bool)
+	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool)
 	{
 		if _connection == nil || _connection.isConnected == false
 		{
@@ -111,11 +111,11 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playAlbum(album, random: random, loop: loop)
+			self._connection.playAlbum(album, shuffle: shuffle, loop: loop)
 		}
 	}
 
-	func playTracks(_ tracks: [Track], random: Bool, loop: Bool)
+	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool)
 	{
 		if _connection == nil || _connection.isConnected == false
 		{
@@ -123,11 +123,11 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playTracks(tracks, random: random, loop: loop)
+			self._connection.playTracks(tracks, shuffle: shuffle, loop: loop)
 		}
 	}
 
-	func playPlaylist(_ playlist: Playlist, random: Bool, loop: Bool)
+	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool)
 	{
 		if _connection == nil || _connection.isConnected == false
 		{
@@ -135,7 +135,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playPlaylist(playlist, random: random, loop: loop)
+			self._connection.playPlaylist(playlist, shuffle: shuffle, loop: loop)
 		}
 	}
 

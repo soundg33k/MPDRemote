@@ -321,7 +321,7 @@ final class ServerVC : MenuTVC
 		let clearBlock = { () -> Void in
 			let fileManager = FileManager()
 			let cachesDirectoryURL = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).last!
-			let coversDirectoryName = UserDefaults.standard.string(forKey: kNYXPrefDirectoryCovers)!
+			let coversDirectoryName = UserDefaults.standard.string(forKey: kNYXPrefCoversDirectory)!
 			let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
 
 			do

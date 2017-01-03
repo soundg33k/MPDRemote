@@ -85,11 +85,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		let width = ceil((UIScreen.main.bounds.width / columns) - (2 * span))
 		let defaults: [String: Any] =
 		[
-			kNYXPrefDirectoryCovers : coversDirectoryPath,
-			kNYXPrefCoverSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width, width))),
-			kNYXPrefRandom : false,
-			kNYXPrefRepeat : false,
-			kNYXPrefVolume : 100,
+			kNYXPrefCoversDirectory : coversDirectoryPath,
+			kNYXPrefCoversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width, width))),
+			kNYXPrefMPDShuffle : false,
+			kNYXPrefMPDRepeat : false,
+			kNYXPrefMPDVolume : 100,
 			kNYXPrefDisplayType : DisplayType.albums.rawValue,
 			kNYXPrefNightMode : false,
 			kNYXPrefShakeToPlayRandomAlbum : false,

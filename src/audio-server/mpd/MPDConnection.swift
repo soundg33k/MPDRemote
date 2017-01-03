@@ -596,22 +596,22 @@ final class MPDConnection : AudioServerConnection
 	}
 
 	// MARK: - Play / Queue
-	func playAlbum(_ album: Album, random: Bool, loop: Bool)
+	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool)
 	{
 		if let songs = album.tracks
 		{
-			playTracks(songs, random: random, loop: loop)
+			playTracks(songs, shuffle: shuffle, loop: loop)
 		}
 		else
 		{
 			if let songs = getTracksForAlbum(album)
 			{
-				playTracks(songs, random: random, loop: loop)
+				playTracks(songs, shuffle: shuffle, loop: loop)
 			}
 		}
 	}
 
-	func playTracks(_ tracks: [Track], random: Bool, loop: Bool)
+	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool)
 	{
 		if mpd_run_clear(_connection) == false
 		{
@@ -619,7 +619,7 @@ final class MPDConnection : AudioServerConnection
 			return
 		}
 
-		setRandom(random)
+		setRandom(shuffle)
 		setRepeat(loop)
 
 		for track in tracks
@@ -631,13 +631,13 @@ final class MPDConnection : AudioServerConnection
 			}
 		}
 
-		if mpd_run_play_pos(_connection, random ? arc4random_uniform(UInt32(tracks.count)) : 0) == false
+		if mpd_run_play_pos(_connection, shuffle ? arc4random_uniform(UInt32(tracks.count)) : 0) == false
 		{
 			Logger.dlog(getLastErrorMessageForConnection())
 		}
 	}
 
-	func playPlaylist(_ playlist: Playlist, random: Bool, loop: Bool)
+	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool)
 	{
 		if mpd_run_clear(_connection) == false
 		{
@@ -645,7 +645,7 @@ final class MPDConnection : AudioServerConnection
 			return
 		}
 
-		setRandom(random)
+		setRandom(shuffle)
 		setRepeat(loop)
 
 		if mpd_run_load(_connection, playlist.name) == false
