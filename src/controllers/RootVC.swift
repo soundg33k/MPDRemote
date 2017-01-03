@@ -1059,22 +1059,22 @@ extension RootVC : UISearchBarDelegate
 			case .albums:
 				if MusicDataSource.shared.albums.count > 0
 				{
-					searchResults = MusicDataSource.shared.albums.filter({$0.name.lowercased().contains(searchText.lowercased())})
+					searchResults = MusicDataSource.shared.albums.filter({$0.name.fuzzySearch(withString: searchText)})
 				}
 			case .genres:
 				if MusicDataSource.shared.genres.count > 0
 				{
-					searchResults = MusicDataSource.shared.genres.filter({$0.name.lowercased().contains(searchText.lowercased())})
+					searchResults = MusicDataSource.shared.genres.filter({$0.name.fuzzySearch(withString: searchText)})
 				}
 			case .artists:
 				if MusicDataSource.shared.artists.count > 0
 				{
-					searchResults = MusicDataSource.shared.artists.filter({$0.name.lowercased().contains(searchText.lowercased())})
+					searchResults = MusicDataSource.shared.artists.filter({$0.name.fuzzySearch(withString: searchText)})
 				}
 			case .playlists:
 				if MusicDataSource.shared.playlists.count > 0
 				{
-					searchResults = MusicDataSource.shared.playlists.filter({$0.name.lowercased().contains(searchText.lowercased())})
+					searchResults = MusicDataSource.shared.playlists.filter({$0.name.fuzzySearch(withString: searchText)})
 				}
 		}
 		collectionView.reloadData()

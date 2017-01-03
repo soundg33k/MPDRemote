@@ -52,6 +52,39 @@ extension String
 	{
 		return utf8.reduce(5381){($0 << 5) &+ $0 &+ Int32($1)}
 	}
+
+	func fuzzySearch(withString searchString: String, diacriticSensitive: Bool = false, caseSensitive: Bool = false) -> Bool
+	{
+		if searchString.length == 0 || self.length == 0
+		{
+			return false
+		}
+
+		if searchString.length > self.length
+		{
+			return false
+		}
+
+		var sourceString = self
+		var searchWithWildcards = "*\(searchString)*"
+		if searchWithWildcards.length > 3
+		{
+			for i in stride(from: 2, through: searchString.length * 2, by: 2)
+			{
+				searchWithWildcards.insert("*", at: searchWithWildcards.index(searchWithWildcards.startIndex, offsetBy: i))
+			}
+		}
+
+		// Not case sensitive
+		if caseSensitive == false
+		{
+			sourceString = sourceString.lowercased()
+			searchWithWildcards = searchWithWildcards.lowercased()
+		}
+
+		let predicate = diacriticSensitive ? NSPredicate(format: "SELF LIKE %@", searchWithWildcards) : NSPredicate(format: "SELF LIKE[d] %@", searchWithWildcards)
+		return predicate.evaluate(with: sourceString)
+	}
 }
 
 func NYXLocalizedString(_ key: String) -> String
