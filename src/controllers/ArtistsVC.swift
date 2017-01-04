@@ -137,15 +137,11 @@ extension ArtistsVC
 		// Dummy to let some space for the mini player
 		if indexPath.row == artists.count
 		{
-			cell.coverView.backgroundColor = cell.dummyView.backgroundColor
-			cell.coverView.image = nil
-			cell.lblArtist.text = ""
-			cell.lblAlbums.text = ""
+			cell.isHidden = true
 			cell.selectionStyle = .none
 			cell.lblAlbums.tag = 789
 			return cell
 		}
-		cell.coverView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 
 		let artist = artists[indexPath.row]
 		cell.lblArtist.text = artist.name
