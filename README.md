@@ -10,22 +10,22 @@ MPDRemote (iOS 10.0+)
 
          | FEATURES
 ---------|---------------
-≡ | Browse by albums / artists / genres / playlists
+🗄 | Browse by albums / artists / genres / playlists
 🔎 | Fuzzy Search for albums, artists, genres
-▶ | Play, pause, next, previous
-🔀 | Shuffle & repeat
-🔊 | Volume control
-⌖ | Track position control
+⏯ | Play, pause, next, previous
+🔀 🔁 | Shuffle & repeat
+🔈 | Volume control
+📍 | Track position control
 ➕ | Add album / artist / genre / playlist to play queue
 💬| VoiceOver compliant
-🔗 | Automatically find mpd server with Bonjour/Zeroconf
+🌐 | Automatically find mpd server with Bonjour/Zeroconf
 🇬🇧 🇫🇷 | English and French localized
 
 There is no persistence layer apart from cover caching.
 
          | TODO
 ---------|---------------
-⚡ | Optimize things? not slow anyway, works well with an iPhone 5 and 3000+ albums
+⚡️ | Optimize things? not slow anyway, works well with an iPhone 5 and 3000+ albums
 📱 | iPad version
 ⚙ | Better icons for consistency, I took random free icons on the net. Problem is my skills in design are (void*)0.
 🏁 | Put it on the AppStore ? But I Have no money.
