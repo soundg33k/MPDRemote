@@ -48,13 +48,12 @@ final class TrackTableViewCell : UITableViewCell
 		if selected
 		{
 			self.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-			contentView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		}
 		else
 		{
 			self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			contentView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
+		contentView.backgroundColor = self.backgroundColor
 	}
 
 	override func setHighlighted(_ highlighted: Bool, animated: Bool)
@@ -64,12 +63,11 @@ final class TrackTableViewCell : UITableViewCell
 		if highlighted
 		{
 			self.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-			contentView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		}
 		else
 		{
 			self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			contentView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
+		contentView.backgroundColor = self.backgroundColor
 	}
 }

@@ -124,6 +124,12 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
 
+		PlayerController.shared.getVolume { (volume: Int) in
+			DispatchQueue.main.async {
+				self.sliderVolume.value = Float(volume)
+			}
+		}
+
 		if let track = PlayerController.shared.currentTrack, let album = PlayerController.shared.currentAlbum
 		{
 			lblTrackTitle.text = track.name

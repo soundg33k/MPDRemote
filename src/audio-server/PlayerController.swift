@@ -242,6 +242,19 @@ final class PlayerController
 		}
 	}
 
+	func getVolume(callback: @escaping (Int) -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async {
+			let volume = self._connection.getVolume()
+			callback(volume)
+		}
+	}
+
 	// MARK: - Private
 	private func startTimer(_ interval: Int)
 	{

@@ -742,6 +742,17 @@ final class MPDConnection : AudioServerConnection
 		}
 	}
 
+	func getVolume() -> Int
+	{
+		guard let status = mpd_run_status(_connection) else
+		{
+			Logger.dlog("[!] Error getting status: \(getLastErrorMessageForConnection())")
+			return 100
+		}
+
+		return Int(mpd_status_get_volume(status))
+	}
+
 	// MARK: - Player status
 	func getStatus()
 	{
@@ -772,6 +783,7 @@ final class MPDConnection : AudioServerConnection
 		}
 		let state = statusFromMPDStateObject(mpd_status_get_state(status)).rawValue
 		let elapsed = mpd_status_get_elapsed_time(status)
+		let volume = Int(mpd_status_get_volume(status))
 		guard let tmpAlbumName = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0) else
 		{
 			Logger.dlog("[!] Error getting album: \(getLastErrorMessageForConnection())")
@@ -782,7 +794,7 @@ final class MPDConnection : AudioServerConnection
 		{
 			if let album = delegate?.albumMatchingName(name)
 			{
-				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state]
+				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state, kPlayerVolumeKey : volume]
 			}
 		}
 

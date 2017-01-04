@@ -27,6 +27,7 @@ public let kPlayerTrackKey = "track"
 public let kPlayerAlbumKey = "album"
 public let kPlayerElapsedKey = "elapsed"
 public let kPlayerStatusKey = "status"
+public let kPlayerVolumeKey = "volume"
 
 
 public enum PlayerStatus : Int
@@ -81,6 +82,7 @@ protocol AudioServerConnection
 	func setRepeat(_ loop: Bool)
 	func setTrackPosition(_ position: Int, trackPosition: UInt32)
 	func setVolume(_ volume: UInt32)
+	func getVolume() -> Int
 
 	// MARK: - Player status
 	func getStatus()
