@@ -47,13 +47,13 @@ final class TrackTableViewCell : UITableViewCell
 
 		if selected
 		{
-			self.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-			contentView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+			self.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+			contentView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		}
 		else
 		{
-			self.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			contentView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			contentView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
 	}
 
@@ -63,13 +63,13 @@ final class TrackTableViewCell : UITableViewCell
 
 		if highlighted
 		{
-			self.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-			contentView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+			self.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+			contentView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		}
 		else
 		{
-			self.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			contentView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			contentView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
 	}
 }

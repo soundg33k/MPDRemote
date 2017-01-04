@@ -67,7 +67,7 @@ final class MiniPlayerView : UIView, PTappable
 		self.isAccessibilityElement = false
 
 		// Blur background
-		let blurEffect = UIBlurEffect(style: isNightModeEnabled() ? .dark : .light)
+		let blurEffect = UIBlurEffect(style: .light)
 		self.blurEffectView = UIVisualEffectView(effect: blurEffect)
 		self.blurEffectView.frame = CGRect(.zero, frame.size)
 		self.addSubview(self.blurEffectView)
@@ -99,7 +99,7 @@ final class MiniPlayerView : UIView, PTappable
 		self.lblTitle = UILabel(frame: CGRect(self.imageView.right + 5.0, 2.0, ((vibrancyEffectView.left + 5.0) - (self.imageView.right + 5.0)), 18.0))
 		self.lblTitle.textAlignment = .center
 		self.lblTitle.font = UIFont(name: "GillSans-Bold", size: 14.0)
-		self.lblTitle.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		self.lblTitle.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		self.lblTitle.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblTitle)
 
@@ -107,7 +107,7 @@ final class MiniPlayerView : UIView, PTappable
 		self.lblArtist = UILabel(frame: CGRect(self.imageView.right + 5.0, self.lblTitle.bottom + 2.0, self.lblTitle.width, 16.0))
 		self.lblArtist.textAlignment = .center
 		self.lblArtist.font = UIFont(name: "GillSans", size: 12.0)
-		self.lblArtist.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		self.lblArtist.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		self.lblArtist.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblArtist)
 
@@ -121,7 +121,6 @@ final class MiniPlayerView : UIView, PTappable
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
 
 		APP_DELEGATE().window?.addSubview(self)
 	}
@@ -264,22 +263,6 @@ final class MiniPlayerView : UIView, PTappable
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 			}
 			btnPlay.tag = state
-		}
-	}
-
-	func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		if isNightModeEnabled()
-		{
-			blurEffectView.effect = UIBlurEffect(style: .dark)
-			lblTitle.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			lblArtist.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
-		}
-		else
-		{
-			blurEffectView.effect = UIBlurEffect(style: .light)
-			lblTitle.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			lblArtist.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		}
 	}
 }

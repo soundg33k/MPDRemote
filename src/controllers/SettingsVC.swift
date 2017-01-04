@@ -29,10 +29,6 @@ private let headerSectionHeight: CGFloat = 32.0
 final class SettingsVC : MenuTVC
 {
 	// MARK: - Private properties
-	// Night mode switch
-	@IBOutlet private var swNightMode: UISwitch!
-	// Night mode label
-	@IBOutlet private var lblNightMode: UILabel!
 	// Version label
 	@IBOutlet private var lblVersion: UILabel!
 	// Shake to play label
@@ -57,7 +53,6 @@ final class SettingsVC : MenuTVC
 		titleView.text = NYXLocalizedString("lbl_section_settings")
 		navigationItem.titleView = titleView
 
-		lblNightMode.text = NYXLocalizedString("lbl_pref_nightmode")
 		lblShake.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
 	}
 
@@ -65,8 +60,6 @@ final class SettingsVC : MenuTVC
 	{
 		super.viewWillAppear(animated)
 
-		self.nightModeSettingDidChange(nil)
-		swNightMode.isOn = isNightModeEnabled()
 		swShake.isOn = UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
 
 		let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
@@ -81,71 +74,15 @@ final class SettingsVC : MenuTVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return isNightModeEnabled() ? .lightContent : .default
+		return .default
 	}
 
 	// MARK: - IBActions
-	@IBAction func toggleNightMode(_ sender: Any?)
-	{
-		UserDefaults.standard.set(!isNightModeEnabled(), forKey: kNYXPrefNightMode)
-		UserDefaults.standard.synchronize()
-
-		NotificationCenter.default.post(name: .nightModeSettingDidChange, object: nil)
-	}
-
 	@IBAction func toggleShakeToPlay(_ sender: Any?)
 	{
 		let shake = UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
 		UserDefaults.standard.set(!shake, forKey: kNYXPrefShakeToPlayRandomAlbum)
 		UserDefaults.standard.synchronize()
-	}
-
-	// MARK: - Notifications
-	override func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		super.nightModeSettingDidChange(aNotification)
-
-		if isNightModeEnabled()
-		{
-			navigationController?.navigationBar.barStyle = .black
-			titleView.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.separatorColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			for i in 0...tableView.numberOfSections - 1
-			{
-				for j in 0...tableView.numberOfRows(inSection: i) - 1
-				{
-					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
-					{
-						cell.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-					}
-				}
-			}
-		}
-		else
-		{
-			navigationController?.navigationBar.barStyle = .default
-			titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			tableView.separatorColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			for i in 0...tableView.numberOfSections - 1
-			{
-				for j in 0...tableView.numberOfRows(inSection: i) - 1
-				{
-					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
-					{
-						cell.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-					}
-				}
-			}
-		}
-		lblNightMode.textColor = titleView.textColor
-		lblShake.textColor = titleView.textColor
-		lblVersion.textColor = titleView.textColor
-
-		tableView.reloadData()
-
-		setNeedsStatusBarAppearanceUpdate()
 	}
 }
 
@@ -159,17 +96,15 @@ extension SettingsVC
 
 		let label = UILabel(frame: CGRect(10.0, 0.0, dummy.width - 20.0, dummy.height))
 		label.backgroundColor = dummy.backgroundColor
-		label.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1) : #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		label.font = UIFont.systemFont(ofSize: 15.0)
 		dummy.addSubview(label)
 
 		switch section
 		{
 			case 0:
-				label.text = NYXLocalizedString("lbl_appearance").uppercased()
-			case 1:
 				label.text = NYXLocalizedString("lbl_behaviour").uppercased()
-			case 2:
+			case 1:
 				label.text = NYXLocalizedString("lbl_version").uppercased()
 			default:
 				break

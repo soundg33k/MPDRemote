@@ -84,8 +84,6 @@ final class StatsVC : MenuTVC
 	{
 		super.viewWillAppear(animated)
 
-		self.nightModeSettingDidChange(nil)
-
 		MusicDataSource.shared.getStats { (stats: [String : String]) in
 			DispatchQueue.main.async {
 				self.stats = stats
@@ -101,7 +99,7 @@ final class StatsVC : MenuTVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return isNightModeEnabled() ? .lightContent : .default
+		return .default
 	}
 
 	// MARK: - Private
@@ -158,7 +156,7 @@ final class StatsVC : MenuTVC
 	}
 
 	// MARK: - Notifications
-	override func nightModeSettingDidChange(_ aNotification: Notification?)
+	/*override func nightModeSettingDidChange(_ aNotification: Notification?)
 	{
 		super.nightModeSettingDidChange(aNotification)
 
@@ -224,7 +222,7 @@ final class StatsVC : MenuTVC
 		tableView.reloadData()
 
 		setNeedsStatusBarAppearanceUpdate()
-	}
+	}*/
 }
 
 // MARK: - UITableViewDelegate
@@ -237,7 +235,7 @@ extension StatsVC
 
 		let label = UILabel(frame: CGRect(10.0, 0.0, dummy.width - 20.0, dummy.height))
 		label.backgroundColor = dummy.backgroundColor
-		label.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1) : #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		label.font = UIFont.systemFont(ofSize: 15.0)
 		dummy.addSubview(label)
 

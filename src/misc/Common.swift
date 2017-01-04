@@ -29,7 +29,6 @@ func APP_DELEGATE() -> AppDelegate {return UIApplication.shared.delegate as! App
 public let kNYXPrefCoversDirectory = "app-covers-directory"
 public let kNYXPrefCoversSize = "app-covers-size"
 public let kNYXPrefDisplayType = "app-display-type"
-public let kNYXPrefNightMode = "app-night-mode"
 public let kNYXPrefShakeToPlayRandomAlbum = "app-shake-to-play"
 public let kNYXPrefMPDServer = "mpd-server"
 public let kNYXPrefMPDShuffle = "mpd-shuffle"
@@ -63,10 +62,4 @@ extension Notification.Name
 	static let miniPlayerViewDidHide = Notification.Name("kNYXNotificationMiniPlayerViewDidHide")
 	static let miniPlayerShouldExpand = Notification.Name("kNYXNotificationMiniPlayerShouldExpand")
 	static let audioServerConfigurationDidChange = Notification.Name("kNYXNotificationAudioServerConfigurationDidChange")
-	static let nightModeSettingDidChange = Notification.Name("kNYXNotificationNightModeSettingDidChange")
-}
-
-func isNightModeEnabled() -> Bool
-{
-	return UserDefaults.standard.bool(forKey: kNYXPrefNightMode)
 }

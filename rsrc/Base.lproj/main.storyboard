@@ -1030,7 +1030,7 @@
                                                         <bool key="isElement" value="NO"/>
                                                     </accessibility>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
-                                                    <color key="textColor" red="0.26666666666666666" green="0.26666666666666666" blue="0.26666666666666666" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -1044,6 +1044,7 @@
                                             </constraints>
                                         </view>
                                     </subviews>
+                                    <color key="backgroundColor" red="0.92549019610000005" green="0.92549019610000005" blue="0.92549019610000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="bottom" secondItem="n1t-1s-O9D" secondAttribute="bottom" constant="2" id="MA1-rF-njp"/>
                                         <constraint firstItem="n1t-1s-O9D" firstAttribute="top" secondItem="UYb-qV-xx9" secondAttribute="top" constant="2" id="kef-tb-ZNU"/>
@@ -1109,7 +1110,7 @@
                                                         <constraint firstAttribute="height" constant="18" id="Yqz-Kl-MZ7"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
-                                                    <color key="textColor" red="0.2666666667" green="0.2666666667" blue="0.2666666667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="X albums" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FAO-ae-5wE">
@@ -1990,52 +1991,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection headerTitle="Appearance" id="0PA-N3-Mir">
-                                <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="5P7-sM-ig6">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5P7-sM-ig6" id="6HK-av-fA3">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Night mode" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5yX-p0-uJA">
-                                                    <rect key="frame" x="16" y="0.0" width="89.5" height="44"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="44" id="82X-L6-sRh"/>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="Lyf-ze-4rp"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KEZ-Xz-utp">
-                                                    <rect key="frame" x="310" y="6" width="51" height="31"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="49" id="eMg-1v-yRo"/>
-                                                        <constraint firstAttribute="height" constant="31" id="xA5-zS-rtj"/>
-                                                    </constraints>
-                                                    <color key="tintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <color key="onTintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <connections>
-                                                        <action selector="toggleNightMode:" destination="NNC-tO-Tiv" eventType="valueChanged" id="C5H-DF-Zf3"/>
-                                                    </connections>
-                                                </switch>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="5yX-p0-uJA" firstAttribute="top" secondItem="6HK-av-fA3" secondAttribute="top" id="7hn-Ny-Bo2"/>
-                                                <constraint firstAttribute="trailing" secondItem="KEZ-Xz-utp" secondAttribute="trailing" constant="16" id="fKl-7N-N8v"/>
-                                                <constraint firstItem="5yX-p0-uJA" firstAttribute="leading" secondItem="6HK-av-fA3" secondAttribute="leading" constant="16" id="j36-Th-Ofq"/>
-                                                <constraint firstItem="KEZ-Xz-utp" firstAttribute="top" secondItem="6HK-av-fA3" secondAttribute="top" constant="6" id="ptJ-Da-njG"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
                             <tableViewSection headerTitle="Behaviour" id="bg9-bq-Ook">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="hFK-ZA-ZeW">
-                                        <rect key="frame" x="0.0" y="155.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hFK-ZA-ZeW" id="ArT-zK-rf3">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -2077,7 +2036,7 @@
                             <tableViewSection headerTitle="Version" id="kt3-iO-BOv">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="sSi-Un-oqM">
-                                        <rect key="frame" x="0.0" y="255.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="155.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sSi-Un-oqM" id="cfM-KF-LnC">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -2106,10 +2065,8 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="SettingsTVC" id="ieq-mV-EpJ"/>
                     <connections>
-                        <outlet property="lblNightMode" destination="5yX-p0-uJA" id="kzX-yq-EoH"/>
                         <outlet property="lblShake" destination="8Qq-Sh-Y4z" id="bvG-mk-gOW"/>
                         <outlet property="lblVersion" destination="xiW-g3-bQk" id="9hS-BD-0I5"/>
-                        <outlet property="swNightMode" destination="KEZ-Xz-utp" id="H0f-CA-A3e"/>
                         <outlet property="swShake" destination="mZ0-c0-8vQ" id="CpD-Ta-uhI"/>
                     </connections>
                 </tableViewController>
@@ -2301,7 +2258,7 @@
         <image name="img-volume-lo" width="16" height="16"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="NP2-1J-4Qz"/>
-        <segue reference="jeD-yB-hVH"/>
+        <segue reference="cdp-81-RYq"/>
+        <segue reference="pfj-4H-Q6o"/>
     </inferredMetricsTieBreakers>
 </document>

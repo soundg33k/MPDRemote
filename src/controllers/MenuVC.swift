@@ -61,8 +61,6 @@ class MenuVC : UIViewController
 		panGestureMenu.edges = .left
 		panGestureMenu.delegate = self
 		view.addGestureRecognizer(panGestureMenu)
-
-		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -72,7 +70,7 @@ class MenuVC : UIViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return isNightModeEnabled() ? .lightContent : .default
+		return .default
 	}
 
 	// MARK : Button action
@@ -122,23 +120,6 @@ class MenuVC : UIViewController
 			default:
 				break
 		}
-	}
-
-	// MARK: - Notifications
-	func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		/*if isNightModeEnabled()
-		{
-			let b = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb").tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
-			b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
-			self.navigationItem.leftBarButtonItem = b
-		}
-		else
-		{
-			let b = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
-			b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
-			self.navigationItem.leftBarButtonItem = b
-		}*/
 	}
 }
 

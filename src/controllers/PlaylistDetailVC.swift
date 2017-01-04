@@ -62,7 +62,7 @@ final class PlaylistDetailVC : UIViewController
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		navigationItem.titleView = titleView
 
 		// Album header view
@@ -77,11 +77,9 @@ final class PlaylistDetailVC : UIViewController
 		dummyView.layer.masksToBounds = false
 
 		// Tableview
-		tableView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		tableView.tableFooterView = UIView()
-		tableView.indicatorStyle = isNightModeEnabled() ? .white : .black
-
-		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
+		tableView.indicatorStyle = .black
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -134,7 +132,7 @@ final class PlaylistDetailVC : UIViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return isNightModeEnabled() ? .lightContent : .default
+		return .default
 	}
 
 	// MARK: - Private
@@ -162,24 +160,6 @@ final class PlaylistDetailVC : UIViewController
 			titleView.attributedText = attrs
 		}
 	}
-
-	// MARK: - Notifications
-	func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		if isNightModeEnabled()
-		{
-			titleView.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.indicatorStyle = .white
-		}
-		else
-		{
-			titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			tableView.indicatorStyle = .black
-		}
-		tableView.reloadData()
-	}
 }
 
 // MARK: - UITableViewDataSource
@@ -197,7 +177,7 @@ extension PlaylistDetailVC : UITableViewDataSource
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.track", for: indexPath) as! TrackTableViewCell
-		cell.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		cell.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		cell.contentView.backgroundColor = cell.backgroundColor
 		cell.lblTitle.backgroundColor = cell.backgroundColor
 		cell.lblTrack.backgroundColor = cell.backgroundColor
@@ -216,11 +196,11 @@ extension PlaylistDetailVC : UITableViewDataSource
 				return cell
 			}
 
-			cell.separator.backgroundColor = isNightModeEnabled() ? UIColor(rgb: 0x1C1C1C) : UIColor(rgb: 0xE4E4E4)
+			cell.separator.backgroundColor = UIColor(rgb: 0xE4E4E4)
 			cell.separator.isHidden = false
-			cell.lblTitle.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			cell.lblTrack.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			cell.lblDuration.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			cell.lblTitle.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			cell.lblTrack.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			cell.lblDuration.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 
 			let track = tracks[indexPath.row]
 			cell.lblTrack.text = String(track.trackNumber)

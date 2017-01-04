@@ -54,15 +54,13 @@ final class AlbumsVC : UITableViewController
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1) : #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		navigationItem.titleView = titleView
 
 		// Tableview
 		tableView.tableFooterView = UIView()
-		tableView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		tableView.indicatorStyle = isNightModeEnabled() ? .white : .black
-
-		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
+		tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		tableView.indicatorStyle = .black
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -89,7 +87,7 @@ final class AlbumsVC : UITableViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return isNightModeEnabled() ? .lightContent : .default
+		return .default
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -127,24 +125,6 @@ final class AlbumsVC : UITableViewController
 		_downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
-
-	// MARK: - Notifications
-	func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		if isNightModeEnabled()
-		{
-			titleView.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.indicatorStyle = .white
-		}
-		else
-		{
-			titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			tableView.indicatorStyle = .black
-		}
-		tableView.reloadData()
-	}
 }
 
 // MARK: - UITableViewDataSource
@@ -158,8 +138,6 @@ extension AlbumsVC
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.album", for: indexPath) as! AlbumTableViewCell
-		cell.backgroundColor = tableView.backgroundColor
-		cell.contentView.backgroundColor = cell.backgroundColor
 
 		// Dummy to let some space for the mini player
 		if indexPath.row == artist.albums.count
@@ -173,10 +151,9 @@ extension AlbumsVC
 			cell.lblAlbum.tag = 789
 			return cell
 		}
-		cell.dummyView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.dummyView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		cell.lblAlbum.backgroundColor = cell.dummyView.backgroundColor
-		cell.lblAlbum.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		cell.coverView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.4756349325, green: 0.4756467342, blue: 0.4756404161, alpha: 1) : #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		cell.coverView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 
 		let album = artist.albums[indexPath.row]
 		cell.lblAlbum.text = album.name

@@ -70,7 +70,7 @@ final class MenuView : UIView
 		_menuMinX = -(frame.size.width + 2.0)
 
 		// Blur effect
-		self.blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: isNightModeEnabled() ? .dark : .light))
+		self.blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
 		self.blurEffectView.frame = self.bounds
 		self.addSubview(self.blurEffectView)
 
@@ -83,7 +83,7 @@ final class MenuView : UIView
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
 		self.tableView.isScrollEnabled = false
-		self.tableView.separatorColor = isNightModeEnabled() ? #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		self.tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		self.tableView.separatorInset = .zero
 		self.tableView.layoutMargins = .zero
 		self.blurEffectView.contentView.addSubview(self.tableView)
@@ -95,8 +95,6 @@ final class MenuView : UIView
 		self.addGestureRecognizer(self.pan)
 
 		self.tableView.reloadData()
-
-		NotificationCenter.default.addObserver(self, selector: #selector(nightModeSettingDidChange(_:)), name: .nightModeSettingDidChange, object: nil)
 	}
 
 	required init?(coder aDecoder: NSCoder)
@@ -140,22 +138,6 @@ final class MenuView : UIView
 				break
 		}
 	}
-
-	// MARK: - Notifications
-	func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		if isNightModeEnabled()
-		{
-			self.tableView.separatorColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			self.blurEffectView.effect = UIBlurEffect(style: .dark)
-		}
-		else
-		{
-			self.tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			self.blurEffectView.effect = UIBlurEffect(style: .light)
-		}
-		self.tableView.reloadData()
-	}
 }
 
 // MARK: - UITableViewDataSource
@@ -192,10 +174,7 @@ extension MenuView : UITableViewDataSource
 			default:
 				break
 		}
-		if isNightModeEnabled()
-		{
-			cell.ivLogo.image = cell.ivLogo.image?.tinted(withColor: #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1))?.withRenderingMode(.alwaysOriginal)
-		}
+
 		if selected
 		{
 			cell.ivLogo.image = cell.ivLogo.image?.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))

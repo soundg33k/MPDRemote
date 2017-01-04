@@ -103,8 +103,6 @@ final class ServerVC : MenuTVC
 	{
 		super.viewWillAppear(animated)
 
-		self.nightModeSettingDidChange(nil)
-
 		if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 		{
 			if let server = NSKeyedUnarchiver.unarchiveObject(with: mpdServerAsData) as! AudioServer?
@@ -139,7 +137,7 @@ final class ServerVC : MenuTVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return isNightModeEnabled() ? .lightContent : .default
+		return .default
 	}
 
 	// MARK: - Buttons actions
@@ -360,87 +358,6 @@ final class ServerVC : MenuTVC
 		let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
 		lblClearCache.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(size) / 1048576.0))\(NYXLocalizedString("lbl_megabytes")))"
 	}
-
-	// MARK: - Notifications
-	override func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		super.nightModeSettingDidChange(aNotification)
-
-		if isNightModeEnabled()
-		{
-			navigationController?.navigationBar.barStyle = .black
-			titleView.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.separatorColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			for i in 0...tableView.numberOfSections - 1
-			{
-				for j in 0...tableView.numberOfRows(inSection: i) - 1
-				{
-					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
-					{
-						cell.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-					}
-				}
-			}
-			self.lblClearCache.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-
-			tfMPDName.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			tfMPDHostname.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			tfMPDPort.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			tfMPDPassword.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			tfWEBHostname.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			tfWEBCoverName.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			tfWEBPort.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-
-			tfMPDName.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_defaultname"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.5741485357, green: 0.5741624236, blue: 0.574154973, alpha: 1)])
-			tfMPDHostname.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_host"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.5741485357, green: 0.5741624236, blue: 0.574154973, alpha: 1)])
-			tfMPDPassword.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_optional"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.5741485357, green: 0.5741624236, blue: 0.574154973, alpha: 1)])
-			tfWEBHostname.attributedPlaceholder = NSAttributedString(string: "http://mpd.local", attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.5741485357, green: 0.5741624236, blue: 0.574154973, alpha: 1)])
-		}
-		else
-		{
-			navigationController?.navigationBar.barStyle = .default
-			titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			tableView.separatorColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			for i in 0...tableView.numberOfSections - 1
-			{
-				for j in 0...tableView.numberOfRows(inSection: i) - 1
-				{
-					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
-					{
-						cell.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-					}
-				}
-			}
-			self.lblClearCache.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-
-			tfMPDName.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			tfMPDHostname.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			tfMPDPort.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			tfMPDPassword.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			tfWEBHostname.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			tfWEBCoverName.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			tfWEBPort.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-
-			tfMPDName.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_defaultname"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)])
-			tfMPDHostname.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_host"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)])
-			tfMPDPassword.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_optional"), attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)])
-			tfWEBHostname.attributedPlaceholder = NSAttributedString(string: "http://mpd.local", attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)])
-		}
-
-		lblCellMPDName.textColor = titleView.textColor
-		lblCellMPDHostname.textColor = titleView.textColor
-		lblCellMPDPort.textColor = titleView.textColor
-		lblCellMPDPassword.textColor = titleView.textColor
-		lblCellWEBHostname.textColor = titleView.textColor
-		lblCellWEBCoverName.textColor = titleView.textColor
-		lblCellWEBPort.textColor = titleView.textColor
-
-		tableView.reloadData()
-
-		setNeedsStatusBarAppearanceUpdate()
-	}
 }
 
 // MARK: - 
@@ -512,7 +429,7 @@ extension ServerVC
 
 		let label = UILabel(frame: CGRect(10.0, 0.0, dummy.width - 20.0, dummy.height))
 		label.backgroundColor = dummy.backgroundColor
-		label.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1) : #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		label.font = UIFont.systemFont(ofSize: 15.0)
 		dummy.addSubview(label)
 

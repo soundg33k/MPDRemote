@@ -91,7 +91,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 			kNYXPrefMPDRepeat : false,
 			kNYXPrefMPDVolume : 100,
 			kNYXPrefDisplayType : DisplayType.albums.rawValue,
-			kNYXPrefNightMode : false,
 			kNYXPrefShakeToPlayRandomAlbum : false,
 		]
 

@@ -67,17 +67,17 @@ final class RootVC : MenuVC
 		super.viewDidLoad()
 		// Remove back button label
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-		navigationController?.navigationBar.barStyle = isNightModeEnabled() ? .black : .default
+		navigationController?.navigationBar.barStyle = .default
 
 		// Customize navbar
 		let navigationBar = (navigationController?.navigationBar)!
 
 		// Searchbar
 		searchView = UIView(frame: CGRect(0.0, -64.0, navigationBar.width, 64.0))
-		searchView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1) : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		searchView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		searchBar = UISearchBar(frame: navigationBar.frame)
 		searchBar.searchBarStyle = .minimal
-		searchBar.barTintColor = isNightModeEnabled() ? #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		searchBar.barTintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		searchBar.tintColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 		searchBar.showsCancelButton = true
@@ -95,8 +95,8 @@ final class RootVC : MenuVC
 		btnRandom = UIButton(type: .custom)
 		btnRandom.frame = CGRect((navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRandom.setImage(imageRandom.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRandom.setImage(imageRandom.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
+		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
@@ -108,16 +108,16 @@ final class RootVC : MenuVC
 		btnRepeat = UIButton(type: .custom)
 		btnRepeat.frame = CGRect((navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 		navigationController?.navigationBar.addSubview(btnRepeat)
 
 		// Create collection view
-		collectionView.backgroundColor = isNightModeEnabled() ? #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1) : #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		collectionView.indicatorStyle = isNightModeEnabled() ? .white : .black
+		collectionView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		collectionView.indicatorStyle = .black
 		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "io.whine.mpdremote.cell.album")
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
 		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
@@ -239,7 +239,7 @@ final class RootVC : MenuVC
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return isNightModeEnabled() ? .lightContent : .default
+		return .default
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -574,7 +574,7 @@ final class RootVC : MenuVC
 		}
 		let astr1 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr1, for: .normal)
-		let astr2 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : isNightModeEnabled() ? #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1) :  #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
+		let astr2 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr2, for: .highlighted)
 	}
 
@@ -604,32 +604,6 @@ final class RootVC : MenuVC
 	func audioServerConfigurationDidChange(_ aNotification: Notification)
 	{
 		_serverChanged = true
-	}
-
-	override func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		super.nightModeSettingDidChange(aNotification)
-
-		if isNightModeEnabled()
-		{
-			navigationController?.navigationBar.barStyle = .black
-			collectionView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			searchView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			searchBar.barTintColor = #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)
-			collectionView.indicatorStyle = .white
-		}
-		else
-		{
-			navigationController?.navigationBar.barStyle = .default
-			collectionView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			searchView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-			searchBar.barTintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			collectionView.indicatorStyle = .black
-		}
-
-		collectionView.reloadData()
-		updateNavigationTitle()
-		setNeedsStatusBarAppearanceUpdate()
 	}
 
 	func miniPlayShouldExpandNotification(_ aNotification: Notification)
@@ -666,7 +640,7 @@ extension RootVC : UICollectionViewDataSource
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "io.whine.mpdremote.cell.album", for: indexPath) as! RootCollectionViewCell
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
-		cell.label.textColor = isNightModeEnabled() ? #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1) : #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		cell.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		cell.label.backgroundColor = collectionView.backgroundColor
 
 		// Sanity check
