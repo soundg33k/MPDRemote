@@ -12,9 +12,9 @@ MPDRemote (iOS 10.0+)
 ---------|---------------
 🗄 | Browse by albums / artists / genres / playlists
 🔎 | Fuzzy Search for albums, artists, genres
-⏯ | Play, pause, next, previous
+⏯ ⏩ ⏪ | Play, pause, next, previous
 🔀 🔁 | Shuffle & repeat
-🔈 | Volume control
+🔈 🔊 | Volume control
 📍 | Track position control
 ➕ | Add album / artist / genre / playlist to play queue
 💬| VoiceOver compliant
