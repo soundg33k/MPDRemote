@@ -1,31 +1,38 @@
-**MPDRemote** is an iOS application to control a [mpd](http://www.musicpd.org/) server. It is written in Swift 3 and requires iOS 10.
+MPDRemote (iOS 10.0+)
+==============
+
+[![Twitter: @Nyx0uf](https://img.shields.io/badge/contact-@Nyx0uf-blue.svg?style=flat)](https://twitter.com/Nyx0uf) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Nyx0uf/MPDRemote/blob/master/LICENSE.md) [![Swift Version](https://img.shields.io/badge/Swift-3.0-orange.svg)]()
 
 ![screenshot1](https://static.whine.fr/images/2016/mpdremote1.gif)
-![screenshot2](https://static.whine.fr/images/2016/mpdremote2.gif)
 
+**MPDRemote** is an iOS application to control a [mpd](http://www.musicpd.org/) server. It is written in Swift 3 and requires at least iOS 10.
+
+
+         | FEATURES
+---------|---------------
+≡ | Browse by albums / artists / genres / playlists
+🔎 | Fuzzy Search for albums, artists, genres
+▶ | Play, pause, next, previous
+🔀 | Shuffle & repeat
+🔊 | Volume control
+⌖ | Track position control
+➕ | Add album / artist / genre / playlist to play queue
+💬| VoiceOver compliant
+🔗 | Automatically find mpd server with Bonjour/Zeroconf
+🇬🇧 🇫🇷 | English and French localized
 
 There is no persistence layer apart from cover caching.
 
-### FEATURES
+         | TODO
+---------|---------------
+⚡ | Optimize things? not slow anyway, works well with an iPhone 5 and 3000+ albums
+📱 | iPad version
+⚙ | Better icons for consistency, I took random free icons on the net. Problem is my skills in design are (void*)0.
+🏁 | Put it on the AppStore ? But I Have no money.
 
-- Browse by Albums / Artists / Genres / Playlists
-- Search
-- Play / pause, shuffle & repeat, volume control, track position control
-- Shake to play a random album
-- Add album / artist / genre / playlist to play queue
-- VoiceOver compliant
-- Automatically find mpd server with Bonjour/Zeroconf
-- English and French localized
-
-### TODO
-
-- [ ] Optimize things? Not slow anyway, works well on my iPhone 5 with 3000+ albums
-- [ ] iPad version
-- [ ] Persistence layer? probably not since it's quite fast on a local network and my 40K musical library evolve quite often
-- [ ] Better icons for consistency, I took random free icons on the net. Problem is my skills in design are (void*)0.
-
-### LICENSE
+LICENSES
+-----------------
 
 The mpd static library included is built from [libmpdclient](https://github.com/cmende/libmpdclient) and is released under the revised BSD License.
 
-**MPDRemote** is released under the MIT License, see LICENSE file.
+**MPDRemote** itself is released under the MIT License, see LICENSE.md file.
