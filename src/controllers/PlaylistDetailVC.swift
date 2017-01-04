@@ -77,9 +77,7 @@ final class PlaylistDetailVC : UIViewController
 		dummyView.layer.masksToBounds = false
 
 		// Tableview
-		tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		tableView.tableFooterView = UIView()
-		tableView.indicatorStyle = .black
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -177,8 +175,6 @@ extension PlaylistDetailVC : UITableViewDataSource
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.track", for: indexPath) as! TrackTableViewCell
-		cell.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		cell.contentView.backgroundColor = cell.backgroundColor
 		cell.lblTitle.backgroundColor = cell.backgroundColor
 		cell.lblTrack.backgroundColor = cell.backgroundColor
 		cell.lblDuration.backgroundColor = cell.backgroundColor

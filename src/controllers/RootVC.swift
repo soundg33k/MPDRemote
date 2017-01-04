@@ -67,12 +67,9 @@ final class RootVC : MenuVC
 		super.viewDidLoad()
 		// Remove back button label
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-		navigationController?.navigationBar.barStyle = .default
-
-		// Customize navbar
-		let navigationBar = (navigationController?.navigationBar)!
 
 		// Searchbar
+		let navigationBar = (navigationController?.navigationBar)!
 		searchView = UIView(frame: CGRect(0.0, -64.0, navigationBar.width, 64.0))
 		searchView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		searchBar = UISearchBar(frame: navigationBar.frame)
@@ -116,8 +113,6 @@ final class RootVC : MenuVC
 		navigationController?.navigationBar.addSubview(btnRepeat)
 
 		// Create collection view
-		collectionView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		collectionView.indicatorStyle = .black
 		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "io.whine.mpdremote.cell.album")
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
 		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))

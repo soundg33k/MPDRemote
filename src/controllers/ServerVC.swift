@@ -72,7 +72,7 @@ final class ServerVC : MenuTVC
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		titleView.text = NYXLocalizedString("lbl_header_server_cfg")
 		navigationItem.titleView = titleView
 

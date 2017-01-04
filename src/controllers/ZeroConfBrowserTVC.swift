@@ -64,9 +64,6 @@ final class ZeroConfBrowserTVC : UITableViewController
 		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		titleView.text = NYXLocalizedString("lbl_header_server_zeroconf")
 		navigationItem.titleView = titleView
-		navigationController?.navigationBar.barStyle = .default
-		tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		tableView.separatorColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -122,9 +119,6 @@ extension ZeroConfBrowserTVC
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.zeroconf", for: indexPath) as! ZeroConfServerTableViewCell
-		cell.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		cell.lblName.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		cell.lblHostname.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 
 		let server = _servers[indexPath.row]
 		cell.lblName.text = server.name

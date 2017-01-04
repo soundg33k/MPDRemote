@@ -60,8 +60,6 @@ final class ArtistsVC : UITableViewController
 
 		// Tableview
 		tableView.tableFooterView = UIView()
-		tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		tableView.indicatorStyle = .black
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -139,10 +137,7 @@ extension ArtistsVC
 		// Dummy to let some space for the mini player
 		if indexPath.row == artists.count
 		{
-			cell.dummyView.backgroundColor = tableView.backgroundColor
-			cell.lblArtist.backgroundColor = tableView.backgroundColor
-			cell.lblAlbums.backgroundColor = tableView.backgroundColor
-			cell.coverView.backgroundColor = tableView.backgroundColor
+			cell.coverView.backgroundColor = cell.dummyView.backgroundColor
 			cell.coverView.image = nil
 			cell.lblArtist.text = ""
 			cell.lblAlbums.text = ""
@@ -150,9 +145,6 @@ extension ArtistsVC
 			cell.lblAlbums.tag = 789
 			return cell
 		}
-		cell.dummyView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		cell.lblArtist.backgroundColor = cell.dummyView.backgroundColor
-		cell.lblAlbums.backgroundColor = cell.dummyView.backgroundColor
 		cell.coverView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 
 		let artist = artists[indexPath.row]

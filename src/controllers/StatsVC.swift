@@ -67,7 +67,7 @@ final class StatsVC : MenuTVC
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		titleView.text = NYXLocalizedString("lbl_section_stats")
 		navigationItem.titleView = titleView
 
@@ -154,75 +154,6 @@ final class StatsVC : MenuTVC
 		}
 		return "\(duration.seconds)s"
 	}
-
-	// MARK: - Notifications
-	/*override func nightModeSettingDidChange(_ aNotification: Notification?)
-	{
-		super.nightModeSettingDidChange(aNotification)
-
-		if isNightModeEnabled()
-		{
-			navigationController?.navigationBar.barStyle = .black
-			titleView.textColor = #colorLiteral(red: 0.7540688515, green: 0.7540867925, blue: 0.7540771365, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.separatorColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			for i in 0...tableView.numberOfSections - 1
-			{
-				for j in 0...tableView.numberOfRows(inSection: i) - 1
-				{
-					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
-					{
-						cell.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-					}
-				}
-			}
-
-			lblAlbums.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			lblArtists.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			lblSongs.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			lblDBPlaytime.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			lblMPDUptime.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			lblMPDPlaytime.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-			lblMPDDBLastUpdate.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-		}
-		else
-		{
-			navigationController?.navigationBar.barStyle = .default
-			titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			tableView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			tableView.separatorColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-			for i in 0...tableView.numberOfSections - 1
-			{
-				for j in 0...tableView.numberOfRows(inSection: i) - 1
-				{
-					if let cell = tableView.cellForRow(at: IndexPath(row: j, section: i))
-					{
-						cell.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-					}
-				}
-			}
-
-			lblAlbums.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			lblArtists.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			lblSongs.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			lblDBPlaytime.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			lblMPDUptime.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			lblMPDPlaytime.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			lblMPDDBLastUpdate.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		}
-
-		lblCellAlbums.textColor = titleView.textColor
-		lblCellArtists.textColor = titleView.textColor
-		lblCellSongs.textColor = titleView.textColor
-		lblCellDBPlaytime.textColor = titleView.textColor
-		lblCellMPDUptime.textColor = titleView.textColor
-		lblCellMPDPlaytime.textColor = titleView.textColor
-		lblCellMPDDBLastUpdate.textColor = titleView.textColor
-
-		tableView.reloadData()
-
-		setNeedsStatusBarAppearanceUpdate()
-	}*/
 }
 
 // MARK: - UITableViewDelegate
