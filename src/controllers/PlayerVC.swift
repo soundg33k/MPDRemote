@@ -127,6 +127,9 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		PlayerController.shared.getVolume { (volume: Int) in
 			DispatchQueue.main.async {
 				self.sliderVolume.value = Float(volume)
+				self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
+				UserDefaults.standard.set(volume, forKey: kNYXPrefMPDVolume)
+				UserDefaults.standard.synchronize()
 			}
 		}
 
