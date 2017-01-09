@@ -157,19 +157,19 @@ extension MenuView : UITableViewDataSource
 		{
 			case 0:
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_home")
-				cell.ivLogo.image = #imageLiteral(resourceName: "img-home")
+				cell.ivLogo.image = #imageLiteral(resourceName: "img-home").withRenderingMode(.alwaysTemplate)
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().homeVC)
 			case 1:
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_server")
-				cell.ivLogo.image = #imageLiteral(resourceName: "img-server")
+				cell.ivLogo.image = #imageLiteral(resourceName: "img-server").withRenderingMode(.alwaysTemplate)
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().serverVC)
 			case 2:
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_stats")
-				cell.ivLogo.image = #imageLiteral(resourceName: "img-stats")
+				cell.ivLogo.image = #imageLiteral(resourceName: "img-stats").withRenderingMode(.alwaysTemplate)
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().statsVC)
 			case 3:
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_settings")
-				cell.ivLogo.image = #imageLiteral(resourceName: "img-settings")
+				cell.ivLogo.image = #imageLiteral(resourceName: "img-settings").withRenderingMode(.alwaysTemplate)
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().settingsVC)
 			default:
 				break
@@ -177,7 +177,11 @@ extension MenuView : UITableViewDataSource
 
 		if selected
 		{
-			cell.ivLogo.image = cell.ivLogo.image?.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))
+			cell.ivLogo.tintColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		}
+		else
+		{
+			cell.ivLogo.tintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		}
 
 		return cell

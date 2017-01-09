@@ -25,22 +25,22 @@ import UIKit
 
 func generateCoverForAlbum(_ album: Album, size: CGSize) -> UIImage?
 {
-	return generateCoverFromString(album.name, size: size, useGradient: true)
+	return generateCoverFromString(album.name, size: size, useGradient: false)
 }
 
 func generateCoverForGenre(_ genre: Genre, size: CGSize) -> UIImage?
 {
-	return generateCoverFromString(genre.name, size: size, useGradient: true)
+	return generateCoverFromString(genre.name, size: size, useGradient: false)
 }
 
 func generateCoverForArtist(_ artist: Artist, size: CGSize) -> UIImage?
 {
-	return generateCoverFromString(artist.name, size: size, useGradient: true)
+	return generateCoverFromString(artist.name, size: size, useGradient: false)
 }
 
 func generateCoverForPlaylist(_ playlist: Playlist, size: CGSize) -> UIImage?
 {
-	return generateCoverFromString(playlist.name, size: size, useGradient: true)
+	return generateCoverFromString(playlist.name, size: size, useGradient: false)
 }
 
 func generateCoverFromString(_ string: String, size: CGSize, useGradient: Bool = false) -> UIImage?

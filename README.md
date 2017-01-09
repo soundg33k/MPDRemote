@@ -10,14 +10,14 @@ MPDRemote
 
          | FEATURES
 ---------|---------------
-🗄 | Browse by albums / artists / genres / playlists
-🔎 | Fuzzy Search for albums, artists, genres
+🗄 | Browse by albums, artists, genres, playlists
+🔎 | Fuzzy search for albums, artists, genres
 ⏪ ⏯ ⏩ | Play, pause, next, previous
 🔀 🔁 | Shuffle & repeat
 🔈 🔊 | Volume control
 📍 | Track position control
-➕ | Add album / artist / genre / playlist to play queue
-💬| VoiceOver compliant
+➕ | Add album, artist, genre, playlist to current play queue
+💬 | VoiceOver compliant
 🌐 | Automatically find mpd server with Bonjour/Zeroconf
 🇬🇧 🇫🇷 | English and French localized
 
