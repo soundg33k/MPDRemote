@@ -3,7 +3,7 @@ MPDRemote
 
 [![Twitter: @Nyx0uf](https://img.shields.io/badge/contact-@Nyx0uf-blue.svg?style=flat)](https://twitter.com/Nyx0uf) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Nyx0uf/MPDRemote/blob/master/LICENSE.md) [![Swift Version](https://img.shields.io/badge/Swift-3.0-orange.svg)]()
 
-![screenshot1](https://static.whine.fr/images/2016/mpdremote1.gif)
+![screenshot1](https://mpdremote.whine.fr/img/demo-screen-2.gif)
 
 **MPDRemote** is an iOS application to control a [mpd](http://www.musicpd.org/) server. It is written in Swift 3 and requires at least iOS 10.
 
