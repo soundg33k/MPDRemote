@@ -5,7 +5,7 @@ MPDRemote
 
 ![screenshot1](https://mpdremote.whine.fr/img/demo-screen-2.gif)
 
-**MPDRemote** is an iOS application to control a [mpd](http://www.musicpd.org/) server. It is written in Swift 3 and requires at least iOS 10.
+**MPDRemote** is an iOS application to control a [MPD](http://www.musicpd.org/) server. It is written in Swift 3 and requires at least iOS 10.
 
 
          | FEATURES
@@ -18,7 +18,7 @@ MPDRemote
 📍 | Track position control
 ➕ | Add album, artist, genre, playlist to current play queue
 💬 | VoiceOver compliant
-🌐 | Automatically find mpd server with Bonjour/Zeroconf
+🌐 | Automatically find MPD server with Bonjour/Zeroconf
 🇬🇧 🇫🇷 | English and French localized
 
 There is no persistence layer apart from cover caching.
@@ -33,6 +33,6 @@ There is no persistence layer apart from cover caching.
 LICENSES
 -----------------
 
-The mpd static library included is built from [libmpdclient](https://github.com/cmende/libmpdclient) and is released under the revised BSD License.
+The MPD static library included is built from [libmpdclient](https://github.com/cmende/libmpdclient) and is released under the revised BSD License.
 
 **MPDRemote** itself is released under the MIT License, see LICENSE.md file.
