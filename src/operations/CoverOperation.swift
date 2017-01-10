@@ -152,7 +152,19 @@ final class CoverOperation : Operation
 		{
 			return
 		}
-		try! UIImageJPEGRepresentation(thumbnail, 0.7)?.write(to: saveURL, options: [.atomicWrite])
+
+		let renderer = UIGraphicsImageRenderer(size: thumbnail.size)
+		let jpeg = renderer.jpegData(withCompressionQuality: 0.7) { rendererContext in
+			thumbnail.draw(at: .zero)
+		}
+		do
+		{
+			try jpeg.write(to: saveURL, options: [.atomicWrite])
+		}
+		catch _
+		{
+			Logger.dlog("save error")
+		}
 
 		if let block = callback
 		{
@@ -175,11 +187,12 @@ final class CoverOperation : Operation
 		{
 			return
 		}
-		guard let jpeg = UIImageJPEGRepresentation(thumbnail, 0.7) else
-		{
-			Logger.dlog("UIImageJPEGRepresentation")
-			return
+
+		let renderer = UIGraphicsImageRenderer(size: thumbnail.size)
+		let jpeg = renderer.jpegData(withCompressionQuality: 0.7) { rendererContext in
+			thumbnail.draw(at: .zero)
 		}
+
 		do
 		{
 			try jpeg.write(to: saveURL, options: [.atomicWrite])
