@@ -60,7 +60,7 @@ private func makeLinearGradient(startColor: UIColor, endColor: UIColor) -> CGGra
 {
 	let colors = [startColor.cgColor, endColor.cgColor]
 
-	let colorSpace = CGColorSpaceCreateDeviceRGB()
+	let colorSpace = CGColorSpace.NYXAppropriateColorSpace()
 
 	let colorLocations: [CGFloat] = [0.0, 1.0]
 

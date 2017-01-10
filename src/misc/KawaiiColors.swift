@@ -123,7 +123,7 @@ final class KawaiiColors
 		let width = cgImage.width
 		let height = cgImage.height
 
-		guard let bmContext = CGContext.RGBABitmapContext(width: width, height: height, withAlpha: false) else
+		guard let bmContext = CGContext.RGBABitmapContext(width: width, height: height, withAlpha: false, wideGamut: false) else
 		{
 			return nil
 		}
