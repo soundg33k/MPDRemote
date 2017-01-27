@@ -58,10 +58,6 @@ extension CGColorSpace
 			{
 				return p3ColorSpace
 			}
-			else
-			{
-				return CGColorSpaceCreateDeviceRGB()
-			}
 		}
 		return CGColorSpaceCreateDeviceRGB()
 	}
