@@ -27,6 +27,7 @@
 "lbl_appearance" = "Appearance";
 "lbl_version" = "Version";
 "lbl_behaviour" = "Behaviour";
+"lbl_search" = "Search";
 
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";

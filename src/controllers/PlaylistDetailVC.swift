@@ -42,6 +42,10 @@ final class PlaylistDetailVC : UIViewController
 	@IBOutlet private var colorView: UIView! = nil
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
+	// Random button
+	private var btnRandom: UIBarButtonItem! = nil
+	// Repeat button
+	private var btnRepeat: UIBarButtonItem! = nil
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -85,12 +89,26 @@ final class PlaylistDetailVC : UIViewController
 		super.viewWillAppear(animated)
 
 		// Add navbar shadow
-		let navigationBar = navigationController!.navigationBar
-		navigationBar.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).cgPath
-		navigationBar.layer.shadowRadius = 3.0
-		navigationBar.layer.shadowOpacity = 1.0
-		navigationBar.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
-		navigationBar.layer.masksToBounds = false
+		if let navigationBar = navigationController?.navigationBar
+		{
+			navigationBar.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).cgPath
+			navigationBar.layer.shadowRadius = 3.0
+			navigationBar.layer.shadowOpacity = 1.0
+			navigationBar.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
+			navigationBar.layer.masksToBounds = false
+
+			let loop = UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat)
+			btnRepeat = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-repeat").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRepeatAction(_:)))
+			btnRepeat.tintColor = loop ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+			btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
+
+			let rand = UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle)
+			btnRandom = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRandomAction(_:)))
+			btnRandom.tintColor = rand ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+			btnRandom.accessibilityLabel = NYXLocalizedString(rand ? "lbl_random_disable" : "lbl_random_enable")
+
+			navigationItem.rightBarButtonItems = [btnRandom, btnRepeat]
+		}
 
 		// Update header
 		updateHeader()
@@ -157,6 +175,35 @@ final class PlaylistDetailVC : UIViewController
 			attrs.append(NSAttributedString(string: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 			titleView.attributedText = attrs
 		}
+	}
+
+	// MARK: - Buttons actions
+	func toggleRandomAction(_ sender: Any?)
+	{
+		let prefs = UserDefaults.standard
+		let random = !prefs.bool(forKey: kNYXPrefMPDShuffle)
+
+		btnRandom.tintColor = random ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+
+		prefs.set(random, forKey: kNYXPrefMPDShuffle)
+		prefs.synchronize()
+
+		PlayerController.shared.setRandom(random)
+	}
+
+	func toggleRepeatAction(_ sender: Any?)
+	{
+		let prefs = UserDefaults.standard
+		let loop = !prefs.bool(forKey: kNYXPrefMPDRepeat)
+
+		btnRepeat.tintColor = loop ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
+
+		prefs.set(loop, forKey: kNYXPrefMPDRepeat)
+		prefs.synchronize()
+
+		PlayerController.shared.setRepeat(loop)
 	}
 }
 

@@ -598,7 +598,7 @@
         <!--AlbumDetailVC-->
         <scene sceneID="N9l-RR-ru4">
             <objects>
-                <viewController title="AlbumDetailVC" automaticallyAdjustsScrollViewInsets="NO" id="1y3-hN-RBL" customClass="AlbumDetailVC" customModule="MPDRemote" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AlbumDetailVC" title="AlbumDetailVC" automaticallyAdjustsScrollViewInsets="NO" id="1y3-hN-RBL" customClass="AlbumDetailVC" customModule="MPDRemote" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="C3U-Xt-XYj"/>
                         <viewControllerLayoutGuide type="bottom" id="CS2-4f-iF4"/>

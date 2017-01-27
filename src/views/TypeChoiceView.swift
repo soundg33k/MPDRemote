@@ -25,7 +25,7 @@ import UIKit
 
 protocol TypeChoiceViewDelegate : class
 {
-	func didSelectType(_ type: DisplayType)
+	func didSelectDisplayType(_ type: DisplayType)
 }
 
 
@@ -119,13 +119,13 @@ extension TypeChoiceView : UITableViewDelegate
 		switch (indexPath.row)
 		{
 			case 0:
-				delegate?.didSelectType(.albums)
+				delegate?.didSelectDisplayType(.albums)
 			case 1:
-				delegate?.didSelectType(.artists)
+				delegate?.didSelectDisplayType(.artists)
 			case 2:
-				delegate?.didSelectType(.genres)
+				delegate?.didSelectDisplayType(.genres)
 			case 3:
-				delegate?.didSelectType(.playlists)
+				delegate?.didSelectDisplayType(.playlists)
 			default:
 				break
 		}

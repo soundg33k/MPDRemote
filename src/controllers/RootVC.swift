@@ -40,10 +40,6 @@ final class RootVC : MenuVC
 	fileprivate var searchBar: UISearchBar! = nil
 	// Button in the navigationbar
 	fileprivate var titleView: UIButton! = nil
-	// Random button
-	fileprivate var btnRandom: UIButton! = nil
-	// Repeat button
-	fileprivate var btnRepeat: UIButton! = nil
 	// Should show the search view, flag
 	fileprivate var searchBarVisible = false
 	// Is currently searching, flag
@@ -68,10 +64,16 @@ final class RootVC : MenuVC
 		// Remove back button label
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
+		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggleSearchAction(_:)))
+		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
+		//navigationItem.leftBarButtonItems = [navigationItem.leftBarButtonItem!, searchButton]
+		navigationItem.rightBarButtonItem = searchButton
+
 		// Searchbar
 		let navigationBar = (navigationController?.navigationBar)!
-		searchView = UIView(frame: CGRect(0.0, -64.0, navigationBar.width, 64.0))
+		searchView = UIView(frame: CGRect(0.0, 0.0, navigationBar.width, 64.0))
 		searchView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		searchView.alpha = 0.0
 		searchBar = UISearchBar(frame: navigationBar.frame)
 		searchBar.searchBarStyle = .minimal
 		searchBar.barTintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
@@ -85,32 +87,6 @@ final class RootVC : MenuVC
 		titleView = UIButton(frame: CGRect(0.0, 0.0, 100.0, navigationBar.height))
 		titleView.addTarget(self, action: #selector(changeTypeAction(_:)), for: .touchUpInside)
 		navigationItem.titleView = titleView
-
-		// Random button
-		let random = UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle)
-		let imageRandom = #imageLiteral(resourceName: "btn-random")
-		btnRandom = UIButton(type: .custom)
-		btnRandom.frame = CGRect((navigationController?.navigationBar.frame.width)! - 44.0, 0.0, 44.0, 44.0)
-		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
-		btnRandom.isSelected = random
-		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
-		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
-		navigationController?.navigationBar.addSubview(btnRandom)
-
-		// Repeat button
-		let loop = UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat)
-		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
-		btnRepeat = UIButton(type: .custom)
-		btnRepeat.frame = CGRect((navigationController?.navigationBar.frame.width)! - 88.0, 0.0, 44.0, 44.0)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
-		btnRepeat.isSelected = loop
-		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
-		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
-		navigationController?.navigationBar.addSubview(btnRepeat)
 
 		// Create collection view
 		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "io.whine.mpdremote.cell.album")
@@ -131,6 +107,12 @@ final class RootVC : MenuVC
 		doubleTap.numberOfTouchesRequired = 1
 		doubleTap.delaysTouchesBegan = true
 		collectionView.addGestureRecognizer(doubleTap)
+
+		// Peek & Pop
+		/*if traitCollection.forceTouchCapability == .available
+		{
+			registerForPreviewing(with: self, sourceView: collectionView)
+		}*/
 
 		_ = MiniPlayerView.shared.visible
 
@@ -497,32 +479,14 @@ final class RootVC : MenuVC
 		}
 	}
 
-	func toggleRandomAction(_ sender: Any?)
+	func toggleSearchAction(_ sender: Any?)
 	{
-		let prefs = UserDefaults.standard
-		let random = !prefs.bool(forKey: kNYXPrefMPDShuffle)
-
-		btnRandom.isSelected = random
-		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
-
-		prefs.set(random, forKey: kNYXPrefMPDShuffle)
-		prefs.synchronize()
-
-		PlayerController.shared.setRandom(random)
-	}
-
-	func toggleRepeatAction(_ sender: Any?)
-	{
-		let prefs = UserDefaults.standard
-		let loop = !prefs.bool(forKey: kNYXPrefMPDRepeat)
-
-		btnRepeat.isSelected = loop
-		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
-
-		prefs.set(loop, forKey: kNYXPrefMPDRepeat)
-		prefs.synchronize()
-
-		PlayerController.shared.setRepeat(loop)
+		UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
+			self.searchView.alpha = 1.0
+			self.searchBar.becomeFirstResponder()
+		}, completion:{ finished in
+			self.searchBarVisible = true
+		})
 	}
 
 	// MARK: - Private
@@ -530,7 +494,7 @@ final class RootVC : MenuVC
 	{
 		searchBar.endEditing(true)
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: .curveEaseOut, animations: {
-			self.searchView.y = -self.searchView.height
+			self.searchView.alpha = 0.0
 		}, completion:{ finished in
 			self.searchBarVisible = false
 		})
@@ -617,7 +581,7 @@ extension RootVC : UICollectionViewDataSource
 			return searchResults.count
 		}
 
-		switch _displayType
+		/*switch _displayType
 		{
 			case .albums:
 				return MusicDataSource.shared.albums.count
@@ -627,7 +591,8 @@ extension RootVC : UICollectionViewDataSource
 				return MusicDataSource.shared.artists.count
 			case .playlists:
 				return MusicDataSource.shared.playlists.count
-		}
+		}*/
+		return MusicDataSource.shared.selectedList().count
 	}
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
@@ -933,51 +898,6 @@ extension RootVC : UICollectionViewDelegate
 	}
 }
 
-// MARK: - UIScrollViewDelegate
-extension RootVC : UIScrollViewDelegate
-{
-	func scrollViewDidScroll(_ scrollView: UIScrollView)
-	{
-		if searchBarVisible
-		{
-			if scrollView.contentOffset.y > 0.0
-			{
-				showNavigationBar(animated: true)
-			}
-			return
-		}
-
-		if scrollView.contentOffset.y < -scrollView.contentInset.top
-		{
-			if scrollView.contentOffset.y < -(searchView.height + scrollView.contentInset.top)
-			{
-				searchView.y = 0.0
-			}
-			else
-			{
-				searchView.y = -searchView.height + (fabs(scrollView.contentOffset.y) - scrollView.contentInset.top)
-			}
-		}
-		else
-		{
-			searchView.y = -searchView.height
-		}
-	}
-
-	func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
-	{
-		if scrollView.contentOffset.y <= -(searchView.height + scrollView.contentInset.top)
-		{
-			searchBarVisible = true
-			searchBar.becomeFirstResponder()
-		}
-		else
-		{
-			searchBarVisible = false
-		}
-	}
-}
-
 // MARK: - UISearchBarDelegate
 extension RootVC : UISearchBarDelegate
 {
@@ -1002,7 +922,7 @@ extension RootVC : UISearchBarDelegate
 	{
 		searching = true
 		// Copy original source to avoid crash when nothing was searched
-		switch _displayType
+		/*switch _displayType
 		{
 			case .albums:
 				searchResults = MusicDataSource.shared.albums
@@ -1012,7 +932,8 @@ extension RootVC : UISearchBarDelegate
 				searchResults = MusicDataSource.shared.artists
 			case .playlists:
 				searchResults = MusicDataSource.shared.playlists
-		}
+		}*/
+		searchResults = MusicDataSource.shared.selectedList()
 	}
 
 	func searchBarTextDidEndEditing(_ searchBar: UISearchBar)
@@ -1023,7 +944,13 @@ extension RootVC : UISearchBarDelegate
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
 	{
-		switch _displayType
+		if MusicDataSource.shared.selectedList().count > 0
+		{
+			searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
+			collectionView.reloadData()
+		}
+
+		/*switch _displayType
 		{
 			case .albums:
 				if MusicDataSource.shared.albums.count > 0
@@ -1046,14 +973,14 @@ extension RootVC : UISearchBarDelegate
 					searchResults = MusicDataSource.shared.playlists.filter({$0.name.fuzzySearch(withString: searchText)})
 				}
 		}
-		collectionView.reloadData()
+		collectionView.reloadData()*/
 	}
 }
 
 // MARK: - TypeChoiceViewDelegate
 extension RootVC : TypeChoiceViewDelegate
 {
-	func didSelectType(_ type: DisplayType)
+	func didSelectDisplayType(_ type: DisplayType)
 	{
 		// Ignore if type did not change
 		if _displayType == type
@@ -1164,5 +1091,31 @@ extension NYXNavigationController : UIViewControllerTransitioningDelegate
 			vc.transitioningDelegate = self
 			vc.modalPresentationStyle = .custom
 		}
+	}
+}
+
+// MARK: - UIViewControllerPreviewingDelegate
+extension RootVC : UIViewControllerPreviewingDelegate
+{
+	public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
+	{
+
+	}
+
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
+	{
+		if let indexPath = collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath)
+		{
+			previewingContext.sourceRect = cellAttributes.frame
+			let sb = UIStoryboard(name: "main", bundle: Bundle.main)
+			let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
+
+			let row = indexPath.row
+			let album = searching ? searchResults[row] as! Album : MusicDataSource.shared.albums[row]
+			vc.album = album
+
+			return vc
+		}
+		return nil
 	}
 }

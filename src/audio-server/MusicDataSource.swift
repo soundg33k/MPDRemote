@@ -30,6 +30,8 @@ final class MusicDataSource
 	static let shared = MusicDataSource()
 	// MPD server
 	var server: AudioServer! = nil
+	// Selected display type
+	private(set) var displayType = DisplayType.albums
 	// Albums list
 	private(set) var albums = [Album]()
 	// Genres list
@@ -38,7 +40,6 @@ final class MusicDataSource
 	private(set) var artists = [Artist]()
 	// Playlists list
 	private(set) var playlists = [Playlist]()
-
 
 	// MARK: - Private properties
 	// MPD Connection
@@ -105,12 +106,29 @@ final class MusicDataSource
 		return initialize()
 	}
 
+	func selectedList() -> [MusicalEntity]
+	{
+		switch displayType
+		{
+			case .albums:
+				return albums
+			case .genres:
+				return genres
+			case .artists:
+				return artists
+			case .playlists:
+				return playlists
+		}
+	}
+
 	func getListForDisplayType(_ displayType: DisplayType, callback: @escaping () -> Void)
 	{
 		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
+
+		self.displayType = displayType
 
 		_queue.async {
 			let list = self._connection.getListForDisplayType(displayType)
