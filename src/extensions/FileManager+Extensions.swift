@@ -49,7 +49,7 @@ extension FileManager
 		}
 		catch _
 		{
-			Logger.alog("[!] Cant' get directory size")
+			Logger.alog("[!] Can't get directory size")
 		}
 
 		return result
