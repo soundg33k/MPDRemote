@@ -326,6 +326,7 @@ final class ServerVC : MenuTVC
 			{
 				try fileManager.removeItem(at: coversDirectoryURL)
 				try fileManager.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+				URLCache.shared.removeAllCachedResponses()
 			}
 			catch _
 			{
