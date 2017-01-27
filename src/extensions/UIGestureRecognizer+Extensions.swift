@@ -33,7 +33,7 @@ private final class Wrapper<T>
 	}
 }
 
-class Associator
+final class Associator
 {
 	static private func wrap<T>(_ x: T) -> Wrapper<T>
 	{
