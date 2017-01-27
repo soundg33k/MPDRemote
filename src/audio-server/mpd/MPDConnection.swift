@@ -766,7 +766,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		guard let song = mpd_run_current_song(_connection) else
 		{
-			Logger.dlog("[!] No song is currently being played.")
+			//Logger.dlog("[!] No song is currently being played.")
 			return nil
 		}
 
