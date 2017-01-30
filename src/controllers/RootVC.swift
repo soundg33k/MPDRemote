@@ -812,11 +812,14 @@ extension RootVC : UICollectionViewDataSource
 		else
 		{
 			cell.image = nil
+			if searching && searchBar.isFirstResponder == true
+			{
+				return
+			}
 			MusicDataSource.shared.getAlbumsForArtist(artist) {
 				DispatchQueue.main.async {
 					if let _ = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 					{
-						Logger.dlog("\(indexPath)")
 						self.collectionView.reloadItems(at: [indexPath])
 					}
 				}
