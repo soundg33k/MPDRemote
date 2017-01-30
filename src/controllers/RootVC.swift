@@ -730,6 +730,10 @@ extension RootVC : UICollectionViewDataSource
 		else
 		{
 			cell.image = nil
+			if searching && searchBar.isFirstResponder == true
+			{
+				return
+			}
 			MusicDataSource.shared.getAlbumForGenre(genre) {
 				DispatchQueue.main.async {
 					if let _ = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
