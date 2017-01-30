@@ -45,7 +45,7 @@ final class RootVC : MenuVC
 	// Is currently searching, flag
 	fileprivate var searching = false
 	// Search results
-	fileprivate var searchResults = [Any]()
+	fileprivate var searchResults = [MusicalEntity]()
 	// Long press gesture is recognized, flag
 	fileprivate var longPressRecognized = false
 	// Keep track of download operations to eventually cancel them
@@ -64,9 +64,8 @@ final class RootVC : MenuVC
 		// Remove back button label
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
-		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggleSearchAction(_:)))
+		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
-		//navigationItem.leftBarButtonItems = [navigationItem.leftBarButtonItem!, searchButton]
 		navigationItem.rightBarButtonItem = searchButton
 
 		// Searchbar
@@ -479,10 +478,11 @@ final class RootVC : MenuVC
 		}
 	}
 
-	func toggleSearchAction(_ sender: Any?)
+	func showSearchBarAction(_ sender: Any?)
 	{
 		UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
 			self.searchView.alpha = 1.0
+			//self.navigationController?.navigationBar.alpha = 0.0
 			self.searchBar.becomeFirstResponder()
 		}, completion:{ finished in
 			self.searchBarVisible = true
@@ -492,21 +492,12 @@ final class RootVC : MenuVC
 	// MARK: - Private
 	fileprivate func showNavigationBar(animated: Bool = true)
 	{
-		searchBar.endEditing(true)
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: .curveEaseOut, animations: {
+			self.searchBar.resignFirstResponder()
 			self.searchView.alpha = 0.0
+			//self.navigationController?.navigationBar.alpha = 1.0
 		}, completion:{ finished in
 			self.searchBarVisible = false
-		})
-	}
-
-	fileprivate func hideNavigationBar(animated: Bool = true)
-	{
-		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: .curveEaseOut, animations: {
-			self.searchView.y = 0.0
-		}, completion:{ finished in
-			self.searchBarVisible = true
-			self.searchBar.becomeFirstResponder()
 		})
 	}
 
@@ -581,17 +572,6 @@ extension RootVC : UICollectionViewDataSource
 			return searchResults.count
 		}
 
-		/*switch _displayType
-		{
-			case .albums:
-				return MusicDataSource.shared.albums.count
-			case .genres:
-				return MusicDataSource.shared.genres.count
-			case .artists:
-				return MusicDataSource.shared.artists.count
-			case .playlists:
-				return MusicDataSource.shared.playlists.count
-		}*/
 		return MusicDataSource.shared.selectedList().count
 	}
 
@@ -646,7 +626,6 @@ extension RootVC : UICollectionViewDataSource
 		guard let coverURL = album.localCoverURL else
 		{
 			Logger.alog("[!] No cover file URL for \(album)") // should not happen
-			cell.image = nil
 			return
 		}
 
@@ -657,6 +636,10 @@ extension RootVC : UICollectionViewDataSource
 		}
 		else
 		{
+			if searching && searchBar.isFirstResponder == true
+			{
+				return
+			}
 			if album.path != nil
 			{
 				downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
@@ -714,6 +697,10 @@ extension RootVC : UICollectionViewDataSource
 			}
 			else
 			{
+				if searching && searchBar.isFirstResponder == true
+				{
+					return
+				}
 				if album.path != nil
 				{
 					downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
@@ -787,6 +774,10 @@ extension RootVC : UICollectionViewDataSource
 				}
 				else
 				{
+					if searching && searchBar.isFirstResponder == true
+					{
+						return
+					}
 					let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!
 					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 					if album.path != nil
@@ -825,6 +816,7 @@ extension RootVC : UICollectionViewDataSource
 				DispatchQueue.main.async {
 					if let _ = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
 					{
+						Logger.dlog("\(indexPath)")
 						self.collectionView.reloadItems(at: [indexPath])
 					}
 				}
@@ -852,12 +844,6 @@ extension RootVC : UICollectionViewDelegate
 			showLeftViewAction(nil)
 			return
 		}
-
-		// Hide the searchbar
-		/*if searchBarVisible
-		{
-			showNavigationBar(animated:true)
-		}*/
 
 		switch _displayType
 		{
@@ -906,74 +892,46 @@ extension RootVC : UISearchBarDelegate
 		searchResults.removeAll()
 		searching = false
 		searchBar.text = ""
-		searchBar.resignFirstResponder()
 		showNavigationBar(animated: true)
-		//searchBarVisible = false
 		collectionView.reloadData()
 	}
 
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
 	{
-		collectionView.reloadData()
+		searchBar.resignFirstResponder()
 		searchBar.endEditing(true)
+		collectionView.reloadData()
 	}
 
 	func searchBarTextDidBeginEditing(_ searchBar: UISearchBar)
 	{
 		searching = true
 		// Copy original source to avoid crash when nothing was searched
-		/*switch _displayType
-		{
-			case .albums:
-				searchResults = MusicDataSource.shared.albums
-			case .genres:
-				searchResults = MusicDataSource.shared.genres
-			case .artists:
-				searchResults = MusicDataSource.shared.artists
-			case .playlists:
-				searchResults = MusicDataSource.shared.playlists
-		}*/
 		searchResults = MusicDataSource.shared.selectedList()
-	}
-
-	func searchBarTextDidEndEditing(_ searchBar: UISearchBar)
-	{
-		//searching = false
-		//searchResults.removeAll()
 	}
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
 	{
 		if MusicDataSource.shared.selectedList().count > 0
 		{
-			searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
+			if String.isNullOrWhiteSpace(searchText)
+			{
+				searchResults = MusicDataSource.shared.selectedList()
+				collectionView.reloadData()
+				return
+			}
+
+			if UserDefaults.standard.bool(forKey: kNYXPrefFuzzySearch)
+			{
+				searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
+			}
+			else
+			{
+				searchResults = MusicDataSource.shared.selectedList().filter({$0.name.lowercased().contains(searchText.lowercased())})
+			}
+
 			collectionView.reloadData()
 		}
-
-		/*switch _displayType
-		{
-			case .albums:
-				if MusicDataSource.shared.albums.count > 0
-				{
-					searchResults = MusicDataSource.shared.albums.filter({$0.name.fuzzySearch(withString: searchText)})
-				}
-			case .genres:
-				if MusicDataSource.shared.genres.count > 0
-				{
-					searchResults = MusicDataSource.shared.genres.filter({$0.name.fuzzySearch(withString: searchText)})
-				}
-			case .artists:
-				if MusicDataSource.shared.artists.count > 0
-				{
-					searchResults = MusicDataSource.shared.artists.filter({$0.name.fuzzySearch(withString: searchText)})
-				}
-			case .playlists:
-				if MusicDataSource.shared.playlists.count > 0
-				{
-					searchResults = MusicDataSource.shared.playlists.filter({$0.name.fuzzySearch(withString: searchText)})
-				}
-		}
-		collectionView.reloadData()*/
 	}
 }
 

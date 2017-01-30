@@ -31,6 +31,25 @@ extension String
 		return characters.count
 	}
 
+	// MARK: Removal of characters
+	func removing(charactersOf string: String) -> String
+	{
+		let characterSet = CharacterSet(charactersIn: string)
+		let components = self.components(separatedBy: characterSet)
+		return components.joined(separator: "")
+	}
+
+	// MARK: - NULL check
+	static func isNullOrEmpty(_ value: String?) -> Bool
+	{
+		return value == nil || (value?.isEmpty)!
+	}
+
+	static func isNullOrWhiteSpace(_ value: String?) -> Bool
+	{
+		return isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).length == 0
+	}
+
 	// MARK: - Hash functions
 	func md5() -> String
 	{

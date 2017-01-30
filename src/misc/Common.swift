@@ -29,6 +29,7 @@ func APP_DELEGATE() -> AppDelegate {return UIApplication.shared.delegate as! App
 public let kNYXPrefCoversDirectory = "app-covers-directory"
 public let kNYXPrefCoversSize = "app-covers-size"
 public let kNYXPrefDisplayType = "app-display-type"
+public let kNYXPrefFuzzySearch = "app-search-fuzzy"
 public let kNYXPrefShakeToPlayRandomAlbum = "app-shake-to-play"
 public let kNYXPrefMPDServer = "mpd-server"
 public let kNYXPrefMPDShuffle = "mpd-shuffle"
@@ -38,8 +39,6 @@ public let kNYXPrefWEBServer = "web-server"
 
 public let kNYXTopInset: CGFloat = 64.0
 
-/* App color */
-public let kNYXAppColor = Int(0x660000)
 
 /* RootVC display type */
 enum DisplayType : Int

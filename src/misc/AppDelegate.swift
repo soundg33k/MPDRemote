@@ -87,6 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		[
 			kNYXPrefCoversDirectory : coversDirectoryPath,
 			kNYXPrefCoversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width, width))),
+			kNYXPrefFuzzySearch : false,
 			kNYXPrefMPDShuffle : false,
 			kNYXPrefMPDRepeat : false,
 			kNYXPrefMPDVolume : 100,

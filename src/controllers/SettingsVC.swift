@@ -35,6 +35,10 @@ final class SettingsVC : MenuTVC
 	@IBOutlet private var lblShake: UILabel!
 	// Shake to play switch
 	@IBOutlet private var swShake: UISwitch!
+	// Fuzzy search label
+	@IBOutlet private var lblFuzzySearch: UILabel!
+	// Fuzzy search switch
+	@IBOutlet private var swFuzzySearch: UISwitch!
 	// Navigation title
 	private var titleView: UILabel!
 
@@ -54,6 +58,7 @@ final class SettingsVC : MenuTVC
 		navigationItem.titleView = titleView
 
 		lblShake.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
+		lblFuzzySearch.text = NYXLocalizedString("lbl_fuzzysearch")
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -61,6 +66,7 @@ final class SettingsVC : MenuTVC
 		super.viewWillAppear(animated)
 
 		swShake.isOn = UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
+		swFuzzySearch.isOn = UserDefaults.standard.bool(forKey: kNYXPrefFuzzySearch)
 
 		let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
 		let build = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as! String
@@ -84,6 +90,13 @@ final class SettingsVC : MenuTVC
 		UserDefaults.standard.set(!shake, forKey: kNYXPrefShakeToPlayRandomAlbum)
 		UserDefaults.standard.synchronize()
 	}
+
+	@IBAction func toggleFuzzySearch(_ sender: Any?)
+	{
+		let fuzzySearch = UserDefaults.standard.bool(forKey: kNYXPrefFuzzySearch)
+		UserDefaults.standard.set(!fuzzySearch, forKey: kNYXPrefFuzzySearch)
+		UserDefaults.standard.synchronize()
+	}
 }
 
 // MARK: - UITableViewDelegate
@@ -105,6 +118,8 @@ extension SettingsVC
 			case 0:
 				label.text = NYXLocalizedString("lbl_behaviour").uppercased()
 			case 1:
+				label.text = NYXLocalizedString("lbl_search").uppercased()
+			case 2:
 				label.text = NYXLocalizedString("lbl_version").uppercased()
 			default:
 				break

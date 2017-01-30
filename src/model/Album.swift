@@ -33,13 +33,20 @@ final class Album : MusicalEntity
 	// Album release date
 	var year: String = ""
 	// Album path
-	var path: String? = nil
+	var path: String? {
+		didSet {
+			if let p = self.path
+			{
+				self.uniqueIdentifier = "\(self.name.removing(charactersOf: "\"'\\/?!<>|+*=&()[]{}$:").lowercased())_\(p.md5())"
+			}
+		}
+	}
 	// Album tracks
 	var tracks: [Track]? = nil
 	// Album UUID
-	let uniqueIdentifier: String
+	private(set) var uniqueIdentifier: String
 	// Local URL for the cover
-	lazy var localCoverURL: URL? = {
+	private(set) lazy var localCoverURL: URL? = {
 		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return nil}
 		guard let coverDirectoryPath = UserDefaults.standard.string(forKey: kNYXPrefCoversDirectory) else {return nil}
 		return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory: true).appendingPathComponent(self.uniqueIdentifier + ".jpg")
