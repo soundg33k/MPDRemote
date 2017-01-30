@@ -34,6 +34,7 @@ final class CoverOperation : Operation
 			return junk
 		}
 		set (newAnswer) {
+			NetworkActivityIndicator.shared.end()
 			willChangeValue(forKey: "isFinished")
 			junk = newAnswer
 			didChangeValue(forKey: "isFinished")
@@ -138,7 +139,7 @@ final class CoverOperation : Operation
 	}
 
 	// MARK: - Private
-	func processData()
+	fileprivate func processData()
 	{
 		guard let cover = UIImage(data: incomingData) else
 		{
@@ -220,6 +221,8 @@ extension CoverOperation : URLSessionDelegate
 			isFinished = true
 			return
 		}
+
+		NetworkActivityIndicator.shared.start()
 
 		completionHandler(.allow)
 	}
