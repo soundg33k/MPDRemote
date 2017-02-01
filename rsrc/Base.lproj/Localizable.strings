@@ -52,9 +52,9 @@
 "lbl_stats_section_db" = "Database (MPD)";
 "lbl_stats_section_server" = "Server (MPD)";
 
-"lbl_section_home" = "Home";
-"lbl_section_server" = "Server";
-"lbl_section_stats" = "Stats";
+"lbl_section_home" = "Library";
+"lbl_section_server" = "MPD Server";
+"lbl_section_stats" = "Statistics";
 "lbl_section_settings" = "Settings";
 "lbl_section_database" = "Database";
 

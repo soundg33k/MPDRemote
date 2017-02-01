@@ -80,6 +80,7 @@ class MenuVC : UIViewController
 		UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveEaseOut, animations: {
 			let x = self.menuView.visible ? -(self.menuView.frame.width + 2.0) : 0.0
 			self.menuView.frame = CGRect(x, self.menuView.frame.y, self.menuView.frame.size)
+			self.view.alpha = self.menuView.visible ? 1.0 : 0.4
 		}, completion:{ finished in
 			let v = !self.menuView.visible
 			self.menuView.visible = v
@@ -108,15 +109,17 @@ class MenuVC : UIViewController
 					tmp = -menuView.frame.width
 				}
 				menuView.frame.x = tmp
+				self.view.alpha = 0.4 + fabs(tmp / (menuView.frame.width + 2.0))
 			case .ended:
 				let cmp = menuView.frame.x
 				let limit = (MENU_MIN_X / 2.6)
+				let visible = (cmp >= limit)
 				UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
-					self.menuView.frame.x = (cmp >= limit) ? 0.0 : MENU_MIN_X
+					self.menuView.frame.x = visible ? 0.0 : MENU_MIN_X
+					self.view.alpha = visible ? 0.4 : 1.0
 				}, completion:{ finished in
-					let v = (cmp >= limit)
-					self.menuView.visible = v
-					self.navigationItem.leftBarButtonItem?.accessibilityLabel = NYXLocalizedString(v ? "vo_hidemenu" : "vo_displaymenu")
+					self.menuView.visible = visible
+					self.navigationItem.leftBarButtonItem?.accessibilityLabel = NYXLocalizedString(visible ? "vo_hidemenu" : "vo_displaymenu")
 				})
 			default:
 				break
@@ -131,6 +134,7 @@ extension MenuVC : MenuViewDelegate
 	{
 		UIView.animate(withDuration: 0.25, delay: 0.0, options: UIViewAnimationOptions(), animations: {
 			self.menuView.frame = CGRect(MENU_MIN_X, self.menuView.frame.y, menuView.frame.size)
+			self.view.alpha = 1.0
 		}, completion:{ finished in
 			self.menuView.visible = false
 			self.view.isUserInteractionEnabled = true
@@ -142,6 +146,11 @@ extension MenuVC : MenuViewDelegate
 	{
 		view.isUserInteractionEnabled = true
 		navigationItem.leftBarButtonItem?.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
+	}
+
+	func menuViewDidMove(_ menuView: UIView)
+	{
+		self.view.alpha = 0.4 + fabs(menuView.x / (menuView.frame.width + 2.0))
 	}
 }
 

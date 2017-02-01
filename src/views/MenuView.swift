@@ -31,6 +31,7 @@ protocol MenuViewDelegate : class
 {
 	func menuViewShouldClose(_ menuView: UIView)
 	func menuViewDidClose(_ menuView: UIView)
+	func menuViewDidMove(_ menuView: UIView)
 }
 
 
@@ -121,15 +122,16 @@ final class MenuView : UIView
 					tmp = -width
 				}
 				x = tmp
+			self.menuDelegate?.menuViewDidMove(self)
 			case .ended:
 				let cmp = x
 				let limit = (_menuMinX / 2.6)
+				let visible = (cmp >= limit)
 				UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
-					self.x = (cmp >= limit) ? 0.0 : self._menuMinX
+					self.x = visible ? 0.0 : self._menuMinX
 				}, completion:{ finished in
-					let v = (cmp >= limit)
-					self.visible = v
-					if !v
+					self.visible = visible
+					if visible == false
 					{
 						self.menuDelegate?.menuViewDidClose(self)
 					}
@@ -153,35 +155,47 @@ extension MenuView : UITableViewDataSource
 		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.menu", for: indexPath) as! MenuViewTableViewCell
 		
 		var selected = false
+		var image: UIImage! = nil
 		switch (indexPath.row)
 		{
 			case 0:
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_home")
-				cell.ivLogo.image = #imageLiteral(resourceName: "img-home").withRenderingMode(.alwaysTemplate)
+				image = #imageLiteral(resourceName: "img-home")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().homeVC)
 			case 1:
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_server")
-				cell.ivLogo.image = #imageLiteral(resourceName: "img-server").withRenderingMode(.alwaysTemplate)
+				image = #imageLiteral(resourceName: "img-server")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().serverVC)
 			case 2:
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_stats")
-				cell.ivLogo.image = #imageLiteral(resourceName: "img-stats").withRenderingMode(.alwaysTemplate)
+				image = #imageLiteral(resourceName: "img-stats")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().statsVC)
 			case 3:
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_settings")
-				cell.ivLogo.image = #imageLiteral(resourceName: "img-settings").withRenderingMode(.alwaysTemplate)
+				image = #imageLiteral(resourceName: "img-settings")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().settingsVC)
 			default:
 				break
+		}
+		if image != nil
+		{
+			cell.ivLogo.image = image.withRenderingMode(.alwaysTemplate)
+			cell.ivLogo.frame = CGRect(24.0, (cell.height - image.size.height) * 0.5, image.size)
+			cell.lblSection.text = cell.accessibilityLabel
+			cell.lblSection.frame = CGRect(96.0, (cell.height - cell.lblSection.height) * 0.5, cell.lblSection.size)
 		}
 
 		if selected
 		{
 			cell.ivLogo.tintColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+			cell.lblSection.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+			cell.lblSection.font = UIFont.boldSystemFont(ofSize: 13.0)
 		}
 		else
 		{
 			cell.ivLogo.tintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			cell.lblSection.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			cell.lblSection.font = UIFont.systemFont(ofSize: 13.0)
 		}
 
 		return cell
@@ -225,7 +239,7 @@ extension MenuView : UITableViewDelegate
 		{
 			return tableView.height
 		}
-		return 128.0
+		return 64.0
 	}
 }
 
