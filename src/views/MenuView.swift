@@ -25,6 +25,7 @@ import UIKit
 
 private var __startX: CGFloat = 0.0
 private let __numberOfRows = 4
+public let __minBackgroundOpacity: CGFloat = 0.3
 
 
 protocol MenuViewDelegate : class

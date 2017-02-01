@@ -109,14 +109,14 @@ class MenuTVC : UITableViewController
 					tmp = -menuView.frame.width
 				}
 				menuView.frame.x = tmp
-				self.view.alpha = 0.4 + fabs(tmp / (menuView.frame.width + 2.0))
+				self.view.alpha = __minBackgroundOpacity + fabs(tmp / (menuView.frame.width + 2.0))
 			case .ended:
 				let cmp = menuView.frame.x
 				let limit = (MENU_MIN_X / 2.6)
 				let visible = (cmp >= limit)
 				UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
 					self.menuView.frame.x = visible ? 0.0 : MENU_MIN_X
-					self.view.alpha = visible ? 0.4 : 1.0
+					self.view.alpha = visible ? __minBackgroundOpacity : 1.0
 				}, completion:{ finished in
 					self.menuView.visible = visible
 					self.navigationItem.leftBarButtonItem?.accessibilityLabel = NYXLocalizedString(visible ? "vo_hidemenu" : "vo_displaymenu")
@@ -150,7 +150,7 @@ extension MenuTVC : MenuViewDelegate
 
 	func menuViewDidMove(_ menuView: UIView)
 	{
-		self.view.alpha = 0.4 + fabs(menuView.x / (menuView.frame.width + 2.0))
+		self.view.alpha = __minBackgroundOpacity + fabs(menuView.x / (menuView.frame.width + 2.0))
 	}
 }
 
