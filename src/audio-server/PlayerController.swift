@@ -127,7 +127,7 @@ final class PlayerController
 		}
 	}
 
-	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool)
+	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32 = 0)
 	{
 		if _connection == nil || _connection.isConnected == false
 		{
@@ -135,7 +135,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playPlaylist(playlist, shuffle: shuffle, loop: loop)
+			self._connection.playPlaylist(playlist, shuffle: shuffle, loop: loop, position: position)
 		}
 	}
 

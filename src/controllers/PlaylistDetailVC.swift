@@ -296,7 +296,6 @@ extension PlaylistDetailVC : UITableViewDelegate
 			}
 		}
 
-		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		PlayerController.shared.playTracks(b, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
+		PlayerController.shared.playPlaylist(playlist, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat), position: UInt32(indexPath.row))
 	}
 }

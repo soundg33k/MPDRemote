@@ -513,8 +513,9 @@
 				TargetAttributes = {
 					1E19ACE91C7DCC2D00E602FB = {
 						CreatedOnToolsVersion = 7.2.1;
-						DevelopmentTeam = 3VD3GSF4M4;
+						DevelopmentTeam = E258RKC85V;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -784,7 +785,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3VD3GSF4M4;
+				DEVELOPMENT_TEAM = E258RKC85V;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -803,9 +804,10 @@
 					"$(PROJECT_DIR)/external/mpdclient-src",
 				);
 				OTHER_SWIFT_FLAGS = "-D NYX_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free3;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.mpdremote;
 				PRODUCT_NAME = MPDRemote;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "9b66d98d-1c57-4259-9cf1-f2448d3032cc";
+				PROVISIONING_PROFILE_SPECIFIER = "MPDRemote - dev";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
@@ -827,8 +829,8 @@
 				CLANG_WARN_NULLABLE_TO_NONNULL_CONVERSION = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3VD3GSF4M4;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				DEVELOPMENT_TEAM = E258RKC85V;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -846,9 +848,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/external/mpdclient-src",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.whine.mpdremote.free3;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.mpdremote;
 				PRODUCT_NAME = MPDRemote;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "37c0e2ac-4c92-475c-896e-68674c92e62d";
+				PROVISIONING_PROFILE_SPECIFIER = "MPDRemote - prod";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;

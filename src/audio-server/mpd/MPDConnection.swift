@@ -637,7 +637,7 @@ final class MPDConnection : AudioServerConnection
 		}
 	}
 
-	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool)
+	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32 = 0)
 	{
 		if mpd_run_clear(_connection) == false
 		{
@@ -654,7 +654,7 @@ final class MPDConnection : AudioServerConnection
 			return
 		}
 
-		if mpd_run_play_pos(_connection, 0) == false
+		if mpd_run_play_pos(_connection, UInt32(position)) == false
 		{
 			Logger.dlog(getLastErrorMessageForConnection())
 		}
