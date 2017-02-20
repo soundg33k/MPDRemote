@@ -65,6 +65,15 @@ final class Album : MusicalEntity
 
 		self.artist = artist
 	}
+
+	// MARK: - Hashable
+	override var hashValue: Int
+	{
+		get
+		{
+			return Int(name.djb2()) ^ genre.hashValue ^ year.hashValue
+		}
+	}
 }
 
 extension Album : CustomStringConvertible
@@ -76,7 +85,10 @@ extension Album : CustomStringConvertible
 }
 
 // MARK: - Equatable
-func == (lhs: Album, rhs: Album) -> Bool
+extension Album
 {
-	return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.year == rhs.year && lhs.genre == rhs.genre)
+	static func == (lhs: Album, rhs: Album) -> Bool
+	{
+		return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.year == rhs.year && lhs.genre == rhs.genre)
+	}
 }

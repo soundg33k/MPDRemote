@@ -34,10 +34,22 @@ final class Playlist : MusicalEntity
 	{
 		super.init(name: name)
 	}
+
+	// MARK: - Hashable
+	override var hashValue: Int
+	{
+		get
+		{
+			return name.hashValue
+		}
+	}
 }
 
-// MARK: - Operators
-func == (lhs: Playlist, rhs: Playlist) -> Bool
+// MARK: - Equatable
+extension Playlist
 {
-	return (lhs.name == rhs.name)
+	static func == (lhs: Playlist, rhs: Playlist) -> Bool
+	{
+		return (lhs.name == rhs.name)
+	}
 }

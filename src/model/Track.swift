@@ -46,6 +46,15 @@ final class Track : MusicalEntity
 		self.uri = uri
 		super.init(name: name)
 	}
+
+	// MARK: - Hashable
+	override var hashValue: Int
+	{
+		get
+		{
+			return Int(name.djb2()) ^ Int(duration.seconds) ^ trackNumber ^ uri.hashValue
+		}
+	}
 }
 
 extension Track : CustomStringConvertible
@@ -56,13 +65,11 @@ extension Track : CustomStringConvertible
 	}
 }
 
-// MARK: - Operators
-func == (lhs: Track, rhs: Track) -> Bool
+// MARK: - Equatable
+extension Track
 {
-	return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.duration == rhs.duration && lhs.uri == rhs.uri)
-}
-
-func != (lhs: Track, rhs: Track) -> Bool
-{
-	return !(lhs == rhs)
+	static func == (lhs: Track, rhs: Track) -> Bool
+	{
+		return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.duration == rhs.duration && lhs.uri == rhs.uri)
+	}
 }

@@ -35,16 +35,20 @@ class MusicalEntity : Hashable
 		self.name = name
 	}
 
-	// MARK: - Hashable
-	var hashValue: Int {
-		get {
+	var hashValue: Int
+	{
+		get
+		{
 			return name.hashValue
 		}
 	}
 }
 
 // MARK: - Equatable
-func == (lhs: MusicalEntity, rhs: MusicalEntity) -> Bool
+extension MusicalEntity : Equatable
 {
-	return (lhs.name == rhs.name)
+	static func == (lhs: MusicalEntity, rhs: MusicalEntity) -> Bool
+	{
+		return (lhs.name == rhs.name)
+	}
 }

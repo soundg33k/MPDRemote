@@ -89,18 +89,24 @@ struct Duration
 	}
 }
 
-// MARK: - Comparisons
-extension Duration : Equatable {}
-func == (lhs: Duration, rhs: Duration) -> Bool
+// MARK: - Equatable
+extension Duration : Equatable
 {
-	return lhs.seconds == rhs.seconds
+	static func == (lhs: Duration, rhs: Duration) -> Bool
+	{
+		return lhs.seconds == rhs.seconds
+	}
 }
 
-extension Duration : Comparable {}
-func < (lhs: Duration, rhs: Duration) -> Bool
+// MARK: - Comparable
+extension Duration : Comparable
 {
-	return lhs.seconds < rhs.seconds
+	static func < (lhs: Duration, rhs: Duration) -> Bool
+	{
+		return lhs.seconds < rhs.seconds
+	}
 }
+
 
 extension Duration : Hashable
 {

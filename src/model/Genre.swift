@@ -34,6 +34,15 @@ final class Genre : MusicalEntity
 	{
 		super.init(name: name)
 	}
+
+	// MARK: - Hashable
+	override var hashValue: Int
+	{
+		get
+		{
+			return name.hashValue
+		}
+	}
 }
 
 extension Genre : CustomStringConvertible
@@ -44,8 +53,11 @@ extension Genre : CustomStringConvertible
 	}
 }
 
-// MARK: - Operators
-func == (lhs: Genre, rhs: Genre) -> Bool
+// MARK: - Equatable
+extension Genre
 {
-	return (lhs.name == rhs.name)
+	static func == (lhs: Genre, rhs: Genre) -> Bool
+	{
+		return (lhs.name == rhs.name)
+	}
 }

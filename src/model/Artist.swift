@@ -34,6 +34,15 @@ final class Artist : MusicalEntity
 	{
 		super.init(name: name)
 	}
+
+	// MARK: - Hashable
+	override var hashValue: Int
+	{
+		get
+		{
+			return name.hashValue
+		}
+	}
 }
 
 extension Artist : CustomStringConvertible
@@ -44,8 +53,11 @@ extension Artist : CustomStringConvertible
 	}
 }
 
-// MARK: - Operators
-func == (lhs: Artist, rhs: Artist) -> Bool
+// MARK: - Equatable
+extension Artist
 {
-	return (lhs.name == rhs.name)
+	static func == (lhs: Artist, rhs: Artist) -> Bool
+	{
+		return (lhs.name == rhs.name)
+	}
 }
