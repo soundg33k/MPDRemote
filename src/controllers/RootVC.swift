@@ -191,6 +191,14 @@ final class RootVC : MenuVC
 					self.updateNavigationTitle()
 				}
 			}
+
+			// First time config case
+			if PlayerController.shared.server == nil
+			{
+				PlayerController.shared.server = MusicDataSource.shared.server
+				_ = PlayerController.shared.reinitialize()
+			}
+
 			_serverChanged = false
 		}
 	}
