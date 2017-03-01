@@ -7,6 +7,7 @@ MPDRemote
 
 **MPDRemote** is an iOS application to control a [MPD](http://www.musicpd.org/) server. It is written in Swift 3 and requires at least iOS 10.
 
+It is available in the [App Store](https://itunes.apple.com/us/app/mpdremote/id1202933180?ls=1&mt=8).
 
          | FEATURES
 ---------|---------------
