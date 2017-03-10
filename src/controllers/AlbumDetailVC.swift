@@ -309,3 +309,27 @@ extension AlbumDetailVC : UITableViewDelegate
 		PlayerController.shared.playTracks(b, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
 	}
 }
+
+// MARK: - Peek & Pop
+extension AlbumDetailVC
+{
+	override var previewActionItems: [UIPreviewActionItem]
+	{
+		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
+			PlayerController.shared.playAlbum(self.album, shuffle: false, loop: false)
+			MiniPlayerView.shared.stayHidden = false
+		}
+
+		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
+			PlayerController.shared.playAlbum(self.album, shuffle: true, loop: false)
+			MiniPlayerView.shared.stayHidden = false
+		}
+
+		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
+			PlayerController.shared.addAlbumToQueue(self.album)
+			MiniPlayerView.shared.stayHidden = false
+		}
+
+		return [playAction, shuffleAction, addQueueAction]
+	}
+}

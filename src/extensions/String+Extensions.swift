@@ -50,6 +50,11 @@ extension String
 		return isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).length == 0
 	}
 
+	func isNullOrWhiteSpace() -> Bool
+	{
+		return self.isEmpty || self.trimmingCharacters(in: .whitespacesAndNewlines).length == 0
+	}
+
 	// MARK: - Hash functions
 	func md5() -> String
 	{

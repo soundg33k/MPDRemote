@@ -56,6 +56,10 @@ final class RootVC : MenuVC
 	fileprivate var _displayType = DisplayType(rawValue: UserDefaults.standard.integer(forKey: kNYXPrefDisplayType))!
 	// Audio server changed
 	fileprivate var _serverChanged = false
+	// Previewing context for peek & pop
+	fileprivate var _previewingContext: UIViewControllerPreviewing! = nil
+	//
+	fileprivate var _longPress: UILongPressGestureRecognizer! = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -95,10 +99,10 @@ final class RootVC : MenuVC
 		collectionView.isPrefetchingEnabled = false
 
 		// Longpress
-		let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
-		longPress.minimumPressDuration = 0.5
-		longPress.delaysTouchesBegan = true
-		collectionView.addGestureRecognizer(longPress)
+		_longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+		_longPress.minimumPressDuration = 0.5
+		_longPress.delaysTouchesBegan = true
+		updateLongpressState()
 
 		// Double tap
 		let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
@@ -106,12 +110,6 @@ final class RootVC : MenuVC
 		doubleTap.numberOfTouchesRequired = 1
 		doubleTap.delaysTouchesBegan = true
 		collectionView.addGestureRecognizer(doubleTap)
-
-		// Peek & Pop
-		/*if traitCollection.forceTouchCapability == .available
-		{
-			registerForPreviewing(with: self, sourceView: collectionView)
-		}*/
 
 		_ = MiniPlayerView.shared.visible
 
@@ -558,6 +556,30 @@ final class RootVC : MenuVC
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
 
+	fileprivate func updateLongpressState()
+	{
+		if _displayType == .albums || _displayType == .playlists
+		{
+			if traitCollection.forceTouchCapability == .available
+			{
+				_longPress.isEnabled = false
+				_previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
+			}
+			else
+			{
+				_longPress.isEnabled = true
+			}
+		}
+		else
+		{
+			if traitCollection.forceTouchCapability == .available && _previewingContext != nil
+			{
+				unregisterForPreviewing(withContext: _previewingContext)
+			}
+			_longPress.isEnabled = true
+		}
+	}
+
 	// MARK: - Notifications
 	func audioServerConfigurationDidChange(_ aNotification: Notification)
 	{
@@ -966,6 +988,9 @@ extension RootVC : TypeChoiceViewDelegate
 		UserDefaults.standard.set(type.rawValue, forKey: kNYXPrefDisplayType)
 		UserDefaults.standard.synchronize()
 
+		// Longpress / peek & pop
+		updateLongpressState()
+
 		// Refresh view
 		MusicDataSource.shared.getListForDisplayType(type) {
 			DispatchQueue.main.async {
@@ -1072,7 +1097,7 @@ extension RootVC : UIViewControllerPreviewingDelegate
 {
 	public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
 	{
-
+		self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
 	}
 
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
@@ -1081,13 +1106,24 @@ extension RootVC : UIViewControllerPreviewingDelegate
 		{
 			previewingContext.sourceRect = cellAttributes.frame
 			let sb = UIStoryboard(name: "main", bundle: Bundle.main)
-			let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
+			if _displayType == .albums
+			{
+				let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
 
-			let row = indexPath.row
-			let album = searching ? searchResults[row] as! Album : MusicDataSource.shared.albums[row]
-			vc.album = album
+				let row = indexPath.row
+				let album = searching ? searchResults[row] as! Album : MusicDataSource.shared.albums[row]
+				vc.album = album
+				return vc
+			}
+			else
+			{
+				let vc = sb.instantiateViewController(withIdentifier: "PlaylistDetailVC") as! PlaylistDetailVC
 
-			return vc
+				let row = indexPath.row
+				let playlist = searching ? searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
+				vc.playlist = playlist
+				return vc
+			}
 		}
 		return nil
 	}
