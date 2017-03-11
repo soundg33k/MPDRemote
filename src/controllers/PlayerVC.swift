@@ -31,7 +31,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// Cover view
 	@IBOutlet fileprivate var coverView: InteractableImageView! = nil
 	// Track title
-	@IBOutlet private var lblTrackTitle: UILabel! = nil
+	@IBOutlet private var lblTrackTitle: AutoScrollLabel! = nil
 	// Track artist name
 	@IBOutlet private var lblTrackArtist: UILabel! = nil
 	// Album name
@@ -114,6 +114,10 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		motionEffect.minimumRelativeValue = 20.0
 		motionEffect.maximumRelativeValue = -20.0
 		coverView.addMotionEffect(motionEffect)
+
+		lblTrackTitle.font = UIFont(name: "GillSans-Bold", size: 15.0)
+		lblTrackTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblTrackTitle.textAlignment = .center
 	}
 
 	override func viewWillAppear(_ animated: Bool)

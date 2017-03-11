@@ -44,7 +44,7 @@ final class MiniPlayerView : UIView, PTappable
 	// Dummy acessible view for title
 	private var accessibleView: UIView!
 	// Track title
-	private var lblTitle: UILabel!
+	private var lblTitle: AutoScrollLabel!
 	// Track artist
 	private var lblArtist: UILabel!
 	// Play/pause button
@@ -96,7 +96,7 @@ final class MiniPlayerView : UIView, PTappable
 		self.blurEffectView.contentView.addSubview(self.accessibleView)
 
 		// Title
-		self.lblTitle = UILabel(frame: CGRect(self.imageView.right + 5.0, 2.0, ((vibrancyEffectView.left + 5.0) - (self.imageView.right + 5.0)), 18.0))
+		self.lblTitle = AutoScrollLabel(frame: CGRect(self.imageView.right + 5.0, 2.0, ((vibrancyEffectView.left + 5.0) - (self.imageView.right + 5.0)), 18.0))
 		self.lblTitle.textAlignment = .center
 		self.lblTitle.font = UIFont(name: "GillSans-Bold", size: 14.0)
 		self.lblTitle.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)

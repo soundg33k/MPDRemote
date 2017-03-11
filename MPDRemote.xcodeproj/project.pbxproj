@@ -60,6 +60,7 @@
 		433305001DE601B1003469F4 /* PlaylistDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433304FF1DE601B1003469F4 /* PlaylistDetailVC.swift */; };
 		4334E51B1D0ED5C5004553A3 /* InteractableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */; };
 		43366FC71D9ABD880016AD9C /* ZeroConfBrowserTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43366FC61D9ABD880016AD9C /* ZeroConfBrowserTVC.swift */; };
+		434798711E72ED35000E5A82 /* AutoScrollLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434798701E72ED35000E5A82 /* AutoScrollLabel.swift */; };
 		434C97121D94136200B5FCAD /* MusicDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434C97111D94136200B5FCAD /* MusicDataSource.swift */; };
 		434C97141D94157E00B5FCAD /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434C97131D94157E00B5FCAD /* PlayerController.swift */; };
 		4355DCB41D0EB0750000232D /* Tappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4355DCB31D0EB0750000232D /* Tappable.swift */; };
@@ -187,6 +188,7 @@
 		433304FF1DE601B1003469F4 /* PlaylistDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistDetailVC.swift; sourceTree = "<group>"; };
 		4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = InteractableImageView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		43366FC61D9ABD880016AD9C /* ZeroConfBrowserTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfBrowserTVC.swift; sourceTree = "<group>"; };
+		434798701E72ED35000E5A82 /* AutoScrollLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoScrollLabel.swift; sourceTree = "<group>"; };
 		434C97111D94136200B5FCAD /* MusicDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicDataSource.swift; sourceTree = "<group>"; };
 		434C97131D94157E00B5FCAD /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
 		4355DCB31D0EB0750000232D /* Tappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Tappable.swift; path = protocols/Tappable.swift; sourceTree = "<group>"; };
@@ -441,6 +443,7 @@
 			isa = PBXGroup;
 			children = (
 				1E5653931C908A310049C02D /* AlbumHeaderView.swift */,
+				434798701E72ED35000E5A82 /* AutoScrollLabel.swift */,
 				4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */,
 				1E5653951C908A310049C02D /* MenuView.swift */,
 				1E5653961C908A310049C02D /* MiniPlayerView.swift */,
@@ -589,6 +592,7 @@
 				437E7ADE1D9BFC190097C4AA /* MenuViewTableViewCell.swift in Sources */,
 				4303DE9B1D9036660083C686 /* MPDConnection.swift in Sources */,
 				1E2EFCA71CBF9A1700906CF2 /* StatsVC.swift in Sources */,
+				434798711E72ED35000E5A82 /* AutoScrollLabel.swift in Sources */,
 				1E5653A71C908A310049C02D /* AppDelegate.swift in Sources */,
 				1E56539A1C908A310049C02D /* AlbumDetailVC.swift in Sources */,
 				1EB93AA01CB3A82700EA5339 /* TypeChoiceView.swift in Sources */,
