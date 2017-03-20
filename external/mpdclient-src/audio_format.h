@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2015 The Music Player Daemon Project
+   (c) 2003-2017 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,9 @@ struct mpd_audio_format {
 	 * The number of significant bits per sample.  Samples are
 	 * currently always signed.  Supported values are 8, 16, 24,
 	 * 32 and the special values #MPD_SAMPLE_FORMAT_FLOAT,
+	 * #MPD_SAMPLE_FORMAT_DSD.
+	 *
+	 * @since libmpdclient 2.10 added support for #MPD_SAMPLE_FORMAT_FLOAT and
 	 * #MPD_SAMPLE_FORMAT_DSD.
 	 */
 	uint8_t bits;

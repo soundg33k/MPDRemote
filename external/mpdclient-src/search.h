@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2015 The Music Player Daemon Project
+   (c) 2003-2017 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -135,6 +135,8 @@ bool mpd_count_db_songs(struct mpd_connection *connection);
  * @param oper reserved, pass #MPD_OPERATOR_DEFAULT
  * @param value the URI relative to the music directory
  * @return true on success, false on error
+ *
+ * @since libmpdclient 2.9
  */
 bool
 mpd_search_add_base_constraint(struct mpd_connection *connection,
@@ -189,6 +191,8 @@ mpd_search_add_any_tag_constraint(struct mpd_connection *connection,
  * @param oper reserved, pass #MPD_OPERATOR_DEFAULT
  * @param value the reference time stamp
  * @return true on success, false on error
+ *
+ * @since libmpdclient 2.10
  */
 bool
 mpd_search_add_modified_since_constraint(struct mpd_connection *connection,
@@ -196,13 +200,28 @@ mpd_search_add_modified_since_constraint(struct mpd_connection *connection,
 					 time_t value);
 
 /**
+ * Sort the results by the specified tag.
+ *
+ * @param connection a #mpd_connection
+ * @param type the tag type to sort with
+ * @param reserved must be false
+ * @return true on success, false on error
+ *
+ * @since libmpdclient 2.11
+ */
+bool
+mpd_search_add_sort_tag(struct mpd_connection *connection,
+			enum mpd_tag_type type, bool reserved);
+
+/**
  * Request only a portion of the result set.
  *
  * @param connection a #mpd_connection
- * @param oper reserved, pass #MPD_OPERATOR_DEFAULT
- * @param type The tag type of the constraint
- * @param value The value of the constraint
+ * @param start the start offset (including)
+ * @param end the end offset (not including)
  * @return true on success, false on error
+ *
+ * @since libmpdclient 2.10
  */
 bool
 mpd_search_add_window(struct mpd_connection *connection,

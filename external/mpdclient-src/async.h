@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2015 The Music Player Daemon Project
+   (c) 2003-2017 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -148,9 +148,12 @@ mpd_async_get_fd(const struct mpd_async *async);
  *
  * @param async the #mpd_async object
  * @param keepalive whether TCP keepalives should be enabled
+ *
+ * @since libmpdclient 2.10
  */
-void mpd_async_set_keepalive(struct mpd_async *async,
-                             bool keepalive);
+void
+mpd_async_set_keepalive(struct mpd_async *async,
+			bool keepalive);
 
 /**
  * Returns a bit mask of events which should be polled for.

@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2015 The Music Player Daemon Project
+   (c) 2003-2017 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -71,6 +71,8 @@ mpd_run_set_volume(struct mpd_connection *connection, unsigned volume);
  * @param connection the connection to MPD
  * @param relative_volume the relative volume, an integer between -100 and 100
  * @return true on success, false on error
+ *
+ * @since libmpdclient 2.9
  */
 bool
 mpd_send_change_volume(struct mpd_connection *connection, int relative_volume);
@@ -81,6 +83,8 @@ mpd_send_change_volume(struct mpd_connection *connection, int relative_volume);
  * @param connection the connection to MPD
  * @param relative_volume the relative volume, an integer between -100 and 100
  * @return true on success, false on error
+ *
+ * @since libmpdclient 2.9
  */
 bool
 mpd_run_change_volume(struct mpd_connection *connection, int relative_volume);

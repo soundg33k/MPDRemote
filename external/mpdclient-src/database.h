@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2015 The Music Player Daemon Project
+   (c) 2003-2017 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -95,6 +95,8 @@ mpd_send_list_meta(struct mpd_connection *connection, const char *path);
  * @param path the relative path of the song file within the music
  * directory or an arbitrary file path starting with file:///
  * @return true on success, false on error
+ *
+ * @since libmpdclient 2.9
  */
 bool
 mpd_send_read_comments(struct mpd_connection *connection, const char *path);

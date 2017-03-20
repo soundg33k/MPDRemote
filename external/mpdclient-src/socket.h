@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2015 The Music Player Daemon Project
+   (c) 2003-2017 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@
 #ifndef MPD_SOCKET_H
 #define MPD_SOCKET_H
 
+//#include "socket.h"
+
 #include <stdbool.h>
 
 #ifdef WIN32
@@ -36,6 +38,17 @@
 #else
 #  include <errno.h>
 #endif
+
+
+#ifdef WIN32
+typedef SOCKET mpd_socket_t;
+#define MPD_INVALID_SOCKET INVALID_SOCKET
+#else
+typedef int mpd_socket_t;
+#define MPD_INVALID_SOCKET -1
+#endif
+
+
 
 struct timeval;
 struct mpd_error_info;
@@ -67,7 +80,7 @@ mpd_socket_errno(void)
  *
  * @return the socket file descriptor, or -1 on failure
  */
-int
+mpd_socket_t
 mpd_socket_connect(const char *host, unsigned port, const struct timeval *tv,
 		   struct mpd_error_info *error);
 

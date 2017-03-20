@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2015 The Music Player Daemon Project
+   (c) 2003-2017 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -199,21 +199,39 @@ mpd_send_crossfade(struct mpd_connection *connection, unsigned seconds);
 bool
 mpd_run_crossfade(struct mpd_connection *connection, unsigned seconds);
 
+/**
+ * @since libmpdclient 2.2
+ */
 bool
 mpd_send_mixrampdb(struct mpd_connection *connection, float db);
 
+/**
+ * @since libmpdclient 2.2
+ */
 bool
 mpd_run_mixrampdb(struct mpd_connection *connection, float db);
 
+/**
+ * @since libmpdclient 2.2
+ */
 bool
 mpd_send_mixrampdelay(struct mpd_connection *connection, float seconds);
 
+/**
+ * @since libmpdclient 2.2
+ */
 bool
 mpd_run_mixrampdelay(struct mpd_connection *connection, float seconds);
 
+/**
+ * @since libmpdclient 2.4
+ */
 bool
 mpd_send_clearerror(struct mpd_connection *connection);
 
+/**
+ * @since libmpdclient 2.4
+ */
 bool
 mpd_run_clearerror(struct mpd_connection *connection);
 

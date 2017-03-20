@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2015 The Music Player Daemon Project
+   (c) 2003-2017 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -121,6 +121,8 @@ mpd_playlist_feed(struct mpd_playlist *playlist, const struct mpd_pair *pair);
  *
  * @param connection the connection to MPD
  * @return true on success, false on error
+ *
+ * @since libmpdclient 2.5
  */
 bool
 mpd_send_list_playlists(struct mpd_connection *connection);
