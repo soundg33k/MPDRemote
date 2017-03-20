@@ -23,76 +23,82 @@
 import UIKit
 
 
-final class InteractableImageView : UIImageView, PTappable, PLeftSwippable, PRightSwippable, PUpSwippable, PDownSwippable
+final class InteractableImageView : UIImageView
 {
 	// MARK: - Public properties
 	// Delegate
 	weak var delegate: InteractableImageViewDelegate? = nil
 
-	// MARK: - PTappable
-	func didTap()
+	required init?(coder aDecoder: NSCoder)
 	{
-		delegate?.didTap()
+		super.init(coder: aDecoder)
+
+		// Single tap
+		let singleTap = UITapGestureRecognizer()
+		singleTap.numberOfTapsRequired = 1
+		singleTap.numberOfTouchesRequired = 1
+		singleTap.addTarget(self, action: #selector(singleTap(_:)))
+		self.addGestureRecognizer(singleTap)
+
+		// Single tap, two fingers
+		let singleTapWith2Fingers = UITapGestureRecognizer()
+		singleTapWith2Fingers.numberOfTapsRequired = 1
+		singleTapWith2Fingers.numberOfTouchesRequired = 2
+		singleTapWith2Fingers.delaysTouchesBegan = true
+		singleTapWith2Fingers.addTarget(self, action: #selector(singleTapWithTwoFingers(_:)))
+		self.addGestureRecognizer(singleTapWith2Fingers)
+
+		// Swipe left
+		let leftSwipe = UISwipeGestureRecognizer()
+		leftSwipe.direction = .left
+		leftSwipe.addTarget(self, action: #selector(swipeLeft(_:)))
+		self.addGestureRecognizer(leftSwipe)
+
+		// Swipe right
+		let rightSwipe = UISwipeGestureRecognizer()
+		rightSwipe.direction = .right
+		rightSwipe.addTarget(self, action: #selector(swipeRight(_:)))
+		self.addGestureRecognizer(rightSwipe)
 	}
 
-	// MARK: - PLeftSwippable
-	func didSwipeLeft()
+	// MARK: - Gestures
+	func singleTap(_ gesture: UITapGestureRecognizer)
 	{
-		delegate?.didSwipeLeft()
+		if gesture.state == .ended
+		{
+			self.delegate?.didTap()
+		}
 	}
 
-	// MARK: - PRightSwippable
-	func didSwipeRight()
+	func singleTapWithTwoFingers(_ gesture: UITapGestureRecognizer)
 	{
-		delegate?.didSwipeRight()
+		if gesture.state == .ended
+		{
+			self.delegate?.didTapWithTwoFingers()
+		}
 	}
 
-	// MARK: - PUpSwippable
-	func didSwipeUp()
+	func swipeLeft(_ gesture: UISwipeGestureRecognizer)
 	{
-		delegate?.didSwipeUp()
+		if gesture.state == .ended
+		{
+			self.delegate?.didSwipeLeft()
+		}
 	}
 
-	// MARK: - PDownSwippable
-	func didSwipeDown()
+	func swipeRight(_ gesture: UISwipeGestureRecognizer)
 	{
-		delegate?.didSwipeDown()
+		if gesture.state == .ended
+		{
+			self.delegate?.didSwipeRight()
+		}
 	}
 }
 
 protocol InteractableImageViewDelegate : class
 {
 	func didTap()
+	func didTapWithTwoFingers()
 	func didSwipeLeft()
 	func didSwipeRight()
-	func didSwipeUp()
-	func didSwipeDown()
-}
-
-extension InteractableImageViewDelegate
-{
-	func didTap()
-	{
-		return
-	}
-
-	func didSwipeLeft()
-	{
-		return
-	}
-
-	func didSwipeRight()
-	{
-		return
-	}
-
-	func didSwipeUp()
-	{
-		return
-	}
-
-	func didSwipeDown()
-	{
-		return
-	}
 }

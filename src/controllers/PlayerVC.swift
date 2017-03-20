@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class PlayerVC : UIViewController, InteractableImageViewDelegate
+final class PlayerVC : UIViewController, InteractableImageViewDelegate, TrackListTableViewDelegate
 {
 	// MARK: - Private properties
 	// Blur view
@@ -58,6 +58,8 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	@IBOutlet private var ivVolumeLo: UIImageView! = nil
 	// High volume image
 	@IBOutlet private var ivVolumeHi: UIImageView! = nil
+	// Album tracks view
+	@IBOutlet private var trackListView: TrackListTableView! = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -101,9 +103,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		coverView.makeTappable()
-		coverView.makeLeftSwippable()
-		coverView.makeRightSwippable()
 		coverView.delegate = self
 		// Useless motion effect
 		var motionEffect = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
@@ -114,6 +113,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		motionEffect.minimumRelativeValue = 20.0
 		motionEffect.maximumRelativeValue = -20.0
 		coverView.addMotionEffect(motionEffect)
+		trackListView.delegate = self
 
 		lblTrackTitle.font = UIFont(name: "GillSans-Bold", size: 15.0)
 		lblTrackTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -205,13 +205,43 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		MiniPlayerView.shared.stayHidden = false
 		MiniPlayerView.shared.show()
 	}
+	func didTapWithTwoFingers()
+	{
+		self.trackListView.transform = CGAffineTransform(scaleX: -1, y: 1)
+		self.trackListView.alpha = 0.0
+		self.trackListView.album = PlayerController.shared.currentAlbum
+
+		UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
+			self.coverView.alpha = 0.0
+			self.trackListView.alpha = 1.0
+			self.coverView.transform = CGAffineTransform(scaleX: -1, y: 1)
+			self.trackListView.transform = CGAffineTransform(scaleX: 1, y: 1)
+		}) { (finished) in
+
+		}
+	}
+
 	func didSwipeLeft()
 	{
 		PlayerController.shared.requestNextTrack()
 	}
+
 	func didSwipeRight()
 	{
 		PlayerController.shared.requestPreviousTrack()
+	}
+
+	// MARK: - TrackListTableViewDelegate
+	func didTapWithTwoFingers(_ view: TrackListTableView)
+	{
+		UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
+			self.coverView.alpha = 1.0
+			self.trackListView.alpha = 0.0
+			self.coverView.transform = CGAffineTransform(scaleX: 1, y: 1)
+			self.trackListView.transform = CGAffineTransform(scaleX: -1, y: 1)
+		}) { (finished) in
+
+		}
 	}
 
 	// MARK: - Buttons actions

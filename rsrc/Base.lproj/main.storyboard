@@ -126,6 +126,13 @@
                                                 <blurEffect style="dark"/>
                                             </vibrancyEffect>
                                         </visualEffectView>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l8r-jm-h81" customClass="TrackListTableView" customModule="MPDRemote" customModuleProvider="target">
+                                            <rect key="frame" x="32" y="100" width="311" height="311"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="l8r-jm-h81" secondAttribute="height" multiplier="1:1" id="A4C-Nm-X8K"/>
+                                            </constraints>
+                                        </view>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ew4-hR-lKo" customClass="InteractableImageView" customModule="MPDRemote" customModuleProvider="target">
                                             <rect key="frame" x="32" y="100" width="311" height="311"/>
                                             <constraints>
@@ -443,6 +450,8 @@
                                         <constraint firstItem="F7R-Zg-X0C" firstAttribute="top" secondItem="5Ip-c5-MCk" secondAttribute="bottom" constant="16" id="8RJ-BI-u1h"/>
                                         <constraint firstItem="GBB-qS-lDJ" firstAttribute="top" secondItem="uvF-2h-IoX" secondAttribute="bottom" constant="12" id="8Su-x2-XP4"/>
                                         <constraint firstItem="qc6-Xc-sQp" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="32" id="9R9-fC-sdB"/>
+                                        <constraint firstAttribute="trailing" secondItem="l8r-jm-h81" secondAttribute="trailing" constant="32" id="9ws-tJ-tzE"/>
+                                        <constraint firstItem="l8r-jm-h81" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="32" id="BV4-j7-ahz"/>
                                         <constraint firstAttribute="trailing" secondItem="5Ip-c5-MCk" secondAttribute="trailing" constant="32" id="CNI-Iu-LmM"/>
                                         <constraint firstItem="p2C-8V-UiH" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="20" id="E4C-rR-bzy"/>
                                         <constraint firstItem="4ZB-PB-B1m" firstAttribute="top" secondItem="asM-Pj-CHA" secondAttribute="bottom" id="M5z-e0-JkS"/>
@@ -470,6 +479,7 @@
                                         <constraint firstAttribute="trailing" secondItem="4ZB-PB-B1m" secondAttribute="trailing" id="qCL-5g-2qe"/>
                                         <constraint firstItem="F7R-Zg-X0C" firstAttribute="centerX" secondItem="AMx-5w-MWj" secondAttribute="centerX" id="wBQ-gd-Dmt"/>
                                         <constraint firstItem="5Ip-c5-MCk" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="32" id="wYb-pJ-EW5"/>
+                                        <constraint firstItem="l8r-jm-h81" firstAttribute="top" secondItem="KnL-Ck-MdI" secondAttribute="bottom" constant="20" id="ycR-A4-Che"/>
                                         <constraint firstAttribute="trailing" secondItem="KnL-Ck-MdI" secondAttribute="trailing" id="zWW-dv-qLu"/>
                                     </constraints>
                                 </view>
@@ -501,6 +511,7 @@
                         <outlet property="lblTrackTitle" destination="vcY-wR-aHq" id="5W3-FT-dVk"/>
                         <outlet property="sliderPosition" destination="5Ip-c5-MCk" id="WYg-07-Qs5"/>
                         <outlet property="sliderVolume" destination="RrV-dE-rsX" id="5k5-Jm-SWg"/>
+                        <outlet property="trackListView" destination="l8r-jm-h81" id="waw-1g-86g"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WFh-5x-1kf" userLabel="First Responder" sceneMemberID="firstResponder"/>

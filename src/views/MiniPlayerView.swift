@@ -26,7 +26,7 @@ import UIKit
 public let playerViewHeight = CGFloat(44.0)
 
 
-final class MiniPlayerView : UIView, PTappable
+final class MiniPlayerView : UIView
 {
 	// MARK: - Public properties
 	// Singletion instance
@@ -117,7 +117,11 @@ final class MiniPlayerView : UIView, PTappable
 		self.addSubview(self.progressView)
 
 		// Single tap to request full player view
-		self.makeTappable()
+		let singleTap = UITapGestureRecognizer()
+		singleTap.numberOfTapsRequired = 1
+		singleTap.numberOfTouchesRequired = 1
+		singleTap.addTarget(self, action: #selector(singleTap(_:)))
+		self.addGestureRecognizer(singleTap)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
@@ -213,10 +217,13 @@ final class MiniPlayerView : UIView, PTappable
 		PlayerController.shared.togglePause()
 	}
 
-	// MARK: - PTappable
-	func didTap()
+	// MARK: - Gestures
+	func singleTap(_ gesture: UITapGestureRecognizer)
 	{
-		NotificationCenter.default.post(name: .miniPlayerShouldExpand, object: nil)
+		if gesture.state == .ended
+		{
+			NotificationCenter.default.post(name: .miniPlayerShouldExpand, object: nil)
+		}
 	}
 
 	// MARK: - Notifications
