@@ -80,7 +80,7 @@ extension Album : CustomStringConvertible
 {
 	var description: String
 	{
-		return "\nName: <\(name)>\nArtist: <\(artist)>\nGenre: <\(genre)>\nYear: <\(year)>\nPath: <\(path)>\n"
+		return "\nName: <\(name)>\nArtist: <\(artist)>\nGenre: <\(genre)>\nYear: <\(year)>\nPath: <\(String(describing: path))>\n"
 	}
 }
 
