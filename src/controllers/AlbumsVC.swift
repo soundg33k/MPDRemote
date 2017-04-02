@@ -151,12 +151,11 @@ extension AlbumsVC
 		cell.accessibilityLabel = "\(album.name)"
 
 		// No server for covers
+		cell.coverView.image = nil
 		if UserDefaults.standard.data(forKey: kNYXPrefWEBServer) == nil
 		{
-			cell.coverView.image = generateCoverForAlbum(album, size: cell.coverView.size)
 			return cell
 		}
-		cell.coverView.image = nil
 
 		// Get local URL for cover
 		guard let coverURL = album.localCoverURL else

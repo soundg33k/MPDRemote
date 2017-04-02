@@ -645,17 +645,21 @@ extension RootVC : UICollectionViewDataSource
 		cell.accessibilityLabel = album.name
 
 		// If image is in cache, bail out quickly
+		cell.image = nil
 		if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
 		{
 			cell.image = cachedImage
 			return
 		}
-		cell.image = nil
 
 		// Get local URL for cover
+		guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
+		{
+			return
+		}
 		guard let coverURL = album.localCoverURL else
 		{
-			Logger.alog("[!] No cover file URL for \(album)") // should not happen
+			Logger.dlog("[!] No cover file URL for \(album)") // should not happen
 			return
 		}
 
@@ -705,18 +709,21 @@ extension RootVC : UICollectionViewDataSource
 		if let album = genre.albums.first
 		{
 			// If image is in cache, bail out quickly
+			cell.image = nil
 			if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
 			{
 				cell.image = cachedImage
 				return
 			}
-			cell.image = nil
 
 			// Get local URL for cover
+			guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
+			{
+				return
+			}
 			guard let coverURL = album.localCoverURL else
 			{
 				Logger.alog("[!] No cover URL for \(album)") // should not happen
-				cell.image = nil
 				return
 			}
 
@@ -786,18 +793,21 @@ extension RootVC : UICollectionViewDataSource
 			if let album = artist.albums.first
 			{
 				// If image is in cache, bail out quickly
+				cell.image = nil
 				if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
 				{
 					cell.image = cachedImage
 					return
 				}
-				cell.image = nil
 
 				// Get local URL for cover
+				guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
+				{
+					return
+				}
 				guard let coverURL = album.localCoverURL else
 				{
 					Logger.alog("[!] No cover URL for \(album)") // should not happen
-					cell.image = nil
 					return
 				}
 

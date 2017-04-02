@@ -148,12 +148,11 @@ extension ArtistsVC
 		cell.accessibilityLabel = "\(artist.name), \(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())"
 
 		// No server for covers
+		cell.coverView.image = nil
 		if UserDefaults.standard.data(forKey: kNYXPrefWEBServer) == nil
 		{
-			cell.coverView.image = generateCoverForArtist(artist, size: cell.coverView.size)
 			return cell
 		}
-		cell.coverView.image = nil
 
 		if artist.albums.count > 0
 		{

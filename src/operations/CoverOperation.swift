@@ -94,14 +94,12 @@ final class CoverOperation : Operation
 		guard let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
 		{
 			Logger.dlog("[!] No WEB server configured.")
-			generateCover()
 			isFinished = true
 			return
 		}
 		guard let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! CoverWebServer? else
 		{
 			Logger.dlog("[!] No WEB server configured.")
-			generateCover()
 			isFinished = true
 			return
 		}
@@ -109,7 +107,6 @@ final class CoverOperation : Operation
 		if server.hostname.length <= 0 || server.coverName.length <= 0
 		{
 			Logger.dlog("[!] No web server configured, can't download covers.")
-			generateCover()
 			isFinished = true
 			return
 		}
@@ -167,41 +164,6 @@ final class CoverOperation : Operation
 			Logger.dlog("save error")
 		}
 
-		if let block = callback
-		{
-			block(cover, thumbnail)
-		}
-	}
-
-	private func generateCover()
-	{
-		let width = UIScreen.main.bounds.width - 64.0
-		guard let cover = generateCoverForAlbum(album, size: CGSize(width, width)) else
-		{
-			return
-		}
-		guard let thumbnail = cover.smartCropped(toSize: cropSize) else
-		{
-			return
-		}
-		guard let saveURL = album.localCoverURL else
-		{
-			return
-		}
-
-		let renderer = UIGraphicsImageRenderer(size: thumbnail.size)
-		let jpeg = renderer.jpegData(withCompressionQuality: 0.7) { rendererContext in
-			thumbnail.draw(at: .zero)
-		}
-
-		do
-		{
-			try jpeg.write(to: saveURL, options: [.atomicWrite])
-		}
-		catch _
-		{
-			Logger.dlog("save error")
-		}
 		if let block = callback
 		{
 			block(cover, thumbnail)
