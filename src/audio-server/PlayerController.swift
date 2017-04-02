@@ -52,6 +52,7 @@ final class PlayerController
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object:nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: .UIApplicationDidEnterBackground, object:nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground(_:)), name: .UIApplicationWillEnterForeground, object:nil)
 	}
 
 	// MARK: - Public
@@ -319,6 +320,11 @@ final class PlayerController
 	@objc func applicationDidEnterBackground(_ aNotification: Notification)
 	{
 		deinitialize()
+	}
+
+	@objc func applicationWillEnterForeground(_ aNotification: Notification)
+	{
+		_ = reinitialize()
 	}
 }
 
