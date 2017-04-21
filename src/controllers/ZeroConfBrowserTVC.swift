@@ -118,7 +118,7 @@ extension ZeroConfBrowserTVC
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.zeroconf", for: indexPath) as! ZeroConfServerTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.zeroconf", for: indexPath) as! ZeroConfServerTableViewCell
 
 		let server = _servers[indexPath.row]
 		cell.lblName.text = server.name

@@ -36,6 +36,8 @@ final class PlayerController
 	private(set) var currentTrack: Track? = nil
 	// Current playing album
 	private(set) var currentAlbum: Album? = nil
+	// Audio outputs list
+	private(set) var outputs = [AudioOutput]()
 
 	// MARK: - Private properties
 	// MPD Connection
@@ -48,7 +50,7 @@ final class PlayerController
 	// MARK: - Initializers
 	init()
 	{
-		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.player", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+		self._queue = DispatchQueue(label: "fr.whine.mpdremote.queue.player", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object:nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: .UIApplicationDidEnterBackground, object:nil)
@@ -253,6 +255,33 @@ final class PlayerController
 		_queue.async {
 			let volume = self._connection.getVolume()
 			callback(volume)
+		}
+	}
+
+	// MARK: - Outputs
+	func getAvailableOutputs(callback: @escaping () -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async {
+			self.outputs = self._connection.getAvailableOutputs()
+			callback()
+		}
+	}
+
+	func toggleOutput(output: AudioOutput, callback: @escaping (Bool) -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async {
+			let ret = self._connection.toggleOutput(output: output)
+			callback(ret)
 		}
 	}
 

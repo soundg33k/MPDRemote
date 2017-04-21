@@ -78,7 +78,7 @@ final class MenuView : UIView
 
 		// TableView
 		self.tableView = UITableView(frame: CGRect(.zero, frame.size), style: .plain)
-		self.tableView.register(MenuViewTableViewCell.classForCoder(), forCellReuseIdentifier: "io.whine.mpdremote.cell.menu")
+		self.tableView.register(MenuViewTableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.mpdremote.cell.menu")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
 		self.tableView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
@@ -153,7 +153,7 @@ extension MenuView : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.menu", for: indexPath) as! MenuViewTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.menu", for: indexPath) as! MenuViewTableViewCell
 		
 		var selected = false
 		var image: UIImage! = nil

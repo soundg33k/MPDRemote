@@ -92,7 +92,7 @@ final class RootVC : MenuVC
 		navigationItem.titleView = titleView
 
 		// Create collection view
-		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "io.whine.mpdremote.cell.album")
+		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "fr.whine.mpdremote.cell.album")
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
 		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
 		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
@@ -607,7 +607,7 @@ extension RootVC : UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "io.whine.mpdremote.cell.album", for: indexPath) as! RootCollectionViewCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "fr.whine.mpdremote.cell.album", for: indexPath) as! RootCollectionViewCell
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
 		cell.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)

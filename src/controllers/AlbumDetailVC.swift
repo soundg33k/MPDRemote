@@ -228,7 +228,7 @@ extension AlbumDetailVC : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.track", for: indexPath) as! TrackTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.track", for: indexPath) as! TrackTableViewCell
 		cell.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		cell.contentView.backgroundColor = cell.backgroundColor
 		cell.lblTitle.backgroundColor = cell.backgroundColor

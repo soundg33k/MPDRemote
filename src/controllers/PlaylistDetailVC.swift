@@ -221,7 +221,7 @@ extension PlaylistDetailVC : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.track", for: indexPath) as! TrackTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.track", for: indexPath) as! TrackTableViewCell
 		cell.lblTitle.backgroundColor = cell.backgroundColor
 		cell.lblTrack.backgroundColor = cell.backgroundColor
 		cell.lblDuration.backgroundColor = cell.backgroundColor

@@ -802,6 +802,54 @@ final class MPDConnection : AudioServerConnection
 		return nil
 	}
 
+	// MARK: - Outputs
+	func getAvailableOutputs() -> [AudioOutput]
+	{
+		if mpd_send_outputs(_connection) == false
+		{
+			return []
+		}
+
+		var ret = [AudioOutput]()
+		var output = mpd_recv_output(_connection)
+		while output != nil
+		{
+			guard let tmpName = mpd_output_get_name(output) else
+			{
+				mpd_output_free(output)
+				continue
+			}
+
+			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpName), count: Int(strlen(tmpName)), deallocator: .none)
+			guard let name = String(data: dataTemp, encoding: .utf8) else
+			{
+				mpd_output_free(output)
+				continue
+			}
+
+			let id = Int(mpd_output_get_id(output))
+
+			let o = AudioOutput(id: id, name: name, enabled: mpd_output_get_enabled(output))
+			ret.append(o)
+			mpd_output_free(output)
+			output = mpd_recv_output(_connection)
+		}
+
+		return ret
+	}
+
+	func toggleOutput(output: AudioOutput) -> Bool
+	{
+		if output.enabled
+		{
+			return mpd_run_disable_output(_connection, UInt32(output.id))
+		}
+		else
+		{
+			return mpd_run_enable_output(_connection, UInt32(output.id))
+		}
+	}
+
 	// MARK: - Stats
 	func getStats() -> [String : String]
 	{

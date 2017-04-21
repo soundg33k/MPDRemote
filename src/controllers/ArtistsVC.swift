@@ -132,7 +132,7 @@ extension ArtistsVC
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.artist", for: indexPath) as! ArtistTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.artist", for: indexPath) as! ArtistTableViewCell
 
 		// Dummy to let some space for the mini player
 		if indexPath.row == artists.count

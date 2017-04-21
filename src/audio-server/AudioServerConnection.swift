@@ -38,6 +38,13 @@ public enum PlayerStatus : Int
 	case unknown = -1
 }
 
+public struct AudioOutput
+{
+	let id: Int
+	let name: String
+	let enabled: Bool
+}
+
 
 protocol AudioServerConnectionDelegate : class
 {
@@ -90,4 +97,8 @@ protocol AudioServerConnection
 
 	// MARK: - Stats
 	func getStats() -> [String : String]
+
+	// MARK: - Outputs
+	func getAvailableOutputs() -> [AudioOutput]
+	func toggleOutput(output: AudioOutput) -> Bool
 }

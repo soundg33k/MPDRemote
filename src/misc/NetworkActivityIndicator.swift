@@ -43,7 +43,7 @@ final class NetworkActivityIndicator
 
 	private init()
 	{
-		self._queue = DispatchQueue(label: "io.whine.mpdremote.queue.netact", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target:  nil)
+		self._queue = DispatchQueue(label: "fr.whine.mpdremote.queue.netact", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target:  nil)
 		self.count = 0
 	}
 

@@ -45,7 +45,7 @@ final class TypeChoiceView : UIView
 
 		// TableView
 		self.tableView = UITableView(frame: CGRect(.zero, frame.size), style: .plain)
-		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "io.whine.mpdremote.cell.type")
+		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.mpdremote.cell.type")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
 		self.tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
@@ -73,7 +73,7 @@ extension TypeChoiceView : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "io.whine.mpdremote.cell.type", for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.type", for: indexPath)
 		cell.selectionStyle = .none
 		cell.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		cell.textLabel?.textAlignment = .center

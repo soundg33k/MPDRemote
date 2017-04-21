@@ -37,6 +37,8 @@ final class ServerVC : MenuTVC
 	@IBOutlet fileprivate var tfMPDPort: UITextField!
 	// MPD Server password
 	@IBOutlet fileprivate var tfMPDPassword: UITextField!
+	// MPD Output
+	@IBOutlet fileprivate var lblMPDOutput: UILabel!
 	// WEB Server hostname
 	@IBOutlet fileprivate var tfWEBHostname: UITextField!
 	// WEB Server port
@@ -48,6 +50,7 @@ final class ServerVC : MenuTVC
 	@IBOutlet private var lblCellMPDHostname: UILabel! = nil
 	@IBOutlet private var lblCellMPDPort: UILabel! = nil
 	@IBOutlet private var lblCellMPDPassword: UILabel! = nil
+	@IBOutlet private var lblCellMPDOutput: UILabel! = nil
 	@IBOutlet private var lblCellWEBHostname: UILabel! = nil
 	@IBOutlet private var lblCellWEBPort: UILabel! = nil
 	@IBOutlet private var lblCellWEBCoverName: UILabel! = nil
@@ -88,6 +91,7 @@ final class ServerVC : MenuTVC
 		lblCellMPDHostname.text = NYXLocalizedString("lbl_server_host")
 		lblCellMPDPort.text = NYXLocalizedString("lbl_server_port")
 		lblCellMPDPassword.text = NYXLocalizedString("lbl_server_password")
+		lblCellMPDOutput.text = NYXLocalizedString("lbl_server_output")
 		lblCellWEBHostname.text = NYXLocalizedString("lbl_server_coverurl")
 		lblCellWEBPort.text = NYXLocalizedString("lbl_server_port")
 		lblCellWEBCoverName.text = NYXLocalizedString("lbl_server_covername")
@@ -97,6 +101,7 @@ final class ServerVC : MenuTVC
 		// Keyboard appearance notifications
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShowNotification(_:)), name: .UIKeyboardDidShow, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHideNotification(_:)), name: .UIKeyboardDidHide, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(audioOutputConfigurationDidChangeNotification(_:)), name: .audioOutputConfigurationDidChange, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -186,6 +191,10 @@ final class ServerVC : MenuTVC
 			UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
 
 			NotificationCenter.default.post(name: .audioServerConfigurationDidChange, object: mpdServer)
+
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+				self.updateOutputsLabel()
+			})
 		}
 		else
 		{
@@ -280,6 +289,11 @@ final class ServerVC : MenuTVC
 		_keyboardVisible = false
 	}
 
+	func audioOutputConfigurationDidChangeNotification(_ aNotification: Notification)
+	{
+		updateOutputsLabel()
+	}
+
 	// MARK: - Private
 	fileprivate func updateFields()
 	{
@@ -289,6 +303,7 @@ final class ServerVC : MenuTVC
 			tfMPDHostname.text = server.hostname
 			tfMPDPort.text = String(server.port)
 			tfMPDPassword.text = server.password
+			updateOutputsLabel()
 		}
 		else
 		{
@@ -296,6 +311,7 @@ final class ServerVC : MenuTVC
 			tfMPDHostname.text = ""
 			tfMPDPort.text = "6600"
 			tfMPDPassword.text = ""
+			lblMPDOutput.text = "";
 		}
 
 		if let server = webServer
@@ -359,6 +375,28 @@ final class ServerVC : MenuTVC
 		let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
 		lblClearCache.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(size) / 1048576.0))\(NYXLocalizedString("lbl_megabytes")))"
 	}
+
+	fileprivate func updateOutputsLabel()
+	{
+		PlayerController.shared.getAvailableOutputs {
+			DispatchQueue.main.async {
+				let outputs = PlayerController.shared.outputs
+				if outputs.count == 0
+				{
+					self.lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_available")
+					return
+				}
+				let enabledOutputs = outputs.filter({$0.enabled})
+				if enabledOutputs.count == 0
+				{
+					self.lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_enabled")
+					return
+				}
+				let text = enabledOutputs.reduce("", {$0 + $1.name + ", "})
+				self.lblMPDOutput.text = text.substring(to: text.index(text.endIndex, offsetBy: -2))
+			}
+		}
+	}
 }
 
 // MARK: - 
@@ -375,11 +413,33 @@ extension ServerVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		if indexPath.section == 1 && indexPath.row == 3
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+			tableView.deselectRow(at: indexPath, animated: true)
+		})
+
+		if indexPath.section == 0 && indexPath.row == 4
+		{
+			guard let cell = tableView.cellForRow(at: indexPath) else
+			{
+				return
+			}
+
+			let vc = AudioOutputsTVC()
+			vc.modalPresentationStyle = .popover
+			if let popController = vc.popoverPresentationController
+			{
+				popController.permittedArrowDirections = .up
+				popController.sourceRect = cell.bounds
+				popController.sourceView = cell
+				popController.delegate = self
+				self.present(vc, animated: true, completion: {
+				});
+			}
+		}
+		else if indexPath.section == 1 && indexPath.row == 3
 		{
 			clearCache(confirm: true)
 		}
-		tableView.deselectRow(at: indexPath, animated: true)
 	}
 }
 
@@ -449,5 +509,14 @@ extension ServerVC
 	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
 	{
 		return headerSectionHeight
+	}
+}
+
+// MARK: - 
+extension ServerVC : UIPopoverPresentationControllerDelegate
+{
+	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle
+	{
+		return .none
 	}
 }

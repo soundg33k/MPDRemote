@@ -43,6 +43,9 @@
 "lbl_server_host" = "Server";
 "lbl_server_port" = "Port";
 "lbl_server_password" = "Password";
+"lbl_server_output" = "Outputs";
+"lbl_server_no_output_enabled" = "No outputs enabled";
+"lbl_server_no_output_available" = "No outputs available";
 "lbl_server_defaultname" = "My MPD Server";
 "lbl_server_coverurl" = "URL";
 "lbl_server_covername" = "Cover filename";
