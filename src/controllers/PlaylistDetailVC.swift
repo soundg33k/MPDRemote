@@ -82,6 +82,8 @@ final class PlaylistDetailVC : UIViewController
 
 		// Tableview
 		tableView.tableFooterView = UIView()
+
+		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -205,6 +207,12 @@ final class PlaylistDetailVC : UIViewController
 
 		PlayerController.shared.setRepeat(loop)
 	}
+
+	// MARK: - Notifications
+	func playingTrackChangedNotification(_ notification: Notification)
+	{
+		tableView.reloadData()
+	}
 }
 
 // MARK: - UITableViewDataSource
@@ -251,6 +259,19 @@ extension PlaylistDetailVC : UITableViewDataSource
 			let minutes = track.duration.minutesRepresentation().minutes
 			let seconds = track.duration.minutesRepresentation().seconds
 			cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
+
+			if PlayerController.shared.currentTrack == track
+			{
+				cell.lblTrack.font = UIFont(name: "HelveticaNeue-Bold", size: 10)
+				cell.lblTitle.font = UIFont(name: "HelveticaNeue-CondensedBlack", size: 14)
+				cell.lblDuration.font = UIFont(name: "HelveticaNeue-Medium", size: 10)
+			}
+			else
+			{
+				cell.lblTrack.font = UIFont(name: "HelveticaNeue", size: 10)
+				cell.lblTitle.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
+				cell.lblDuration.font = UIFont(name: "HelveticaNeue-Light", size: 10)
+			}
 
 			// Accessibility
 			var stra = "\(NYXLocalizedString("lbl_track")) \(track.trackNumber), \(track.name)\n"
