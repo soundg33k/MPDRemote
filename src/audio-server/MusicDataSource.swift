@@ -322,7 +322,7 @@ final class MusicDataSource
 		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
 		_timer.scheduleRepeating(deadline: .now(), interval: .seconds(interval))
 		_timer.setEventHandler {
-			self.getlayerStatus()
+			self.getPlayerStatus()
 		}
 		_timer.resume()
 	}
@@ -336,7 +336,7 @@ final class MusicDataSource
 		}
 	}
 
-	private func getlayerStatus()
+	private func getPlayerStatus()
 	{
 		_connection.getStatus()
 	}
