@@ -595,6 +595,33 @@ final class MPDConnection : AudioServerConnection
 		return list
 	}
 
+	func getSongsOfCurrentQueue() -> [Track]
+	{
+		if mpd_send_list_queue_meta(_connection) == false
+		{
+			return []
+		}
+
+		var list = [Track]()
+		var song = mpd_recv_song(_connection)
+		while song != nil
+		{
+			if let track = trackFromMPDSongObject(song!)
+			{
+				list.append(track)
+			}
+			song = mpd_recv_song(_connection)
+		}
+
+		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
+		{
+			Logger.dlog(getLastErrorMessageForConnection())
+			return []
+		}
+
+		return list
+	}
+
 	// MARK: - Play / Queue
 	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool)
 	{
@@ -655,6 +682,14 @@ final class MPDConnection : AudioServerConnection
 		}
 
 		if mpd_run_play_pos(_connection, UInt32(position)) == false
+		{
+			Logger.dlog(getLastErrorMessageForConnection())
+		}
+	}
+
+	func playTrackAtPosition(_ position: UInt32)
+	{
+		if mpd_run_play_pos(_connection, position) == false
 		{
 			Logger.dlog(getLastErrorMessageForConnection())
 		}

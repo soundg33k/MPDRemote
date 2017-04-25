@@ -76,11 +76,13 @@ protocol AudioServerConnection
 
 	// MARK: - Playlists
 	func getPlaylists() -> [Playlist]
+	func getSongsOfCurrentQueue() -> [Track]
 
 	// MARK: - Play / Queue
 	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool)
 	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool)
 	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32)
+	func playTrackAtPosition(_ position: UInt32)
 	func addAlbumToQueue(_ album: Album)
 	func togglePause() -> Bool
 	func nextTrack()

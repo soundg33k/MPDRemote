@@ -126,12 +126,9 @@
                                                 <blurEffect style="dark"/>
                                             </vibrancyEffect>
                                         </visualEffectView>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l8r-jm-h81" customClass="TrackListTableView" customModule="MPDRemote" customModuleProvider="target">
+                                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l8r-jm-h81" customClass="TracksListTableView" customModule="MPDRemote" customModuleProvider="target">
                                             <rect key="frame" x="32" y="100" width="311" height="311"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="l8r-jm-h81" secondAttribute="height" multiplier="1:1" id="A4C-Nm-X8K"/>
-                                            </constraints>
                                         </view>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ew4-hR-lKo" customClass="InteractableImageView" customModule="MPDRemote" customModuleProvider="target">
                                             <rect key="frame" x="32" y="100" width="311" height="311"/>
@@ -473,11 +470,13 @@
                                         <constraint firstItem="RrV-dE-rsX" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="32" id="cno-2w-b0X"/>
                                         <constraint firstItem="RrV-dE-rsX" firstAttribute="top" secondItem="GBB-qS-lDJ" secondAttribute="bottom" constant="2" id="dCE-hr-ekg"/>
                                         <constraint firstAttribute="bottom" secondItem="p2C-8V-UiH" secondAttribute="bottom" id="dfd-Wr-u7S"/>
+                                        <constraint firstItem="l8r-jm-h81" firstAttribute="height" secondItem="Ew4-hR-lKo" secondAttribute="height" id="eeA-Hy-giL"/>
                                         <constraint firstItem="KnL-Ck-MdI" firstAttribute="top" secondItem="4ZB-PB-B1m" secondAttribute="bottom" id="exO-jc-grm"/>
                                         <constraint firstAttribute="trailing" secondItem="m8O-Rt-LIj" secondAttribute="trailing" constant="20" id="fhA-bc-WaC"/>
                                         <constraint firstItem="KnL-Ck-MdI" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" id="goX-IK-bL7"/>
                                         <constraint firstAttribute="trailing" secondItem="uvF-2h-IoX" secondAttribute="trailing" constant="32" id="kUm-oa-uT7"/>
                                         <constraint firstAttribute="trailing" secondItem="4ZB-PB-B1m" secondAttribute="trailing" id="qCL-5g-2qe"/>
+                                        <constraint firstItem="l8r-jm-h81" firstAttribute="width" secondItem="Ew4-hR-lKo" secondAttribute="width" id="tlO-Mk-S51"/>
                                         <constraint firstItem="F7R-Zg-X0C" firstAttribute="centerX" secondItem="AMx-5w-MWj" secondAttribute="centerX" id="wBQ-gd-Dmt"/>
                                         <constraint firstItem="5Ip-c5-MCk" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="32" id="wYb-pJ-EW5"/>
                                         <constraint firstItem="l8r-jm-h81" firstAttribute="top" secondItem="KnL-Ck-MdI" secondAttribute="bottom" constant="20" id="ycR-A4-Che"/>
@@ -717,7 +716,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vhM-Uy-mym" userLabel="Dummy">
                                 <rect key="frame" x="0.0" y="87" width="375" height="516"/>
                                 <subviews>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="0Ky-LK-XYa">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="0Ky-LK-XYa" customClass="TracksListTableView" customModule="MPDRemote" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="516"/>
                                         <color key="backgroundColor" red="0.92549019610000005" green="0.92549019610000005" blue="0.92549019610000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="separatorColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -807,7 +806,6 @@
                                             </tableViewCell>
                                         </prototypes>
                                         <connections>
-                                            <outlet property="dataSource" destination="1y3-hN-RBL" id="P1h-D9-vWC"/>
                                             <outlet property="delegate" destination="1y3-hN-RBL" id="won-6l-HiC"/>
                                         </connections>
                                     </tableView>
@@ -2122,7 +2120,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2ma-ZY-MAp" userLabel="Dummy">
                                 <rect key="frame" x="0.0" y="87" width="375" height="516"/>
                                 <subviews>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="YN4-QP-oJX">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="YN4-QP-oJX" customClass="TracksListTableView" customModule="MPDRemote" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="516"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <inset key="separatorInset" minX="8" minY="0.0" maxX="8" maxY="0.0"/>
@@ -2210,7 +2208,6 @@
                                             </tableViewCell>
                                         </prototypes>
                                         <connections>
-                                            <outlet property="dataSource" destination="Ogb-l7-Zgb" id="qv1-Ua-JuW"/>
                                             <outlet property="delegate" destination="Ogb-l7-Zgb" id="G7T-9O-Jqm"/>
                                         </connections>
                                     </tableView>

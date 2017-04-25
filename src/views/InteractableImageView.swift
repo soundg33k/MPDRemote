@@ -40,14 +40,6 @@ final class InteractableImageView : UIImageView
 		singleTap.addTarget(self, action: #selector(singleTap(_:)))
 		self.addGestureRecognizer(singleTap)
 
-		// Single tap, two fingers
-		let singleTapWith2Fingers = UITapGestureRecognizer()
-		singleTapWith2Fingers.numberOfTapsRequired = 1
-		singleTapWith2Fingers.numberOfTouchesRequired = 2
-		singleTapWith2Fingers.delaysTouchesBegan = true
-		singleTapWith2Fingers.addTarget(self, action: #selector(singleTapWithTwoFingers(_:)))
-		self.addGestureRecognizer(singleTapWith2Fingers)
-
 		// Swipe left
 		let leftSwipe = UISwipeGestureRecognizer()
 		leftSwipe.direction = .left
@@ -67,14 +59,6 @@ final class InteractableImageView : UIImageView
 		if gesture.state == .ended
 		{
 			self.delegate?.didTap()
-		}
-	}
-
-	func singleTapWithTwoFingers(_ gesture: UITapGestureRecognizer)
-	{
-		if gesture.state == .ended
-		{
-			self.delegate?.didTapWithTwoFingers()
 		}
 	}
 
@@ -98,7 +82,6 @@ final class InteractableImageView : UIImageView
 protocol InteractableImageViewDelegate : class
 {
 	func didTap()
-	func didTapWithTwoFingers()
 	func didSwipeLeft()
 	func didSwipeRight()
 }

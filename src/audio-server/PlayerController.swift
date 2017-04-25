@@ -38,6 +38,8 @@ final class PlayerController
 	private(set) var currentAlbum: Album? = nil
 	// Audio outputs list
 	private(set) var outputs = [AudioOutput]()
+	// List of the tracks of the current queue
+	private(set) var listTracksInQueue = [Track]()
 
 	// MARK: - Private properties
 	// MPD Connection
@@ -142,6 +144,18 @@ final class PlayerController
 		}
 	}
 
+	func playTrackAtPosition(_ position: UInt32)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async {
+			self._connection.playTrackAtPosition(position)
+		}
+	}
+
 	// MARK: - Pausing
 	@objc func togglePause()
 	{
@@ -216,6 +230,19 @@ final class PlayerController
 
 		_queue.async {
 			self._connection.previousTrack()
+		}
+	}
+
+	func getSongsOfCurrentQueue(callback: @escaping () -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async {
+			self.listTracksInQueue = self._connection.getSongsOfCurrentQueue()
+			callback()
 		}
 	}
 

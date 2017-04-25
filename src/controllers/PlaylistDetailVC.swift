@@ -37,7 +37,7 @@ final class PlaylistDetailVC : UIViewController
 	// Dummy view for shadow
 	@IBOutlet private var dummyView: UIView! = nil
 	// Tableview for song list
-	@IBOutlet private var tableView: UITableView! = nil
+	@IBOutlet private var tableView: TracksListTableView! = nil
 	// Underlaying color view
 	@IBOutlet private var colorView: UIView! = nil
 	// Label in the navigationbar
@@ -81,9 +81,8 @@ final class PlaylistDetailVC : UIViewController
 		dummyView.layer.masksToBounds = false
 
 		// Tableview
+		tableView.useDummy = true
 		tableView.tableFooterView = UIView()
-
-		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -116,19 +115,20 @@ final class PlaylistDetailVC : UIViewController
 		updateHeader()
 
 		// Get songs list if needed
-		if playlist.tracks == nil
+		if let tracks = playlist.tracks
+		{
+			updateNavigationTitle()
+			tableView.tracks = tracks
+		}
+		else
 		{
 			MusicDataSource.shared.getTracksForPlaylist(playlist) {
 				DispatchQueue.main.async {
 					self.updateNavigationTitle()
-					self.tableView.reloadData()
+					self.tableView.tracks = self.playlist.tracks!
+					//self.tableView.reloadData()
 				}
 			}
-		}
-		else
-		{
-			updateNavigationTitle()
-			tableView.reloadData()
 		}
 	}
 
@@ -206,87 +206,6 @@ final class PlaylistDetailVC : UIViewController
 		prefs.synchronize()
 
 		PlayerController.shared.setRepeat(loop)
-	}
-
-	// MARK: - Notifications
-	func playingTrackChangedNotification(_ notification: Notification)
-	{
-		tableView.reloadData()
-	}
-}
-
-// MARK: - UITableViewDataSource
-extension PlaylistDetailVC : UITableViewDataSource
-{
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-	{
-		if let tracks = playlist.tracks
-		{
-			return tracks.count + 1 // dummy
-		}
-		return 0
-	}
-
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.track", for: indexPath) as! TrackTableViewCell
-		cell.lblTitle.backgroundColor = cell.backgroundColor
-		cell.lblTrack.backgroundColor = cell.backgroundColor
-		cell.lblDuration.backgroundColor = cell.backgroundColor
-
-		if let tracks = playlist.tracks
-		{
-			// Dummy to let some space for the mini player
-			if indexPath.row == tracks.count
-			{
-				cell.lblTitle.text = ""
-				cell.lblTrack.text = ""
-				cell.lblDuration.text = ""
-				cell.separator.isHidden = true
-				cell.selectionStyle = .none
-				return cell
-			}
-
-			cell.separator.backgroundColor = UIColor(rgb: 0xE4E4E4)
-			cell.separator.isHidden = false
-			cell.lblTitle.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			cell.lblTrack.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			cell.lblDuration.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-
-			let track = tracks[indexPath.row]
-			cell.lblTrack.text = String(track.trackNumber)
-			cell.lblTitle.text = track.name
-			let minutes = track.duration.minutesRepresentation().minutes
-			let seconds = track.duration.minutesRepresentation().seconds
-			cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
-
-			if PlayerController.shared.currentTrack == track
-			{
-				cell.lblTrack.font = UIFont(name: "HelveticaNeue-Bold", size: 10)
-				cell.lblTitle.font = UIFont(name: "HelveticaNeue-CondensedBlack", size: 14)
-				cell.lblDuration.font = UIFont(name: "HelveticaNeue-Medium", size: 10)
-			}
-			else
-			{
-				cell.lblTrack.font = UIFont(name: "HelveticaNeue", size: 10)
-				cell.lblTitle.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
-				cell.lblDuration.font = UIFont(name: "HelveticaNeue-Light", size: 10)
-			}
-
-			// Accessibility
-			var stra = "\(NYXLocalizedString("lbl_track")) \(track.trackNumber), \(track.name)\n"
-			if minutes > 0
-			{
-				stra += "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes")) "
-			}
-			if seconds > 0
-			{
-				stra += "\(seconds) \(seconds == 1 ? NYXLocalizedString("lbl_second") : NYXLocalizedString("lbl_seconds"))"
-			}
-			cell.accessibilityLabel = stra
-		}
-
-		return cell
 	}
 }
 

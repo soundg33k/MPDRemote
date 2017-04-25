@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class PlayerVC : UIViewController, InteractableImageViewDelegate, TrackListTableViewDelegate
+final class PlayerVC : UIViewController, InteractableImageViewDelegate
 {
 	// MARK: - Private properties
 	// Blur view
@@ -59,12 +59,13 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate, TrackLis
 	// High volume image
 	@IBOutlet private var ivVolumeHi: UIImageView! = nil
 	// Album tracks view
-	@IBOutlet private var trackListView: TrackListTableView! = nil
+	@IBOutlet fileprivate var trackListView: TracksListTableView! = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+		trackListView.delegate = self
 
 		// Slider track position
 		sliderPosition.addTarget(self, action: #selector(changeTrackPositionAction(_:)), for: .touchUpInside)
@@ -113,11 +114,23 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate, TrackLis
 		motionEffect.minimumRelativeValue = 20.0
 		motionEffect.maximumRelativeValue = -20.0
 		coverView.addMotionEffect(motionEffect)
-		trackListView.delegate = self
 
 		lblTrackTitle.font = UIFont(name: "GillSans-Bold", size: 15.0)
 		lblTrackTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		lblTrackTitle.textAlignment = .center
+
+		// Single tap, two fingers
+		let singleTapWith2Fingers1 = UITapGestureRecognizer()
+		singleTapWith2Fingers1.numberOfTapsRequired = 1
+		singleTapWith2Fingers1.numberOfTouchesRequired = 2
+		singleTapWith2Fingers1.addTarget(self, action: #selector(singleTapWithTwoFingers(_:)))
+		coverView.addGestureRecognizer(singleTapWith2Fingers1)
+
+		let singleTapWith2Fingers2 = UITapGestureRecognizer()
+		singleTapWith2Fingers2.numberOfTapsRequired = 1
+		singleTapWith2Fingers2.numberOfTouchesRequired = 2
+		singleTapWith2Fingers2.addTarget(self, action: #selector(singleTapWithTwoFingers(_:)))
+		trackListView.addGestureRecognizer(singleTapWith2Fingers2)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -205,19 +218,53 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate, TrackLis
 		MiniPlayerView.shared.stayHidden = false
 		MiniPlayerView.shared.show()
 	}
-	func didTapWithTwoFingers()
+
+	func singleTapWithTwoFingers(_ gesture: UITapGestureRecognizer)
 	{
-		self.trackListView.transform = CGAffineTransform(scaleX: -1, y: 1)
-		self.trackListView.alpha = 0.0
-		self.trackListView.album = PlayerController.shared.currentAlbum
+		if gesture.state != .ended
+		{
+			return
+		}
 
-		UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
-			self.coverView.alpha = 0.0
-			self.trackListView.alpha = 1.0
-			self.coverView.transform = CGAffineTransform(scaleX: -1, y: 1)
-			self.trackListView.transform = CGAffineTransform(scaleX: 1, y: 1)
-		}) { (finished) in
+		if gesture.view === coverView
+		{
+			trackListView.transform = CGAffineTransform(scaleX: -1, y: 1)
+			trackListView.alpha = 0.0
+			if let tracks = PlayerController.shared.currentAlbum?.tracks
+			{
+				trackListView.tracks = tracks
+			}
+			else
+			{
+				MusicDataSource.shared.getTracksForAlbum(PlayerController.shared.currentAlbum!, callback: {
+					if let tracks = PlayerController.shared.currentAlbum?.tracks
+					{
+						DispatchQueue.main.async {
+							self.trackListView.tracks = tracks
+						}
+					}
+				})
+			}
 
+			UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
+				self.coverView.alpha = 0.0
+				self.trackListView.alpha = 1.0
+				self.coverView.transform = CGAffineTransform(scaleX: -1, y: 1)
+				self.trackListView.transform = CGAffineTransform(scaleX: 1, y: 1)
+			}) { (finished) in
+				
+			}
+		}
+		else
+		{
+			UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
+				self.coverView.alpha = 1.0
+				self.trackListView.alpha = 0.0
+				self.coverView.transform = CGAffineTransform(scaleX: 1, y: 1)
+				self.trackListView.transform = CGAffineTransform(scaleX: -1, y: 1)
+			}) { (finished) in
+				
+			}
 		}
 	}
 
@@ -229,19 +276,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate, TrackLis
 	func didSwipeRight()
 	{
 		PlayerController.shared.requestPreviousTrack()
-	}
-
-	// MARK: - TrackListTableViewDelegate
-	func didTapWithTwoFingers(_ view: TrackListTableView)
-	{
-		UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
-			self.coverView.alpha = 1.0
-			self.trackListView.alpha = 0.0
-			self.coverView.transform = CGAffineTransform(scaleX: 1, y: 1)
-			self.trackListView.transform = CGAffineTransform(scaleX: -1, y: 1)
-		}) { (finished) in
-
-		}
 	}
 
 	// MARK: - Buttons actions
@@ -349,6 +383,30 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate, TrackLis
 	}
 }
 
+// MARK: - UITableViewDelegate
+extension PlayerVC : UITableViewDelegate
+{
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+	{
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+			tableView.deselectRow(at: indexPath, animated: true)
+		})
+
+		// Toggle play / pause for the current track
+		if let currentPlayingTrack = PlayerController.shared.currentTrack
+		{
+			let selectedTrack = trackListView.tracks[indexPath.row]
+			if selectedTrack == currentPlayingTrack
+			{
+				PlayerController.shared.togglePause()
+				return
+			}
+		}
+
+		let b = trackListView.tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
+		PlayerController.shared.playTracks(b, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
+	}
+}
 
 final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControllerAnimatedTransitioning
 {
@@ -369,7 +427,7 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 			let toViewController = transitionContext.viewController(forKey: .to)! as! PlayerVC
 			containerView.addSubview(toViewController.view)
 
-			let iv = UIImageView(frame: CGRect(0, bounds.height - playerViewHeight, playerViewHeight, playerViewHeight))
+			let iv = UIImageView(frame: CGRect(0, bounds.height - MiniPlayerView.shared.height, MiniPlayerView.shared.height, MiniPlayerView.shared.height))
 			iv.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0)
 			iv.image = MiniPlayerView.shared.imageView.image
 			if let coverURL = PlayerController.shared.currentAlbum?.localCoverURL
@@ -411,7 +469,7 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 				iv.alpha = 1.0
 			}, completion: { finished in
 				UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
-					iv.frame = CGRect(0, bounds.height - playerViewHeight, playerViewHeight, playerViewHeight)
+					iv.frame = CGRect(0, bounds.height - MiniPlayerView.shared.height, MiniPlayerView.shared.height, MiniPlayerView.shared.height)
 				}, completion: { finished in
 					transitionContext.completeTransition(true)
 					iv.removeFromSuperview()

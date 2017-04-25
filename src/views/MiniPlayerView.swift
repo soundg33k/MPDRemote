@@ -23,16 +23,14 @@
 import UIKit
 
 
-public let playerViewHeight = CGFloat(44.0)
-
-
 final class MiniPlayerView : UIView
 {
 	// MARK: - Public properties
 	// Singletion instance
-	static let shared = MiniPlayerView(frame: CGRect(0.0, (UIApplication.shared.keyWindow?.frame.height)! + playerViewHeight, (UIApplication.shared.keyWindow?.frame.width)!, playerViewHeight))
+	static let shared = MiniPlayerView(frame: CGRect(0.0, (UIApplication.shared.keyWindow?.frame.height)! + 44, (UIApplication.shared.keyWindow?.frame.width)!, (UIApplication.shared.keyWindow?.frame.height)! - 64))
 	// Visible flag
 	private(set) var visible = false
+	private(set) var fullyVisible = false
 	// Player should stay hidden, regardless of playback status
 	var stayHidden = false
 	// Album cover
@@ -40,7 +38,8 @@ final class MiniPlayerView : UIView
 
 	// MARK: - Private properties
 	fileprivate var blurEffectView: UIVisualEffectView!
-
+	// Queue's track list
+	fileprivate var tableView: TracksListTableView!
 	// Dummy acessible view for title
 	private var accessibleView: UIView!
 	// Track title
@@ -57,6 +56,7 @@ final class MiniPlayerView : UIView
 	{
 		super.init(frame: frame)
 		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
+		let headerHeight = CGFloat(44.0)
 
 		// Top shadow
 		self.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, 5.0, frame.width + 4.0, 4.0)).cgPath
@@ -69,15 +69,16 @@ final class MiniPlayerView : UIView
 		// Blur background
 		let blurEffect = UIBlurEffect(style: .light)
 		self.blurEffectView = UIVisualEffectView(effect: blurEffect)
-		self.blurEffectView.frame = CGRect(.zero, frame.size)
+		self.blurEffectView.frame = CGRect(.zero, frame.size.width, headerHeight)
 		self.addSubview(self.blurEffectView)
 
-		self.imageView = UIImageView(frame: CGRect(0.0, 0.0, frame.height, frame.height))
+		self.imageView = UIImageView(frame: CGRect(0.0, 0.0, headerHeight, headerHeight))
+		self.imageView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		self.blurEffectView.contentView.addSubview(self.imageView)
 
 		// Vibrancy over the play/pause button
 		let vibrancyEffectView = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blurEffect))
-		vibrancyEffectView.frame = CGRect(frame.right - frame.height, 0.0, 44.0, 44.0)
+		vibrancyEffectView.frame = CGRect(frame.right - headerHeight, 0.0, headerHeight, headerHeight)
 		self.blurEffectView.contentView.addSubview(vibrancyEffectView)
 
 		// Play / pause button
@@ -90,7 +91,7 @@ final class MiniPlayerView : UIView
 		vibrancyEffectView.contentView.addSubview(self.btnPlay)
 
 		// Dummy accessibility view
-		self.accessibleView = UIView(frame: CGRect(self.imageView.right, 0.0, vibrancyEffectView.left - self.imageView.right, frame.height))
+		self.accessibleView = UIView(frame: CGRect(self.imageView.right, 0.0, vibrancyEffectView.left - self.imageView.right, headerHeight))
 		self.accessibleView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		self.accessibleView.isAccessibilityElement = true
 		self.blurEffectView.contentView.addSubview(self.accessibleView)
@@ -116,12 +117,24 @@ final class MiniPlayerView : UIView
 		self.progressView.isAccessibilityElement = false
 		self.addSubview(self.progressView)
 
+		// Tableview
+		self.tableView = TracksListTableView(frame: CGRect(0.0, headerHeight, frame.width, frame.height - headerHeight), style: .plain)
+		self.tableView.delegate = self
+		self.addSubview(self.tableView)
+
 		// Single tap to request full player view
 		let singleTap = UITapGestureRecognizer()
 		singleTap.numberOfTapsRequired = 1
 		singleTap.numberOfTouchesRequired = 1
 		singleTap.addTarget(self, action: #selector(singleTap(_:)))
-		self.addGestureRecognizer(singleTap)
+		self.blurEffectView.addGestureRecognizer(singleTap)
+
+		let doubleTap = UITapGestureRecognizer()
+		doubleTap.numberOfTapsRequired = 2
+		doubleTap.numberOfTouchesRequired = 1
+		doubleTap.addTarget(self, action: #selector(doubleTap(_:)))
+		self.blurEffectView.addGestureRecognizer(doubleTap)
+		singleTap.require(toFail: doubleTap)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
@@ -182,7 +195,7 @@ final class MiniPlayerView : UIView
 		NotificationCenter.default.post(name: .miniPlayerViewWillShow, object: nil)
 		let w = UIApplication.shared.keyWindow!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: UIViewAnimationOptions(), animations: {
-			self.y = w.frame.height - self.height
+			self.y = w.frame.height - self.blurEffectView.height
 		}, completion: { finished in
 			self.visible = true
 			NotificationCenter.default.post(name: .miniPlayerViewDidShow, object: nil)
@@ -194,7 +207,7 @@ final class MiniPlayerView : UIView
 		NotificationCenter.default.post(name: .miniPlayerViewWillHide, object: nil)
 		let w = UIApplication.shared.keyWindow!
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: UIViewAnimationOptions(), animations: {
-			self.y = w.frame.height + self.height
+			self.y = w.frame.height + self.blurEffectView.height
 		}, completion: { finished in
 			self.visible = false
 			NotificationCenter.default.post(name: .miniPlayerViewDidHide, object: nil)
@@ -226,13 +239,41 @@ final class MiniPlayerView : UIView
 		}
 	}
 
+	func doubleTap(_ gesture: UITapGestureRecognizer)
+	{
+		if fullyVisible == false
+		{
+			PlayerController.shared.getSongsOfCurrentQueue {
+				DispatchQueue.main.async {
+					self.tableView.tracks = PlayerController.shared.listTracksInQueue
+				}
+			}
+
+			let w = UIApplication.shared.keyWindow!
+			UIView.animate(withDuration: 0.35, delay: 0.0, options: UIViewAnimationOptions(), animations: {
+				self.y = w.frame.height - self.height
+			}, completion: { finished in
+				self.fullyVisible = true
+			})
+		}
+		else
+		{
+			let w = UIApplication.shared.keyWindow!
+			UIView.animate(withDuration: 0.35, delay: 0.0, options: UIViewAnimationOptions(), animations: {
+				self.y = w.frame.height - self.blurEffectView.height
+			}, completion: { finished in
+				self.fullyVisible = false
+			})
+		}
+	}
+
 	// MARK: - Notifications
 	func playingTrackNotification(_ aNotification: Notification)
 	{
 		if let infos = aNotification.userInfo
 		{
 			// Player not visible and should be
-			if !visible && !stayHidden
+			if visible == false && stayHidden == false
 			{
 				show()
 			}
@@ -271,5 +312,29 @@ final class MiniPlayerView : UIView
 			}
 			btnPlay.tag = state
 		}
+	}
+}
+
+// MARK: - UITableViewDelegate
+extension MiniPlayerView : UITableViewDelegate
+{
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+	{
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+			tableView.deselectRow(at: indexPath, animated: true)
+		})
+
+		// Toggle play / pause for the current track
+		if let currentPlayingTrack = PlayerController.shared.currentTrack
+		{
+			let selectedTrack = self.tableView.tracks[indexPath.row]
+			if selectedTrack == currentPlayingTrack
+			{
+				PlayerController.shared.togglePause()
+				return
+			}
+		}
+
+		PlayerController.shared.playTrackAtPosition(UInt32(indexPath.row))
 	}
 }

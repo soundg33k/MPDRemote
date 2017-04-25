@@ -69,7 +69,7 @@ final class TrackTableViewCell : UITableViewCell
 		self.lblDuration.heightAnchor.constraint(equalToConstant: 14.0).isActive = true
 		self.lblDuration.widthAnchor.constraint(equalToConstant: 32.0).isActive = true
 		self.lblDuration.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 15.0).isActive = true
-		self.lblDuration.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8).isActive = true
+		self.lblDuration.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8.0).isActive = true
 
 		self.lblTitle = UILabel()
 		self.lblTitle.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
@@ -87,8 +87,8 @@ final class TrackTableViewCell : UITableViewCell
 		self.separator.backgroundColor = UIColor(rgb: 0xE4E4E4)
 		self.contentView.addSubview(self.separator)
 		self.separator.translatesAutoresizingMaskIntoConstraints = false
-		self.separator.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 10.0).isActive = true
-		self.separator.trailingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: -8.0).isActive = true
+		self.separator.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8.0).isActive = true
+		self.separator.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8.0).isActive = true
 		self.separator.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 0.0).isActive = true
 		self.separator.heightAnchor.constraint(equalToConstant: 1.0).isActive = true
 	}
@@ -99,13 +99,13 @@ final class TrackTableViewCell : UITableViewCell
 
 		if selected
 		{
-			self.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+			backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		}
 		else
 		{
-			self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
-		contentView.backgroundColor = self.backgroundColor
+		contentView.backgroundColor = backgroundColor
 	}
 
 	override func setHighlighted(_ highlighted: Bool, animated: Bool)
@@ -114,12 +114,12 @@ final class TrackTableViewCell : UITableViewCell
 
 		if highlighted
 		{
-			self.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+			backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		}
 		else
 		{
-			self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
-		contentView.backgroundColor = self.backgroundColor
+		contentView.backgroundColor = backgroundColor
 	}
 }

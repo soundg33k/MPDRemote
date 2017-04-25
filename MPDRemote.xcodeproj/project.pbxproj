@@ -57,6 +57,7 @@
 		4303DE9B1D9036660083C686 /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4303DE951D9036660083C686 /* MPDConnection.swift */; };
 		430B0EED1DBE33980008B684 /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430B0EEC1DBE33980008B684 /* CGContext+Extensions.swift */; };
 		432785C91DF1C70B00A4A04D /* Number+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432785C81DF1C70B00A4A04D /* Number+Extensions.swift */; };
+		4330666C1EAE4F660066F5E0 /* TracksListTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4330666B1EAE4F660066F5E0 /* TracksListTableView.swift */; };
 		433305001DE601B1003469F4 /* PlaylistDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433304FF1DE601B1003469F4 /* PlaylistDetailVC.swift */; };
 		4334E51B1D0ED5C5004553A3 /* InteractableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */; };
 		43366FC71D9ABD880016AD9C /* ZeroConfBrowserTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43366FC61D9ABD880016AD9C /* ZeroConfBrowserTVC.swift */; };
@@ -73,7 +74,6 @@
 		43AD0AF91D9AB4260067D3C6 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AD0AF81D9AB4260067D3C6 /* Server.swift */; };
 		43B35C2F1D9BCAAA00592E23 /* ZeroConfExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */; };
 		43BE32401DB5083A0062A7B1 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BE323F1DB5083A0062A7B1 /* SettingsVC.swift */; };
-		43DBB0BF1E76B0F40008ACD8 /* TrackListTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBB0BE1E76B0F40008ACD8 /* TrackListTableView.swift */; };
 		43DCAFA31D9193C500D0B908 /* AudioServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA21D9193C500D0B908 /* AudioServer.swift */; };
 		43DCAFA51D91940C00D0B908 /* CoverWebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */; };
 		43E187531D1BEF7400C19ECD /* main-ipad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43E187511D1BEF7400C19ECD /* main-ipad.storyboard */; };
@@ -184,6 +184,7 @@
 		4303DE951D9036660083C686 /* MPDConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDConnection.swift; sourceTree = "<group>"; };
 		430B0EEC1DBE33980008B684 /* CGContext+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "CGContext+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		432785C81DF1C70B00A4A04D /* Number+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Number+Extensions.swift"; sourceTree = "<group>"; };
+		4330666B1EAE4F660066F5E0 /* TracksListTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracksListTableView.swift; sourceTree = "<group>"; };
 		433304FF1DE601B1003469F4 /* PlaylistDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistDetailVC.swift; sourceTree = "<group>"; };
 		4334E51A1D0ED5C5004553A3 /* InteractableImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = InteractableImageView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		43366FC61D9ABD880016AD9C /* ZeroConfBrowserTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfBrowserTVC.swift; sourceTree = "<group>"; };
@@ -200,7 +201,6 @@
 		43AD0AF81D9AB4260067D3C6 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfExplorer.swift; sourceTree = "<group>"; };
 		43BE323F1DB5083A0062A7B1 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
-		43DBB0BE1E76B0F40008ACD8 /* TrackListTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackListTableView.swift; sourceTree = "<group>"; };
 		43DCAFA21D9193C500D0B908 /* AudioServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioServer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CoverWebServer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		43E187521D1BEF7400C19ECD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/main-ipad.storyboard"; sourceTree = "<group>"; };
@@ -445,8 +445,8 @@
 				1E5653951C908A310049C02D /* MenuView.swift */,
 				1E5653961C908A310049C02D /* MiniPlayerView.swift */,
 				1E5653971C908A310049C02D /* TopAlignedLabel.swift */,
-				43DBB0BE1E76B0F40008ACD8 /* TrackListTableView.swift */,
 				1EB93A9F1CB3A82700EA5339 /* TypeChoiceView.swift */,
+				4330666B1EAE4F660066F5E0 /* TracksListTableView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -574,8 +574,8 @@
 			files = (
 				1E5653AC1C908A310049C02D /* Logger.swift in Sources */,
 				436C438B1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift in Sources */,
+				4330666C1EAE4F660066F5E0 /* TracksListTableView.swift in Sources */,
 				1E5653B71C908A310049C02D /* MenuView.swift in Sources */,
-				43DBB0BF1E76B0F40008ACD8 /* TrackListTableView.swift in Sources */,
 				1E5653B51C908A310049C02D /* AlbumHeaderView.swift in Sources */,
 				1EDF75591CB54E130071818E /* AlbumTableViewCell.swift in Sources */,
 				43A8CA671D157F0D0002B3D9 /* MenuTVC.swift in Sources */,
