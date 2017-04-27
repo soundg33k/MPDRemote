@@ -26,12 +26,10 @@ import UIKit
 final class ArtistsVC : UIViewController
 {
 	// MARK: - Public properties
-	//
+	// Collection View
 	@IBOutlet var collectionView: MusicalCollectionView!
 	// Selected genre
 	var genre: Genre! = nil
-	// List of artists
-	var artists = [Artist]()
 
 	// MARK: - Private properties
 	// Label in the navigationbar
@@ -68,7 +66,6 @@ final class ArtistsVC : UIViewController
 		super.viewWillAppear(animated)
 
 		MusicDataSource.shared.getArtistsForGenre(genre) { (artists: [Artist]) in
-			self.artists = artists
 			DispatchQueue.main.async {
 				self.collectionView.items = artists
 				self.collectionView.reloadData()
@@ -99,7 +96,7 @@ final class ArtistsVC : UIViewController
 			if let indexPath = indexes.first
 			{
 				let vc = segue.destination as! AlbumsVC
-				vc.artist = artists[indexPath.row]
+				vc.artist = collectionView.items[indexPath.row] as! Artist
 			}
 		}
 	}
@@ -108,7 +105,7 @@ final class ArtistsVC : UIViewController
 	private func updateNavigationTitle()
 	{
 		let attrs = NSMutableAttributedString(string: genre.name + "\n", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-		attrs.append(NSAttributedString(string: "\(artists.count) \(artists.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+		attrs.append(NSAttributedString(string: "\(collectionView.items.count) \(collectionView.items.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 		titleView.attributedText = attrs
 	}
 }

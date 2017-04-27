@@ -26,6 +26,7 @@ import UIKit
 final class AlbumsVC : UIViewController
 {
 	// MARK: - Public properties
+	// Collection View
 	@IBOutlet var collectionView: MusicalCollectionView!
 	// Selected artist
 	var artist: Artist!
