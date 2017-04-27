@@ -489,8 +489,9 @@ final class MPDConnection : AudioServerConnection
 			{
 				metadatas["artist"] = name
 			}
+			mpd_return_pair(_connection, tmpArtist)
 		}
-		mpd_return_pair(_connection, tmpArtist)
+
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
 			Logger.dlog(getLastErrorMessageForConnection())
@@ -526,8 +527,9 @@ final class MPDConnection : AudioServerConnection
 			{
 				metadatas["year"] = year
 			}
+			mpd_return_pair(_connection, tmpDate)
 		}
-		mpd_return_pair(_connection, tmpDate)
+
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
 			Logger.dlog(getLastErrorMessageForConnection())
@@ -558,8 +560,9 @@ final class MPDConnection : AudioServerConnection
 			{
 				metadatas["genre"] = genre
 			}
+			mpd_return_pair(_connection, tmpGenre)
 		}
-		mpd_return_pair(_connection, tmpGenre)
+
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
 			Logger.dlog(getLastErrorMessageForConnection())
@@ -855,14 +858,14 @@ final class MPDConnection : AudioServerConnection
 				continue
 			}
 
+			let id = Int(mpd_output_get_id(output))
+
 			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpName), count: Int(strlen(tmpName)), deallocator: .none)
 			guard let name = String(data: dataTemp, encoding: .utf8) else
 			{
 				mpd_output_free(output)
 				continue
 			}
-
-			let id = Int(mpd_output_get_id(output))
 
 			let o = AudioOutput(id: id, name: name, enabled: mpd_output_get_enabled(output))
 			ret.append(o)
@@ -911,6 +914,11 @@ final class MPDConnection : AudioServerConnection
 		if _connection == nil
 		{
 			return "NO CONNECTION OBJECT"
+		}
+
+		if mpd_connection_get_error(_connection) == MPD_ERROR_SUCCESS
+		{
+			return "NO ERROR"
 		}
 
 		if let errorMessage = mpd_connection_get_error_message(_connection)
