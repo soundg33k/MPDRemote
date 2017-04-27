@@ -301,7 +301,7 @@ final class MusicDataSource
 		}
 	}
 
-	func currentCollection(_ displayType: DisplayType) -> [MusicalEntity]
+	/*func currentCollection(_ displayType: DisplayType) -> [MusicalEntity]
 	{
 		switch (displayType)
 		{
@@ -314,7 +314,7 @@ final class MusicDataSource
 			case .playlists:
 				return playlists
 		}
-	}
+	}*/
 
 	// MARK: - Private
 	private func startTimer(_ interval: Int)

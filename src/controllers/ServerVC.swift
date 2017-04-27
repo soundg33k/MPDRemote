@@ -333,15 +333,14 @@ final class ServerVC : MenuTVC
 	fileprivate func clearCache(confirm: Bool)
 	{
 		let clearBlock = { () -> Void in
-			let fileManager = FileManager()
-			let cachesDirectoryURL = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).last!
+			let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
 			let coversDirectoryName = UserDefaults.standard.string(forKey: kNYXPrefCoversDirectory)!
 			let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
 
 			do
 			{
-				try fileManager.removeItem(at: coversDirectoryURL)
-				try fileManager.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+				try FileManager.default.removeItem(at: coversDirectoryURL)
+				try FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
 				URLCache.shared.removeAllCachedResponses()
 			}
 			catch _

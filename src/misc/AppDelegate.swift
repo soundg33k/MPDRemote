@@ -95,10 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 			kNYXPrefShakeToPlayRandomAlbum : false,
 		]
 
-		let fileManager = FileManager()
-		let cachesDirectoryURL = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).last!
+		let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
 
-		try! fileManager.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
+		try! FileManager.default.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
 
 		UserDefaults.standard.register(defaults: defaults)
 		UserDefaults.standard.synchronize()

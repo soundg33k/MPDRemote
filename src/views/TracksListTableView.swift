@@ -25,6 +25,7 @@ import UIKit
 
 final class TracksListTableView : UITableView
 {
+	// MARK: - Public properties
 	// Tracks list
 	var tracks = [Track]()
 	{

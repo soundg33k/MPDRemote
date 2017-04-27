@@ -23,16 +23,11 @@
 import UIKit
 
 
-private let __sideSpan = CGFloat(10.0)
-private let __columns = 3
-private let __insets = UIEdgeInsets(top: __sideSpan, left: __sideSpan, bottom: __sideSpan, right: __sideSpan)
-
-
 final class RootVC : MenuVC
 {
 	// MARK: - Private properties
 	// Albums view
-	@IBOutlet fileprivate var collectionView: UICollectionView!
+	@IBOutlet fileprivate var collectionView: MusicalCollectionView!
 	// Top constraint for collection view
 	@IBOutlet fileprivate var topConstraint: NSLayoutConstraint!
 	// Search bar
@@ -44,12 +39,8 @@ final class RootVC : MenuVC
 	fileprivate var searchBarVisible = false
 	// Is currently searching, flag
 	fileprivate var searching = false
-	// Search results
-	fileprivate var searchResults = [MusicalEntity]()
 	// Long press gesture is recognized, flag
 	fileprivate var longPressRecognized = false
-	// Keep track of download operations to eventually cancel them
-	fileprivate var _downloadOperations = [String : Operation]()
 	// View to change the type of items in the collection view
 	fileprivate var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
@@ -91,12 +82,8 @@ final class RootVC : MenuVC
 		titleView.addTarget(self, action: #selector(changeTypeAction(_:)), for: .touchUpInside)
 		navigationItem.titleView = titleView
 
-		// Create collection view
-		collectionView.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "fr.whine.mpdremote.cell.album")
-		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets;
-		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
-		(collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
-		collectionView.isPrefetchingEnabled = false
+		// Collection view
+		collectionView.myDelegate = self
 
 		// Longpress
 		_longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
@@ -138,6 +125,8 @@ final class RootVC : MenuVC
 					}
 					MusicDataSource.shared.getListForDisplayType(_displayType) {
 						DispatchQueue.main.async {
+							self.collectionView.items = MusicDataSource.shared.selectedList()
+							self.collectionView.displayType = self._displayType
 							self.collectionView.reloadData()
 							self.updateNavigationTitle()
 						}
@@ -184,6 +173,8 @@ final class RootVC : MenuVC
 			// Refresh view
 			MusicDataSource.shared.getListForDisplayType(_displayType) {
 				DispatchQueue.main.async {
+					self.collectionView.items = MusicDataSource.shared.selectedList()
+					self.collectionView.displayType = self._displayType
 					self.collectionView.reloadData()
 					self.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
 					self.updateNavigationTitle()
@@ -206,7 +197,6 @@ final class RootVC : MenuVC
 		super.viewWillDisappear(animated)
 
 		APP_DELEGATE().operationQueue.cancelAllOperations()
-		_downloadOperations.removeAll()
 
 		if searchView.superview != nil
 		{
@@ -231,28 +221,28 @@ final class RootVC : MenuVC
 		if segue.identifier == "root-albums-to-detail-album"
 		{
 			let row = collectionView.indexPathsForSelectedItems![0].row
-			let album = searching ? searchResults[row] as! Album : MusicDataSource.shared.albums[row]
+			let album = searching ? collectionView.searchResults[row] as! Album : MusicDataSource.shared.albums[row]
 			let vc = segue.destination as! AlbumDetailVC
 			vc.album = album
 		}
 		else if segue.identifier == "root-genres-to-artists"
 		{
 			let row = collectionView.indexPathsForSelectedItems![0].row
-			let genre = searching ? searchResults[row] as! Genre : MusicDataSource.shared.genres[row]
+			let genre = searching ? collectionView.searchResults[row] as! Genre : MusicDataSource.shared.genres[row]
 			let vc = segue.destination as! ArtistsVC
 			vc.genre = genre
 		}
 		else if segue.identifier == "root-artists-to-albums"
 		{
 			let row = collectionView.indexPathsForSelectedItems![0].row
-			let artist = searching ? searchResults[row] as! Artist : MusicDataSource.shared.artists[row]
+			let artist = searching ? collectionView.searchResults[row] as! Artist : MusicDataSource.shared.artists[row]
 			let vc = segue.destination as! AlbumsVC
 			vc.artist = artist
 		}
 		else if segue.identifier == "root-playlists-to-detail-playlist"
 		{
 			let row = collectionView.indexPathsForSelectedItems![0].row
-			let playlist = searching ? searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
+			let playlist = searching ? collectionView.searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
 			let vc = segue.destination as! PlaylistDetailVC
 			vc.playlist = playlist
 		}
@@ -271,10 +261,10 @@ final class RootVC : MenuVC
 			switch _displayType
 			{
 				case .albums:
-					let album = searching ? searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
+					let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
 					PlayerController.shared.playAlbum(album, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
 				case .artists:
-					let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
+					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					MusicDataSource.shared.getAlbumsForArtist(artist) {
 						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.flatMap({$0.tracks}).flatMap({$0})
@@ -282,7 +272,7 @@ final class RootVC : MenuVC
 						}
 					}
 				case .genres:
-					let genre = searching ? searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
+					let genre = searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 					MusicDataSource.shared.getAlbumsForGenre(genre) {
 						MusicDataSource.shared.getTracksForAlbums(genre.albums) {
 							let ar = genre.albums.flatMap({$0.tracks}).flatMap({$0})
@@ -290,7 +280,7 @@ final class RootVC : MenuVC
 						}
 					}
 				case .playlists:
-					let playlist = searching ? searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+					let playlist = searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
 					PlayerController.shared.playPlaylist(playlist, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
 			}
 		}
@@ -322,7 +312,7 @@ final class RootVC : MenuVC
 			switch _displayType
 			{
 				case .albums:
-					let album = searching ? searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
+					let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						PlayerController.shared.playAlbum(album, shuffle: false, loop: false)
 						self.longPressRecognized = false
@@ -345,7 +335,7 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(addQueueAction)
 				case .artists:
-					let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
+					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForArtist(artist) {
 							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
@@ -383,7 +373,7 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(addQueueAction)
 				case .genres:
-					let genre = self.searching ? self.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
+					let genre = self.searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForGenre(genre) {
 							MusicDataSource.shared.getTracksForAlbums(genre.albums) {
@@ -421,7 +411,7 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(addQueueAction)
 				case .playlists:
-					let playlist = self.searching ? self.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+					let playlist = self.searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						PlayerController.shared.playPlaylist(playlist, shuffle: false, loop: false)
 						self.longPressRecognized = false
@@ -458,7 +448,7 @@ final class RootVC : MenuVC
 			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
 				self.view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 				self.view.layoutIfNeeded()
-				if MusicDataSource.shared.currentCollection(self._displayType).count == 0
+				if MusicDataSource.shared.selectedList().count == 0
 				{
 					self.collectionView.contentOffset = CGPoint(0, 64)
 				}
@@ -479,7 +469,6 @@ final class RootVC : MenuVC
 			UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
 				self.collectionView.contentInset = .zero
 				self.view.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-				//self.view.layoutIfNeeded()
 			}, completion:nil)
 		}
 	}
@@ -488,7 +477,6 @@ final class RootVC : MenuVC
 	{
 		UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
 			self.searchView.alpha = 1.0
-			//self.navigationController?.navigationBar.alpha = 0.0
 			self.searchBar.becomeFirstResponder()
 		}, completion:{ finished in
 			self.searchBarVisible = true
@@ -501,7 +489,6 @@ final class RootVC : MenuVC
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: .curveEaseOut, animations: {
 			self.searchBar.resignFirstResponder()
 			self.searchView.alpha = 0.0
-			//self.navigationController?.navigationBar.alpha = 1.0
 		}, completion:{ finished in
 			self.searchBarVisible = false
 		})
@@ -532,28 +519,6 @@ final class RootVC : MenuVC
 		titleView.setAttributedTitle(astr1, for: .normal)
 		let astr2 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
 		titleView.setAttributedTitle(astr2, for: .highlighted)
-	}
-
-	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
-	{
-		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
-		let key = album.uniqueIdentifier
-		weak var weakOperation = downloadOperation
-		downloadOperation.callback = {(cover: UIImage, thumbnail: UIImage) in
-			if let op = weakOperation
-			{
-				if !op.isCancelled
-				{
-					self._downloadOperations.removeValue(forKey: key)
-				}
-			}
-			if let block = callback
-			{
-				block(cover, thumbnail)
-			}
-		}
-		_downloadOperations[key] = downloadOperation
-		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
 	}
 
 	fileprivate func updateLongpressState()
@@ -592,297 +557,15 @@ final class RootVC : MenuVC
 	}
 }
 
-// MARK: - UICollectionViewDataSource
-extension RootVC : UICollectionViewDataSource
+// MARK: - MusicalCollectionViewDelegate
+extension RootVC : MusicalCollectionViewDelegate
 {
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+	func isSearching(actively: Bool) -> Bool
 	{
-		if searching
-		{
-			return searchResults.count
-		}
-
-		return MusicDataSource.shared.selectedList().count
+		return actively ? (self.searching && searchBar.isFirstResponder == true) : self.searching
 	}
 
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "fr.whine.mpdremote.cell.album", for: indexPath) as! RootCollectionViewCell
-		cell.layer.shouldRasterize = true
-		cell.layer.rasterizationScale = UIScreen.main.scale
-		cell.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-		cell.label.backgroundColor = collectionView.backgroundColor
-
-		// Sanity check
-		if searching && indexPath.row >= searchResults.count
-		{
-			return cell
-		}
-
-		switch _displayType
-		{
-			case .albums:
-				let album = searching ? searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
-				_configureCellForAlbum(cell, indexPath: indexPath, album: album)
-			case .genres:
-				let genre = searching ? searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
-				_configureCellForGenre(cell, indexPath: indexPath, genre: genre)
-			case .artists:
-				let artist = searching ? searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
-				_configureCellForArtist(cell, indexPath: indexPath, artist: artist)
-			case .playlists:
-				let playlist = searching ? searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
-				_configureCellForPlaylist(cell, indexPath: indexPath, playlist: playlist)
-		}
-
-		return cell
-	}
-
-	private func _configureCellForAlbum(_ cell: RootCollectionViewCell, indexPath: IndexPath, album: Album)
-	{
-		// Set title
-		cell.label.text = album.name
-		cell.accessibilityLabel = album.name
-
-		// If image is in cache, bail out quickly
-		cell.image = nil
-		if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
-		{
-			cell.image = cachedImage
-			return
-		}
-
-		// Get local URL for cover
-		guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
-		{
-			return
-		}
-		guard let coverURL = album.localCoverURL else
-		{
-			Logger.dlog("[!] No cover file URL for \(album)") // should not happen
-			return
-		}
-
-		if let cover = UIImage.loadFromFileURL(coverURL)
-		{
-			cell.image = cover
-			ImageCache.shared[album.uniqueIdentifier] = cover
-		}
-		else
-		{
-			if searching && searchBar.isFirstResponder == true
-			{
-				return
-			}
-			if album.path != nil
-			{
-				downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
-					DispatchQueue.main.async {
-						if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
-						{
-							c.image = thumbnail
-						}
-					}
-				}
-			}
-			else
-			{
-				MusicDataSource.shared.getPathForAlbum(album) {
-					self.downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
-						DispatchQueue.main.async {
-							if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
-							{
-								c.image = thumbnail
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private func _configureCellForGenre(_ cell: RootCollectionViewCell, indexPath: IndexPath, genre: Genre)
-	{
-		cell.label.text = genre.name
-		cell.accessibilityLabel = genre.name
-
-		if let album = genre.albums.first
-		{
-			// If image is in cache, bail out quickly
-			cell.image = nil
-			if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
-			{
-				cell.image = cachedImage
-				return
-			}
-
-			// Get local URL for cover
-			guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
-			{
-				return
-			}
-			guard let coverURL = album.localCoverURL else
-			{
-				Logger.alog("[!] No cover URL for \(album)") // should not happen
-				return
-			}
-
-			if let cover = UIImage.loadFromFileURL(coverURL)
-			{
-				cell.image = cover
-				ImageCache.shared[album.uniqueIdentifier] = cover
-			}
-			else
-			{
-				if searching && searchBar.isFirstResponder == true
-				{
-					return
-				}
-				if album.path != nil
-				{
-					downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
-						DispatchQueue.main.async {
-							if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
-							{
-								c.image = thumbnail
-							}
-						}
-					}
-				}
-				else
-				{
-					MusicDataSource.shared.getPathForAlbum(album) {
-						self.downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
-							DispatchQueue.main.async {
-								if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
-								{
-									c.image = thumbnail
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			cell.image = nil
-			if searching && searchBar.isFirstResponder == true
-			{
-				return
-			}
-			MusicDataSource.shared.getAlbumForGenre(genre) {
-				DispatchQueue.main.async {
-					if let _ = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
-					{
-						self.collectionView.reloadItems(at: [indexPath])
-					}
-				}
-			}
-			return
-		}
-	}
-
-	private func _configureCellForArtist(_ cell: RootCollectionViewCell, indexPath: IndexPath, artist: Artist)
-	{
-		cell.label.text = artist.name
-		cell.accessibilityLabel = artist.name
-
-		if artist.albums.count > 0
-		{
-			if let album = artist.albums.first
-			{
-				// If image is in cache, bail out quickly
-				cell.image = nil
-				if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
-				{
-					cell.image = cachedImage
-					return
-				}
-
-				// Get local URL for cover
-				guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
-				{
-					return
-				}
-				guard let coverURL = album.localCoverURL else
-				{
-					Logger.alog("[!] No cover URL for \(album)") // should not happen
-					return
-				}
-
-				if let cover = UIImage.loadFromFileURL(coverURL)
-				{
-					cell.image = cover
-					ImageCache.shared[album.uniqueIdentifier] = cover
-				}
-				else
-				{
-					if searching && searchBar.isFirstResponder == true
-					{
-						return
-					}
-					let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!
-					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
-					if album.path != nil
-					{
-						downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
-							let cropped = thumbnail.smartCropped(toSize: cell.imageView.size)
-							DispatchQueue.main.async {
-								if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
-								{
-									c.image = cropped
-								}
-							}
-						}
-					}
-					else
-					{
-						MusicDataSource.shared.getPathForAlbum(album) {
-							self.downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
-								let cropped = thumbnail.smartCropped(toSize: cell.imageView.size)
-								DispatchQueue.main.async {
-									if let c = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
-									{
-										c.image = cropped
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			cell.image = nil
-			if searching && searchBar.isFirstResponder == true
-			{
-				return
-			}
-			MusicDataSource.shared.getAlbumsForArtist(artist) {
-				DispatchQueue.main.async {
-					if let _ = self.collectionView.cellForItem(at: indexPath) as? RootCollectionViewCell
-					{
-						self.collectionView.reloadItems(at: [indexPath])
-					}
-				}
-			}
-		}
-	}
-
-	private func _configureCellForPlaylist(_ cell: RootCollectionViewCell, indexPath: IndexPath, playlist: Playlist)
-	{
-		cell.label.text = playlist.name
-		cell.accessibilityLabel = playlist.name
-		cell.image = generateCoverForPlaylist(playlist, size: cell.imageView.size)
-	}
-}
-
-// MARK: - UICollectionViewDelegate
-extension RootVC : UICollectionViewDelegate
-{
-	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+	func didSelectItem(indexPath: IndexPath)
 	{
 		// If menu is visible ignore default behavior and hide it
 		if menuView.visible
@@ -904,31 +587,6 @@ extension RootVC : UICollectionViewDelegate
 				performSegue(withIdentifier: "root-playlists-to-detail-playlist", sender: self)
 		}
 	}
-
-	func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
-	{
-		if _displayType != .albums
-		{
-			return
-		}
-
-		// When searching things can go wrong, this prevent some crashes
-		let src = searching ? searchResults as! [Album] : MusicDataSource.shared.albums
-		if indexPath.row >= src.count
-		{
-			return
-		}
-
-		// Remove download cover operation if still in queue
-		let album = src[indexPath.row]
-		let key = album.uniqueIdentifier
-		if let op = _downloadOperations[key] as! CoverOperation?
-		{
-			_downloadOperations.removeValue(forKey: key)
-			op.cancel()
-			Logger.dlog("[+] Cancelling \(op)")
-		}
-	}
 }
 
 // MARK: - UISearchBarDelegate
@@ -936,7 +594,7 @@ extension RootVC : UISearchBarDelegate
 {
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar)
 	{
-		searchResults.removeAll()
+		collectionView.searchResults.removeAll()
 		searching = false
 		searchBar.text = ""
 		showNavigationBar(animated: true)
@@ -954,7 +612,7 @@ extension RootVC : UISearchBarDelegate
 	{
 		searching = true
 		// Copy original source to avoid crash when nothing was searched
-		searchResults = MusicDataSource.shared.selectedList()
+		collectionView.searchResults = MusicDataSource.shared.selectedList()
 	}
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
@@ -963,18 +621,18 @@ extension RootVC : UISearchBarDelegate
 		{
 			if String.isNullOrWhiteSpace(searchText)
 			{
-				searchResults = MusicDataSource.shared.selectedList()
+				collectionView.searchResults = MusicDataSource.shared.selectedList()
 				collectionView.reloadData()
 				return
 			}
 
 			if UserDefaults.standard.bool(forKey: kNYXPrefFuzzySearch)
 			{
-				searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
+				collectionView.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
 			}
 			else
 			{
-				searchResults = MusicDataSource.shared.selectedList().filter({$0.name.lowercased().contains(searchText.lowercased())})
+				collectionView.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.lowercased().contains(searchText.lowercased())})
 			}
 
 			collectionView.reloadData()
@@ -1004,9 +662,11 @@ extension RootVC : TypeChoiceViewDelegate
 		// Refresh view
 		MusicDataSource.shared.getListForDisplayType(type) {
 			DispatchQueue.main.async {
+				self.collectionView.items = MusicDataSource.shared.selectedList()
+				self.collectionView.displayType = type
 				self.collectionView.reloadData()
 				self.changeTypeAction(nil)
-				if MusicDataSource.shared.currentCollection(type).count == 0
+				if MusicDataSource.shared.selectedList().count == 0
 				{
 					self.collectionView.contentOffset = CGPoint(0, 64)
 				}
@@ -1030,13 +690,13 @@ extension RootVC
 
 	override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?)
 	{
-		if UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum) == false
-		{
-			return
-		}
-		
 		if motion == .motionShake
 		{
+			if UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum) == false || MusicDataSource.shared.albums.count == 0
+			{
+				return
+			}
+
 			let randomAlbum = MusicDataSource.shared.albums.randomItem()
 			if randomAlbum.tracks == nil
 			{
@@ -1047,28 +707,6 @@ extension RootVC
 			else
 			{
 				PlayerController.shared.playAlbum(randomAlbum, shuffle: false, loop: false)
-			}
-
-			// Briefly display cover of album
-			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!
-			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
-			MusicDataSource.shared.getPathForAlbum(randomAlbum) {
-				self.downloadCoverForAlbum(randomAlbum, cropSize: cropSize.cgSizeValue, callback: { (cover: UIImage, thumbnail: UIImage) in
-					let size = CGSize(self.view.width - 64.0, self.view.width - 64.0)
-					let cropped = cover.smartCropped(toSize: size)
-					DispatchQueue.main.async {
-						let iv = UIImageView(frame: CGRect((self.view.width - 64.0) * 0.5, (self.view.height - 64.0) * 0.5, 64.0, 64.0))
-						iv.image = cropped
-						iv.alpha = 0.0
-						self.view.addSubview(iv)
-						UIView.animate(withDuration: 1.0, delay: 0.0, options: .curveEaseIn, animations: {
-							iv.frame = CGRect((self.view.width - size.width) * 0.5, (self.view.height - size.height) * 0.5, size)
-							iv.alpha = 1.0
-						}, completion:{ finished in
-							iv.removeFromSuperview()
-						})
-					}
-				})
 			}
 		}
 	}
@@ -1121,7 +759,7 @@ extension RootVC : UIViewControllerPreviewingDelegate
 				let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
 
 				let row = indexPath.row
-				let album = searching ? searchResults[row] as! Album : MusicDataSource.shared.albums[row]
+				let album = searching ? collectionView.searchResults[row] as! Album : MusicDataSource.shared.albums[row]
 				vc.album = album
 				return vc
 			}
@@ -1130,7 +768,7 @@ extension RootVC : UIViewControllerPreviewingDelegate
 				let vc = sb.instantiateViewController(withIdentifier: "PlaylistDetailVC") as! PlaylistDetailVC
 
 				let row = indexPath.row
-				let playlist = searching ? searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
+				let playlist = searching ? collectionView.searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
 				vc.playlist = playlist
 				return vc
 			}
