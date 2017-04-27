@@ -427,7 +427,7 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 			let toViewController = transitionContext.viewController(forKey: .to)! as! PlayerVC
 			containerView.addSubview(toViewController.view)
 
-			let iv = UIImageView(frame: CGRect(0, bounds.height - MiniPlayerView.shared.height, MiniPlayerView.shared.height, MiniPlayerView.shared.height))
+			let iv = UIImageView(frame: CGRect(0, bounds.height - MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height))
 			iv.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0)
 			iv.image = MiniPlayerView.shared.imageView.image
 			if let coverURL = PlayerController.shared.currentAlbum?.localCoverURL
@@ -469,7 +469,7 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 				iv.alpha = 1.0
 			}, completion: { finished in
 				UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
-					iv.frame = CGRect(0, bounds.height - MiniPlayerView.shared.height, MiniPlayerView.shared.height, MiniPlayerView.shared.height)
+					iv.frame = CGRect(0, bounds.height - MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height)
 				}, completion: { finished in
 					transitionContext.completeTransition(true)
 					iv.removeFromSuperview()
