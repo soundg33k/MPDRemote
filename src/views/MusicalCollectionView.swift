@@ -41,14 +41,13 @@ final class MusicalCollectionView : UICollectionView
 	// Data sources
 	var items = [MusicalEntity]()
 	var searchResults = [MusicalEntity]()
-	//
+	// Type of entities displayd
 	var displayType = DisplayType.albums
-
 	// Delegate
 	weak var myDelegate: MusicalCollectionViewDelegate!
-	//
+	// Cover download operations
 	fileprivate var _downloadOperations = [String : Operation]()
-	
+
 	required init?(coder aDecoder: NSCoder)
 	{
 		super.init(coder: aDecoder)
