@@ -84,8 +84,6 @@ final class AlbumsVC : UIViewController
 				self.updateNavigationTitle()
 			}
 		}
-
-		updateNavigationTitle()
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
