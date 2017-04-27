@@ -23,11 +23,6 @@
 import UIKit
 
 
-private let __sideSpan = CGFloat(10.0)
-private let __columns = 3
-private let __insets = UIEdgeInsets(top: __sideSpan, left: __sideSpan, bottom: __sideSpan, right: __sideSpan)
-
-
 protocol MusicalCollectionViewDelegate : class
 {
 	func isSearching(actively: Bool) -> Bool
@@ -54,15 +49,17 @@ final class MusicalCollectionView : UICollectionView
 
 		self.dataSource = self
 		self.delegate = self
-		self.register(MusicalEntityCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "fr.whine.mpdremote.cell.album")
+		self.isPrefetchingEnabled = false
 
-		let itemWidth = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
+		// Layout
+		let sideSpan = CGFloat(10.0)
+		let columns = 3
+		let itemWidth = ceil((UIScreen.main.bounds.width / CGFloat(columns)) - (2 * sideSpan))
 		let layout = UICollectionViewFlowLayout()
-		layout.sectionInset = __insets
+		layout.sectionInset = UIEdgeInsets(top: sideSpan, left: sideSpan, bottom: sideSpan, right: sideSpan)
 		layout.itemSize = CGSize(itemWidth, itemWidth + 20.0)
 		self.collectionViewLayout = layout
-
-		self.isPrefetchingEnabled = false
+		self.register(MusicalEntityCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "fr.whine.mpdremote.cell.album")
 	}
 
 	// MARK: - Private
