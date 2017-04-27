@@ -56,9 +56,13 @@ final class MusicalCollectionView : UICollectionView
 		self.dataSource = self
 		self.delegate = self
 		self.register(MusicalEntityCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "fr.whine.mpdremote.cell.album")
-		(self.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets
-		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
-		(self.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
+
+		let itemWidth = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
+		let layout = UICollectionViewFlowLayout()
+		layout.sectionInset = __insets
+		layout.itemSize = CGSize(itemWidth, itemWidth + 20.0)
+		self.collectionViewLayout = layout
+
 		self.isPrefetchingEnabled = false
 	}
 
