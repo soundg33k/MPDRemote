@@ -1,4 +1,4 @@
-// RootCollectionViewCell.swift
+// MusicalEntityCollectionViewCell.swift
 // Copyright (c) 2017 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class RootCollectionViewCell : UICollectionViewCell
+final class MusicalEntityCollectionViewCell : UICollectionViewCell
 {
 	// MARK: - Public properties
 	// Album cover

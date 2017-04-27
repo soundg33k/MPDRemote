@@ -55,7 +55,7 @@ final class MusicalCollectionView : UICollectionView
 
 		self.dataSource = self
 		self.delegate = self
-		self.register(RootCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "fr.whine.mpdremote.cell.album")
+		self.register(MusicalEntityCollectionViewCell.classForCoder(), forCellWithReuseIdentifier: "fr.whine.mpdremote.cell.album")
 		(self.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset = __insets
 		let w = ceil((UIScreen.main.bounds.width / CGFloat(__columns)) - (2 * __sideSpan))
 		(self.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(w, w + 20.0);
@@ -101,7 +101,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "fr.whine.mpdremote.cell.album", for: indexPath) as! RootCollectionViewCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "fr.whine.mpdremote.cell.album", for: indexPath) as! MusicalEntityCollectionViewCell
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
 		cell.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
@@ -133,7 +133,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		return cell
 	}
 
-	private func _configureCellForAlbum(_ cell: RootCollectionViewCell, indexPath: IndexPath, album: Album)
+	private func _configureCellForAlbum(_ cell: MusicalEntityCollectionViewCell, indexPath: IndexPath, album: Album)
 	{
 		// Set title
 		cell.label.text = album.name
@@ -173,7 +173,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			{
 				downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
-						if let c = self.cellForItem(at: indexPath) as? RootCollectionViewCell
+						if let c = self.cellForItem(at: indexPath) as? MusicalEntityCollectionViewCell
 						{
 							c.image = thumbnail
 						}
@@ -185,7 +185,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 				MusicDataSource.shared.getPathForAlbum(album) {
 					self.downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
-							if let c = self.cellForItem(at: indexPath) as? RootCollectionViewCell
+							if let c = self.cellForItem(at: indexPath) as? MusicalEntityCollectionViewCell
 							{
 								c.image = thumbnail
 							}
@@ -196,7 +196,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 	}
 
-	private func _configureCellForGenre(_ cell: RootCollectionViewCell, indexPath: IndexPath, genre: Genre)
+	private func _configureCellForGenre(_ cell: MusicalEntityCollectionViewCell, indexPath: IndexPath, genre: Genre)
 	{
 		cell.label.text = genre.name
 		cell.accessibilityLabel = genre.name
@@ -237,7 +237,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 				{
 					downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
-							if let c = self.cellForItem(at: indexPath) as? RootCollectionViewCell
+							if let c = self.cellForItem(at: indexPath) as? MusicalEntityCollectionViewCell
 							{
 								c.image = thumbnail
 							}
@@ -249,7 +249,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 					MusicDataSource.shared.getPathForAlbum(album) {
 						self.downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
 							DispatchQueue.main.async {
-								if let c = self.cellForItem(at: indexPath) as? RootCollectionViewCell
+								if let c = self.cellForItem(at: indexPath) as? MusicalEntityCollectionViewCell
 								{
 									c.image = thumbnail
 								}
@@ -268,7 +268,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			}
 			MusicDataSource.shared.getAlbumForGenre(genre) {
 				DispatchQueue.main.async {
-					if let _ = self.cellForItem(at: indexPath) as? RootCollectionViewCell
+					if let _ = self.cellForItem(at: indexPath) as? MusicalEntityCollectionViewCell
 					{
 						self.reloadItems(at: [indexPath])
 					}
@@ -278,7 +278,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 	}
 
-	private func _configureCellForArtist(_ cell: RootCollectionViewCell, indexPath: IndexPath, artist: Artist)
+	private func _configureCellForArtist(_ cell: MusicalEntityCollectionViewCell, indexPath: IndexPath, artist: Artist)
 	{
 		cell.label.text = artist.name
 		cell.accessibilityLabel = artist.name
@@ -324,7 +324,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 						downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 							let cropped = thumbnail.smartCropped(toSize: cell.imageView.size)
 							DispatchQueue.main.async {
-								if let c = self.cellForItem(at: indexPath) as? RootCollectionViewCell
+								if let c = self.cellForItem(at: indexPath) as? MusicalEntityCollectionViewCell
 								{
 									c.image = cropped
 								}
@@ -337,7 +337,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 							self.downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 								let cropped = thumbnail.smartCropped(toSize: cell.imageView.size)
 								DispatchQueue.main.async {
-									if let c = self.cellForItem(at: indexPath) as? RootCollectionViewCell
+									if let c = self.cellForItem(at: indexPath) as? MusicalEntityCollectionViewCell
 									{
 										c.image = cropped
 									}
@@ -357,7 +357,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			}
 			MusicDataSource.shared.getAlbumsForArtist(artist) {
 				DispatchQueue.main.async {
-					if let _ = self.cellForItem(at: indexPath) as? RootCollectionViewCell
+					if let _ = self.cellForItem(at: indexPath) as? MusicalEntityCollectionViewCell
 					{
 						self.reloadItems(at: [indexPath])
 					}
@@ -366,7 +366,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 	}
 
-	private func _configureCellForPlaylist(_ cell: RootCollectionViewCell, indexPath: IndexPath, playlist: Playlist)
+	private func _configureCellForPlaylist(_ cell: MusicalEntityCollectionViewCell, indexPath: IndexPath, playlist: Playlist)
 	{
 		cell.label.text = playlist.name
 		cell.accessibilityLabel = playlist.name

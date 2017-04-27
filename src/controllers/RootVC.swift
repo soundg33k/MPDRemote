@@ -298,7 +298,7 @@ final class RootVC : MenuVC
 		{
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
-			let cell = collectionView.cellForItem(at: indexPath) as! RootCollectionViewCell
+			let cell = collectionView.cellForItem(at: indexPath) as! MusicalEntityCollectionViewCell
 			cell.longPressed = true
 
 			let alertController = UIAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
