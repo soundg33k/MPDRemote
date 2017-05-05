@@ -7,27 +7,27 @@ MPDRemote
 
 **MPDRemote** is an iOS application to control a [MPD](http://www.musicpd.org/) server. It is written in Swift 3 and requires at least iOS 10.
 
-         | FEATURES
----------|---------------
-🗄 | Browse by albums, artists, genres, playlists
-🔎 | Fuzzy search for albums, artists, genres
-⏪ ⏯ ⏩ | Play, pause, next, previous
-🔀 🔁 | Shuffle & repeat
-🔊 | Volume control
-🔈 | Audio output selection
-📍 | Track position control
-➕ | Add album, artist, genre, playlist to current play queue
-💬 | VoiceOver compliant
-🌐 | Automatically find MPD server with Bonjour/Zeroconf
-🇬🇧 🇫🇷 | English and French localized
+|         | FEATURES |
+| --------- | --------- |
+| 🗄 | Browse by albums, artists, genres, playlists |
+| 🔎 | Fuzzy search for albums, artists, genres |
+| ⏪ ⏯ ⏩ | Play, pause, next, previous |
+| 🔀 🔁 | Shuffle & repeat |
+| 🔈 | Volume control |
+| 📍 | Track position control |
+| ➕ | Add album, artist, genre, playlist to current play queue |
+| 💬 | VoiceOver compliant |
+| 🌐 | Automatically find MPD server with Bonjour/Zeroconf |
+| 🔊 | Audio output selection |
+| 🇬🇧 🇫🇷 | English and French localized |
+
+|         | TODO |
+| ---------|--------- |
+| ⚡️ | Optimize things? not slow anyway, works well with an iPhone 5 and 3000+ albums |
+| 📱 | iPad version |
+| ⚙ | Better icons for consistency, I took random free icons on the net. Problem is my skills in design are (void*)0. |
 
 There is no persistence layer apart from cover caching.
-
-         | TODO
----------|---------------
-⚡️ | Optimize things? not slow anyway, works well with an iPhone 5 and 3000+ albums
-📱 | iPad version
-⚙ | Better icons for consistency, I took random free icons on the net. Problem is my skills in design are (void*)0.
 
 LICENSES
 -----------------
