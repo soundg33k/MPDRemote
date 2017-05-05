@@ -93,6 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 			kNYXPrefMPDVolume : 100,
 			kNYXPrefDisplayType : DisplayType.albums.rawValue,
 			kNYXPrefShakeToPlayRandomAlbum : false,
+			kNYXPrefCollectionViewLayoutTable : false,
 		]
 
 		let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!

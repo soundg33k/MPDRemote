@@ -36,6 +36,7 @@ public let kNYXPrefMPDShuffle = "mpd-shuffle"
 public let kNYXPrefMPDRepeat = "mpd-repeat"
 public let kNYXPrefMPDVolume = "mpd-volume"
 public let kNYXPrefWEBServer = "web-server"
+public let kNYXPrefCollectionViewLayoutTable = "app-cv-layout-table"
 
 public let kNYXTopInset: CGFloat = 64.0
 

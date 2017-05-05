@@ -540,7 +540,7 @@
                                     <inset key="sectionInset" minX="10" minY="10" maxX="10" maxY="10"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="fr.whine.mpdremote.cell.album" id="gFY-pj-Wt2" customClass="MusicalEntityCollectionViewCell" customModule="MPDRemote" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="fr.whine.mpdremote.cell.musicalentity" id="gFY-pj-Wt2" customClass="MusicalEntityCollectionViewCell" customModule="MPDRemote" customModuleProvider="target">
                                         <rect key="frame" x="10" y="10" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -590,7 +590,7 @@
                                     <inset key="sectionInset" minX="10" minY="10" maxX="10" maxY="10"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="fr.whine.mpdremote.cell.album" id="Oaj-iD-p0V" customClass="MusicalEntityCollectionViewCell" customModule="MPDRemote" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="fr.whine.mpdremote.cell.musicalentity" id="Oaj-iD-p0V" customClass="MusicalEntityBaseCell" customModule="MPDRemote" customModuleProvider="target">
                                         <rect key="frame" x="10" y="10" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -645,7 +645,7 @@
                                     <inset key="sectionInset" minX="10" minY="10" maxX="10" maxY="10"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="fr.whine.mpdremote.cell.album" id="OaM-EJ-p5D" customClass="MusicalEntityCollectionViewCell" customModule="MPDRemote" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="fr.whine.mpdremote.cell.musicalentity" id="OaM-EJ-p5D" customClass="MusicalEntityCollectionViewCell" customModule="MPDRemote" customModuleProvider="target">
                                         <rect key="frame" x="10" y="10" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -2179,7 +2179,7 @@
         <image name="img-volume-lo" width="16" height="16"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="jeD-yB-hVH"/>
-        <segue reference="cvS-3m-xhz"/>
+        <segue reference="GHk-88-rG7"/>
+        <segue reference="66n-de-b9b"/>
     </inferredMetricsTieBreakers>
 </document>

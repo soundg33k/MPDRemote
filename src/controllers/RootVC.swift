@@ -61,7 +61,10 @@ final class RootVC : MenuVC
 
 		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
-		navigationItem.rightBarButtonItem = searchButton
+		//navigationItem.rightBarButtonItem = searchButton
+
+		let b = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(layoutAction(_:)))
+		navigationItem.rightBarButtonItems = [searchButton, b]
 
 		// Searchbar
 		let navigationBar = (navigationController?.navigationBar)!
@@ -298,7 +301,7 @@ final class RootVC : MenuVC
 		{
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
-			let cell = collectionView.cellForItem(at: indexPath) as! MusicalEntityCollectionViewCell
+			let cell = collectionView.cellForItem(at: indexPath) as! MusicalEntityBaseCell
 			cell.longPressed = true
 
 			let alertController = UIAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
@@ -481,6 +484,13 @@ final class RootVC : MenuVC
 		}, completion:{ finished in
 			self.searchBarVisible = true
 		})
+	}
+
+	func layoutAction(_ sender: Any?)
+	{
+		var layout = collectionView.layoutType
+		layout = (layout == .collection) ? .table : .collection
+		collectionView.layoutType = layout
 	}
 
 	// MARK: - Private

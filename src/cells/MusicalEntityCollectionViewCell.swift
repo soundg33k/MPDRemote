@@ -23,13 +23,15 @@
 import UIKit
 
 
-final class MusicalEntityCollectionViewCell : UICollectionViewCell
+final class MusicalEntityBaseCell : UICollectionViewCell
 {
 	// MARK: - Public properties
 	// Album cover
-	private(set) var imageView: UIImageView! = nil
-	// Album name
-	private(set) var label: UILabel! = nil
+	var imageView: UIImageView! = nil
+	// Entity name
+	var label: UILabel! = nil
+	// auxiliary label (optional)
+	var detailLabel: UILabel! = nil
 	// Original image set
 	var image: UIImage?
 	{
@@ -91,20 +93,28 @@ final class MusicalEntityCollectionViewCell : UICollectionViewCell
 		self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		self.isAccessibilityElement = true
 
-		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20.0))
+		self.imageView = UIImageView(frame: .zero)
 		self.imageView.isAccessibilityElement = false
 		self.imageView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		self.imageView.layer.borderColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
 
-		self.label = UILabel(frame:CGRect(0.0, self.imageView.bottom, frame.width, 20.0))
+		self.label = UILabel(frame: .zero)
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
 		self.label.textAlignment = .center
 		self.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		self.label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
 		self.contentView.addSubview(self.label)
+
+		self.detailLabel = UILabel(frame: .zero)
+		self.detailLabel.isAccessibilityElement = false
+		self.detailLabel.backgroundColor = self.backgroundColor
+		self.detailLabel.textAlignment = .center
+		self.detailLabel.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		self.detailLabel.font = UIFont(name: "Avenir-Book", size: 10.0)
+		self.contentView.addSubview(self.detailLabel)
 	}
 
 	required init?(coder aDecoder: NSCoder)
@@ -113,20 +123,48 @@ final class MusicalEntityCollectionViewCell : UICollectionViewCell
 		self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		self.isAccessibilityElement = true
 
-		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20.0))
+		self.imageView = UIImageView(frame: .zero)
 		self.imageView.isAccessibilityElement = false
 		self.imageView.backgroundColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		self.imageView.layer.borderColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1).cgColor
 		self.image = nil
 		self.contentView.addSubview(self.imageView)
 
-		self.label = UILabel(frame: CGRect(0.0, self.imageView.bottom, frame.width, 20.0))
+		self.label = UILabel(frame: .zero)
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
 		self.label.textAlignment = .center
 		self.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		self.label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
 		self.contentView.addSubview(self.label)
+
+		self.detailLabel = UILabel(frame: .zero)
+		self.detailLabel.isAccessibilityElement = false
+		self.detailLabel.backgroundColor = self.backgroundColor
+		self.detailLabel.textAlignment = .center
+		self.detailLabel.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		self.detailLabel.font = UIFont(name: "Avenir-Book", size: 10.0)
+		self.contentView.addSubview(self.detailLabel)
+	}
+
+	override func layoutSubviews()
+	{
+		if frame.width == UIScreen.main.bounds.width
+		{
+			self.imageView.frame = CGRect(.zero, frame.height, frame.height)
+			self.label.frame = CGRect(self.imageView.width + 4.0, 4.0, frame.width - self.imageView.width - 8.0, 20.0)
+			self.label.textAlignment = .left
+			self.detailLabel.frame = CGRect(self.imageView.width + 4.0, frame.height - 24.0, frame.width - self.imageView.width - 8.0, 20.0)
+			self.detailLabel.textAlignment = .left
+			self.detailLabel.isHidden = false
+		}
+		else
+		{
+			self.imageView.frame = CGRect(.zero, frame.width, frame.height - 20.0)
+			self.label.frame = CGRect(0.0, self.imageView.bottom, frame.width, 20.0)
+			self.label.textAlignment = .center
+			self.detailLabel.isHidden = true
+		}
 	}
 
 	// MARK: - Overrides
