@@ -160,6 +160,8 @@ final class MusicalCollectionView : UICollectionView
 		self.isPrefetchingEnabled = false
 
 		self.setCollectionLayout(animated: false)
+
+		NotificationCenter.default.addObserver(self, selector: #selector(collectionViewsLayoutDidChangeNotification(_:)), name: .collectionViewsLayoutDidChange, object: nil)
 	}
 
 	// MARK: - Private
@@ -199,6 +201,12 @@ final class MusicalCollectionView : UICollectionView
 				self.setCollectionViewLayout(TableFlowLayout(), animated: animated)
 			}
 		}
+	}
+
+	// MARL: - Notifications
+	public func collectionViewsLayoutDidChangeNotification(_ notification: Notification)
+	{
+		self.setCollectionLayout(animated: false)
 	}
 }
 

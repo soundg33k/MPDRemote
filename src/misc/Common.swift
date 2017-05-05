@@ -63,4 +63,5 @@ extension Notification.Name
 	static let miniPlayerShouldExpand = Notification.Name("kNYXNotificationMiniPlayerShouldExpand")
 	static let audioServerConfigurationDidChange = Notification.Name("kNYXNotificationAudioServerConfigurationDidChange")
 	static let audioOutputConfigurationDidChange = Notification.Name("kNYXNotificationAudioOutputConfigurationDidChange")
+	static let collectionViewsLayoutDidChange = Notification.Name("kNYXNotificationCollectionViewsLayoutDidChange")
 }

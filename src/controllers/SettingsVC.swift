@@ -97,6 +97,14 @@ final class SettingsVC : MenuTVC
 		UserDefaults.standard.set(!fuzzySearch, forKey: kNYXPrefFuzzySearch)
 		UserDefaults.standard.synchronize()
 	}
+
+	@IBAction func toggleTableLayout(_ sender: Any?)
+	{
+		let tableLayout = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
+		UserDefaults.standard.set(!tableLayout, forKey: kNYXPrefCollectionViewLayoutTable)
+		UserDefaults.standard.synchronize()
+		NotificationCenter.default.post(name: .collectionViewsLayoutDidChange, object: nil)
+	}
 }
 
 // MARK: - UITableViewDelegate

@@ -61,10 +61,7 @@ final class RootVC : MenuVC
 
 		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
-		//navigationItem.rightBarButtonItem = searchButton
-
-		let b = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(layoutAction(_:)))
-		navigationItem.rightBarButtonItems = [searchButton, b]
+		navigationItem.rightBarButtonItem = searchButton
 
 		// Searchbar
 		let navigationBar = (navigationController?.navigationBar)!
@@ -484,13 +481,6 @@ final class RootVC : MenuVC
 		}, completion:{ finished in
 			self.searchBarVisible = true
 		})
-	}
-
-	func layoutAction(_ sender: Any?)
-	{
-		var layout = collectionView.layoutType
-		layout = (layout == .collection) ? .table : .collection
-		collectionView.layoutType = layout
 	}
 
 	// MARK: - Private
