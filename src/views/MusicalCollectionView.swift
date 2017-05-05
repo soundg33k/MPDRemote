@@ -206,7 +206,8 @@ final class MusicalCollectionView : UICollectionView
 	// MARL: - Notifications
 	public func collectionViewsLayoutDidChangeNotification(_ notification: Notification)
 	{
-		self.setCollectionLayout(animated: false)
+		let layoutAsTable = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
+		self.layoutType = layoutAsTable ? .table : .collection
 	}
 }
 
