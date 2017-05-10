@@ -126,7 +126,6 @@ final class PlaylistDetailVC : UIViewController
 				DispatchQueue.main.async {
 					self.updateNavigationTitle()
 					self.tableView.tracks = self.playlist.tracks!
-					//self.tableView.reloadData()
 				}
 			}
 		}

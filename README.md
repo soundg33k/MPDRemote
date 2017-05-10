@@ -21,9 +21,9 @@ MPDRemote
 | 🔊 | Audio output selection |
 | 🇬🇧 🇫🇷 | English and French localized |
 
+
 |         | TODO |
 | ---------|--------- |
-| ⚡️ | Optimize things? not slow anyway, works well with an iPhone 5 and 3000+ albums |
 | 📱 | iPad version |
 | ⚙ | Better icons for consistency, I took random free icons on the net. Problem is my skills in design are (void*)0. |
 

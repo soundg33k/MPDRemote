@@ -123,3 +123,42 @@ extension ArtistsVC : MusicalCollectionViewDelegate
 		performSegue(withIdentifier: "artists-to-albums", sender: self)
 	}
 }
+
+// MARK: - Peek & Pop
+extension ArtistsVC
+{
+	override var previewActionItems: [UIPreviewActionItem]
+	{
+		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
+			MusicDataSource.shared.getAlbumsForGenre(self.genre, firstOnly: false) {
+				MusicDataSource.shared.getTracksForAlbums(self.genre.albums) {
+					let ar = self.genre.albums.flatMap({$0.tracks}).flatMap({$0})
+					PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
+				}
+			}
+			MiniPlayerView.shared.stayHidden = false
+		}
+
+		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
+			MusicDataSource.shared.getAlbumsForGenre(self.genre, firstOnly: false) {
+				MusicDataSource.shared.getTracksForAlbums(self.genre.albums) {
+					let ar = self.genre.albums.flatMap({$0.tracks}).flatMap({$0})
+					PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
+				}
+			}
+			MiniPlayerView.shared.stayHidden = false
+		}
+
+		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
+			MusicDataSource.shared.getAlbumsForGenre(self.genre, firstOnly: false) {
+				for album in self.genre.albums
+				{
+					PlayerController.shared.addAlbumToQueue(album)
+				}
+			}
+			MiniPlayerView.shared.stayHidden = false
+		}
+
+		return [playAction, shuffleAction, addQueueAction]
+	}
+}

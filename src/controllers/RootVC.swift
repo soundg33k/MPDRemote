@@ -523,24 +523,13 @@ final class RootVC : MenuVC
 
 	fileprivate func updateLongpressState()
 	{
-		if _displayType == .albums || _displayType == .playlists
+		if traitCollection.forceTouchCapability == .available
 		{
-			if traitCollection.forceTouchCapability == .available
-			{
-				_longPress.isEnabled = false
-				_previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
-			}
-			else
-			{
-				_longPress.isEnabled = true
-			}
+			_longPress.isEnabled = false
+			_previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
 		}
 		else
 		{
-			if traitCollection.forceTouchCapability == .available && _previewingContext != nil
-			{
-				unregisterForPreviewing(withContext: _previewingContext)
-			}
 			_longPress.isEnabled = true
 		}
 	}
@@ -761,6 +750,24 @@ extension RootVC : UIViewControllerPreviewingDelegate
 				let row = indexPath.row
 				let album = searching ? collectionView.searchResults[row] as! Album : MusicDataSource.shared.albums[row]
 				vc.album = album
+				return vc
+			}
+			else if _displayType == .genres
+			{
+				let vc = sb.instantiateViewController(withIdentifier: "ArtistsVC") as! ArtistsVC
+
+				let row = indexPath.row
+				let genre = searching ? collectionView.searchResults[row] as! Genre : MusicDataSource.shared.genres[row]
+				vc.genre = genre
+				return vc
+			}
+			else if _displayType == .artists
+			{
+				let vc = sb.instantiateViewController(withIdentifier: "AlbumsVC") as! AlbumsVC
+
+				let row = indexPath.row
+				let artist = searching ? collectionView.searchResults[row] as! Artist : MusicDataSource.shared.artists[row]
+				vc.artist = artist
 				return vc
 			}
 			else
