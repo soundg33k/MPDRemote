@@ -52,15 +52,14 @@ final class MPDConnection : AudioServerConnection
 	}
 
 	// MARK: - Connection
-	func connect() -> Bool
+	func connect() -> ActionResult<Void>
 	{
 		// Open connection
 		_connection = mpd_connection_new(server.hostname, UInt32(server.port), _timeout * 1000)
 		if mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
 			_connection = nil
-			return false
+			return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		// Set password if needed
@@ -68,15 +67,14 @@ final class MPDConnection : AudioServerConnection
 		{
 			if mpd_run_password(_connection, server.password) == false
 			{
-				Logger.dlog(getLastErrorMessageForConnection())
 				mpd_connection_free(_connection)
 				_connection = nil
-				return false
+				return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 			}
 		}
 
 		isConnected = true
-		return true
+		return ActionResult<Void>(succeeded: true)
 	}
 
 	func disconnect()
@@ -90,7 +88,7 @@ final class MPDConnection : AudioServerConnection
 	}
 
 	// MARK: - Get infos about tracks / albums / etc…
-	func getListForDisplayType(_ displayType: DisplayType) -> [MusicalEntity]
+	func getListForDisplayType(_ displayType: DisplayType) -> ActionResult<[MusicalEntity]>
 	{
 		if displayType == .playlists
 		{
@@ -102,8 +100,7 @@ final class MPDConnection : AudioServerConnection
 		var list = [MusicalEntity]()
 		if (mpd_search_db_tags(_connection, tagType) == false || mpd_search_commit(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
+			return ActionResult<[MusicalEntity]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		var pair = mpd_recv_pair_tag(_connection, tagType)
@@ -114,14 +111,14 @@ final class MPDConnection : AudioServerConnection
 			{
 				switch displayType
 				{
-					case .albums:
-						list.append(Album(name: name))
-					case .genres:
-						list.append(Genre(name: name))
-					case .artists:
-						list.append(Artist(name: name))
-					case .playlists:
-						Logger.dlog("impossible")
+				case .albums:
+					list.append(Album(name: name))
+				case .genres:
+					list.append(Genre(name: name))
+				case .artists:
+					list.append(Artist(name: name))
+				case .playlists:
+					raise(0)
 				}
 			}
 
@@ -131,73 +128,28 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<[MusicalEntity]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
-		return list
+		return ActionResult<[MusicalEntity]>(succeeded: true, entity: list)
 	}
 
-	func getAlbumForGenre(_ genre: Genre) -> Album?
+	func getAlbumsForGenre(_ genre: Genre, firstOnly: Bool) -> ActionResult<[Album]>
 	{
 		if mpd_search_db_tags(_connection, MPD_TAG_ALBUM) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return nil
+			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return nil
+			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return nil
+			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
-		guard let pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM) else
-		{
-			Logger.dlog("[!] No pair.")
-			return nil
-		}
-
-		let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: (pair.pointee.value)!), count: Int(strlen(pair.pointee.value)), deallocator: .none)
-		guard let name = String(data: dataTemp, encoding: .utf8) else
-		{
-			Logger.dlog("[!] Invalid name.")
-			mpd_return_pair(_connection, pair)
-			return nil
-		}
-		mpd_return_pair(_connection, pair)
-
-		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-		}
-
-		return Album(name: name)
-	}
-
-	func getAlbumsForGenre(_ genre: Genre) -> [Album]
-	{
 		var list = [Album]()
-
-		if mpd_search_db_tags(_connection, MPD_TAG_ALBUM) == false
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
-		}
-		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name) == false
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
-		}
-		if mpd_search_commit(_connection) == false
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
-		}
-
 		var pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		while pair != nil
 		{
@@ -211,37 +163,39 @@ final class MPDConnection : AudioServerConnection
 			}
 
 			mpd_return_pair(_connection, pair)
+
+			if list.count >= 1 && firstOnly == true
+			{
+				break
+			}
+
 			pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		}
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
-		return list
+		return ActionResult<[Album]>(succeeded: true, entity: list)
 	}
 
-	func getAlbumsForArtist(_ artist: Artist) -> [Album]
+	func getAlbumsForArtist(_ artist: Artist) -> ActionResult<[Album]>
 	{
-		var list = [Album]()
-
 		if mpd_search_db_tags(_connection, MPD_TAG_ALBUM) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
+			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
+			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
+			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
+		var list = [Album]()
 		var pair = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM)
 		while pair != nil
 		{
@@ -260,32 +214,28 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
-		return list
+		return ActionResult<[Album]>(succeeded: true, entity: list)
 	}
 
-	func getArtistsForGenre(_ genre: Genre) -> [Artist]
+	func getArtistsForGenre(_ genre: Genre) -> ActionResult<[Artist]>
 	{
-		var list = [Artist]()
-
 		if mpd_search_db_tags(_connection, MPD_TAG_ARTIST) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
+			return ActionResult<[Artist]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_GENRE, genre.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
+			return ActionResult<[Artist]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return list
+			return ActionResult<[Artist]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
+		var list = [Artist]()
 		var pair = mpd_recv_pair_tag(_connection, MPD_TAG_ARTIST)
 		while pair != nil
 		{
@@ -301,31 +251,28 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<[Artist]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
-		return list
+		return ActionResult<[Artist]>(succeeded: true, entity: list)
 	}
 
-	func getPathForAlbum(_ album: Album) -> String?
+	func getPathForAlbum(_ album: Album) -> ActionResult<String>
 	{
-		var path: String? = nil
 		if mpd_search_db_songs(_connection, true) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return path
+			return ActionResult<String>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return path
+			return ActionResult<String>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return path
+			return ActionResult<String>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
+		var path: String? = nil
 		if let song = mpd_recv_song(_connection)
 		{
 			if let uri = mpd_song_get_uri(song)
@@ -340,36 +287,32 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<String>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
-		return path
+		return ActionResult<String>(succeeded: true, entity: path)
 	}
 
-	func getTracksForAlbum(_ album: Album) -> [Track]?
+	func getTracksForAlbum(_ album: Album) -> ActionResult<[Track]>
 	{
 		if mpd_search_db_songs(_connection, true) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return nil
+			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return nil
+			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		if album.artist.length > 0
 		{
 			if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM_ARTIST, album.artist) == false
 			{
-				Logger.dlog(getLastErrorMessageForConnection())
-				return nil
+				return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
 			}
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return nil
+			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 
 		var list = [Track]()
@@ -385,18 +328,17 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 
-		return list
+		return ActionResult<[Track]>(succeeded: true, entity: list)
 	}
 
-	func getTracksForPlaylist(_ playlist: Playlist) -> [Track]?
+	func getTracksForPlaylist(_ playlist: Playlist) -> ActionResult<[Track]>
 	{
 		if mpd_send_list_playlist(_connection, playlist.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return nil
+			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 
 		var list = [Track]()
@@ -418,7 +360,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 
 		for track in list
@@ -455,32 +397,30 @@ final class MPDConnection : AudioServerConnection
 
 			if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 			{
-				Logger.dlog(getLastErrorMessageForConnection())
+				return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
 			}
 		}
 
-		return list
+		return ActionResult<[Track]>(succeeded: true, entity: list)
 	}
 
-	func getMetadatasForAlbum(_ album: Album) -> [String : Any]
+	func getMetadatasForAlbum(_ album: Album) -> ActionResult<[String : Any]>
 	{
-		var metadatas = [String : Any]()
 		// Find album artist
 		if mpd_search_db_tags(_connection, MPD_TAG_ALBUM_ARTIST) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
+
+		var metadatas = [String : Any]()
 		let tmpArtist = mpd_recv_pair_tag(_connection, MPD_TAG_ALBUM_ARTIST)
 		if tmpArtist != nil
 		{
@@ -494,25 +434,21 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 
 		// Find album year
 		if mpd_search_db_tags(_connection, MPD_TAG_DATE) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		let tmpDate = mpd_recv_pair_tag(_connection, MPD_TAG_DATE)
 		if tmpDate != nil
@@ -532,25 +468,21 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 
 		// Find album genre
 		if mpd_search_db_tags(_connection, MPD_TAG_GENRE) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return metadatas
+			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
 		let tmpGenre = mpd_recv_pair_tag(_connection, MPD_TAG_GENRE)
 		if tmpGenre != nil
@@ -568,16 +500,15 @@ final class MPDConnection : AudioServerConnection
 			Logger.dlog(getLastErrorMessageForConnection())
 		}
 
-		return metadatas
+		return ActionResult<[String : Any]>(succeeded: true, entity: metadatas)
 	}
 
 	// MARK: - Playlists
-	func getPlaylists() -> [Playlist]
+	func getPlaylists() -> ActionResult<[MusicalEntity]>
 	{
 		if mpd_send_list_playlists(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return []
+			return ActionResult<[MusicalEntity]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		var list = [Playlist]()
@@ -595,14 +526,14 @@ final class MPDConnection : AudioServerConnection
 			playlist = mpd_recv_playlist(_connection)
 		}
 
-		return list
+		return ActionResult<[MusicalEntity]>(succeeded: true, entity: list)
 	}
 
-	func getSongsOfCurrentQueue() -> [Track]
+	func getSongsOfCurrentQueue() -> ActionResult<[Track]>
 	{
 		if mpd_send_list_queue_meta(_connection) == false
 		{
-			return []
+			return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		var list = [Track]()
@@ -618,87 +549,89 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return []
+			return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
-		return list
+		return ActionResult<[Track]>(succeeded: true, entity: list)
 	}
 
 	// MARK: - Play / Queue
-	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool)
+	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool) -> ActionResult<Void>
 	{
 		if let songs = album.tracks
 		{
-			playTracks(songs, shuffle: shuffle, loop: loop)
+			return playTracks(songs, shuffle: shuffle, loop: loop)
 		}
 		else
 		{
-			if let songs = getTracksForAlbum(album)
+			let result = getTracksForAlbum(album)
+			if result.succeeded
 			{
-				playTracks(songs, shuffle: shuffle, loop: loop)
+				if let tracks = result.entity
+				{
+					return playTracks(tracks, shuffle: shuffle, loop: loop)
+				}
 			}
+			return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 	}
 
-	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool)
+	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool) -> ActionResult<Void>
 	{
 		if mpd_run_clear(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return
+			return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
-		setRandom(shuffle)
-		setRepeat(loop)
+		_ = setRandom(shuffle)
+		_ = setRepeat(loop)
 
 		for track in tracks
 		{
 			if mpd_run_add(_connection, track.uri) == false
 			{
-				Logger.dlog(getLastErrorMessageForConnection())
-				return
+				return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 			}
 		}
 
 		if mpd_run_play_pos(_connection, shuffle ? arc4random_uniform(UInt32(tracks.count)) : 0) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
+
+		return ActionResult<Void>(succeeded: true)
 	}
 
-	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32 = 0)
+	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32 = 0) -> ActionResult<Void>
 	{
 		if mpd_run_clear(_connection) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return
+			return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
-		setRandom(shuffle)
-		setRepeat(loop)
+		_ = setRandom(shuffle)
+		_ = setRepeat(loop)
 
 		if mpd_run_load(_connection, playlist.name) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return
+			return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		if mpd_run_play_pos(_connection, UInt32(position)) == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
+
+		return ActionResult<Void>(succeeded: true)
 	}
 
-	func playTrackAtPosition(_ position: UInt32)
+	func playTrackAtPosition(_ position: UInt32) -> ActionResult<Void>
 	{
-		if mpd_run_play_pos(_connection, position) == false
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-		}
+		let ret = mpd_run_play_pos(_connection, position)
+		return ActionResult<Void>(succeeded: ret, message: getLastErrorMessageForConnection())
 	}
 	
-	func addAlbumToQueue(_ album: Album)
+	func addAlbumToQueue(_ album: Album) -> ActionResult<Void>
 	{
 		if let tracks = album.tracks
 		{
@@ -706,146 +639,136 @@ final class MPDConnection : AudioServerConnection
 			{
 				if mpd_run_add(_connection, track.uri) == false
 				{
-					Logger.dlog(getLastErrorMessageForConnection())
-					return
+					return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
 				}
 			}
 		}
 		else
 		{
-			if let tracks = getTracksForAlbum(album)
+			let result = getTracksForAlbum(album)
+			if result.succeeded
 			{
-				for track in tracks
+				if let tracks = result.entity
 				{
-					if mpd_run_add(_connection, track.uri) == false
+					for track in tracks
 					{
-						Logger.dlog(getLastErrorMessageForConnection())
-						return
+						if mpd_run_add(_connection, track.uri) == false
+						{
+							return ActionResult<Void>(succeeded: false, message: getLastErrorMessageForConnection())
+						}
 					}
 				}
 			}
 		}
+		return ActionResult<Void>(succeeded: true)
 	}
 
-	func togglePause() -> Bool
+	func togglePause() -> ActionResult<Void>
 	{
-		return mpd_run_toggle_pause(_connection)
+		let ret = mpd_run_toggle_pause(_connection)
+		return ActionResult<Void>(succeeded: ret, message: getLastErrorMessageForConnection())
 	}
 
-	func nextTrack()
+	func nextTrack() -> ActionResult<Void>
 	{
-		if mpd_run_next(_connection) == false
+		let ret = mpd_run_next(_connection)
+		return ActionResult<Void>(succeeded: ret, message: getLastErrorMessageForConnection())
+	}
+
+	func previousTrack() -> ActionResult<Void>
+	{
+		let ret = mpd_run_previous(_connection)
+		return ActionResult<Void>(succeeded: ret, message: getLastErrorMessageForConnection())
+	}
+
+	func setRandom(_ random: Bool) -> ActionResult<Void>
+	{
+		let ret = mpd_run_random(_connection, random)
+		return ActionResult<Void>(succeeded: ret, message: getLastErrorMessageForConnection())
+	}
+
+	func setRepeat(_ loop: Bool) -> ActionResult<Void>
+	{
+		let ret = mpd_run_repeat(_connection, loop)
+		return ActionResult<Void>(succeeded: ret, message: getLastErrorMessageForConnection())
+	}
+
+	func setTrackPosition(_ position: Int, trackPosition: UInt32) -> ActionResult<Void>
+	{
+		let ret = mpd_run_seek_pos(_connection, trackPosition, UInt32(position))
+		return ActionResult<Void>(succeeded: ret, message: getLastErrorMessageForConnection())
+	}
+
+	func setVolume(_ volume: UInt32) -> ActionResult<Void>
+	{
+		let ret = mpd_run_set_volume(_connection, volume)
+		return ActionResult<Void>(succeeded: ret, message: getLastErrorMessageForConnection())
+	}
+
+	func getVolume() -> ActionResult<Int>
+	{
+		let result = getStatus()
+		if result.succeeded == false
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<Int>(succeeded: false, entity: 100, messages: result.messages)
 		}
-	}
-
-	func previousTrack()
-	{
-		if mpd_run_previous(_connection) == false
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-		}
-	}
-
-	func setRandom(_ random: Bool)
-	{
-		if mpd_run_random(_connection, random) == false
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-		}
-	}
-
-	func setRepeat(_ loop: Bool)
-	{
-		if mpd_run_repeat(_connection, loop) == false
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-		}
-	}
-
-	func setTrackPosition(_ position: Int, trackPosition: UInt32)
-	{
-		if mpd_run_seek_pos(_connection, trackPosition, UInt32(position)) == false
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-		}
-	}
-
-	func setVolume(_ volume: UInt32)
-	{
-		if mpd_run_set_volume(_connection, volume) == false
-		{
-			Logger.dlog(getLastErrorMessageForConnection())
-		}
-	}
-
-	func getVolume() -> Int
-	{
-		guard let status = mpd_run_status(_connection) else
-		{
-			Logger.dlog("[!] Error getting status: \(getLastErrorMessageForConnection())")
-			return 100
-		}
-
-		return Int(mpd_status_get_volume(status))
+		return ActionResult<Int>(succeeded: true, entity: Int(mpd_status_get_volume(result.entity!)))
 	}
 
 	// MARK: - Player status
-	func getStatus()
+	func getStatus() -> ActionResult<OpaquePointer>
 	{
-		if mpd_run_status(_connection) == nil
+		let ret = mpd_run_status(_connection)
+		if ret == nil
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			return ActionResult<OpaquePointer>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
+		return ActionResult<OpaquePointer>(succeeded: true, entity: ret)
 	}
 
-	func getPlayerInfos() -> [String : Any]?
+	func getPlayerInfos() -> ActionResult<[String : Any]>
 	{
 		guard let song = mpd_run_current_song(_connection) else
 		{
-			//Logger.dlog("[!] No song is currently being played.")
-			return nil
+			return ActionResult<[String : Any]>(succeeded: true, message: Message(content: "No song is currently being played.", type: .information))
 		}
 
-		guard let status = mpd_run_status(_connection) else
+		let tmpRet = getStatus()
+		if tmpRet.succeeded == false
 		{
-			Logger.dlog("[!] Error getting status: \(getLastErrorMessageForConnection())")
-			return nil
+			return ActionResult<[String : Any]>(succeeded: false, messages: tmpRet.messages)
 		}
 
+		let status = tmpRet.entity!
 		guard let track = trackFromMPDSongObject(song) else
 		{
-			Logger.dlog("[!] Error getting track: \(getLastErrorMessageForConnection())")
-			return nil
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		let state = statusFromMPDStateObject(mpd_status_get_state(status)).rawValue
 		let elapsed = mpd_status_get_elapsed_time(status)
 		let volume = Int(mpd_status_get_volume(status))
 		guard let tmpAlbumName = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0) else
 		{
-			Logger.dlog("[!] Error getting album: \(getLastErrorMessageForConnection())")
-			return nil
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating:tmpAlbumName), count: Int(strlen(tmpAlbumName)), deallocator: .none)
 		if let name = String(data: dataTemp, encoding: .utf8)
 		{
 			if let album = delegate?.albumMatchingName(name)
 			{
-				return [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state, kPlayerVolumeKey : volume]
+				return ActionResult<[String : Any]>(succeeded: true, entity: [kPlayerTrackKey : track, kPlayerAlbumKey : album, kPlayerElapsedKey : Int(elapsed), kPlayerStatusKey : state, kPlayerVolumeKey : volume])
 			}
 		}
 
-		Logger.dlog("[!] No matching album found.")
-		return nil
+		return ActionResult<[String : Any]>(succeeded: false, message: Message(content: "No matching album found.", type: .error))
 	}
 
 	// MARK: - Outputs
-	func getAvailableOutputs() -> [AudioOutput]
+	func getAvailableOutputs() -> ActionResult<[AudioOutput]>
 	{
 		if mpd_send_outputs(_connection) == false
 		{
-			return []
+			return ActionResult<[AudioOutput]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		var ret = [AudioOutput]()
@@ -873,28 +796,27 @@ final class MPDConnection : AudioServerConnection
 			output = mpd_recv_output(_connection)
 		}
 
-		return ret
+		return ActionResult<[AudioOutput]>(succeeded: true, entity: ret)
 	}
 
-	func toggleOutput(output: AudioOutput) -> Bool
+	func toggleOutput(output: AudioOutput) -> ActionResult<Void>
 	{
 		if output.enabled
 		{
-			return mpd_run_disable_output(_connection, UInt32(output.id))
+			return ActionResult<Void>(succeeded: mpd_run_disable_output(_connection, UInt32(output.id)))
 		}
 		else
 		{
-			return mpd_run_enable_output(_connection, UInt32(output.id))
+			return ActionResult<Void>(succeeded: mpd_run_enable_output(_connection, UInt32(output.id)))
 		}
 	}
 
 	// MARK: - Stats
-	func getStats() -> [String : String]
+	func getStats() -> ActionResult<[String : String]>
 	{
 		guard let ret = mpd_run_stats(_connection) else
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
-			return [:]
+			return ActionResult<[String : String]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		let nalbums = mpd_stats_get_number_of_albums(ret)
@@ -905,20 +827,20 @@ final class MPDConnection : AudioServerConnection
 		let mpdplaytime = mpd_stats_get_play_time(ret)
 		let mpddbupdate = mpd_stats_get_db_update_time(ret)
 
-		return ["albums" : String(nalbums), "artists" : String(nartists), "songs" : String(nsongs), "dbplaytime" : String(dbplaytime), "mpduptime" : String(mpduptime), "mpdplaytime" : String(mpdplaytime), "mpddbupdate" : String(mpddbupdate)]
+		return ActionResult<[String : String]>(succeeded: true, entity: ["albums" : String(nalbums), "artists" : String(nartists), "songs" : String(nsongs), "dbplaytime" : String(dbplaytime), "mpduptime" : String(mpduptime), "mpdplaytime" : String(mpdplaytime), "mpddbupdate" : String(mpddbupdate)])
 	}
 
 	// MARK: - Private
-	private func getLastErrorMessageForConnection() -> String
+	private func getLastErrorMessageForConnection() -> Message
 	{
 		if _connection == nil
 		{
-			return "NO CONNECTION OBJECT"
+			return Message(content: "mpd_connection object is null", type: .error)
 		}
 
 		if mpd_connection_get_error(_connection) == MPD_ERROR_SUCCESS
 		{
-			return "NO ERROR"
+			return Message(content: "no error", type: .success)
 		}
 
 		if let errorMessage = mpd_connection_get_error_message(_connection)
@@ -926,11 +848,15 @@ final class MPDConnection : AudioServerConnection
 			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: errorMessage), count: Int(strlen(errorMessage)), deallocator: .none)
 			if let msg = String(data: dataTemp, encoding: .utf8)
 			{
-				return msg
+				return Message(content: msg, type: .error)
+			}
+			else
+			{
+				return Message(content: "unable to get error message", type: .error)
 			}
 		}
 
-		return "NO ERROR MESSAGE"
+		return Message(content: "no error message", type: .error)
 	}
 
 	private func trackFromMPDSongObject(_ song: OpaquePointer) -> Track?

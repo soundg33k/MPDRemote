@@ -71,23 +71,24 @@ final class PlayerController
 		// Sanity check 2
 		guard let server = server else
 		{
-			Logger.dlog("[!] Server object is nil")
+			MessageView.shared.showWithMessage(message: Message(content: NYXLocalizedString("lbl_message_no_mpd_server"), type: .error))
 			return false
 		}
 
 		// Connect
 		_connection = MPDConnection(server)
 		let ret = _connection.connect()
-		if ret
+		if ret.succeeded
 		{
 			_connection.delegate = self
 			startTimer(500)
 		}
 		else
 		{
+			MessageView.shared.showWithMessage(message: ret.messages.first!)
 			_connection = nil
 		}
-		return ret
+		return ret.succeeded
 	}
 
 	func deinitialize()
@@ -116,7 +117,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playAlbum(album, shuffle: shuffle, loop: loop)
+			_ = self._connection.playAlbum(album, shuffle: shuffle, loop: loop)
 		}
 	}
 
@@ -128,7 +129,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playTracks(tracks, shuffle: shuffle, loop: loop)
+			_ = self._connection.playTracks(tracks, shuffle: shuffle, loop: loop)
 		}
 	}
 
@@ -140,7 +141,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playPlaylist(playlist, shuffle: shuffle, loop: loop, position: position)
+			_ = self._connection.playPlaylist(playlist, shuffle: shuffle, loop: loop, position: position)
 		}
 	}
 
@@ -152,7 +153,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.playTrackAtPosition(position)
+			_ = self._connection.playTrackAtPosition(position)
 		}
 	}
 
@@ -178,7 +179,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.addAlbumToQueue(album)
+			_ = self._connection.addAlbumToQueue(album)
 		}
 	}
 
@@ -191,7 +192,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.setRepeat(loop)
+			_ = self._connection.setRepeat(loop)
 		}
 	}
 
@@ -204,7 +205,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.setRandom(random)
+			_ = self._connection.setRandom(random)
 		}
 	}
 
@@ -217,7 +218,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.nextTrack()
+			_ = self._connection.nextTrack()
 		}
 	}
 
@@ -229,7 +230,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.previousTrack()
+			_ = self._connection.previousTrack()
 		}
 	}
 
@@ -241,8 +242,16 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self.listTracksInQueue = self._connection.getSongsOfCurrentQueue()
-			callback()
+			let result = self._connection.getSongsOfCurrentQueue()
+			if result.succeeded == false
+			{
+
+			}
+			else
+			{
+				self.listTracksInQueue = result.entity!
+				callback()
+			}
 		}
 	}
 
@@ -255,7 +264,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.setTrackPosition(position, trackPosition: trackPosition)
+			_ = self._connection.setTrackPosition(position, trackPosition: trackPosition)
 		}
 	}
 
@@ -268,7 +277,7 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self._connection.setVolume(UInt32(volume))
+			_ = self._connection.setVolume(UInt32(volume))
 		}
 	}
 
@@ -280,8 +289,15 @@ final class PlayerController
 		}
 
 		_queue.async {
-			let volume = self._connection.getVolume()
-			callback(volume)
+			let result = self._connection.getVolume()
+			if result.succeeded == false
+			{
+
+			}
+			else
+			{
+				callback(result.entity!)
+			}
 		}
 	}
 
@@ -294,8 +310,16 @@ final class PlayerController
 		}
 
 		_queue.async {
-			self.outputs = self._connection.getAvailableOutputs()
-			callback()
+			let result = self._connection.getAvailableOutputs()
+			if result.succeeded == false
+			{
+
+			}
+			else
+			{
+				self.outputs = result.entity!
+				callback()
+			}
 		}
 	}
 
@@ -308,7 +332,7 @@ final class PlayerController
 
 		_queue.async {
 			let ret = self._connection.toggleOutput(output: output)
-			callback(ret)
+			callback(ret.succeeded)
 		}
 	}
 
@@ -325,7 +349,7 @@ final class PlayerController
 
 	private func stopTimer()
 	{
-		if let _ = _timer
+		if _timer != nil
 		{
 			_timer.cancel()
 			_timer = nil
@@ -334,7 +358,12 @@ final class PlayerController
 
 	private func playerInformations()
 	{
-		guard let infos = _connection.getPlayerInfos() else {return}
+		let result = _connection.getPlayerInfos()
+		if result.succeeded == false
+		{
+			return
+		}
+		guard let infos = result.entity else {return}
 		let status = infos[kPlayerStatusKey] as! Int
 		let track = infos[kPlayerTrackKey] as! Track
 		let album = infos[kPlayerAlbumKey] as! Album

@@ -273,7 +273,7 @@ final class RootVC : MenuVC
 					}
 				case .genres:
 					let genre = searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
-					MusicDataSource.shared.getAlbumsForGenre(genre) {
+					MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
 						MusicDataSource.shared.getTracksForAlbums(genre.albums) {
 							let ar = genre.albums.flatMap({$0.tracks}).flatMap({$0})
 							PlayerController.shared.playTracks(ar, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
@@ -375,7 +375,7 @@ final class RootVC : MenuVC
 				case .genres:
 					let genre = self.searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForGenre(genre) {
+						MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
 							MusicDataSource.shared.getTracksForAlbums(genre.albums) {
 								let ar = genre.albums.flatMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
@@ -387,7 +387,7 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForGenre(genre) {
+						MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
 							MusicDataSource.shared.getTracksForAlbums(genre.albums) {
 								let ar = genre.albums.flatMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
@@ -399,7 +399,7 @@ final class RootVC : MenuVC
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForGenre(genre) {
+						MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
 							for album in genre.albums
 							{
 								PlayerController.shared.addAlbumToQueue(album)
@@ -700,7 +700,7 @@ extension RootVC
 			let randomAlbum = MusicDataSource.shared.albums.randomItem()
 			if randomAlbum.tracks == nil
 			{
-				MusicDataSource.shared.getTracksForAlbum(randomAlbum) {
+				MusicDataSource.shared.getTracksForAlbums([randomAlbum]) {
 					PlayerController.shared.playAlbum(randomAlbum, shuffle: false, loop: false)
 				}
 			}

@@ -236,7 +236,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			}
 			else
 			{
-				MusicDataSource.shared.getTracksForAlbum(PlayerController.shared.currentAlbum!, callback: {
+				MusicDataSource.shared.getTracksForAlbums([PlayerController.shared.currentAlbum!], callback: {
 					if let tracks = PlayerController.shared.currentAlbum?.tracks
 					{
 						DispatchQueue.main.async {

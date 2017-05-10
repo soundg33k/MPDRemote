@@ -159,6 +159,9 @@ final class MusicalCollectionView : UICollectionView
 		self.delegate = self
 		self.isPrefetchingEnabled = false
 
+		let layoutAsTable = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
+		self.layoutType = layoutAsTable ? .table : .collection
+
 		self.setCollectionLayout(animated: false)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(collectionViewsLayoutDidChangeNotification(_:)), name: .collectionViewsLayoutDidChange, object: nil)
@@ -203,7 +206,7 @@ final class MusicalCollectionView : UICollectionView
 		}
 	}
 
-	// MARL: - Notifications
+	// MARK: - Notifications
 	public func collectionViewsLayoutDidChangeNotification(_ notification: Notification)
 	{
 		let layoutAsTable = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
@@ -396,7 +399,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			{
 				return
 			}
-			MusicDataSource.shared.getAlbumForGenre(genre) {
+			MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: true) {
 				DispatchQueue.main.async {
 					if let _ = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
 					{

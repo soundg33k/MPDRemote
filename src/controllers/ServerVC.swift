@@ -184,7 +184,7 @@ final class ServerVC : MenuTVC
 
 		let mpdServer = AudioServer(name: serverName, hostname: ip, port: port, password: password, type: .mpd)
 		let cnn = MPDConnection(mpdServer)
-		if cnn.connect()
+		if cnn.connect().succeeded
 		{
 			self.mpdServer = mpdServer
 			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: mpdServer)

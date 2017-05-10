@@ -39,6 +39,10 @@ final class SettingsVC : MenuTVC
 	@IBOutlet private var lblFuzzySearch: UILabel!
 	// Fuzzy search switch
 	@IBOutlet private var swFuzzySearch: UISwitch!
+	// Layout as table label
+	@IBOutlet private var lblLayoutAsTable: UILabel!
+	// Layout as table switch
+	@IBOutlet private var swLayoutAsTable: UISwitch!
 	// Navigation title
 	private var titleView: UILabel!
 
@@ -59,6 +63,7 @@ final class SettingsVC : MenuTVC
 
 		lblShake.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
 		lblFuzzySearch.text = NYXLocalizedString("lbl_fuzzysearch")
+		lblLayoutAsTable.text = NYXLocalizedString("lbl_pref_layoutastable")
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -67,6 +72,7 @@ final class SettingsVC : MenuTVC
 
 		swShake.isOn = UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
 		swFuzzySearch.isOn = UserDefaults.standard.bool(forKey: kNYXPrefFuzzySearch)
+		swLayoutAsTable.isOn = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
 
 		let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
 		let build = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as! String
@@ -124,10 +130,12 @@ extension SettingsVC
 		switch section
 		{
 			case 0:
-				label.text = NYXLocalizedString("lbl_behaviour").uppercased()
+				label.text = NYXLocalizedString("lbl_ui").uppercased()
 			case 1:
-				label.text = NYXLocalizedString("lbl_search").uppercased()
+				label.text = NYXLocalizedString("lbl_behaviour").uppercased()
 			case 2:
+				label.text = NYXLocalizedString("lbl_search").uppercased()
+			case 3:
 				label.text = NYXLocalizedString("lbl_version").uppercased()
 			default:
 				break

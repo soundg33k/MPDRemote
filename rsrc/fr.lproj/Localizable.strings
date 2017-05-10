@@ -29,6 +29,7 @@
 "lbl_behaviour" = "Comportement";
 "lbl_search" = "Recherche";
 "lbl_fuzzysearch" = "Recherche approximative";
+"lbl_ui" = "Interface";
 
 "lbl_alert_playalbum_shuffle" = "Aléatoire";
 "lbl_alert_playalbum_addqueue" = "Ajouter à la liste";
@@ -62,6 +63,7 @@
 "lbl_section_database" = "Base de données";
 
 "lbl_pref_shaketoplayrandom" = "Secouer pour jouer 1 album aléatoire";
+"lbl_pref_layoutastable" = "Disposition en liste";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";
@@ -77,6 +79,8 @@
 "lbl_server_uptime" = "Uptime";
 "lbl_server_playtime" = "Durée jouée";
 "lbl_server_lastdbupdate" = "Dernière MàJ";
+
+"lbl_message_no_mpd_server" = "Pas de serveur MPD configuré";
 
 /* accessibility */
 "vo_displaymenu" = "Afficher le menu de navigation";

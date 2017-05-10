@@ -89,7 +89,7 @@ final class ZeroConfExplorer : NSObject
 
 	fileprivate func isResolved(_ server: Server) -> Bool
 	{
-		return server.hostname != "" && server.port != 0
+		return String.isNullOrWhiteSpace(server.hostname) == false && server.port != 0
 	}
 }
 
@@ -98,31 +98,27 @@ extension ZeroConfExplorer : NetServiceBrowserDelegate
 {
 	func netServiceBrowserWillSearch(_ browser: NetServiceBrowser)
 	{
-		Logger.dlog("netServiceBrowserWillSearch")
 		isSearching = true
 	}
 
 	func netServiceBrowserDidStopSearch(_ browser: NetServiceBrowser)
 	{
-		Logger.dlog("netServiceBrowserDidStopSearch")
 		isSearching = false
 	}
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String : NSNumber])
 	{
-		Logger.dlog("didNotSearch : \(errorDict)")
+		Logger.alog("[!] ZeroConf didNotSearch : \(errorDict)")
 	}
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)
 	{
-		Logger.dlog("didFindService")
 		services[service] = Server(name: service.name, hostname: "", port: 0)
 		resolvZeroconfService(service: service)
 	}
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didRemove service: NetService, moreComing: Bool)
 	{
-		Logger.dlog("didRemoveService")
 		services[service] = nil
 	}
 }
@@ -132,8 +128,6 @@ extension ZeroConfExplorer : NetServiceDelegate
 {
 	func netServiceDidResolveAddress(_ sender: NetService)
 	{
-		Logger.dlog("netServiceDidResolveAddress: \(sender.name)")
-
 		guard let addresses = sender.addresses else {return}
 
 		var found = false
@@ -178,11 +172,9 @@ extension ZeroConfExplorer : NetServiceDelegate
 
 	func netService(_ sender: NetService, didNotResolve errorDict: [String : NSNumber])
 	{
-		Logger.dlog("didNotResolve \(sender)")
 	}
 
 	func netServiceDidStop(_ sender: NetService)
 	{
-		Logger.dlog("netServiceDidStop \(sender.name)")
 	}
 }

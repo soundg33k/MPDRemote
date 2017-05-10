@@ -60,47 +60,46 @@ protocol AudioServerConnection
 	var isConnected: Bool {get}
 
 	// MARK: - Connection
-	func connect() -> Bool
+	func connect() -> ActionResult<Void>
 	func disconnect()
 
 	// MARK: - Get infos about tracks / albums / etc…
-	func getListForDisplayType(_ displayType: DisplayType) -> [MusicalEntity]
-	func getAlbumForGenre(_ genre: Genre) -> Album?
-	func getAlbumsForGenre(_ genre: Genre) -> [Album]
-	func getAlbumsForArtist(_ artist: Artist) -> [Album]
-	func getArtistsForGenre(_ genre: Genre) -> [Artist]
-	func getPathForAlbum(_ album: Album) -> String?
-	func getTracksForAlbum(_ album: Album) -> [Track]?
-	func getTracksForPlaylist(_ playlist: Playlist) -> [Track]?
-	func getMetadatasForAlbum(_ album: Album) -> [String : Any]
+	func getListForDisplayType(_ displayType: DisplayType) -> ActionResult<[MusicalEntity]>
+	func getAlbumsForGenre(_ genre: Genre, firstOnly: Bool) -> ActionResult<[Album]>
+	func getAlbumsForArtist(_ artist: Artist) -> ActionResult<[Album]>
+	func getArtistsForGenre(_ genre: Genre) -> ActionResult<[Artist]>
+	func getPathForAlbum(_ album: Album) -> ActionResult<String>
+	func getTracksForAlbum(_ album: Album) -> ActionResult<[Track]>
+	func getTracksForPlaylist(_ playlist: Playlist) -> ActionResult<[Track]>
+	func getMetadatasForAlbum(_ album: Album) -> ActionResult<[String : Any]>
 
 	// MARK: - Playlists
-	func getPlaylists() -> [Playlist]
-	func getSongsOfCurrentQueue() -> [Track]
+	func getPlaylists() -> ActionResult<[MusicalEntity]>
+	func getSongsOfCurrentQueue() -> ActionResult<[Track]>
 
 	// MARK: - Play / Queue
-	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool)
-	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool)
-	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32)
-	func playTrackAtPosition(_ position: UInt32)
-	func addAlbumToQueue(_ album: Album)
-	func togglePause() -> Bool
-	func nextTrack()
-	func previousTrack()
-	func setRandom(_ random: Bool)
-	func setRepeat(_ loop: Bool)
-	func setTrackPosition(_ position: Int, trackPosition: UInt32)
-	func setVolume(_ volume: UInt32)
-	func getVolume() -> Int
+	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool) -> ActionResult<Void>
+	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool) -> ActionResult<Void>
+	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32) -> ActionResult<Void>
+	func playTrackAtPosition(_ position: UInt32) -> ActionResult<Void>
+	func addAlbumToQueue(_ album: Album) -> ActionResult<Void>
+	func togglePause() -> ActionResult<Void>
+	func nextTrack() -> ActionResult<Void>
+	func previousTrack() -> ActionResult<Void>
+	func setRandom(_ random: Bool) -> ActionResult<Void>
+	func setRepeat(_ loop: Bool) -> ActionResult<Void>
+	func setTrackPosition(_ position: Int, trackPosition: UInt32) -> ActionResult<Void>
+	func setVolume(_ volume: UInt32) -> ActionResult<Void>
+	func getVolume() -> ActionResult<Int>
 
 	// MARK: - Player status
-	func getStatus()
-	func getPlayerInfos() -> [String : Any]?
+	func getStatus() -> ActionResult<OpaquePointer>
+	func getPlayerInfos() -> ActionResult<[String : Any]>
 
 	// MARK: - Stats
-	func getStats() -> [String : String]
+	func getStats() -> ActionResult<[String : String]>
 
 	// MARK: - Outputs
-	func getAvailableOutputs() -> [AudioOutput]
-	func toggleOutput(output: AudioOutput) -> Bool
+	func getAvailableOutputs() -> ActionResult<[AudioOutput]>
+	func toggleOutput(output: AudioOutput) -> ActionResult<Void>
 }

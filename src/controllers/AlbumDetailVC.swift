@@ -123,7 +123,7 @@ final class AlbumDetailVC : UIViewController
 		}
 		else
 		{
-			MusicDataSource.shared.getTracksForAlbum(album) {
+			MusicDataSource.shared.getTracksForAlbums([album]) {
 				DispatchQueue.main.async {
 					self.updateNavigationTitle()
 					self.tableView.tracks = self.album.tracks!

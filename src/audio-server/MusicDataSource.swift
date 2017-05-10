@@ -71,23 +71,24 @@ final class MusicDataSource
 		// Sanity check 2
 		guard let server = server else
 		{
-			Logger.dlog("[!] Server object is nil")
+			MessageView.shared.showWithMessage(message: Message(content: NYXLocalizedString("lbl_message_no_mpd_server"), type: .error))
 			return false
 		}
 
 		// Connect
 		_connection = MPDConnection(server)
 		let ret = _connection.connect()
-		if ret
+		if ret.succeeded
 		{
 			_connection.delegate = self
 			startTimer(20)
 		}
 		else
 		{
+			MessageView.shared.showWithMessage(message: ret.messages.first!)
 			_connection = nil
 		}
-		return ret
+		return ret.succeeded
 	}
 
 	func deinitialize()
@@ -132,24 +133,32 @@ final class MusicDataSource
 		self.displayType = displayType
 
 		_queue.async {
-			let list = self._connection.getListForDisplayType(displayType)
-			let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-			switch (displayType)
+			let result = self._connection.getListForDisplayType(displayType)
+			if result.succeeded == false
 			{
+
+			}
+			else
+			{
+				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+				switch (displayType)
+				{
 				case .albums:
-					self.albums = (list as! [Album]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					self.albums = (result.entity as! [Album]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 				case .genres:
-					self.genres = (list as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					self.genres = (result.entity as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 				case .artists:
-					self.artists = (list as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					self.artists = (result.entity as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 				case .playlists:
-					self.playlists = (list as! [Playlist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					self.playlists = (result.entity as! [Playlist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+				}
+
+				callback()
 			}
-			callback()
 		}
 	}
 
-	func getAlbumForGenre(_ genre: Genre, callback: @escaping () -> Void)
+	func getAlbumsForGenre(_ genre: Genre, firstOnly: Bool, callback: @escaping () -> Void)
 	{
 		if _connection == nil || _connection.isConnected == false
 		{
@@ -157,25 +166,16 @@ final class MusicDataSource
 		}
 
 		_queue.async {
-			if let album = self._connection.getAlbumForGenre(genre)
+			let result = self._connection.getAlbumsForGenre(genre, firstOnly: firstOnly)
+			if result.succeeded == false
 			{
-				genre.albums.append(album)
+
 			}
-			callback()
-		}
-	}
-
-	func getAlbumsForGenre(_ genre: Genre, callback: @escaping () -> Void)
-	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
-
-		_queue.async {
-			let albums = self._connection.getAlbumsForGenre(genre)
-			genre.albums = albums
-			callback()
+			else
+			{
+				genre.albums = result.entity!
+				callback()
+			}
 		}
 	}
 
@@ -187,10 +187,17 @@ final class MusicDataSource
 		}
 
 		_queue.async {
-			let list = self._connection.getAlbumsForArtist(artist)
-			let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-			artist.albums = list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-			callback()
+			let result = self._connection.getAlbumsForArtist(artist)
+			if result.succeeded == false
+			{
+
+			}
+			else
+			{
+				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+				artist.albums = result.entity!.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+				callback()
+			}
 		}
 	}
 
@@ -202,9 +209,16 @@ final class MusicDataSource
 		}
 
 		_queue.async {
-			let list = self._connection.getArtistsForGenre(genre)
-			let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-			callback(list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)}))
+			let result = self._connection.getArtistsForGenre(genre)
+			if result.succeeded == false
+			{
+
+			}
+			else
+			{
+				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+				callback(result.entity!.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)}))
+			}
 		}
 	}
 
@@ -216,21 +230,16 @@ final class MusicDataSource
 		}
 
 		_queue.async {
-			album.path = self._connection.getPathForAlbum(album)
-			callback()
-		}
-	}
+			let result = self._connection.getPathForAlbum(album)
+			if result.succeeded == false
+			{
 
-	func getTracksForAlbum(_ album: Album, callback: @escaping () -> Void)
-	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
-
-		_queue.async {
-			album.tracks = self._connection.getTracksForAlbum(album)
-			callback()
+			}
+			else
+			{
+				album.path = result.entity
+				callback()
+			}
 		}
 	}
 
@@ -244,9 +253,10 @@ final class MusicDataSource
 		_queue.async {
 			for album in albums
 			{
-				album.tracks = self._connection.getTracksForAlbum(album)
+				let result = self._connection.getTracksForAlbum(album)
+				album.tracks = result.entity
+				callback()
 			}
-			callback()
 		}
 	}
 
@@ -258,8 +268,16 @@ final class MusicDataSource
 		}
 
 		_queue.async {
-			playlist.tracks = self._connection.getTracksForPlaylist(playlist)
-			callback()
+			let result = self._connection.getTracksForPlaylist(playlist)
+			if result.succeeded == false
+			{
+
+			}
+			else
+			{
+				playlist.tracks = result.entity
+				callback()
+			}
 		}
 	}
 
@@ -271,20 +289,29 @@ final class MusicDataSource
 		}
 
 		_queue.async {
-			let metadatas = self._connection.getMetadatasForAlbum(album)
-			if let artist = metadatas["artist"] as! String?
+			let result = self._connection.getMetadatasForAlbum(album)
+			if result.succeeded == false
 			{
-				album.artist = artist
+
 			}
-			if let year = metadatas["year"] as! String?
+			else
 			{
-				album.year = year
+				let metadatas = result.entity!
+				if let artist = metadatas["artist"] as! String?
+				{
+					album.artist = artist
+				}
+				if let year = metadatas["year"] as! String?
+				{
+					album.year = year
+				}
+				if let genre = metadatas["genre"] as! String?
+				{
+					album.genre = genre
+				}
+
+				callback()
 			}
-			if let genre = metadatas["genre"] as! String?
-			{
-				album.genre = genre
-			}
-			callback()
 		}
 	}
 
@@ -296,25 +323,17 @@ final class MusicDataSource
 		}
 
 		_queue.async {
-			let stats = self._connection.getStats()
-			callback(stats)
+			let result = self._connection.getStats()
+			if result.succeeded == false
+			{
+
+			}
+			else
+			{
+				callback(result.entity!)
+			}
 		}
 	}
-
-	/*func currentCollection(_ displayType: DisplayType) -> [MusicalEntity]
-	{
-		switch (displayType)
-		{
-			case .albums:
-				return albums
-			case .genres:
-				return genres
-			case .artists:
-				return artists
-			case .playlists:
-				return playlists
-		}
-	}*/
 
 	// MARK: - Private
 	private func startTimer(_ interval: Int)
@@ -329,7 +348,7 @@ final class MusicDataSource
 
 	private func stopTimer()
 	{
-		if let _ = _timer
+		if _timer != nil
 		{
 			_timer.cancel()
 			_timer = nil
@@ -338,7 +357,7 @@ final class MusicDataSource
 
 	private func getPlayerStatus()
 	{
-		_connection.getStatus()
+		_ = _connection.getStatus()
 	}
 
 	// MARK: - Notifications
