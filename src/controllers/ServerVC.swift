@@ -371,8 +371,12 @@ final class ServerVC : MenuTVC
 	fileprivate func updateCacheLabel()
 	{
 		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return}
-		let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
-		lblClearCache.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(size) / 1048576.0))\(NYXLocalizedString("lbl_megabytes")))"
+		DispatchQueue.global().async {
+			let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
+			DispatchQueue.main.async {
+				self.lblClearCache.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(size) / 1048576.0))\(NYXLocalizedString("lbl_megabytes")))"
+			}
+		}
 	}
 
 	fileprivate func updateOutputsLabel()
