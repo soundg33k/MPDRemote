@@ -87,7 +87,7 @@ extension Album : CustomStringConvertible
 // MARK: - Equatable
 extension Album
 {
-	static func == (lhs: Album, rhs: Album) -> Bool
+	static func ==(lhs: Album, rhs: Album) -> Bool
 	{
 		return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.year == rhs.year && lhs.genre == rhs.genre)
 	}

@@ -68,7 +68,7 @@ extension Track : CustomStringConvertible
 // MARK: - Equatable
 extension Track
 {
-	static func == (lhs: Track, rhs: Track) -> Bool
+	static func ==(lhs: Track, rhs: Track) -> Bool
 	{
 		return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.duration == rhs.duration && lhs.uri == rhs.uri)
 	}

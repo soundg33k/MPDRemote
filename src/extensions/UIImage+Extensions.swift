@@ -112,8 +112,7 @@ extension UIImage
 		guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else {return nil}
 		let props = [kCGImageSourceShouldCache as String : true]
 		guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, props as CFDictionary?) else {return nil}
-		let image = UIImage(cgImage: imageRef)
-		return image
+		return UIImage(cgImage: imageRef)
 	}
 
 	class func fromString(_ string: String, font: UIFont, fontColor: UIColor, backgroundColor: UIColor, maxSize: CGSize) -> UIImage?

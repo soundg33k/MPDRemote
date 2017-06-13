@@ -48,7 +48,7 @@ final class Playlist : MusicalEntity
 // MARK: - Equatable
 extension Playlist
 {
-	static func == (lhs: Playlist, rhs: Playlist) -> Bool
+	static func ==(lhs: Playlist, rhs: Playlist) -> Bool
 	{
 		return (lhs.name == rhs.name)
 	}

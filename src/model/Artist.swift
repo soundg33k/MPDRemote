@@ -56,7 +56,7 @@ extension Artist : CustomStringConvertible
 // MARK: - Equatable
 extension Artist
 {
-	static func == (lhs: Artist, rhs: Artist) -> Bool
+	static func ==(lhs: Artist, rhs: Artist) -> Bool
 	{
 		return (lhs.name == rhs.name)
 	}
