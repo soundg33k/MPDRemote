@@ -56,8 +56,6 @@ final class MenuView : UIView
 	// MARK: - Private properties
 	// TableView
 	fileprivate var tableView: UITableView! = nil
-	// Kikoolol
-	private var blurEffectView: UIVisualEffectView! = nil
 	// Pan gesture
 	private var pan: UIPanGestureRecognizer! = nil
 	// Minimum x for the menu
@@ -68,27 +66,22 @@ final class MenuView : UIView
 	{
 		super.init(frame:frame)
 		self.isUserInteractionEnabled = true
-		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
+		self.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		_menuMinX = -(frame.size.width + 2.0)
-
-		// Blur effect
-		self.blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-		self.blurEffectView.frame = self.bounds
-		self.addSubview(self.blurEffectView)
 
 		// TableView
 		self.tableView = UITableView(frame: CGRect(.zero, frame.size), style: .plain)
 		self.tableView.register(MenuViewTableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.mpdremote.cell.menu")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
-		self.tableView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
+		self.tableView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
 		self.tableView.isScrollEnabled = false
 		self.tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		self.tableView.separatorInset = .zero
 		self.tableView.layoutMargins = .zero
-		self.blurEffectView.contentView.addSubview(self.tableView)
+		self.addSubview(self.tableView)
 
 		// Pan
 		self.pan = UIPanGestureRecognizer(target: self, action: #selector(MenuView.pan(_:)))
@@ -168,13 +161,13 @@ extension MenuView : UITableViewDataSource
 				image = #imageLiteral(resourceName: "img-server")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().serverVC)
 			case 2:
-				cell.accessibilityLabel = NYXLocalizedString("lbl_section_stats")
-				image = #imageLiteral(resourceName: "img-stats")
-				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().statsVC)
-			case 3:
 				cell.accessibilityLabel = NYXLocalizedString("lbl_section_settings")
 				image = #imageLiteral(resourceName: "img-settings")
 				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().settingsVC)
+			case 3:
+				cell.accessibilityLabel = NYXLocalizedString("lbl_section_stats")
+				image = #imageLiteral(resourceName: "img-stats")
+				selected = (APP_DELEGATE().window?.rootViewController === APP_DELEGATE().statsVC)
 			default:
 				break
 		}
@@ -217,9 +210,9 @@ extension MenuView : UITableViewDelegate
 			case 1:
 				newTopViewController = APP_DELEGATE().serverVC
 			case 2:
-				newTopViewController = APP_DELEGATE().statsVC
-			case 3:
 				newTopViewController = APP_DELEGATE().settingsVC
+			case 3:
+				newTopViewController = APP_DELEGATE().statsVC
 			case __numberOfRows:
 				return
 			default:
