@@ -50,7 +50,7 @@ extension String
 		return isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).length == 0
 	}
 
-	func isNullOrWhiteSpace() -> Bool
+	func isEmptyOrWhiteSpace() -> Bool
 	{
 		return self.isEmpty || self.trimmingCharacters(in: .whitespacesAndNewlines).length == 0
 	}
@@ -66,6 +66,22 @@ extension String
 
 		var ret = ""
 		for i in 0 ..< Int(CC_MD5_DIGEST_LENGTH)
+		{
+			ret += String(format: "%02x", digest[i])
+		}
+		return ret
+	}
+
+	func sha256() -> String
+	{
+		var digest = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
+		if let data = data(using: String.Encoding.utf8)
+		{
+			CC_SHA256((data as NSData).bytes, CC_LONG(data.count), &digest)
+		}
+
+		var ret = ""
+		for i in 0 ..< Int(CC_SHA256_DIGEST_LENGTH)
 		{
 			ret += String(format: "%02x", digest[i])
 		}

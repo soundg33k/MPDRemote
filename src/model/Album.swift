@@ -37,7 +37,7 @@ final class Album : MusicalEntity
 		didSet {
 			if let p = self.path
 			{
-				self.uniqueIdentifier = "\(self.name.removing(charactersOf: "\"'\\/?!<>|+*=&()[]{}$:").lowercased())_\(p.md5())"
+				self.uniqueIdentifier = "\(self.name.removing(charactersOf: "\"'\\/?!<>|+*=&()[]{}$:").lowercased())_\(p.sha256())"
 			}
 		}
 	}
@@ -55,7 +55,7 @@ final class Album : MusicalEntity
 	// MARK: - Initializers
 	override init(name: String)
 	{
-		self.uniqueIdentifier = name.md5()
+		self.uniqueIdentifier = name.sha256()
 		super.init(name: name)
 	}
 
