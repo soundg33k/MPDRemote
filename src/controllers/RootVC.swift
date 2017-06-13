@@ -525,11 +525,13 @@ final class RootVC : MenuVC
 	{
 		if traitCollection.forceTouchCapability == .available
 		{
+			collectionView.removeGestureRecognizer(_longPress)
 			_longPress.isEnabled = false
 			_previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
 		}
 		else
 		{
+			collectionView.addGestureRecognizer(_longPress)
 			_longPress.isEnabled = true
 		}
 	}
