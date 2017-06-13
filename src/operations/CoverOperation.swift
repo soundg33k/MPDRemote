@@ -169,6 +169,11 @@ final class CoverOperation : Operation
 			block(cover, thumbnail)
 		}
 	}
+
+	override var description: String
+	{
+		return album.description
+	}
 }
 
 // MARK: - NSURLSessionDelegate
