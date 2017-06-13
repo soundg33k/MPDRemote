@@ -49,7 +49,7 @@ final class RootVC : MenuVC
 	fileprivate var _serverChanged = false
 	// Previewing context for peek & pop
 	fileprivate var _previewingContext: UIViewControllerPreviewing! = nil
-	//
+	// Long press gesture for devices without force touch
 	fileprivate var _longPress: UILongPressGestureRecognizer! = nil
 
 	// MARK: - UIViewController
@@ -742,39 +742,20 @@ extension RootVC : UIViewControllerPreviewingDelegate
 		if let indexPath = collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath)
 		{
 			previewingContext.sourceRect = cellAttributes.frame
-			let sb = UIStoryboard(name: "main", bundle: Bundle.main)
+			let sb = UIStoryboard(name: "main", bundle: .main)
+			let row = indexPath.row
 			if _displayType == .albums
 			{
 				let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
 
-				let row = indexPath.row
 				let album = searching ? collectionView.searchResults[row] as! Album : MusicDataSource.shared.albums[row]
 				vc.album = album
 				return vc
 			}
-			else if _displayType == .genres
-			{
-				let vc = sb.instantiateViewController(withIdentifier: "ArtistsVC") as! ArtistsVC
-
-				let row = indexPath.row
-				let genre = searching ? collectionView.searchResults[row] as! Genre : MusicDataSource.shared.genres[row]
-				vc.genre = genre
-				return vc
-			}
-			else if _displayType == .artists
-			{
-				let vc = sb.instantiateViewController(withIdentifier: "AlbumsVC") as! AlbumsVC
-
-				let row = indexPath.row
-				let artist = searching ? collectionView.searchResults[row] as! Artist : MusicDataSource.shared.artists[row]
-				vc.artist = artist
-				return vc
-			}
-			else
+			else if _displayType == .playlists
 			{
 				let vc = sb.instantiateViewController(withIdentifier: "PlaylistDetailVC") as! PlaylistDetailVC
 
-				let row = indexPath.row
 				let playlist = searching ? collectionView.searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
 				vc.playlist = playlist
 				return vc
