@@ -30,6 +30,12 @@ final class AlbumsVC : UIViewController
 	@IBOutlet var collectionView: MusicalCollectionView!
 	// Selected artist
 	var artist: Artist!
+	// Previewing context for peek & pop
+	fileprivate var _previewingContext: UIViewControllerPreviewing! = nil
+	// Long press gesture for devices without force touch
+	fileprivate var _longPress: UILongPressGestureRecognizer! = nil
+	// Long press gesture is recognized, flag
+	fileprivate var longPressRecognized = false
 
 	// MARK: - Private properties
 	// Label in the navigationbar
@@ -60,6 +66,12 @@ final class AlbumsVC : UIViewController
 		// CollectionView
 		collectionView.myDelegate = self
 		collectionView.displayType = .albums
+
+		// Longpress
+		_longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+		_longPress.minimumPressDuration = 0.5
+		_longPress.delaysTouchesBegan = true
+		updateLongpressState()
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -113,12 +125,70 @@ final class AlbumsVC : UIViewController
 		}
 	}
 
+	// MARK: - Gestures
+	func longPress(_ gest: UILongPressGestureRecognizer)
+	{
+		if longPressRecognized
+		{
+			return
+		}
+		longPressRecognized = true
+
+		if let indexPath = collectionView.indexPathForItem(at: gest.location(in: collectionView))
+		{
+			MiniPlayerView.shared.stayHidden = true
+			MiniPlayerView.shared.hide()
+
+			let alertController = UIAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
+				self.longPressRecognized = false
+				MiniPlayerView.shared.stayHidden = false
+			}
+			alertController.addAction(cancelAction)
+
+			let album = artist.albums[indexPath.row]
+			let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
+				PlayerController.shared.playAlbum(album, shuffle: false, loop: false)
+				self.longPressRecognized = false
+				MiniPlayerView.shared.stayHidden = false
+			}
+			alertController.addAction(playAction)
+			let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
+				PlayerController.shared.playAlbum(album, shuffle: true, loop: false)
+				self.longPressRecognized = false
+				MiniPlayerView.shared.stayHidden = false
+			}
+			alertController.addAction(shuffleAction)
+			let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
+				PlayerController.shared.addAlbumToQueue(album)
+				self.longPressRecognized = false
+				MiniPlayerView.shared.stayHidden = false
+			}
+			alertController.addAction(addQueueAction)
+
+			present(alertController, animated: true, completion: nil)
+		}
+	}
+
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
 		let attrs = NSMutableAttributedString(string: artist.name + "\n", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
 		attrs.append(NSAttributedString(string: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 		titleView.attributedText = attrs
+	}
+
+	fileprivate func updateLongpressState()
+	{
+		if traitCollection.forceTouchCapability == .available
+		{
+			_longPress.isEnabled = false
+			_previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
+		}
+		else
+		{
+			_longPress.isEnabled = true
+		}
 	}
 }
 
@@ -133,6 +203,32 @@ extension AlbumsVC : MusicalCollectionViewDelegate
 	func didSelectItem(indexPath: IndexPath)
 	{
 		performSegue(withIdentifier: "albums-to-albumdetail", sender: self)
+	}
+}
+
+// MARK: - UIViewControllerPreviewingDelegate
+extension AlbumsVC : UIViewControllerPreviewingDelegate
+{
+	public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
+	{
+		self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
+	}
+
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
+	{
+		if let indexPath = collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath)
+		{
+			previewingContext.sourceRect = cellAttributes.frame
+			let sb = UIStoryboard(name: "main", bundle: .main)
+
+			let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
+
+			let row = indexPath.row
+			let album = artist.albums[row]
+			vc.album = album
+			return vc
+		}
+		return nil
 	}
 }
 
