@@ -446,10 +446,10 @@
 				1E5653951C908A310049C02D /* MenuView.swift */,
 				4320244F1EC345D7001A667A /* MessageView.swift */,
 				1E5653961C908A310049C02D /* MiniPlayerView.swift */,
+				4330666D1EAF861B0066F5E0 /* MusicalCollectionView.swift */,
 				1E5653971C908A310049C02D /* TopAlignedLabel.swift */,
 				4330666B1EAE4F660066F5E0 /* TracksListTableView.swift */,
 				1EB93A9F1CB3A82700EA5339 /* TypeChoiceView.swift */,
-				4330666D1EAF861B0066F5E0 /* MusicalCollectionView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
