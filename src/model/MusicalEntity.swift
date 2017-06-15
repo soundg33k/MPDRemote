@@ -35,6 +35,7 @@ class MusicalEntity : Hashable
 		self.name = name
 	}
 
+	// MARK: - Hashable
 	var hashValue: Int
 	{
 		get
