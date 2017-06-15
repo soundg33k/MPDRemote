@@ -202,4 +202,17 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 			}
 		}
 	}
+
+	private var _associatedKey = "fr.whine.key.cell"
+	var associatedObject: Any?
+	{
+		set
+		{
+			objc_setAssociatedObject(self, &_associatedKey, newValue, .OBJC_ASSOCIATION_RETAIN)
+		}
+		get
+		{
+			return objc_getAssociatedObject(self, &_associatedKey)
+		}
+	}
 }

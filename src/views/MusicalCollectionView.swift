@@ -112,7 +112,7 @@ final class CollectionFlowLayout : UICollectionViewFlowLayout
 	}
 
 	override var itemSize: CGSize
-	{
+		{
 		set
 		{
 			self.itemSize = CGSize(itemWidth(), itemWidth() + 20.0)
@@ -168,18 +168,23 @@ final class MusicalCollectionView : UICollectionView
 	}
 
 	// MARK: - Private
-	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
+	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
 	{
-		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
+		//Logger.dlog("[+] Starting cover download for <\(album.name)>")
 		let key = album.uniqueIdentifier
+		if let cop = _downloadOperations[key] as! CoverOperation?
+		{
+			return cop
+		}
+		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
 		weak var weakOperation = downloadOperation
 		downloadOperation.callback = {(cover: UIImage, thumbnail: UIImage) in
-			if let op = weakOperation
+			if let /*op*/_ = weakOperation
 			{
-				if op.isCancelled == false
-				{
-					self._downloadOperations.removeValue(forKey: key)
-				}
+				//if op.isCancelled == false
+				//{
+				self._downloadOperations.removeValue(forKey: key)
+				//}
 			}
 			if let block = callback
 			{
@@ -188,6 +193,8 @@ final class MusicalCollectionView : UICollectionView
 		}
 		_downloadOperations[key] = downloadOperation
 		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
+
+		return downloadOperation
 	}
 
 	fileprivate func setCollectionLayout(animated: Bool)
@@ -247,33 +254,78 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			return cell
 		}
 
+		let entity = searching ? searchResults[indexPath.row] : items[indexPath.row]
+		// Init cell
+		cell.label.text = entity.name
+		cell.accessibilityLabel = entity.name
+		cell.image = nil
 		switch displayType
 		{
-		case .albums:
-			let album = searching ? searchResults[indexPath.row] as! Album : items[indexPath.row] as! Album
-			_configureCellForAlbum(cell, indexPath: indexPath, album: album)
-		case .genres:
-			let genre = searching ? searchResults[indexPath.row] as! Genre : items[indexPath.row] as! Genre
-			_configureCellForGenre(cell, indexPath: indexPath, genre: genre)
-		case .artists:
-			let artist = searching ? searchResults[indexPath.row] as! Artist : items[indexPath.row] as! Artist
-			_configureCellForArtist(cell, indexPath: indexPath, artist: artist)
-		case .playlists:
-			let playlist = searching ? searchResults[indexPath.row] as! Playlist : items[indexPath.row] as! Playlist
-			_configureCellForPlaylist(cell, indexPath: indexPath, playlist: playlist)
+			case .albums:
+				_handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
+			case .genres:
+				_configureCellForGenre(cell, indexPath: indexPath, genre: entity as! Genre)
+			case .artists:
+				_configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
+			case .playlists:
+				cell.image = generateCoverForPlaylist(entity as! Playlist, size: cell.imageView.size)
 		}
 
 		return cell
 	}
 
-	private func _configureCellForAlbum(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, album: Album)
+	private func _configureCellForGenre(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, genre: Genre)
 	{
-		// Set title
-		cell.label.text = album.name
-		cell.accessibilityLabel = album.name
+		if let album = genre.albums.first
+		{
+			_handleCoverForCell(cell, at: indexPath, withAlbum: album)
+		}
+		else
+		{
+			if myDelegate.isSearching(actively: true)
+			{
+				return
+			}
+			MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: true) {
+				if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell,
+				let album = genre.albums.first
+				{
+					DispatchQueue.main.async {
+						self._handleCoverForCell(c, at: indexPath, withAlbum: album)
+					}
+				}
+			}
+			return
+		}
+	}
 
+	private func _configureCellForArtist(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, artist: Artist)
+	{
+		if let album = artist.albums.first
+		{
+			_handleCoverForCell(cell, at: indexPath, withAlbum: album)
+		}
+		else
+		{
+			if myDelegate.isSearching(actively: true)
+			{
+				return
+			}
+			MusicDataSource.shared.getAlbumsForArtist(artist) {
+				if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell,
+				let album = artist.albums.first
+				{
+					DispatchQueue.main.async {
+						self._handleCoverForCell(c, at: indexPath, withAlbum: album)
+					}
+				}
+			}
+		}
+	}
+
+	private func _handleCoverForCell(_ cell: MusicalEntityBaseCell, at indexPath: IndexPath, withAlbum album: Album)
+	{
 		// If image is in cache, bail out quickly
-		cell.image = nil
 		if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
 		{
 			cell.image = cachedImage
@@ -281,10 +333,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 
 		// Get local URL for cover
-		guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
-		{
-			return
-		}
+		guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else { return }
 		guard let coverURL = album.localCoverURL else
 		{
 			Logger.dlog("[!] No cover file URL for \(album)") // should not happen
@@ -298,13 +347,22 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 		else
 		{
-			if myDelegate.isSearching(actively: true) //searching && searchBar.isFirstResponder == true
+			if let op = cell.associatedObject as! CoverOperation?
+			{
+				Logger.dlog("canceling \(op)")
+				op.cancel()
+			}
+
+			if myDelegate.isSearching(actively: true)
 			{
 				return
 			}
+
+			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!
+			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+				cell.associatedObject = downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
 						{
@@ -316,7 +374,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			else
 			{
 				MusicDataSource.shared.getPathForAlbum(album) {
-					self.downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
+					cell.associatedObject = self.downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
 							{
@@ -327,183 +385,6 @@ extension MusicalCollectionView : UICollectionViewDataSource
 				}
 			}
 		}
-	}
-
-	private func _configureCellForGenre(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, genre: Genre)
-	{
-		cell.label.text = genre.name
-		cell.accessibilityLabel = genre.name
-
-		if let album = genre.albums.first
-		{
-			// If image is in cache, bail out quickly
-			cell.image = nil
-			if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
-			{
-				cell.image = cachedImage
-				return
-			}
-
-			// Get local URL for cover
-			guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
-			{
-				return
-			}
-			guard let coverURL = album.localCoverURL else
-			{
-				Logger.alog("[!] No cover URL for \(album)") // should not happen
-				return
-			}
-
-			if let cover = UIImage.loadFromFileURL(coverURL)
-			{
-				cell.image = cover
-				ImageCache.shared[album.uniqueIdentifier] = cover
-			}
-			else
-			{
-				if myDelegate.isSearching(actively: true) //searching && searchBar.isFirstResponder == true
-				{
-					return
-				}
-				if album.path != nil
-				{
-					downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
-						DispatchQueue.main.async {
-							if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-							{
-								c.image = thumbnail
-							}
-						}
-					}
-				}
-				else
-				{
-					MusicDataSource.shared.getPathForAlbum(album) {
-						self.downloadCoverForAlbum(album, cropSize: cell.imageView.size) { (cover: UIImage, thumbnail: UIImage) in
-							DispatchQueue.main.async {
-								if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-								{
-									c.image = thumbnail
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			cell.image = nil
-			if myDelegate.isSearching(actively: true) //searching && searchBar.isFirstResponder == true
-			{
-				return
-			}
-			MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: true) {
-				DispatchQueue.main.async {
-					if let _ = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-					{
-						self.reloadItems(at: [indexPath])
-					}
-				}
-			}
-			return
-		}
-	}
-
-	private func _configureCellForArtist(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, artist: Artist)
-	{
-		cell.label.text = artist.name
-		cell.accessibilityLabel = artist.name
-
-		if artist.albums.count > 0
-		{
-			if let album = artist.albums.first
-			{
-				// If image is in cache, bail out quickly
-				cell.image = nil
-				if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
-				{
-					cell.image = cachedImage
-					return
-				}
-
-				// Get local URL for cover
-				guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
-				{
-					return
-				}
-				guard let coverURL = album.localCoverURL else
-				{
-					Logger.alog("[!] No cover URL for \(album)") // should not happen
-					return
-				}
-
-				if let cover = UIImage.loadFromFileURL(coverURL)
-				{
-					cell.image = cover
-					ImageCache.shared[album.uniqueIdentifier] = cover
-				}
-				else
-				{
-					if myDelegate.isSearching(actively: true) //searching && searchBar.isFirstResponder == true
-					{
-						return
-					}
-					let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!
-					let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
-					if album.path != nil
-					{
-						downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
-							let cropped = thumbnail.smartCropped(toSize: cell.imageView.size)
-							DispatchQueue.main.async {
-								if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-								{
-									c.image = cropped
-								}
-							}
-						}
-					}
-					else
-					{
-						MusicDataSource.shared.getPathForAlbum(album) {
-							self.downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
-								let cropped = thumbnail.smartCropped(toSize: cell.imageView.size)
-								DispatchQueue.main.async {
-									if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-									{
-										c.image = cropped
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			cell.image = nil
-			if myDelegate.isSearching(actively: true) //searching && searchBar.isFirstResponder == true
-			{
-				return
-			}
-			MusicDataSource.shared.getAlbumsForArtist(artist) {
-				DispatchQueue.main.async {
-					if let _ = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-					{
-						self.reloadItems(at: [indexPath])
-					}
-				}
-			}
-		}
-	}
-
-	private func _configureCellForPlaylist(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, playlist: Playlist)
-	{
-		cell.label.text = playlist.name
-		cell.accessibilityLabel = playlist.name
-		cell.image = generateCoverForPlaylist(playlist, size: cell.imageView.size)
 	}
 }
 
@@ -517,26 +398,36 @@ extension MusicalCollectionView : UICollectionViewDelegate
 
 	func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
 	{
-		if displayType != .albums
-		{
-			return
-		}
-
 		// When searching things can go wrong, this prevent some crashes
-		let src = myDelegate.isSearching(actively: false) ? self.searchResults as! [Album] : items
+		let src = myDelegate.isSearching(actively: false) ? searchResults : items
 		if indexPath.row >= src.count
 		{
 			return
 		}
 
+		var tmpAlbum: Album? = nil
+		switch (displayType)
+		{
+			case .albums:
+				tmpAlbum = src[indexPath.row] as? Album
+			case .genres:
+				let genre = src[indexPath.row] as! Genre
+				tmpAlbum = genre.albums.first
+			case .artists:
+				let artist = src[indexPath.row] as! Artist
+				tmpAlbum = artist.albums.first
+			case .playlists:
+				tmpAlbum = nil
+		}
+		guard let album = tmpAlbum else { return }
+
 		// Remove download cover operation if still in queue
-		let album = src[indexPath.row] as! Album
 		let key = album.uniqueIdentifier
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
+			Logger.dlog("[+] Cancelling \(op)")
 			_downloadOperations.removeValue(forKey: key)
 			op.cancel()
-			Logger.dlog("[+] Cancelling \(op)")
 		}
 	}
 }
