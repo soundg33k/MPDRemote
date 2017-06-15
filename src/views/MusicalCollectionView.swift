@@ -170,7 +170,6 @@ final class MusicalCollectionView : UICollectionView
 	// MARK: - Private
 	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
 	{
-		//Logger.dlog("[+] Starting cover download for <\(album.name)>")
 		let key = album.uniqueIdentifier
 		if let cop = _downloadOperations[key] as! CoverOperation?
 		{
@@ -179,12 +178,9 @@ final class MusicalCollectionView : UICollectionView
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
 		weak var weakOperation = downloadOperation
 		downloadOperation.callback = {(cover: UIImage, thumbnail: UIImage) in
-			if let /*op*/_ = weakOperation
+			if let _ = weakOperation
 			{
-				//if op.isCancelled == false
-				//{
 				self._downloadOperations.removeValue(forKey: key)
-				//}
 			}
 			if let block = callback
 			{
