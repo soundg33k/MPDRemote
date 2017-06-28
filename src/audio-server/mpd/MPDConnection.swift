@@ -835,7 +835,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		if _connection == nil
 		{
-			return Message(content: "mpd_connection object is null", type: .error)
+			return Message(content: "No connection to MPD", type: .error)
 		}
 
 		if mpd_connection_get_error(_connection) == MPD_ERROR_SUCCESS
