@@ -172,7 +172,7 @@ final class CoverOperation : Operation
 
 	override var description: String
 	{
-		return "CoverOperation for \(album.description)"
+		return "CoverOperation for <\(album.name)>"
 	}
 }
 

@@ -157,7 +157,8 @@ final class MusicalCollectionView : UICollectionView
 
 		self.dataSource = self
 		self.delegate = self
-		self.isPrefetchingEnabled = false
+		self.isPrefetchingEnabled = true
+		self.prefetchDataSource = self
 
 		let layoutAsTable = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
 		self.layoutType = layoutAsTable ? .table : .collection
@@ -424,6 +425,49 @@ extension MusicalCollectionView : UICollectionViewDelegate
 			Logger.dlog("[+] Cancelling \(op)")
 			_downloadOperations.removeValue(forKey: key)
 			op.cancel()
+		}
+	}
+}
+
+// MARK: - UICollectionViewDataSourcePrefetching
+extension MusicalCollectionView : UICollectionViewDataSourcePrefetching
+{
+	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath])
+	{
+		if displayType == .albums || displayType == .playlists
+		{
+			return
+		}
+
+		let src = myDelegate.isSearching(actively: false) ? searchResults : items
+
+		if displayType == .genres
+		{
+			for indexPath in indexPaths
+			{
+				if indexPath.row < src.count
+				{
+					let genre = src[indexPath.row] as! Genre
+					if genre.albums.first == nil
+					{
+						MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: true) {}
+					}
+				}
+			}
+		}
+		else if displayType == .artists
+		{
+			for indexPath in indexPaths
+			{
+				if indexPath.row < src.count
+				{
+					let artist = src[indexPath.row] as! Artist
+					if artist.albums.first == nil
+					{
+						MusicDataSource.shared.getAlbumsForArtist(artist) {}
+					}
+				}
+			}
 		}
 	}
 }
