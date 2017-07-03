@@ -37,6 +37,7 @@ public let kNYXPrefMPDRepeat = "mpd-repeat"
 public let kNYXPrefMPDVolume = "mpd-volume"
 public let kNYXPrefWEBServer = "web-server"
 public let kNYXPrefCollectionViewLayoutTable = "app-cv-layout-table"
+public let kNYXPrefLastKnownVersion = "app-last-version"
 
 public let kNYXTopInset: CGFloat = 64.0
 
@@ -50,7 +51,7 @@ enum DisplayType : Int
 	case playlists
 }
 
-/* Notifications names */
+// MARK: - Notifications name
 extension Notification.Name
 {
 	static let currentPlayingTrack = Notification.Name("kNYXNotificationCurrentPlayingTrack")

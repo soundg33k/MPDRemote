@@ -409,9 +409,9 @@
 				1E5653851C908A310049C02D /* KawaiiColors.swift */,
 				1E5653861C908A310049C02D /* Logger.swift */,
 				1E5653871C908A310049C02D /* MathUtilities.swift */,
+				436C438A1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift */,
 				43AD0AF81D9AB4260067D3C6 /* Server.swift */,
 				43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */,
-				436C438A1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift */,
 			);
 			path = misc;
 			sourceTree = "<group>";

@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool
 	{
 		// Register default preferences
-		registerDefaultPreferences()
+		_registerDefaultPreferences()
 
 		// URL cache
 		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
@@ -77,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	}
 
 	// MARK: - Private
-	private func registerDefaultPreferences()
+	private func _registerDefaultPreferences()
 	{
 		let coversDirectoryPath = "covers"
 		let columns = CGFloat(3)
@@ -94,6 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 			kNYXPrefDisplayType : DisplayType.albums.rawValue,
 			kNYXPrefShakeToPlayRandomAlbum : false,
 			kNYXPrefCollectionViewLayoutTable : false,
+			kNYXPrefLastKnownVersion : Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? ""
 		]
 
 		let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
