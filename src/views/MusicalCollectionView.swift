@@ -471,3 +471,12 @@ extension MusicalCollectionView : UICollectionViewDataSourcePrefetching
 		}
 	}
 }
+
+// MARK: - UIScrollViewDelegate
+extension MusicalCollectionView
+{
+	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)
+	{
+		self.reloadItems(at: self.indexPathsForVisibleItems)
+	}
+}
