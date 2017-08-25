@@ -58,50 +58,54 @@ fileprivate struct Log : CustomStringConvertible
 
 final class Logger
 {
+	// Singletion instance
 	static let shared = Logger()
+	// Custom date formatter
+	private let _dateFormatter: DateFormatter
+	// Logs list
+	private var _logs: [Log]
+	// Maximum logs countto keep
+	private let _maxLogsCount = 4096
+	// Background queue for logging
+	private let _queue: DispatchQueue
 
-	private let _df: DateFormatter
-
-	private var logs: [Log]
-	private let logsCount = 4096
-
+	// MARK: - Initializers
 	init()
 	{
-		_df = DateFormatter()
-		_df.dateFormat = "dd/MM/yy HH:mm:ss"
+		self._dateFormatter = DateFormatter()
+		self._dateFormatter.dateFormat = "dd/MM/yy HH:mm:ss"
 
-		logs = [Log]()
+		self._logs = [Log]()
+
+		self._queue = DispatchQueue(label: "fr.whine.mpdremote.queue.logger", qos: .background, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 	}
 
-	public func log(type: LogType, message: String, logToConsole: Bool = false)
+	// MARK: - Public
+	public func log(type: LogType, message: String)
 	{
-		let log = Log(type: type, date: _df.string(from: Date()), message: message)
-
-		handleLog(log)
-
+		_queue.async {
+			let log = Log(type: type, date: self._dateFormatter.string(from: Date()), message: message)
+			self.handleLog(log)
 #if NYX_DEBUG
-		print(log)
-#else
-		if logToConsole
-		{
 			print(log)
-		}
 #endif
+		}
 	}
 
 	public func export() -> Data?
 	{
-		let str = logs.reduce("") {"\($1)\n\n"}
+		let str = _logs.reduce("") {"\($1)\n\n"}
 		return str.data(using: .utf8)
 	}
 
+	// MARK: - Private
 	private func handleLog(_ log: Log)
 	{
-		logs.append(log)
+		_logs.append(log)
 
-		if logs.count > logsCount
+		if _logs.count > _maxLogsCount
 		{
-			logs.remove(at: 0)
+			_logs.remove(at: 0)
 		}
 	}
 }
