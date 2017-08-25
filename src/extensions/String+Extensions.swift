@@ -55,6 +55,17 @@ extension String
 		return self.isEmpty || self.trimmingCharacters(in: .whitespacesAndNewlines).length == 0
 	}
 
+	// MARK: Indexes
+	subscript (i: Int) -> Character
+	{
+		return self[index(startIndex, offsetBy: i)]
+	}
+
+	subscript (i: Int) -> String
+	{
+		return String(self[i] as Character)
+	}
+
 	// MARK: - Hash functions
 	func md5() -> String
 	{

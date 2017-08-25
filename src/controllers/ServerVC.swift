@@ -117,7 +117,7 @@ final class ServerVC : MenuTVC
 		}
 		else
 		{
-			Logger.alog("[+] No audio server registered yet.")
+			Logger.shared.log(type: .debug, message: "No audio server registered yet")
 		}
 
 		if let webServerAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer)
@@ -129,7 +129,7 @@ final class ServerVC : MenuTVC
 		}
 		else
 		{
-			Logger.alog("[+] No web server registered yet.")
+			Logger.shared.log(type: .debug, message: "No web server registered yet")
 		}
 
 		updateFields()
@@ -345,7 +345,7 @@ final class ServerVC : MenuTVC
 			}
 			catch _
 			{
-				Logger.alog("[!] Can't delete cover cache :<")
+				Logger.shared.log(type: .error, message: "Can't delete cover cache")
 			}
 			self.updateCacheLabel()
 		}

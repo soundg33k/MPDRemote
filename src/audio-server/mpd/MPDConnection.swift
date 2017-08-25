@@ -367,18 +367,18 @@ final class MPDConnection : AudioServerConnection
 		{
 			if mpd_search_db_songs(_connection, true) == false
 			{
-				Logger.dlog(getLastErrorMessageForConnection())
+				Logger.shared.log(type: .error, message: getLastErrorMessageForConnection().description)
 				continue
 			}
 			if mpd_search_add_uri_constraint(_connection, MPD_OPERATOR_DEFAULT, track.uri) == false
 			{
-				Logger.dlog(getLastErrorMessageForConnection())
+				Logger.shared.log(type: .error, message: getLastErrorMessageForConnection().description)
 				continue
 			}
 
 			if mpd_search_commit(_connection) == false
 			{
-				Logger.dlog(getLastErrorMessageForConnection())
+				Logger.shared.log(type: .error, message: getLastErrorMessageForConnection().description)
 				continue
 			}
 
@@ -497,7 +497,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			Logger.dlog(getLastErrorMessageForConnection())
+			Logger.shared.log(type: .error, message: getLastErrorMessageForConnection().description)
 		}
 
 		return ActionResult<[String : Any]>(succeeded: true, entity: metadatas)

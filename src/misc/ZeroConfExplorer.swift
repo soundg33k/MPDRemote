@@ -108,7 +108,7 @@ extension ZeroConfExplorer : NetServiceBrowserDelegate
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String : NSNumber])
 	{
-		Logger.alog("[!] ZeroConf didNotSearch : \(errorDict)")
+		Logger.shared.log(type: .error, message: "ZeroConf didNotSearch : \(errorDict)")
 	}
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)

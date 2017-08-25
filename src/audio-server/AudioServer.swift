@@ -66,4 +66,9 @@ final class AudioServer : Server
 		coder.encode(type.rawValue, forKey: "type")
 		super.encode(with: coder)
 	}
+
+	public func publicDescription() -> String
+	{
+		return "\(self.hostname)\n\(self.port)\n"
+	}
 }

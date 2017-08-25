@@ -77,7 +77,7 @@ final class CoverOperation : Operation
 		// Operation is cancelled, abort
 		if isCancelled
 		{
-			Logger.dlog("[+] Cancelled !")
+			Logger.shared.log(type: .debug, message: "Cancelled")
 			isFinished = true
 			return
 		}
@@ -85,7 +85,7 @@ final class CoverOperation : Operation
 		// No path for album, abort
 		guard let path = album.path else
 		{
-			Logger.dlog("[!] No album path defined.")
+			Logger.shared.log(type: .error, message: "No album path defined")
 			isFinished = true
 			return
 		}
@@ -93,20 +93,20 @@ final class CoverOperation : Operation
 		// No mpd server configured, abort
 		guard let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
 		{
-			Logger.dlog("[!] No WEB server configured.")
+			Logger.shared.log(type: .error, message: "No value for kNYXPrefWEBServer")
 			isFinished = true
 			return
 		}
 		guard let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! CoverWebServer? else
 		{
-			Logger.dlog("[!] No WEB server configured.")
+			Logger.shared.log(type: .error, message: "Failed to unarchive web server object")
 			isFinished = true
 			return
 		}
 		// No cover stuff configured, abort
-		if server.hostname.length <= 0 || server.coverName.length <= 0
+		if String.isNullOrWhiteSpace(server.hostname) || String.isNullOrWhiteSpace(server.coverName)
 		{
-			Logger.dlog("[!] No web server configured, can't download covers.")
+			Logger.shared.log(type: .error, message: "No web server configured, can't download covers")
 			isFinished = true
 			return
 		}
@@ -115,15 +115,15 @@ final class CoverOperation : Operation
 		let fullCoverFileURL = URL(fileURLWithPath: path).appendingPathComponent(server.coverName)
 		guard let fullCoverFilePath = fullCoverFileURL.path.addingPercentEncoding(withAllowedCharacters: allowedCharacters) else
 		{
-			Logger.dlog("[!] URL error <\(fullCoverFileURL)>")
+			Logger.shared.log(type: .error, message: "Invalid file URL <\(fullCoverFileURL)>")
 			isFinished = true
 			return
 		}
 
-		let urlAsString = "\(server.hostname):\(server.port)\(fullCoverFilePath)"
+		let urlAsString = "\(server.hostname):\(server.port)\(fullCoverFilePath[0] == "/" ? "" : "/")\(fullCoverFilePath)"
 		guard let finalURL = URL(string: urlAsString) else
 		{
-			Logger.dlog("[!] URL error <\(urlAsString)>")
+			Logger.shared.log(type: .error, message: "URL error <\(urlAsString)>")
 			isFinished = true
 			return
 		}
@@ -161,7 +161,7 @@ final class CoverOperation : Operation
 		}
 		catch _
 		{
-			Logger.dlog("save error")
+			Logger.shared.log(type: .error, message: "save error")
 		}
 
 		if let block = callback
@@ -183,7 +183,7 @@ extension CoverOperation : URLSessionDelegate
 	{
 		if isCancelled
 		{
-			Logger.dlog("[+] Cancelled !")
+			Logger.shared.log(type: .debug, message: "Cancelled")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -198,7 +198,7 @@ extension CoverOperation : URLSessionDelegate
 	{
 		if isCancelled
 		{
-			Logger.dlog("[+] Cancelled !")
+			Logger.shared.log(type: .debug, message: "Cancelled")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -210,7 +210,7 @@ extension CoverOperation : URLSessionDelegate
 	{
 		if isCancelled
 		{
-			Logger.dlog("[+] Cancelled !")
+			Logger.shared.log(type: .debug, message: "Cancelled")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -218,7 +218,7 @@ extension CoverOperation : URLSessionDelegate
 
 		if let err = error
 		{
-			Logger.alog("[!] Failed to receive response: \(err.localizedDescription)")
+			Logger.shared.log(type: .error, message: "Failed to receive response: \(err.localizedDescription)")
 			isFinished = true
 			return
 		}

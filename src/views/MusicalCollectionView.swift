@@ -333,7 +333,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else { return }
 		guard let coverURL = album.localCoverURL else
 		{
-			Logger.dlog("[!] No cover file URL for \(album)") // should not happen
+			Logger.shared.log(type: .error, message: "No cover file URL for \(album)") // should not happen
 			return
 		}
 
@@ -346,7 +346,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		{
 			if let op = cell.associatedObject as! CoverOperation?
 			{
-				Logger.dlog("canceling \(op)")
+				Logger.shared.log(type: .debug, message: "canceling \(op)")
 				op.cancel()
 			}
 
@@ -422,7 +422,7 @@ extension MusicalCollectionView : UICollectionViewDelegate
 		let key = album.uniqueIdentifier
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
-			Logger.dlog("[+] Cancelling \(op)")
+			Logger.shared.log(type: .debug, message: "canceling \(op)")
 			_downloadOperations.removeValue(forKey: key)
 			op.cancel()
 		}

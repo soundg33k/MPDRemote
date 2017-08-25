@@ -23,19 +23,85 @@
 import Foundation
 
 
+enum LogType : String
+{
+	case debug = "💜"
+	case success = "💚"
+	case warning = "💛"
+	case error = "❤️"
+}
+
+fileprivate struct Log : CustomStringConvertible
+{
+	let type: LogType
+	let dateString: String
+	let message: String
+	let file: String
+	let function: String
+	let line: Int
+
+	init(type t: LogType, date d: String, message m: String)
+	{
+		type = t
+		message = m
+		dateString = d
+		file = #file
+		function = #function
+		line = #line
+	}
+
+	var description: String
+	{
+		return "[\(type)] [\(dateString)] [\(file)] [\(function)] [\(line)]\n↳ \(message)"
+	}
+}
+
 final class Logger
 {
-	class func dlog(_ items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = #file, _ function: String = #function, _ line: Int = #line)
+	static let shared = Logger()
+
+	private let _df: DateFormatter
+
+	private var logs: [Log]
+	private let logsCount = 4096
+
+	init()
 	{
+		_df = DateFormatter()
+		_df.dateFormat = "dd/MM/yy HH:mm:ss"
+
+		logs = [Log]()
+	}
+
+	public func log(type: LogType, message: String, logToConsole: Bool = false)
+	{
+		let log = Log(type: type, date: _df.string(from: Date()), message: message)
+
+		handleLog(log)
+
 #if NYX_DEBUG
-			let stringItem = items.map{"\($0)"}.joined(separator: separator)
-			Swift.print("[\(function)]:\(line) \(stringItem)", terminator: terminator)
+		print(log)
+#else
+		if logToConsole
+		{
+			print(log)
+		}
 #endif
 	}
 
-	class func alog(_ items: Any..., separator: String = " ", terminator: String = "\n", _ file: String = #file, _ function: String = #function, _ line: Int = #line)
+	public func export() -> Data?
 	{
-		let stringItem = items.map{"\($0)"}.joined(separator: separator)
-		Swift.print("\(stringItem)", terminator: terminator)
+		let str = logs.reduce("") {"\($1)\n\n"}
+		return str.data(using: .utf8)
+	}
+
+	private func handleLog(_ log: Log)
+	{
+		logs.append(log)
+
+		if logs.count > logsCount
+		{
+			logs.remove(at: 0)
+		}
 	}
 }

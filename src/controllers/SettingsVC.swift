@@ -21,6 +21,8 @@
 
 
 import UIKit
+import MessageUI
+import Compression
 
 
 private let headerSectionHeight: CGFloat = 32.0
@@ -43,6 +45,8 @@ final class SettingsVC : MenuTVC
 	@IBOutlet private var lblLayoutAsTable: UILabel!
 	// Layout as table switch
 	@IBOutlet private var swLayoutAsTable: UISwitch!
+	// Send logs label
+	@IBOutlet private var lblSendLogs: UILabel!
 	// Navigation title
 	private var titleView: UILabel!
 
@@ -74,9 +78,8 @@ final class SettingsVC : MenuTVC
 		swFuzzySearch.isOn = UserDefaults.standard.bool(forKey: kNYXPrefFuzzySearch)
 		swLayoutAsTable.isOn = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
 
-		let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
-		let build = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as! String
-		lblVersion.text = "\(version) (\(build))"
+		let version = applicationVersionAndBuild()
+		lblVersion.text = "\(version.version) (\(version.build))"
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -111,11 +114,89 @@ final class SettingsVC : MenuTVC
 		UserDefaults.standard.synchronize()
 		NotificationCenter.default.post(name: .collectionViewsLayoutDidChange, object: nil)
 	}
+
+	// MARK: - Private
+	fileprivate func applicationVersionAndBuild() -> (version: String, build: String)
+	{
+		let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
+		let build = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as! String
+
+		return (version, build)
+	}
+
+	fileprivate func sendLogs()
+	{
+		if MFMailComposeViewController.canSendMail()
+		{
+			guard let data = Logger.shared.export() else
+			{
+				let alertController = UIAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_logsexport_fail_msg"), preferredStyle: .alert)
+				let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
+				}
+				alertController.addAction(okAction)
+				present(alertController, animated: true, completion: nil)
+				return
+			}
+
+			let mailComposerVC = MFMailComposeViewController()
+			mailComposerVC.mailComposeDelegate = self
+			mailComposerVC.setToRecipients(["contact.mpdremote@gmail.com"])
+			mailComposerVC.setSubject("MPDRemote logs")
+			if let compressed = data.compress(algorithm: COMPRESSION_ZLIB)
+			{
+				mailComposerVC.addAttachmentData(compressed, mimeType: "application/zip", fileName: "logs.zip")
+			}
+			else
+			{
+				mailComposerVC.addAttachmentData(data, mimeType: "text/plain" , fileName: "logs.txt")
+			}
+
+
+			var message = "MPDRemote \(applicationVersionAndBuild().version) (\(applicationVersionAndBuild().build))\niOS \(UIDevice.current.systemVersion)\n\n"
+			if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
+			{
+				if let server = NSKeyedUnarchiver.unarchiveObject(with: mpdServerAsData) as! AudioServer?
+				{
+					message += "MPD server:\n\(server.publicDescription())\n\n"
+				}
+			}
+
+			if let webServerAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer)
+			{
+				if let server = NSKeyedUnarchiver.unarchiveObject(with: webServerAsData) as! CoverWebServer?
+				{
+					message += "Cover server:\n\(server.publicDescription())\n\n"
+				}
+			}
+			mailComposerVC.setMessageBody(message, isHTML: false)
+
+			present(mailComposerVC, animated: true, completion: nil)
+
+		}
+		else
+		{
+			let alertController = UIAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_nomailaccount_msg"), preferredStyle: .alert)
+			let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
+			}
+			alertController.addAction(okAction)
+			present(alertController, animated: true, completion: nil)
+		}
+	}
 }
 
 // MARK: - UITableViewDelegate
 extension SettingsVC
 {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+	{
+		if indexPath.section == 3 && indexPath.row == 0
+		{
+			sendLogs()
+		}
+
+		tableView.deselectRow(at: indexPath, animated: true)
+	}
+
 	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
 	{
 		let dummy = UIView(frame: CGRect(0.0, 0.0, tableView.width, headerSectionHeight))
@@ -136,6 +217,8 @@ extension SettingsVC
 			case 2:
 				label.text = NYXLocalizedString("lbl_search").uppercased()
 			case 3:
+				label.text = NYXLocalizedString("lbl_troubleshoot").uppercased()
+			case 4:
 				label.text = NYXLocalizedString("lbl_version").uppercased()
 			default:
 				break
@@ -147,5 +230,13 @@ extension SettingsVC
 	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
 	{
 		return headerSectionHeight
+	}
+}
+
+extension SettingsVC : MFMailComposeViewControllerDelegate
+{
+	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?)
+	{
+		controller.dismiss(animated: true, completion: nil)
 	}
 }

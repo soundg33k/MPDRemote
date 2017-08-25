@@ -1,4 +1,4 @@
-// FileManager+Extensions.swift
+// Data+Extensions.swift
 // Copyright (c) 2017 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,37 +21,24 @@
 
 
 import Foundation
+import Compression
 
 
-extension FileManager
+extension Data
 {
-	func sizeOfDirectoryAtURL(_ directoryURL: URL) -> Int
+	// MARK: - Compression
+	public func compress(algorithm: compression_algorithm) -> Data?
 	{
-		var result = 0
-		let props = [URLResourceKey.localizedNameKey, URLResourceKey.creationDateKey, URLResourceKey.localizedTypeDescriptionKey]
+		let srcSize = self.count
+		let dstSize = srcSize
+		let dstBuffer = UnsafeMutablePointer<UInt8>.allocate(capacity: dstSize)
+		let ret = compression_encode_buffer(dstBuffer, dstSize, [UInt8](self), srcSize, nil, algorithm)
 
-		do
+		if ret <= 0
 		{
-			let ar = try self.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: props, options: [])
-			for url in ar
-			{
-				var isDir: ObjCBool = false
-				self.fileExists(atPath: url.path, isDirectory: &isDir)
-				if isDir.boolValue
-				{
-					result += self.sizeOfDirectoryAtURL(url)
-				}
-				else
-				{
-					result += try self.attributesOfItem(atPath: url.path)[FileAttributeKey.size] as! Int
-				}
-			}
-		}
-		catch _
-		{
-			Logger.shared.log(type: .error, message: "Can't get directory size")
+			return nil
 		}
 
-		return result
+		return Data(bytes: dstBuffer, count: ret)
 	}
 }

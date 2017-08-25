@@ -4,6 +4,7 @@
 "lbl_by" = "by";
 "lbl_played" = "played";
 "lbl_megabytes" = "MB";
+"lbl_error" = "Error";
 
 "lbl_track" = "track";
 "lbl_tracks" = "tracks";
@@ -30,6 +31,8 @@
 "lbl_search" = "Search";
 "lbl_fuzzysearch" = "Fuzzy search";
 "lbl_ui" = "User Interface";
+"lbl_troubleshoot" = "Troubleshooting";
+"lbl_send_logs" = "Send logs";
 
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";
@@ -39,6 +42,8 @@
 "lbl_alert_purge_cache_title" = "Images cache deletion";
 "lbl_alert_purge_cache_msg" = "Do you really want to proceed ?";
 "lbl_alert_server_need_check" = "Check your configuration";
+"lbl_alert_logsexport_fail_msg" = "Exporting logs failed";
+"lbl_alert_nomailaccount_msg" = "No email account configured";
 
 "lbl_server_name" = "Name";
 "lbl_server_host" = "Server";

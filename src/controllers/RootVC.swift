@@ -146,7 +146,7 @@ final class RootVC : MenuVC
 			}
 			else
 			{
-				Logger.alog("[+] No MPD server registered yet.")
+				Logger.shared.log(type: .debug, message: "No MPD server registered yet")
 				let serverVC = APP_DELEGATE().serverVC
 				APP_DELEGATE().window?.rootViewController = serverVC
 			}

@@ -75,4 +75,9 @@ final class CoverWebServer : Server
 		coder.encode(coverName, forKey: "covername")
 		super.encode(with: coder)
 	}
+
+	public func publicDescription() -> String
+	{
+		return "\(self.hostname)\n\(self.port)\n\(self.coverName)"
+	}
 }

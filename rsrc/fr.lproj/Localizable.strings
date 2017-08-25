@@ -4,6 +4,7 @@
 "lbl_by" = "par";
 "lbl_played" = "joué";
 "lbl_megabytes" = "Mo";
+"lbl_error" = "Erreur";
 
 "lbl_track" = "piste";
 "lbl_tracks" = "pistes";
@@ -30,6 +31,8 @@
 "lbl_search" = "Recherche";
 "lbl_fuzzysearch" = "Recherche approximative";
 "lbl_ui" = "Interface";
+"lbl_troubleshoot" = "Dépannage";
+"lbl_send_logs" = "Envoyer les logs";
 
 "lbl_alert_playalbum_shuffle" = "Aléatoire";
 "lbl_alert_playalbum_addqueue" = "Ajouter à la liste";
@@ -39,6 +42,8 @@
 "lbl_alert_purge_cache_title" = "Suppression du cache des images";
 "lbl_alert_purge_cache_msg" = "Êtes-vous sûr de vouloir procéder ?";
 "lbl_alert_server_need_check" = "Vérifiez votre configuration";
+"lbl_alert_logsexport_fail_msg" = "L'exportation des logs a échoué";
+"lbl_alert_nomailaccount_msg" = "Pas de compte mail configuré";
 
 "lbl_server_name" = "Nom";
 "lbl_server_host" = "Serveur";
