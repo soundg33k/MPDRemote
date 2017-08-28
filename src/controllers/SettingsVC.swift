@@ -22,7 +22,6 @@
 
 import UIKit
 import MessageUI
-import Compression
 
 
 private let headerSectionHeight: CGFloat = 32.0
@@ -142,15 +141,7 @@ final class SettingsVC : MenuTVC
 			mailComposerVC.mailComposeDelegate = self
 			mailComposerVC.setToRecipients(["contact.mpdremote@gmail.com"])
 			mailComposerVC.setSubject("MPDRemote logs")
-			if let compressed = data.compress(algorithm: COMPRESSION_ZLIB)
-			{
-				mailComposerVC.addAttachmentData(compressed, mimeType: "application/zip", fileName: "logs.zip")
-			}
-			else
-			{
-				mailComposerVC.addAttachmentData(data, mimeType: "text/plain" , fileName: "logs.txt")
-			}
-
+			mailComposerVC.addAttachmentData(data, mimeType: "text/plain" , fileName: "logs.txt")
 
 			var message = "MPDRemote \(applicationVersionAndBuild().version) (\(applicationVersionAndBuild().build))\niOS \(UIDevice.current.systemVersion)\n\n"
 			if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)

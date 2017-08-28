@@ -32,27 +32,15 @@ final class CoverWebServer : Server
 	// MARK: - Initializers
 	init(name: String, hostname: String, port: UInt16, coverName: String)
 	{
-		if hostname.hasPrefix("http://")
-		{
-			super.init(name: name, hostname: hostname, port: port)
-		}
-		else
-		{
-			super.init(name: name, hostname: "http://" + hostname, port: port)
-		}
+		super.init(name: name, hostname: CoverWebServer.sanitizeHostname(hostname), port: port)
+
 		self.coverName = coverName
 	}
 
 	init(name: String, hostname: String, port: UInt16, password: String, coverName: String)
 	{
-		if hostname.hasPrefix("http://")
-		{
-			super.init(name: name, hostname: hostname, port: port, password: password)
-		}
-		else
-		{
-			super.init(name: name, hostname: "http://" + hostname, port: port, password: password)
-		}
+		super.init(name: name, hostname: CoverWebServer.sanitizeHostname(hostname), port: port)
+
 		self.coverName = coverName
 	}
 
@@ -79,5 +67,26 @@ final class CoverWebServer : Server
 	public func publicDescription() -> String
 	{
 		return "\(self.hostname)\n\(self.port)\n\(self.coverName)"
+	}
+
+	// MARK: - Private
+	private static func sanitizeHostname(_ hostname: String) -> String
+	{
+		var h: String
+		if hostname.hasPrefix("http://") || hostname.hasPrefix("https://")
+		{
+			h = hostname
+		}
+		else
+		{
+			h = "http://" + hostname
+		}
+
+		if h.characters.last == "/"
+		{
+			h.remove(at: h.index(before: h.endIndex))
+		}
+
+		return h
 	}
 }

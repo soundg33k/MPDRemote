@@ -77,7 +77,7 @@ final class CoverOperation : Operation
 		// Operation is cancelled, abort
 		if isCancelled
 		{
-			Logger.shared.log(type: .debug, message: "Cancelled")
+			Logger.shared.log(type: .debug, message: "Operation cancelled for <\(album.name)>")
 			isFinished = true
 			return
 		}
@@ -85,7 +85,7 @@ final class CoverOperation : Operation
 		// No path for album, abort
 		guard let path = album.path else
 		{
-			Logger.shared.log(type: .error, message: "No album path defined")
+			Logger.shared.log(type: .error, message: "No path defined for album <\(album.name)>")
 			isFinished = true
 			return
 		}
@@ -106,7 +106,7 @@ final class CoverOperation : Operation
 		// No cover stuff configured, abort
 		if String.isNullOrWhiteSpace(server.hostname) || String.isNullOrWhiteSpace(server.coverName)
 		{
-			Logger.shared.log(type: .error, message: "No web server configured, can't download covers")
+			Logger.shared.log(type: .error, message: "The web server configured is invalid. hostname = \(server.hostname) coverName = \(server.coverName)")
 			isFinished = true
 			return
 		}
@@ -140,14 +140,17 @@ final class CoverOperation : Operation
 	{
 		guard let cover = UIImage(data: incomingData) else
 		{
+			Logger.shared.log(type: .error, message: "Invalid cover data for <\(album.name)> (\(incomingData.count)b)")
 			return
 		}
 		guard let thumbnail = cover.smartCropped(toSize: cropSize) else
 		{
+			Logger.shared.log(type: .error, message: "Failed to create thumbnail for <\(album.name)>")
 			return
 		}
 		guard let saveURL = album.localCoverURL else
 		{
+			Logger.shared.log(type: .error, message: "Invalid cover url for <\(album.name)>")
 			return
 		}
 
@@ -161,7 +164,7 @@ final class CoverOperation : Operation
 		}
 		catch _
 		{
-			Logger.shared.log(type: .error, message: "save error")
+			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
 		}
 
 		if let block = callback

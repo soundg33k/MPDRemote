@@ -40,14 +40,14 @@ fileprivate struct Log : CustomStringConvertible
 	let function: String
 	let line: Int
 
-	init(type t: LogType, date d: String, message m: String)
+	init(type t: LogType, date d: String, message m: String, file fi: String, function fu: String, line li: Int)
 	{
 		type = t
 		message = m
 		dateString = d
-		file = #file
-		function = #function
-		line = #line
+		file = fi
+		function = fu
+		line = li
 	}
 
 	var description: String
@@ -81,10 +81,10 @@ final class Logger
 	}
 
 	// MARK: - Public
-	public func log(type: LogType, message: String)
+	public func log(type: LogType, message: String, file: String = #file, function: String = #function, line: Int = #line)
 	{
 		_queue.async {
-			let log = Log(type: type, date: self._dateFormatter.string(from: Date()), message: message)
+			let log = Log(type: type, date: self._dateFormatter.string(from: Date()), message: message, file: file, function: function, line: line)
 			self.handleLog(log)
 #if NYX_DEBUG
 			print(log)
@@ -94,7 +94,7 @@ final class Logger
 
 	public func export() -> Data?
 	{
-		let str = _logs.reduce("") {"\($1)\n\n"}
+		let str = _logs.reduce("") { $0 + $1.description + "\n\n"}
 		return str.data(using: .utf8)
 	}
 

@@ -208,7 +208,7 @@ final class ServerVC : MenuTVC
 		cnn.disconnect()
 
 		// Check web URL (optional)
-		if let strURL = tfWEBHostname.text , strURL.length > 0
+		if let strURL = tfWEBHostname.text , String.isNullOrWhiteSpace(strURL) == false
 		{
 			var port = UInt16(80)
 			if let strPort = tfWEBPort.text, let p = UInt16(strPort)
@@ -217,9 +217,12 @@ final class ServerVC : MenuTVC
 			}
 
 			var coverName = "cover.jpg"
-			if let cn = tfWEBCoverName.text , cn.length > 0
+			if let cn = tfWEBCoverName.text , String.isNullOrWhiteSpace(cn) == false
 			{
-				coverName = cn
+				if String.isNullOrWhiteSpace(URL(fileURLWithPath: cn).pathExtension) == false
+				{
+					coverName = cn
+				}
 			}
 			let webServer = CoverWebServer(name: "CoverServer", hostname: strURL, port: port, coverName: coverName)
 			webServer.coverName = coverName
