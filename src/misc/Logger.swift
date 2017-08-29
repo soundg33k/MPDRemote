@@ -66,8 +66,6 @@ final class Logger
 	private var _logs: [Log]
 	// Maximum logs countto keep
 	private let _maxLogsCount = 4096
-	// Background queue for logging
-	private let _queue: DispatchQueue
 
 	// MARK: - Initializers
 	init()
@@ -76,19 +74,23 @@ final class Logger
 		self._dateFormatter.dateFormat = "dd/MM/yy HH:mm:ss"
 
 		self._logs = [Log]()
-
-		self._queue = DispatchQueue(label: "fr.whine.mpdremote.queue.logger", qos: .background, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 	}
 
 	// MARK: - Public
 	public func log(type: LogType, message: String, file: String = #file, function: String = #function, line: Int = #line)
 	{
-		_queue.async {
+#if NYX_DEBUG
+		print(message)
+#endif
+
+		if UserDefaults.standard.bool(forKey: kNYXPrefEnableLogging) == false
+		{
+			return
+		}
+
+		DispatchQueue.global(qos: .background).async {
 			let log = Log(type: type, date: self._dateFormatter.string(from: Date()), message: message, file: file, function: function, line: line)
 			self.handleLog(log)
-#if NYX_DEBUG
-			print(log)
-#endif
 		}
 	}
 

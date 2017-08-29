@@ -46,6 +46,10 @@ final class SettingsVC : MenuTVC
 	@IBOutlet private var swLayoutAsTable: UISwitch!
 	// Send logs label
 	@IBOutlet private var lblSendLogs: UILabel!
+	// Label logging
+	@IBOutlet private var lblEnableLogging: UILabel!
+	// Logging switch
+	@IBOutlet private var swLogging: UISwitch!
 	// Navigation title
 	private var titleView: UILabel!
 
@@ -67,6 +71,7 @@ final class SettingsVC : MenuTVC
 		lblShake.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
 		lblFuzzySearch.text = NYXLocalizedString("lbl_fuzzysearch")
 		lblLayoutAsTable.text = NYXLocalizedString("lbl_pref_layoutastable")
+		lblEnableLogging.text = NYXLocalizedString("lbl_enable_logging")
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -112,6 +117,13 @@ final class SettingsVC : MenuTVC
 		UserDefaults.standard.set(!tableLayout, forKey: kNYXPrefCollectionViewLayoutTable)
 		UserDefaults.standard.synchronize()
 		NotificationCenter.default.post(name: .collectionViewsLayoutDidChange, object: nil)
+	}
+
+	@IBAction func toggleLogging(_ sender: Any?)
+	{
+		let logging = UserDefaults.standard.bool(forKey: kNYXPrefEnableLogging)
+		UserDefaults.standard.set(!logging, forKey: kNYXPrefEnableLogging)
+		UserDefaults.standard.synchronize()
 	}
 
 	// MARK: - Private

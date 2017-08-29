@@ -94,6 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 			kNYXPrefDisplayType : DisplayType.albums.rawValue,
 			kNYXPrefShakeToPlayRandomAlbum : false,
 			kNYXPrefCollectionViewLayoutTable : false,
+			kNYXPrefEnableLogging : false,
 			kNYXPrefLastKnownVersion : Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? ""
 		]
 

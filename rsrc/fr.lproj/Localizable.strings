@@ -32,6 +32,7 @@
 "lbl_fuzzysearch" = "Recherche approximative";
 "lbl_ui" = "Interface";
 "lbl_troubleshoot" = "Dépannage";
+"lbl_enable_logging" = "Activer les logs";
 "lbl_send_logs" = "Envoyer les logs";
 
 "lbl_alert_playalbum_shuffle" = "Aléatoire";

@@ -37,6 +37,7 @@ public let kNYXPrefMPDRepeat = "mpd-repeat"
 public let kNYXPrefMPDVolume = "mpd-volume"
 public let kNYXPrefWEBServer = "web-server"
 public let kNYXPrefCollectionViewLayoutTable = "app-cv-layout-table"
+public let kNYXPrefEnableLogging = "app-enable-logging"
 public let kNYXPrefLastKnownVersion = "app-last-version"
 
 public let kNYXTopInset: CGFloat = 64.0
