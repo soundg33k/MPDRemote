@@ -220,7 +220,7 @@ final class AutoScrollLabel : UIView
 		}
 	}
 
-	public func scrollLabelIfNeeded()
+	@objc public func scrollLabelIfNeeded()
 	{
 		if String.isNullOrWhiteSpace(text)
 		{

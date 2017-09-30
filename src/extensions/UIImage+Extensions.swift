@@ -22,6 +22,8 @@
 
 import UIKit
 import ImageIO
+import AVKit
+import MobileCoreServices
 
 
 extension UIImage
@@ -107,6 +109,45 @@ extension UIImage
 		}
 	}
 
+	func save(url: URL) -> Bool
+	{
+		guard let cgImage = self.cgImage else
+		{
+			return false
+		}
+
+		var destination: CGImageDestination? = nil
+		if CoreImageUtilities.shared.isHeicCapable == true
+		{
+			if #available(iOS 11.0, *)
+			{
+				destination = CGImageDestinationCreateWithURL(url as CFURL, AVFileType.heic as CFString as CFString, 1, nil)
+			}
+			if destination == nil
+			{
+				return false
+			}
+		}
+		else
+		{
+			destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypeJPEG, 1, nil)
+			if destination == nil
+			{
+				return false
+			}
+
+			let fileProperties =
+				[
+					kCGImageDestinationLossyCompressionQuality as String : 0.7
+				] as CFDictionary
+			CGImageDestinationSetProperties(destination!, fileProperties)
+		}
+
+		CGImageDestinationAddImage(destination!, cgImage, nil)
+
+		return CGImageDestinationFinalize(destination!)
+	}
+
 	class func loadFromFileURL(_ url: URL) -> UIImage?
 	{
 		guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else {return nil}
@@ -121,7 +162,7 @@ extension UIImage
 		let paragraphStyle = NSMutableParagraphStyle()
 		paragraphStyle.lineBreakMode = .byWordWrapping
 		paragraphStyle.alignment = .center
-		let attributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : fontColor, NSParagraphStyleAttributeName : paragraphStyle]
+		let attributes = [NSAttributedStringKey.font : font, NSAttributedStringKey.foregroundColor : fontColor, NSAttributedStringKey.paragraphStyle : paragraphStyle]
 		let attrString = NSAttributedString(string: string, attributes: attributes)
 		let scale = UIScreen.main.scale
 		let trueMaxSize = maxSize * scale
@@ -166,7 +207,7 @@ extension UIImage
 		let paragraphStyle = NSMutableParagraphStyle()
 		paragraphStyle.lineBreakMode = .byWordWrapping
 		paragraphStyle.alignment = .center
-		let attributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : fontColor, NSParagraphStyleAttributeName : paragraphStyle]
+		let attributes = [NSAttributedStringKey.font : font, NSAttributedStringKey.foregroundColor : fontColor, NSAttributedStringKey.paragraphStyle : paragraphStyle]
 		let attrString = NSAttributedString(string: string, attributes: attributes)
 		let scale = UIScreen.main.scale
 		let trueMaxSize = maxSize * scale

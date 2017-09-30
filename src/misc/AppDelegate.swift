@@ -29,8 +29,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	// MARK: - Properties
 	// Main window
 	var window: UIWindow?
-	// Operation queue
-	private(set) var operationQueue: OperationQueue! = nil
 	// Albums list VC
 	private(set) var homeVC: UIViewController! = nil
 	// Server configuration VC
@@ -67,10 +65,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		// URL cache
 		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
 
-		// Global operation queue
-		operationQueue = OperationQueue()
-		operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
-
 		homeVC = window?.rootViewController
 
 		return true
@@ -100,7 +94,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 		let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
 
-		try! FileManager.default.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
+		do
+		{
+			try FileManager.default.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
+		}
+		catch let error
+		{
+			Logger.shared.log(error: error)
+			fatalError()
+		}
 
 		UserDefaults.standard.register(defaults: defaults)
 		UserDefaults.standard.synchronize()

@@ -75,7 +75,7 @@ class MenuTVC : UITableViewController
 	}
 
 	// MARK : Button action
-	func showLeftViewAction(_ sender: Any?)
+	@objc func showLeftViewAction(_ sender: Any?)
 	{
 		UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveEaseOut, animations: {
 			let x = self.menuView.visible ? -(self.menuView.frame.width + 2.0) : 0.0
@@ -89,7 +89,7 @@ class MenuTVC : UITableViewController
 	}
 
 	// MARK: - Gesture
-	func panFromEdge(_ gest: UIScreenEdgePanGestureRecognizer)
+	@objc func panFromEdge(_ gest: UIScreenEdgePanGestureRecognizer)
 	{
 		let view = gest.view
 		switch (gest.state)

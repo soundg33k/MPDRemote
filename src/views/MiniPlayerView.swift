@@ -154,7 +154,7 @@ final class MiniPlayerView : UIView
 		lblArtist.text = track.artist
 
 		guard let url = album.localCoverURL else {return}
-		if let image = UIImage(contentsOfFile: url.path)
+		if let image = UIImage.loadFromFileURL(url)
 		{
 			let x = KawaiiColors(image: image)
 			x.analyze()
@@ -173,7 +173,7 @@ final class MiniPlayerView : UIView
 						self.setInfoFromTrack(track, ofAlbum: album)
 					}
 				}
-				APP_DELEGATE().operationQueue.addOperation(op)
+				OperationManager.shared.addOperation(op)
 			}
 			else
 			{
@@ -184,7 +184,7 @@ final class MiniPlayerView : UIView
 							self.setInfoFromTrack(track, ofAlbum: album)
 						}
 					}
-					APP_DELEGATE().operationQueue.addOperation(op)
+					OperationManager.shared.addOperation(op)
 				}
 			}
 		}
@@ -215,7 +215,7 @@ final class MiniPlayerView : UIView
 	}
 
 	// MARK: - Buttons actions
-	func changePlaybackAction(_ sender: UIButton?)
+	@objc func changePlaybackAction(_ sender: UIButton?)
 	{
 		if btnPlay.tag == PlayerStatus.playing.rawValue
 		{
@@ -231,7 +231,7 @@ final class MiniPlayerView : UIView
 	}
 
 	// MARK: - Gestures
-	func singleTap(_ gesture: UITapGestureRecognizer)
+	@objc func singleTap(_ gesture: UITapGestureRecognizer)
 	{
 		if gesture.state == .ended
 		{
@@ -239,7 +239,7 @@ final class MiniPlayerView : UIView
 		}
 	}
 
-	func doubleTap(_ gesture: UITapGestureRecognizer)
+	@objc func doubleTap(_ gesture: UITapGestureRecognizer)
 	{
 		if fullyVisible == false
 		{
@@ -268,7 +268,7 @@ final class MiniPlayerView : UIView
 	}
 
 	// MARK: - Notifications
-	func playingTrackNotification(_ aNotification: Notification)
+	@objc func playingTrackNotification(_ aNotification: Notification)
 	{
 		if let infos = aNotification.userInfo
 		{
@@ -295,7 +295,7 @@ final class MiniPlayerView : UIView
 		}
 	}
 
-	func playerStatusChangedNotification(_ aNotification: Notification)
+	@objc func playerStatusChangedNotification(_ aNotification: Notification)
 	{
 		if let infos = aNotification.userInfo
 		{

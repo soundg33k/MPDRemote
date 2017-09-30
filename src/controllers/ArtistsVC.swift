@@ -104,8 +104,8 @@ final class ArtistsVC : UIViewController
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
-		let attrs = NSMutableAttributedString(string: genre.name + "\n", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-		attrs.append(NSAttributedString(string: "\(collectionView.items.count) \(collectionView.items.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+		let attrs = NSMutableAttributedString(string: genre.name + "\n", attributes: [NSAttributedStringKey.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
+		attrs.append(NSAttributedString(string: "\(collectionView.items.count) \(collectionView.items.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())", attributes: [NSAttributedStringKey.font : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 		titleView.attributedText = attrs
 	}
 }

@@ -167,7 +167,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 						iv?.image = cover
 					}
 				}
-				APP_DELEGATE().operationQueue.addOperation(op)
+				OperationManager.shared.addOperation(op)
 			}
 			else
 			{
@@ -179,7 +179,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 							iv?.image = cover
 						}
 					}
-					APP_DELEGATE().operationQueue.addOperation(op)
+					OperationManager.shared.addOperation(op)
 				}
 			}
 		}
@@ -219,7 +219,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		MiniPlayerView.shared.show()
 	}
 
-	func singleTapWithTwoFingers(_ gesture: UITapGestureRecognizer)
+	@objc func singleTapWithTwoFingers(_ gesture: UITapGestureRecognizer)
 	{
 		if gesture.state != .ended
 		{
@@ -279,7 +279,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	}
 
 	// MARK: - Buttons actions
-	func toggleRandomAction(_ sender: Any?)
+	@objc func toggleRandomAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
 		let random = !prefs.bool(forKey: kNYXPrefMPDShuffle)
@@ -293,7 +293,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		PlayerController.shared.setRandom(random)
 	}
 
-	func toggleRepeatAction(_ sender: Any?)
+	@objc func toggleRepeatAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
 		let loop = !prefs.bool(forKey: kNYXPrefMPDRepeat)
@@ -307,7 +307,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		PlayerController.shared.setRepeat(loop)
 	}
 
-	func changeTrackPositionAction(_ sender: UISlider?)
+	@objc func changeTrackPositionAction(_ sender: UISlider?)
 	{
 		if let track = PlayerController.shared.currentTrack
 		{
@@ -315,7 +315,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		}
 	}
 
-	func changeVolumeAction(_ sender: UISlider?)
+	@objc func changeVolumeAction(_ sender: UISlider?)
 	{
 		let volume = Int(ceil(sliderVolume.value))
 		let prefs = UserDefaults.standard
@@ -327,7 +327,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	}
 
 	// MARK: - Notifications
-	func playingTrackNotification(_ aNotification: Notification?)
+	@objc func playingTrackNotification(_ aNotification: Notification?)
 	{
 		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track, let elapsed = aNotification?.userInfo![kPlayerElapsedKey] as? Int else
 		{
@@ -346,7 +346,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
 	}
 
-	func playingTrackChangedNotification(_ aNotification: Notification?)
+	@objc func playingTrackChangedNotification(_ aNotification: Notification?)
 	{
 		guard let track = aNotification?.userInfo![kPlayerTrackKey] as? Track, let album = aNotification?.userInfo![kPlayerAlbumKey] as? Album else
 		{
@@ -358,7 +358,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		sliderPosition.maximumValue = Float(track.duration.seconds)
 	}
 
-	func playerStatusChangedNotification(_ aNotification: Notification?)
+	@objc func playerStatusChangedNotification(_ aNotification: Notification?)
 	{
 		updatePlayPauseButton()
 	}

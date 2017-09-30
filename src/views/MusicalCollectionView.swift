@@ -189,7 +189,8 @@ final class MusicalCollectionView : UICollectionView
 			}
 		}
 		_downloadOperations[key] = downloadOperation
-		APP_DELEGATE().operationQueue.addOperation(downloadOperation)
+
+		OperationManager.shared.addOperation(downloadOperation)
 
 		return downloadOperation
 	}
@@ -211,7 +212,7 @@ final class MusicalCollectionView : UICollectionView
 	}
 
 	// MARK: - Notifications
-	public func collectionViewsLayoutDidChangeNotification(_ notification: Notification)
+	@objc public func collectionViewsLayoutDidChangeNotification(_ notification: Notification)
 	{
 		let layoutAsTable = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
 		self.layoutType = layoutAsTable ? .table : .collection

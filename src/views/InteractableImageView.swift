@@ -54,7 +54,7 @@ final class InteractableImageView : UIImageView
 	}
 
 	// MARK: - Gestures
-	func singleTap(_ gesture: UITapGestureRecognizer)
+	@objc func singleTap(_ gesture: UITapGestureRecognizer)
 	{
 		if gesture.state == .ended
 		{
@@ -62,7 +62,7 @@ final class InteractableImageView : UIImageView
 		}
 	}
 
-	func swipeLeft(_ gesture: UISwipeGestureRecognizer)
+	@objc func swipeLeft(_ gesture: UISwipeGestureRecognizer)
 	{
 		if gesture.state == .ended
 		{
@@ -70,7 +70,7 @@ final class InteractableImageView : UIImageView
 		}
 	}
 
-	func swipeRight(_ gesture: UISwipeGestureRecognizer)
+	@objc func swipeRight(_ gesture: UISwipeGestureRecognizer)
 	{
 		if gesture.state == .ended
 		{

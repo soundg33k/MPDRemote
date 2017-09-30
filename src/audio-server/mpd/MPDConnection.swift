@@ -63,7 +63,7 @@ final class MPDConnection : AudioServerConnection
 		}
 
 		// Set password if needed
-		if server.password.length > 0
+		if server.password.count > 0
 		{
 			if mpd_run_password(_connection, server.password) == false
 			{
@@ -303,7 +303,7 @@ final class MPDConnection : AudioServerConnection
 		{
 			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
 		}
-		if album.artist.length > 0
+		if album.artist.count > 0
 		{
 			if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM_ARTIST, album.artist) == false
 			{
@@ -827,7 +827,16 @@ final class MPDConnection : AudioServerConnection
 		let mpdplaytime = mpd_stats_get_play_time(ret)
 		let mpddbupdate = mpd_stats_get_db_update_time(ret)
 
-		return ActionResult<[String : String]>(succeeded: true, entity: ["albums" : String(nalbums), "artists" : String(nartists), "songs" : String(nsongs), "dbplaytime" : String(dbplaytime), "mpduptime" : String(mpduptime), "mpdplaytime" : String(mpdplaytime), "mpddbupdate" : String(mpddbupdate)])
+		var entity = [String : String]()
+		entity["albums"] = String(nalbums)
+		entity["artists"] = String(nartists)
+		entity["songs"] = String(nsongs)
+		entity["dbplaytime"] = String(dbplaytime)
+		entity["mpduptime"] = String(mpduptime)
+		entity["mpdplaytime"] = String(mpdplaytime)
+		entity["mpddbupdate"] = String(mpddbupdate)
+		//let entity = ["albums" : String(nalbums), "artists" : String(nartists), "songs" : String(nsongs), "dbplaytime" : String(dbplaytime), "mpduptime" : String(mpduptime), "mpdplaytime" : String(mpdplaytime), "mpddbupdate" : String(mpddbupdate)]
+		return ActionResult<[String : String]>(succeeded: true, entity: entity)
 	}
 
 	// MARK: - Private

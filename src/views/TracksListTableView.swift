@@ -71,7 +71,7 @@ final class TracksListTableView : UITableView
 	}
 
 	// MARK: - Private
-	func playingTrackChangedNotification(_ notification: Notification)
+	@objc func playingTrackChangedNotification(_ notification: Notification)
 	{
 		self.reloadData()
 	}

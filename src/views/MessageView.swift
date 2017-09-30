@@ -129,7 +129,7 @@ final class MessageView : UIView
 	private func startTimer(_ interval: Int)
 	{
 		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: DispatchQueue.main)
-		_timer.scheduleOneshot(deadline: .now() + .seconds(interval))
+		_timer.schedule(deadline: .now() + .seconds(interval))
 		_timer.setEventHandler {
 			self.hide()
 		}

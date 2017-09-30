@@ -158,17 +158,27 @@ final class SettingsVC : MenuTVC
 			var message = "MPDRemote \(applicationVersionAndBuild().version) (\(applicationVersionAndBuild().build))\niOS \(UIDevice.current.systemVersion)\n\n"
 			if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 			{
-				if let server = NSKeyedUnarchiver.unarchiveObject(with: mpdServerAsData) as! AudioServer?
+				do
 				{
+					let server = try JSONDecoder().decode(AudioServer.self, from: mpdServerAsData)
 					message += "MPD server:\n\(server.publicDescription())\n\n"
+				}
+				catch
+				{
+					Logger.shared.log(type: .error, message: "Failed to decode mpd server")
 				}
 			}
 
 			if let webServerAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer)
 			{
-				if let server = NSKeyedUnarchiver.unarchiveObject(with: webServerAsData) as! CoverWebServer?
+				do
 				{
+					let server = try JSONDecoder().decode(CoverWebServer.self, from: webServerAsData)
 					message += "Cover server:\n\(server.publicDescription())\n\n"
+				}
+				catch
+				{
+					Logger.shared.log(type: .error, message: "Failed to decode web server")
 				}
 			}
 			mailComposerVC.setMessageBody(message, isHTML: false)

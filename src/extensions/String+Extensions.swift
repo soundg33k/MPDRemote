@@ -25,12 +25,6 @@ import Foundation
 
 extension String
 {
-	// MARK: - String length
-	var length: Int
-	{
-		return characters.count
-	}
-
 	// MARK: Removal of characters
 	func removing(charactersOf string: String) -> String
 	{
@@ -47,12 +41,12 @@ extension String
 
 	static func isNullOrWhiteSpace(_ value: String?) -> Bool
 	{
-		return isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).length == 0
+		return isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
 	}
 
 	func isEmptyOrWhiteSpace() -> Bool
 	{
-		return self.isEmpty || self.trimmingCharacters(in: .whitespacesAndNewlines).length == 0
+		return self.isEmpty || self.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
 	}
 
 	// MARK: Indexes
@@ -106,21 +100,21 @@ extension String
 
 	func fuzzySearch(withString searchString: String, diacriticSensitive: Bool = false, caseSensitive: Bool = false) -> Bool
 	{
-		if searchString.length == 0 || self.length == 0
+		if searchString.count == 0 || self.count == 0
 		{
 			return false
 		}
 
-		if searchString.length > self.length
+		if searchString.count > self.count
 		{
 			return false
 		}
 
 		var sourceString = self
 		var searchWithWildcards = "*\(searchString)*"
-		if searchWithWildcards.length > 3
+		if searchWithWildcards.count > 3
 		{
-			for i in stride(from: 2, through: searchString.length * 2, by: 2)
+			for i in stride(from: 2, through: searchString.count * 2, by: 2)
 			{
 				searchWithWildcards.insert("*", at: searchWithWildcards.index(searchWithWildcards.startIndex, offsetBy: i))
 			}

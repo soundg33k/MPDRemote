@@ -339,7 +339,7 @@ final class MusicDataSource
 	private func startTimer(_ interval: Int)
 	{
 		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
-		_timer.scheduleRepeating(deadline: .now(), interval: .seconds(interval))
+		_timer.schedule(deadline: .now(), repeating: .seconds(interval))
 		_timer.setEventHandler {
 			self.getPlayerStatus()
 		}

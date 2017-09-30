@@ -72,7 +72,6 @@
 		438369441EA91135009520E6 /* AudioOutputsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438369431EA91135009520E6 /* AudioOutputsTVC.swift */; };
 		43A8CA671D157F0D0002B3D9 /* MenuTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A8CA661D157F0D0002B3D9 /* MenuTVC.swift */; };
 		43A9A8CF1DDF4D02002486AF /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A9A8CE1DDF4D02002486AF /* Playlist.swift */; };
-		43AD0AF91D9AB4260067D3C6 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AD0AF81D9AB4260067D3C6 /* Server.swift */; };
 		43B35C2F1D9BCAAA00592E23 /* ZeroConfExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */; };
 		43BE32401DB5083A0062A7B1 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BE323F1DB5083A0062A7B1 /* SettingsVC.swift */; };
 		43DCAFA31D9193C500D0B908 /* AudioServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA21D9193C500D0B908 /* AudioServer.swift */; };
@@ -80,6 +79,7 @@
 		43E187531D1BEF7400C19ECD /* main-ipad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43E187511D1BEF7400C19ECD /* main-ipad.storyboard */; };
 		43EA923B1D100C380074389A /* main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43EA92391D100C380074389A /* main.storyboard */; };
 		43EEC0501DEEEC3500DA6A00 /* FileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EEC04F1DEEEC3500DA6A00 /* FileManager+Extensions.swift */; };
+		43F7DEF51F6D94D200AA2F44 /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F7DEF41F6D94D200AA2F44 /* OperationManager.swift */; };
 		43F92A891DE58EF600192F1F /* MusicalEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F92A881DE58EF600192F1F /* MusicalEntity.swift */; };
 /* End PBXBuildFile section */
 
@@ -200,7 +200,6 @@
 		438369431EA91135009520E6 /* AudioOutputsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioOutputsTVC.swift; sourceTree = "<group>"; };
 		43A8CA661D157F0D0002B3D9 /* MenuTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTVC.swift; sourceTree = "<group>"; };
 		43A9A8CE1DDF4D02002486AF /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
-		43AD0AF81D9AB4260067D3C6 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfExplorer.swift; sourceTree = "<group>"; };
 		43BE323F1DB5083A0062A7B1 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		43DCAFA21D9193C500D0B908 /* AudioServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioServer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -208,6 +207,7 @@
 		43E187521D1BEF7400C19ECD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/main-ipad.storyboard"; sourceTree = "<group>"; };
 		43EA923A1D100C380074389A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/main.storyboard; sourceTree = "<group>"; };
 		43EEC04F1DEEEC3500DA6A00 /* FileManager+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "FileManager+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		43F7DEF41F6D94D200AA2F44 /* OperationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationManager.swift; sourceTree = "<group>"; };
 		43F92A881DE58EF600192F1F /* MusicalEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicalEntity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -410,7 +410,7 @@
 				1E5653861C908A310049C02D /* Logger.swift */,
 				1E5653871C908A310049C02D /* MathUtilities.swift */,
 				436C438A1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift */,
-				43AD0AF81D9AB4260067D3C6 /* Server.swift */,
+				43F7DEF41F6D94D200AA2F44 /* OperationManager.swift */,
 				43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */,
 			);
 			path = misc;
@@ -509,7 +509,7 @@
 					1E19ACE91C7DCC2D00E602FB = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = E258RKC85V;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -592,7 +592,6 @@
 				1E86D3DD1CB7B0C90001E203 /* Genre.swift in Sources */,
 				43EEC0501DEEEC3500DA6A00 /* FileManager+Extensions.swift in Sources */,
 				1E3424361C948E8D009F6BF8 /* Duration.swift in Sources */,
-				43AD0AF91D9AB4260067D3C6 /* Server.swift in Sources */,
 				432024501EC345D7001A667A /* MessageView.swift in Sources */,
 				1E5E45C91C92D20C00B3CB02 /* UIView+Extensions.swift in Sources */,
 				432785C91DF1C70B00A4A04D /* Number+Extensions.swift in Sources */,
@@ -624,6 +623,7 @@
 				1E441D4B1CAC048C009DCEF4 /* PlayerVC.swift in Sources */,
 				1E5653A31C908A310049C02D /* String+Extensions.swift in Sources */,
 				4303DE9A1D9036660083C686 /* AudioServerConnection.swift in Sources */,
+				43F7DEF51F6D94D200AA2F44 /* OperationManager.swift in Sources */,
 				1E5653A41C908A310049C02D /* UIColor+Extensions.swift in Sources */,
 				43366FC71D9ABD880016AD9C /* ZeroConfBrowserTVC.swift in Sources */,
 				430B0EED1DBE33980008B684 /* CGContext+Extensions.swift in Sources */,
@@ -776,6 +776,8 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
@@ -807,7 +809,8 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -821,6 +824,8 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
@@ -852,7 +857,8 @@
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

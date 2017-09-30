@@ -97,12 +97,19 @@ final class CoverOperation : Operation
 			isFinished = true
 			return
 		}
-		guard let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! CoverWebServer? else
+
+		let server: CoverWebServer
+		do
+		{
+			server = try JSONDecoder().decode(CoverWebServer.self, from: serverAsData)
+		}
+		catch
 		{
 			Logger.shared.log(type: .error, message: "Failed to unarchive web server object")
 			isFinished = true
 			return
 		}
+
 		// No cover stuff configured, abort
 		if String.isNullOrWhiteSpace(server.hostname) || String.isNullOrWhiteSpace(server.coverName)
 		{
@@ -154,7 +161,11 @@ final class CoverOperation : Operation
 			return
 		}
 
-		let renderer = UIGraphicsImageRenderer(size: thumbnail.size)
+		if thumbnail.save(url: saveURL) == false
+		{
+			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
+		}
+		/*let renderer = UIGraphicsImageRenderer(size: thumbnail.size)
 		let jpeg = renderer.jpegData(withCompressionQuality: 0.7) { rendererContext in
 			thumbnail.draw(at: .zero)
 		}
@@ -165,7 +176,8 @@ final class CoverOperation : Operation
 		catch _
 		{
 			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
-		}
+		}*/
+		
 
 		if let block = callback
 		{
@@ -180,9 +192,9 @@ final class CoverOperation : Operation
 }
 
 // MARK: - NSURLSessionDelegate
-extension CoverOperation : URLSessionDelegate
+extension CoverOperation : URLSessionDataDelegate
 {
-	func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveResponse response: URLResponse, completionHandler: (Foundation.URLSession.ResponseDisposition) -> Void)
+	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void)
 	{
 		if isCancelled
 		{
@@ -197,7 +209,7 @@ extension CoverOperation : URLSessionDelegate
 		completionHandler(.allow)
 	}
 
-	func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveData data: Data)
+	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
 	{
 		if isCancelled
 		{
@@ -209,7 +221,7 @@ extension CoverOperation : URLSessionDelegate
 		incomingData.append(data)
 	}
 
-	func URLSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: NSError?)
+	func urlSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
 	{
 		if isCancelled
 		{

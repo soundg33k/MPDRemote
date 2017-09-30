@@ -113,8 +113,9 @@ final class RootVC : MenuVC
 		{
 			if let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 			{
-				if let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! AudioServer?
+				do
 				{
+					let server = try JSONDecoder().decode(AudioServer.self, from: serverAsData)
 					// Data source
 					MusicDataSource.shared.server = server
 					_ = MusicDataSource.shared.initialize()
@@ -136,7 +137,7 @@ final class RootVC : MenuVC
 					PlayerController.shared.server = server
 					_ = PlayerController.shared.initialize()
 				}
-				else
+				catch
 				{
 					let alertController = UIAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_server_need_check"), preferredStyle: .alert)
 					let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: nil)
@@ -196,7 +197,7 @@ final class RootVC : MenuVC
 	{
 		super.viewWillDisappear(animated)
 
-		APP_DELEGATE().operationQueue.cancelAllOperations()
+		OperationManager.shared.cancelAllOperations()
 
 		if searchView.superview != nil
 		{
@@ -249,7 +250,7 @@ final class RootVC : MenuVC
 	}
 
 	// MARK: - Gestures
-	func doubleTap(_ gest: UITapGestureRecognizer)
+	@objc func doubleTap(_ gest: UITapGestureRecognizer)
 	{
 		if gest.state != .ended
 		{
@@ -286,7 +287,7 @@ final class RootVC : MenuVC
 		}
 	}
 
-	func longPress(_ gest: UILongPressGestureRecognizer)
+	@objc func longPress(_ gest: UILongPressGestureRecognizer)
 	{
 		if longPressRecognized
 		{
@@ -433,7 +434,7 @@ final class RootVC : MenuVC
 	}
 
 	// MARK: - Buttons actions
-	func changeTypeAction(_ sender: UIButton?)
+	@objc func changeTypeAction(_ sender: UIButton?)
 	{
 		if _typeChoiceView == nil
 		{
@@ -473,7 +474,7 @@ final class RootVC : MenuVC
 		}
 	}
 
-	func showSearchBarAction(_ sender: Any?)
+	@objc func showSearchBarAction(_ sender: Any?)
 	{
 		UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
 			self.searchView.alpha = 1.0
@@ -515,9 +516,9 @@ final class RootVC : MenuVC
 				let n = MusicDataSource.shared.playlists.count
 				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_playlist") : NYXLocalizedString("lbl_playlists"))"
 		}
-		let astr1 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
+		let astr1 = NSAttributedString(string: title, attributes: [NSAttributedStringKey.foregroundColor : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1), NSAttributedStringKey.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSAttributedStringKey.paragraphStyle : p])
 		titleView.setAttributedTitle(astr1, for: .normal)
-		let astr2 = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSParagraphStyleAttributeName : p])
+		let astr2 = NSAttributedString(string: title, attributes: [NSAttributedStringKey.foregroundColor : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSAttributedStringKey.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSAttributedStringKey.paragraphStyle : p])
 		titleView.setAttributedTitle(astr2, for: .highlighted)
 	}
 
@@ -537,12 +538,12 @@ final class RootVC : MenuVC
 	}
 
 	// MARK: - Notifications
-	func audioServerConfigurationDidChange(_ aNotification: Notification)
+	@objc func audioServerConfigurationDidChange(_ aNotification: Notification)
 	{
 		_serverChanged = true
 	}
 
-	func miniPlayShouldExpandNotification(_ aNotification: Notification)
+	@objc func miniPlayShouldExpandNotification(_ aNotification: Notification)
 	{
 		self.navigationController?.performSegue(withIdentifier: "root-to-player", sender: self.navigationController)
 	}

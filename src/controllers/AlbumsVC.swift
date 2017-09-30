@@ -126,7 +126,7 @@ final class AlbumsVC : UIViewController
 	}
 
 	// MARK: - Gestures
-	func longPress(_ gest: UILongPressGestureRecognizer)
+	@objc func longPress(_ gest: UILongPressGestureRecognizer)
 	{
 		if longPressRecognized
 		{
@@ -173,8 +173,8 @@ final class AlbumsVC : UIViewController
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
-		let attrs = NSMutableAttributedString(string: artist.name + "\n", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-		attrs.append(NSAttributedString(string: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+		let attrs = NSMutableAttributedString(string: artist.name + "\n", attributes: [NSAttributedStringKey.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
+		attrs.append(NSAttributedString(string: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())", attributes: [NSAttributedStringKey.font : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 		titleView.attributedText = attrs
 	}
 

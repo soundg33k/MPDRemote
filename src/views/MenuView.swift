@@ -98,7 +98,7 @@ final class MenuView : UIView
 	}
 
 	// MARK: - Gesture
-	func pan(_ gest: UIPanGestureRecognizer)
+	@objc func pan(_ gest: UIPanGestureRecognizer)
 	{
 		switch (gest.state)
 		{

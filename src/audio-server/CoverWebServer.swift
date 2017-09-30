@@ -23,45 +23,44 @@
 import Foundation
 
 
-final class CoverWebServer : Server
+final class CoverWebServer : Codable
 {
 	// MARK: - Public properties
+	// Server name
+	var name: String
+	// Server IP / hostname
+	var hostname: String
+	// Server port
+	var port: UInt16
 	// Name of the cover files
 	var coverName: String = "cover.jpg"
+
+	enum CoverServerCodingKeys: String, CodingKey
+	{
+		case name
+		case hostname
+		case port
+		case coverName
+	}
 
 	// MARK: - Initializers
 	init(name: String, hostname: String, port: UInt16, coverName: String)
 	{
-		super.init(name: name, hostname: CoverWebServer.sanitizeHostname(hostname), port: port)
-
+		self.name = name
+		self.hostname = CoverWebServer.sanitizeHostname(hostname)
+		self.port = port
 		self.coverName = coverName
 	}
 
-	init(name: String, hostname: String, port: UInt16, password: String, coverName: String)
+	required convenience init(from decoder: Decoder) throws
 	{
-		super.init(name: name, hostname: CoverWebServer.sanitizeHostname(hostname), port: port)
+		let values = try decoder.container(keyedBy: CoverServerCodingKeys.self)
+		let na = try values.decode(String.self, forKey: .name)
+		let ho = try values.decode(String.self, forKey: .hostname)
+		let po = try values.decode(UInt16.self, forKey: .port)
+		let co = try values.decode(String.self, forKey: .coverName)
 
-		self.coverName = coverName
-	}
-
-	// MARK: - NSCoding
-	required convenience init?(coder decoder: NSCoder)
-	{
-		guard let name = decoder.decodeObject(forKey: "name") as? String,
-			let hostname = decoder.decodeObject(forKey: "hostname") as? String,
-			let password = decoder.decodeObject(forKey: "password") as? String,
-			let coverName = decoder.decodeObject(forKey: "covername") as? String
-			else { return nil }
-
-		let port = decoder.decodeInteger(forKey: "port")
-
-		self.init(name: name, hostname: hostname, port: UInt16(port), password: password, coverName: coverName)
-	}
-
-	override func encode(with coder: NSCoder)
-	{
-		coder.encode(coverName, forKey: "covername")
-		super.encode(with: coder)
+		self.init(name: na, hostname: ho, port: po, coverName: co)
 	}
 
 	public func publicDescription() -> String
@@ -82,11 +81,17 @@ final class CoverWebServer : Server
 			h = "http://" + hostname
 		}
 
-		if h.characters.last == "/"
+		if h.last == "/"
 		{
 			h.remove(at: h.index(before: h.endIndex))
 		}
 
 		return h
 	}
+}
+
+// MARK: - Operators
+func == (lhs: CoverWebServer, rhs: CoverWebServer) -> Bool
+{
+	return (lhs.name == rhs.name && lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.coverName == rhs.coverName)
 }

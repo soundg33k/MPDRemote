@@ -1,0 +1,1 @@
+/Users/benjamin/Library/Developer/Xcode/DerivedData/mpdclient-hirvlvsicaqrxjdkowmisejdqypb/Build/Intermediates/ArchiveIntermediates/mpdclient/IntermediateBuildFilesPath/UninstalledProducts/iphoneos

@@ -1,4 +1,4 @@
-// CoreImageUtilities.swift
+// OperationManager.swift
 // Copyright (c) 2017 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,34 +20,30 @@
 // THE SOFTWARE.
 
 
-import CoreImage
+import Foundation
 
 
-final class CoreImageUtilities
+final class OperationManager
 {
-	// MARK: - Public properties
 	// Singletion instance
-	static let shared = CoreImageUtilities()
-	// Software context
-	private(set) lazy var swContext: CIContext = {
-		let swContext = CIContext(options: [kCIContextUseSoftwareRenderer : true])
-		return swContext
-	}()
-	// Hardware context
-	private(set) lazy var hwContext: CIContext = {
-		let hwContext = CIContext(options: [kCIContextUseSoftwareRenderer : false])
-		return hwContext
-	}()
-	//
-	private(set) lazy var isHeicCapable: Bool = {
-		if #available(iOS 11.0, *)
-		{
-			let types = CGImageDestinationCopyTypeIdentifiers() as! [String]
-			return types.contains("public.heic")
-		}
-		else
-		{
-			return false
-		}
-	}()
+	static let shared = OperationManager()
+	// Global operation queue
+	private var operationQueue: OperationQueue! = nil
+
+	// MARK: - Initializers
+	init()
+	{
+		operationQueue = OperationQueue()
+		operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
+	}
+
+	func addOperation(_ operation: Operation)
+	{
+		operationQueue.addOperation(operation)
+	}
+
+	func cancelAllOperations()
+	{
+		operationQueue.cancelAllOperations()
+	}
 }

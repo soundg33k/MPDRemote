@@ -163,7 +163,7 @@ final class AlbumDetailVC : UIViewController
 		colorView.backgroundColor = headerView.backgroundColor
 
 		// Don't have all the metadatas
-		if album.artist.length == 0
+		if album.artist.count == 0
 		{
 			MusicDataSource.shared.getMetadatasForAlbum(album) {
 				DispatchQueue.main.async {
@@ -179,14 +179,14 @@ final class AlbumDetailVC : UIViewController
 		{
 			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
-			let attrs = NSMutableAttributedString(string: "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n", attributes:[NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-			attrs.append(NSAttributedString(string: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+			let attrs = NSMutableAttributedString(string: "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n", attributes:[NSAttributedStringKey.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
+			attrs.append(NSAttributedString(string: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))", attributes: [NSAttributedStringKey.font : UIFont(name: "HelveticaNeue", size: 13.0)!]))
 			titleView.attributedText = attrs
 		}
 	}
 
 	// MARK: - Buttons actions
-	func toggleRandomAction(_ sender: Any?)
+	@objc func toggleRandomAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
 		let random = !prefs.bool(forKey: kNYXPrefMPDShuffle)
@@ -200,7 +200,7 @@ final class AlbumDetailVC : UIViewController
 		PlayerController.shared.setRandom(random)
 	}
 
-	func toggleRepeatAction(_ sender: Any?)
+	@objc func toggleRepeatAction(_ sender: Any?)
 	{
 		let prefs = UserDefaults.standard
 		let loop = !prefs.bool(forKey: kNYXPrefMPDRepeat)

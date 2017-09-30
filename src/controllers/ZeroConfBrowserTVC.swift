@@ -39,7 +39,7 @@ final class ZeroConfBrowserTVC : UITableViewController
 	// Zeroconf explorer
 	fileprivate var _explorer: ZeroConfExplorer! = nil
 	// List of servers found
-	fileprivate var _servers = [Server]()
+	fileprivate var _servers = [AudioServer]()
 
 	// MARK: - Initializer
 	required init?(coder aDecoder: NSCoder)
@@ -99,10 +99,16 @@ final class ZeroConfBrowserTVC : UITableViewController
 	{
 		if let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 		{
-			if let server = NSKeyedUnarchiver.unarchiveObject(with: serverAsData) as! AudioServer?
+			var server: AudioServer? = nil
+			do
 			{
-				return server
+				server = try JSONDecoder().decode(AudioServer.self, from: serverAsData)
 			}
+			catch
+			{
+				Logger.shared.log(type: .error, message: "Failed to decode mpd server")
+			}
+			return server
 		}
 		return nil
 	}
@@ -160,10 +166,19 @@ extension ZeroConfBrowserTVC
 		}
 
 		// Different server, update
-		let mpdServer = AudioServer(name: selectedServer.name, hostname: selectedServer.hostname, port: selectedServer.port, password: "", type: .mpd)
-		let serverAsData = NSKeyedArchiver.archivedData(withRootObject: mpdServer)
-		UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
-		UserDefaults.standard.synchronize()
+		do
+		{
+			let encoder = JSONEncoder()
+			let mpdServer = AudioServer(name: selectedServer.name, hostname: selectedServer.hostname, port: selectedServer.port, password: "", type: .mpd)
+			let serverAsData = try encoder.encode(mpdServer)
+			UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
+			UserDefaults.standard.synchronize()
+		}
+		catch let error
+		{
+			Logger.shared.log(type: .error, message: "Failed to encode mpd server: \(error.localizedDescription)")
+			return
+		}
 
 		self.tableView.reloadData()
 		delegate?.audioServerDidChange()
@@ -172,7 +187,7 @@ extension ZeroConfBrowserTVC
 
 extension ZeroConfBrowserTVC : ZeroConfExplorerDelegate
 {
-	internal func didFindServer(_ server: Server)
+	internal func didFindServer(_ server: AudioServer)
 	{
 		_servers = _explorer.services.map({$0.value})
 		self.tableView.reloadData()

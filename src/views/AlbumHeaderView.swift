@@ -73,7 +73,7 @@ final class AlbumHeaderView : UIView
 		var image: UIImage? = nil
 		if let coverURL = album.localCoverURL
 		{
-			if let cover = UIImage(contentsOfFile: coverURL.path)
+			if let cover = UIImage.loadFromFileURL(coverURL)
 			{
 				image = cover
 			}
@@ -108,7 +108,7 @@ final class AlbumHeaderView : UIView
 		// Update frame for title / artist
 		let s = album.name as NSString
 		let width = frame.width - (coverSize.width + 8.0)
-		let r = s.boundingRect(with: CGSize(width, 40.0), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName : lblTitle.font], context: nil)
+		let r = s.boundingRect(with: CGSize(width, 40.0), options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font : lblTitle.font], context: nil)
 		lblTitle.frame = CGRect(coverSize.width + 4.0, 4.0, ceil(r.width), ceil(r.height))
 		lblArtist.frame = CGRect(coverSize.width + 4.0, lblTitle.bottom + 4.0, width - (coverSize.width + 8.0), 18.0)
 

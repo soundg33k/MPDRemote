@@ -108,11 +108,18 @@ final class ServerVC : MenuTVC
 	{
 		super.viewWillAppear(animated)
 
+		let decoder = JSONDecoder()
+
 		if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
 		{
-			if let server = NSKeyedUnarchiver.unarchiveObject(with: mpdServerAsData) as! AudioServer?
+			do
 			{
+				let server = try decoder.decode(AudioServer.self, from: mpdServerAsData)
 				mpdServer = server
+			}
+			catch let error
+			{
+				Logger.shared.log(type: .debug, message: "Failed to decode mpd server: \(error.localizedDescription)")
 			}
 		}
 		else
@@ -122,9 +129,14 @@ final class ServerVC : MenuTVC
 
 		if let webServerAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer)
 		{
-			if let server = NSKeyedUnarchiver.unarchiveObject(with: webServerAsData) as! CoverWebServer?
+			do
 			{
+				let server = try decoder.decode(CoverWebServer.self, from: webServerAsData)
 				webServer = server
+			}
+			catch let error
+			{
+				Logger.shared.log(type: .debug, message: "Failed to decode web server: \(error.localizedDescription)")
 			}
 		}
 		else
@@ -152,13 +164,13 @@ final class ServerVC : MenuTVC
 
 		// Check MPD server name (optional)
 		var serverName = NYXLocalizedString("lbl_server_defaultname")
-		if let strName = tfMPDName.text , strName.length > 0
+		if let strName = tfMPDName.text , strName.count > 0
 		{
 			serverName = strName
 		}
 
 		// Check MPD hostname / ip
-		guard let ip = tfMPDHostname.text , ip.length > 0 else
+		guard let ip = tfMPDHostname.text , ip.count > 0 else
 		{
 			let alertController = UIAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel) { (action) in
@@ -177,18 +189,26 @@ final class ServerVC : MenuTVC
 
 		// Check MPD password (optional)
 		var password = ""
-		if let strPassword = tfMPDPassword.text , strPassword.length > 0
+		if let strPassword = tfMPDPassword.text , strPassword.count > 0
 		{
 			password = strPassword
 		}
 
+		let encoder = JSONEncoder()
 		let mpdServer = AudioServer(name: serverName, hostname: ip, port: port, password: password, type: .mpd)
 		let cnn = MPDConnection(mpdServer)
 		if cnn.connect().succeeded
 		{
 			self.mpdServer = mpdServer
-			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: mpdServer)
-			UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
+			do
+			{
+				let serverAsData = try encoder.encode(mpdServer)
+				UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
+			}
+			catch let error
+			{
+				Logger.shared.log(error: error)
+			}
 
 			NotificationCenter.default.post(name: .audioServerConfigurationDidChange, object: mpdServer)
 
@@ -227,8 +247,16 @@ final class ServerVC : MenuTVC
 			let webServer = CoverWebServer(name: "CoverServer", hostname: strURL, port: port, coverName: coverName)
 			webServer.coverName = coverName
 			self.webServer = webServer
-			let serverAsData = NSKeyedArchiver.archivedData(withRootObject: webServer)
-			UserDefaults.standard.set(serverAsData, forKey: kNYXPrefWEBServer)
+
+			do
+			{
+				let serverAsData = try encoder.encode(webServer)
+				UserDefaults.standard.set(serverAsData, forKey: kNYXPrefWEBServer)
+			}
+			catch let error
+			{
+				Logger.shared.log(error: error)
+			}
 		}
 		else
 		{
@@ -248,7 +276,7 @@ final class ServerVC : MenuTVC
 	}
 
 	// MARK: - Notifications
-	func keyboardDidShowNotification(_ aNotification: Notification)
+	@objc func keyboardDidShowNotification(_ aNotification: Notification)
 	{
 		if _keyboardVisible
 		{
@@ -270,7 +298,7 @@ final class ServerVC : MenuTVC
 		_keyboardVisible = true
 	}
 
-	func keyboardDidHideNotification(_ aNotification: Notification)
+	@objc func keyboardDidHideNotification(_ aNotification: Notification)
 	{
 		if _keyboardVisible == false
 		{
@@ -292,7 +320,7 @@ final class ServerVC : MenuTVC
 		_keyboardVisible = false
 	}
 
-	func audioOutputConfigurationDidChangeNotification(_ aNotification: Notification)
+	@objc func audioOutputConfigurationDidChangeNotification(_ aNotification: Notification)
 	{
 		updateOutputsLabel()
 	}
@@ -399,7 +427,9 @@ final class ServerVC : MenuTVC
 					return
 				}
 				let text = enabledOutputs.reduce("", {$0 + $1.name + ", "})
-				self.lblMPDOutput.text = text.substring(to: text.index(text.endIndex, offsetBy: -2))
+				let x = text[..<text.index(text.endIndex, offsetBy: -2)]
+				self.lblMPDOutput.text = String(x)
+				//self.lblMPDOutput.text = text.substring(to: text.index(text.endIndex, offsetBy: -2))
 			}
 		}
 	}

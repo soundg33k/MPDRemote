@@ -47,9 +47,9 @@ extension FileManager
 				}
 			}
 		}
-		catch _
+		catch let error
 		{
-			Logger.shared.log(type: .error, message: "Can't get directory size")
+			Logger.shared.log(type: .error, message: "Can't get directory size (\(error.localizedDescription)")
 		}
 
 		return result
