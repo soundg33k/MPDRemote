@@ -54,10 +54,11 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	@IBOutlet private var lblRemainingDuration: UILabel! = nil
 	// Volume control
 	@IBOutlet private var sliderVolume: UISlider! = nil
-	// Low volume image
-	@IBOutlet private var ivVolumeLo: UIImageView! = nil
-	// High volume image
-	@IBOutlet private var ivVolumeHi: UIImageView! = nil
+    // Vol low button
+    @IBOutlet private var btnVolumeLo: UIButton! = nil
+    // Vol hi button
+    @IBOutlet private var btnVolumeHi: UIButton! = nil
+    
 	// Album tracks view
 	@IBOutlet fileprivate var trackListView: TracksListTableView! = nil
 
@@ -73,8 +74,9 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		// Slider volume
 		sliderVolume.value = Float(UserDefaults.standard.integer(forKey: kNYXPrefMPDVolume))
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
-		ivVolumeLo.image = #imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
-		ivVolumeHi.image = #imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
+        
+        btnVolumeLo.addTarget(self, action: #selector(decreaseVolumeAction(_:)), for: .touchUpInside)
+        btnVolumeHi.addTarget(self, action: #selector(increaseVolumeAction(_:)), for: .touchUpInside)
 
 		btnPlay.addTarget(PlayerController.shared, action: #selector(PlayerController.togglePause), for: .touchUpInside)
 
@@ -315,16 +317,32 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		}
 	}
 
+    func setVolume(_ valueToSet: Float)
+    {
+        sliderVolume.value = valueToSet
+        let volume = Int(ceil(sliderVolume.value))
+        let prefs = UserDefaults.standard
+        prefs.set(volume, forKey: kNYXPrefMPDVolume)
+        prefs.synchronize()
+        sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
+        
+        PlayerController.shared.setVolume(volume)
+    }
+    
 	@objc func changeVolumeAction(_ sender: UISlider?)
 	{
-		let volume = Int(ceil(sliderVolume.value))
-		let prefs = UserDefaults.standard
-		prefs.set(volume, forKey: kNYXPrefMPDVolume)
-		prefs.synchronize()
-		sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
-
-		PlayerController.shared.setVolume(volume)
+        setVolume(sliderVolume.value)
 	}
+    
+    @objc func increaseVolumeAction(_ sender: UIButton?)
+    {
+        setVolume(sliderVolume.value + 1)
+    }
+    
+    @objc func decreaseVolumeAction(_ sender: UIButton?)
+    {
+        setVolume(sliderVolume.value - 1)
+    }
 
 	// MARK: - Notifications
 	@objc func playingTrackNotification(_ aNotification: Notification?)
