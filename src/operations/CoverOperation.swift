@@ -165,19 +165,6 @@ final class CoverOperation : Operation
 		{
 			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
 		}
-		/*let renderer = UIGraphicsImageRenderer(size: thumbnail.size)
-		let jpeg = renderer.jpegData(withCompressionQuality: 0.7) { rendererContext in
-			thumbnail.draw(at: .zero)
-		}
-		do
-		{
-			try jpeg.write(to: saveURL, options: [.atomicWrite])
-		}
-		catch _
-		{
-			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
-		}*/
-		
 
 		if let block = callback
 		{

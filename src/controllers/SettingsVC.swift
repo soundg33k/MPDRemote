@@ -127,7 +127,7 @@ final class SettingsVC : MenuTVC
 	}
 
 	// MARK: - Private
-	fileprivate func applicationVersionAndBuild() -> (version: String, build: String)
+	private func applicationVersionAndBuild() -> (version: String, build: String)
 	{
 		let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
 		let build = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as! String
@@ -135,7 +135,7 @@ final class SettingsVC : MenuTVC
 		return (version, build)
 	}
 
-	fileprivate func sendLogs()
+	private func sendLogs()
 	{
 		if MFMailComposeViewController.canSendMail()
 		{
@@ -202,7 +202,7 @@ extension SettingsVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		if indexPath.section == 3 && indexPath.row == 0
+		if indexPath.section == 3 && indexPath.row == 1
 		{
 			sendLogs()
 		}

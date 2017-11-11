@@ -59,7 +59,7 @@ final class RootVC : MenuVC
 		// Remove back button label
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
-		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBarAction(_:)))
+		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
 		navigationItem.rightBarButtonItem = searchButton
 
@@ -118,7 +118,7 @@ final class RootVC : MenuVC
 					let server = try JSONDecoder().decode(AudioServer.self, from: serverAsData)
 					// Data source
 					MusicDataSource.shared.server = server
-					_ = MusicDataSource.shared.initialize()
+					MusicDataSource.shared.initialize()
 					if _displayType != .albums
 					{
 						// Always fetch the albums list
@@ -135,7 +135,7 @@ final class RootVC : MenuVC
 
 					// Player
 					PlayerController.shared.server = server
-					_ = PlayerController.shared.initialize()
+					PlayerController.shared.initialize()
 				}
 				catch
 				{
@@ -186,7 +186,7 @@ final class RootVC : MenuVC
 			if PlayerController.shared.server == nil
 			{
 				PlayerController.shared.server = MusicDataSource.shared.server
-				_ = PlayerController.shared.reinitialize()
+				PlayerController.shared.reinitialize()
 			}
 
 			_serverChanged = false
@@ -444,7 +444,7 @@ final class RootVC : MenuVC
 
 		if _typeChoiceView.superview != nil
 		{ // Is visible
-			self.collectionView.contentInset = UIEdgeInsets(top: kNYXTopInset, left: 0.0, bottom: 0.0, right: 0.0)
+			//self.collectionView.contentInset = UIEdgeInsets(top: kNYXTopInset, left: 0.0, bottom: 0.0, right: 0.0)
 			topConstraint.constant = 0.0
 			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
 				self.view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
@@ -457,7 +457,7 @@ final class RootVC : MenuVC
 				{
 					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
 				}
-			}, completion:{ finished in
+			}, completion: { finished in
 				self._typeChoiceView.removeFromSuperview()
 			})
 		}

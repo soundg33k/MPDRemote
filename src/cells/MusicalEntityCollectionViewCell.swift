@@ -152,7 +152,6 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 		if frame.width == UIScreen.main.bounds.width
 		{
 			self.imageView.frame = CGRect(.zero, frame.height, frame.height)
-			//self.label.frame = CGRect(self.imageView.width + 4.0, 4.0, frame.width - self.imageView.width - 8.0, 20.0)
 			self.label.frame = CGRect(self.imageView.width + 4.0, (frame.height - 20.0) / 2.0, frame.width - self.imageView.width - 8.0, 20.0)
 			self.label.textAlignment = .left
 			self.detailLabel.frame = CGRect(self.imageView.width + 4.0, frame.height - 24.0, frame.width - self.imageView.width - 8.0, 20.0)

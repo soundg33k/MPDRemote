@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "btn-shuffle@1x.png",
+      "filename" : "ic_shuffle.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "btn-shuffle@2x.png",
+      "filename" : "ic_shuffle_2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "btn-shuffle@3x.png",
+      "filename" : "ic_shuffle_3x.png",
       "scale" : "3x"
     }
   ],

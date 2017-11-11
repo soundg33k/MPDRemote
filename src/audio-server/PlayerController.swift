@@ -60,7 +60,7 @@ final class PlayerController
 	}
 
 	// MARK: - Public
-	func initialize() -> Bool
+	@discardableResult func initialize() -> Bool
 	{
 		// Sanity check 1
 		if _connection != nil && _connection.isConnected
@@ -102,7 +102,7 @@ final class PlayerController
 		}
 	}
 
-	func reinitialize() -> Bool
+	@discardableResult func reinitialize() -> Bool
 	{
 		deinitialize()
 		return initialize()
@@ -371,25 +371,19 @@ final class PlayerController
 		// Track changed
 		if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
 		{
-			DispatchQueue.main.async {
-				NotificationCenter.default.post(name: .playingTrackChanged, object: nil, userInfo: infos)
-			}
+			NotificationCenter.default.postOnMainThreadAsync(name: .playingTrackChanged, object: nil, userInfo: infos)
 		}
 
 		// Status changed
 		if currentStatus.rawValue != status
 		{
-			DispatchQueue.main.async {
-				NotificationCenter.default.post(name: .playerStatusChanged, object: nil, userInfo: infos)
-			}
+			NotificationCenter.default.postOnMainThreadAsync(name: .playerStatusChanged, object: nil, userInfo: infos)
 		}
 
 		self.currentStatus = PlayerStatus(rawValue: status)!
 		currentTrack = track
 		currentAlbum = album
-		DispatchQueue.main.async {
-			NotificationCenter.default.post(name: .currentPlayingTrack, object: nil, userInfo: infos)
-		}
+		NotificationCenter.default.postOnMainThreadAsync(name: .currentPlayingTrack, object: nil, userInfo: infos)
 	}
 
 	// MARK: - Notifications
@@ -398,7 +392,7 @@ final class PlayerController
 		if let server = aNotification.object as? AudioServer
 		{
 			self.server = server
-			_ = self.reinitialize()
+			self.reinitialize()
 		}
 	}
 
@@ -409,7 +403,7 @@ final class PlayerController
 
 	@objc func applicationWillEnterForeground(_ aNotification: Notification)
 	{
-		_ = reinitialize()
+		reinitialize()
 	}
 }
 

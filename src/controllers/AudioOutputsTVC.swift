@@ -105,9 +105,7 @@ extension AudioOutputsTVC
 			if success == true
 			{
 				self.refreshOutputs()
-				DispatchQueue.main.async {
-					NotificationCenter.default.post(name: .audioOutputConfigurationDidChange, object: nil)
-				}
+				NotificationCenter.default.postOnMainThreadAsync(name: .audioOutputConfigurationDidChange, object: nil)
 			}
 		})
 	}

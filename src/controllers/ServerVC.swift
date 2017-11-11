@@ -195,7 +195,7 @@ final class ServerVC : MenuTVC
 		}
 
 		let encoder = JSONEncoder()
-		let mpdServer = AudioServer(name: serverName, hostname: ip, port: port, password: password, type: .mpd)
+		let mpdServer = AudioServer(name: serverName, hostname: ip, port: port, password: password)
 		let cnn = MPDConnection(mpdServer)
 		if cnn.connect().succeeded
 		{
@@ -245,7 +245,6 @@ final class ServerVC : MenuTVC
 				}
 			}
 			let webServer = CoverWebServer(name: "CoverServer", hostname: strURL, port: port, coverName: coverName)
-			webServer.coverName = coverName
 			self.webServer = webServer
 
 			do

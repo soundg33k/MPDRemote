@@ -60,7 +60,7 @@ final class MusicDataSource
 	}
 
 	// MARK: - Public
-	func initialize() -> Bool
+	@discardableResult func initialize() -> Bool
 	{
 		// Sanity check 1
 		if _connection != nil && _connection.isConnected
@@ -102,7 +102,7 @@ final class MusicDataSource
 		}
 	}
 
-	func reinitialize() -> Bool
+	@discardableResult func reinitialize() -> Bool
 	{
 		deinitialize()
 		return initialize()
@@ -366,7 +366,7 @@ final class MusicDataSource
 		if let server = aNotification.object as? AudioServer
 		{
 			self.server = server
-			_ = self.reinitialize()
+			self.reinitialize()
 		}
 	}
 
@@ -377,7 +377,7 @@ final class MusicDataSource
 
 	@objc func applicationWillEnterForeground(_ aNotification: Notification)
 	{
-		_ = reinitialize()
+		reinitialize()
 	}
 }
 
