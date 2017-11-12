@@ -23,7 +23,7 @@
 import UIKit
 
 
-let baseHeight = 44.0
+let baseHeight = CGFloat(44.0)
 
 
 final class MiniPlayerView : UIView
@@ -55,26 +55,33 @@ final class MiniPlayerView : UIView
 	private var progressView: UIView!
 
 	// MARK: - Initializers
-	override init(frame: CGRect)
+	override init(frame f: CGRect)
 	{
-		super.init(frame: frame)
-		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		let headerHeight: CGFloat
+		let marginTop: CGFloat
 		if #available(iOS 11, *)
 		{
 			if let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom
 			{
-				headerHeight = CGFloat(baseHeight) + bottom
+				headerHeight = baseHeight + bottom
+				marginTop = (UIApplication.shared.keyWindow?.safeAreaInsets.top)! <= 20 ? 20 : (UIApplication.shared.keyWindow?.safeAreaInsets.top)!
 			}
 			else
 			{
-				headerHeight = CGFloat(baseHeight)
+				headerHeight = baseHeight
+				marginTop = 20.0
 			}
 		}
 		else
 		{
-			headerHeight = CGFloat(baseHeight)
+			headerHeight = baseHeight
+			marginTop = 20.0
 		}
+
+		let frame = CGRect(0.0, (UIApplication.shared.keyWindow?.frame.height)! + headerHeight, (UIApplication.shared.keyWindow?.frame.width)!, (UIApplication.shared.keyWindow?.frame.height)! - marginTop - baseHeight)
+
+		super.init(frame: frame)
+		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 
 		// Top shadow
 		self.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, 5.0, frame.width + 4.0, 4.0)).cgPath
