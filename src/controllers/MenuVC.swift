@@ -42,8 +42,7 @@ class MenuVC : UIViewController
 		super.init(coder: aDecoder)
 
 		// Hamburger button
-		let b = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
-		b.tintColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		let b = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
 		b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 		self.navigationItem.leftBarButtonItem = b
 	}
@@ -53,7 +52,12 @@ class MenuVC : UIViewController
 	{
 		super.viewDidLoad()
 
-		menuView = MenuView(frame: CGRect(MENU_MIN_X, 64.0, MENU_WIDTH, view.height - 64.0))
+		var y = CGFloat(64.0)
+		if let n = self.navigationController
+		{
+			y = n.navigationBar.bottom
+		}
+		menuView = MenuView(frame: CGRect(MENU_MIN_X, y, MENU_WIDTH, view.height - y))
 		menuView.menuDelegate = self
 		menuView.visible = false
 		navigationController!.view.addSubview(menuView)

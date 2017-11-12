@@ -65,10 +65,10 @@ final class RootVC : MenuVC
 
 		// Searchbar
 		let navigationBar = (navigationController?.navigationBar)!
-		searchView = UIView(frame: CGRect(0.0, 0.0, navigationBar.width, 64.0))
+		searchView = UIView(frame: CGRect(0.0, 0.0, navigationBar.width, navigationBar.bottom))
+		searchBar = UISearchBar(frame: CGRect(0.0, navigationBar.y, navigationBar.width, navigationBar.height))
 		searchView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		searchView.alpha = 0.0
-		searchBar = UISearchBar(frame: navigationBar.frame)
 		searchBar.searchBarStyle = .minimal
 		searchBar.barTintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		searchBar.tintColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
@@ -438,20 +438,20 @@ final class RootVC : MenuVC
 	{
 		if _typeChoiceView == nil
 		{
-			_typeChoiceView = TypeChoiceView(frame: CGRect(0.0, kNYXTopInset, collectionView.width, 176.0))
+			_typeChoiceView = TypeChoiceView(frame: CGRect(0.0, (self.navigationController?.navigationBar.bottom)!, collectionView.width, 176.0))
 			_typeChoiceView.delegate = self
 		}
 
 		if _typeChoiceView.superview != nil
 		{ // Is visible
-			//self.collectionView.contentInset = UIEdgeInsets(top: kNYXTopInset, left: 0.0, bottom: 0.0, right: 0.0)
+			//self.collectionView.contentInset = UIEdgeInsets(top: (self.navigationController?.navigationBar.bottom)!, left: 0.0, bottom: 0.0, right: 0.0)
 			topConstraint.constant = 0.0
 			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
 				self.view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 				self.view.layoutIfNeeded()
 				if MusicDataSource.shared.selectedList().count == 0
 				{
-					self.collectionView.contentOffset = CGPoint(0, 64)
+					self.collectionView.contentOffset = CGPoint(0, (self.navigationController?.navigationBar.bottom)!)
 				}
 				else
 				{

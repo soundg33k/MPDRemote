@@ -171,8 +171,9 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			}
 			else
 			{
+				let size = self.coverView.size
 				MusicDataSource.shared.getPathForAlbum(album) {
-					let op = CoverOperation(album: album, cropSize: self.coverView.size)
+					let op = CoverOperation(album: album, cropSize: size)
 					op.callback = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.coverView.image = cover

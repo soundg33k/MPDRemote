@@ -40,8 +40,6 @@ public let kNYXPrefCollectionViewLayoutTable = "app-cv-layout-table"
 public let kNYXPrefEnableLogging = "app-enable-logging"
 public let kNYXPrefLastKnownVersion = "app-last-version"
 
-public let kNYXTopInset: CGFloat = 64.0
-
 
 /* RootVC display type */
 enum DisplayType : Int
