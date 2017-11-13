@@ -113,7 +113,7 @@ extension ZeroConfExplorer : NetServiceBrowserDelegate
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)
 	{
-		services[service] = AudioServer(name: service.name, hostname: "", port: 0, type: .mpd)
+		services[service] = AudioServer(name: service.name, hostname: "", port: 0)
 		resolvZeroconfService(service: service)
 	}
 
@@ -163,7 +163,7 @@ extension ZeroConfExplorer : NetServiceDelegate
 
 			if found
 			{
-				let server = AudioServer(name: sender.name, hostname: tmpIP, port: UInt16(sender.port), type: .mpd)
+				let server = AudioServer(name: sender.name, hostname: tmpIP, port: UInt16(sender.port))
 				services[sender] = server
 				delegate?.didFindServer(server)
 			}

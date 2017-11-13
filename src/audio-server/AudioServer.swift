@@ -23,25 +23,17 @@
 import Foundation
 
 
-enum AudioServerType : Int, Codable
-{
-	case mpd
-}
-
-
-final class AudioServer : Codable
+struct AudioServer : Codable, Equatable
 {
 	// MARK: - Public properties
 	// Server name
-	var name: String
+	let name: String
 	// Server IP / hostname
-	var hostname: String
+	let hostname: String
 	// Server port
-	var port: UInt16
+	let port: UInt16
 	// Server password
-	var password: String = ""
-	// Audio server type, only mpd supported for now
-	var type: AudioServerType = .mpd
+	let password: String
 
 	private enum AudioServerCodingKeys: String, CodingKey
 	{
@@ -49,37 +41,26 @@ final class AudioServer : Codable
 		case hostname
 		case port
 		case password
-		case type
 	}
 
 	// MARK: - Initializers
-	init(name: String, hostname: String, port: UInt16, type: AudioServerType)
-	{
-		self.name = name
-		self.hostname = hostname
-		self.port = port
-		self.type = type
-	}
-
-	init(name: String, hostname: String, port: UInt16, password: String, type: AudioServerType)
+	init(name: String, hostname: String, port: UInt16, password: String = "")
 	{
 		self.name = name
 		self.hostname = hostname
 		self.port = port
 		self.password = password
-		self.type = type
 	}
 
-	required convenience init(from decoder: Decoder) throws
+	init(from decoder: Decoder) throws
 	{
 		let values = try decoder.container(keyedBy: AudioServerCodingKeys.self)
 		let na = try values.decode(String.self, forKey: .name)
 		let ho = try values.decode(String.self, forKey: .hostname)
 		let po = try values.decode(UInt16.self, forKey: .port)
 		let pa = try values.decode(String.self, forKey: .password)
-		let ty = try values.decode(Int.self, forKey: .type)
 
-		self.init(name: na, hostname: ho, port: po, password: pa, type: AudioServerType(rawValue: ty)!)
+		self.init(name: na, hostname: ho, port: po, password: pa)
 	}
 
 	public func publicDescription() -> String

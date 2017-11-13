@@ -101,7 +101,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		catch let error
 		{
 			Logger.shared.log(error: error)
-			fatalError()
+			fatalError("Failed to create covers directory")
 		}
 
 		UserDefaults.standard.register(defaults: defaults)

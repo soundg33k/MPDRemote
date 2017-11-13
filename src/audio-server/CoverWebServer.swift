@@ -23,17 +23,17 @@
 import Foundation
 
 
-final class CoverWebServer : Codable
+struct CoverWebServer : Codable, Equatable
 {
 	// MARK: - Public properties
 	// Server name
-	var name: String
+	let name: String
 	// Server IP / hostname
-	var hostname: String
+	let hostname: String
 	// Server port
-	var port: UInt16
+	let port: UInt16
 	// Name of the cover files
-	var coverName: String = "cover.jpg"
+	let coverName: String
 
 	enum CoverServerCodingKeys: String, CodingKey
 	{
@@ -52,7 +52,7 @@ final class CoverWebServer : Codable
 		self.coverName = coverName
 	}
 
-	required convenience init(from decoder: Decoder) throws
+	init(from decoder: Decoder) throws
 	{
 		let values = try decoder.container(keyedBy: CoverServerCodingKeys.self)
 		let na = try values.decode(String.self, forKey: .name)

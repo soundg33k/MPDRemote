@@ -169,7 +169,7 @@ extension ZeroConfBrowserTVC
 		do
 		{
 			let encoder = JSONEncoder()
-			let mpdServer = AudioServer(name: selectedServer.name, hostname: selectedServer.hostname, port: selectedServer.port, password: "", type: .mpd)
+			let mpdServer = AudioServer(name: selectedServer.name, hostname: selectedServer.hostname, port: selectedServer.port, password: "")
 			let serverAsData = try encoder.encode(mpdServer)
 			UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
 			UserDefaults.standard.synchronize()

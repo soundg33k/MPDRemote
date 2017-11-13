@@ -64,6 +64,7 @@
 		434798711E72ED35000E5A82 /* AutoScrollLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434798701E72ED35000E5A82 /* AutoScrollLabel.swift */; };
 		434C97121D94136200B5FCAD /* MusicDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434C97111D94136200B5FCAD /* MusicDataSource.swift */; };
 		434C97141D94157E00B5FCAD /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434C97131D94157E00B5FCAD /* PlayerController.swift */; };
+		435571661F828AF6009B53DE /* NotificationCenter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435571651F828AF6009B53DE /* NotificationCenter+Extensions.swift */; };
 		435B63721D1AC11C0029FCE5 /* AlbumCoverGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435B63711D1AC11C0029FCE5 /* AlbumCoverGenerator.swift */; };
 		436736561D9AC68D00ECBCFB /* ZeroConfServerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436736551D9AC68D00ECBCFB /* ZeroConfServerTableViewCell.swift */; };
 		436C438B1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436C438A1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift */; };
@@ -192,6 +193,7 @@
 		434798701E72ED35000E5A82 /* AutoScrollLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoScrollLabel.swift; sourceTree = "<group>"; };
 		434C97111D94136200B5FCAD /* MusicDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicDataSource.swift; sourceTree = "<group>"; };
 		434C97131D94157E00B5FCAD /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
+		435571651F828AF6009B53DE /* NotificationCenter+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+Extensions.swift"; sourceTree = "<group>"; };
 		435B63711D1AC11C0029FCE5 /* AlbumCoverGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AlbumCoverGenerator.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		436736551D9AC68D00ECBCFB /* ZeroConfServerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfServerTableViewCell.swift; sourceTree = "<group>"; };
 		436C438A1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicator.swift; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 				1E56537A1C908A310049C02D /* CGRect+Extensions.swift */,
 				1E56537B1C908A310049C02D /* CGSize+Extensions.swift */,
 				43EEC04F1DEEEC3500DA6A00 /* FileManager+Extensions.swift */,
+				435571651F828AF6009B53DE /* NotificationCenter+Extensions.swift */,
 				432785C81DF1C70B00A4A04D /* Number+Extensions.swift */,
 				1E56537C1C908A310049C02D /* String+Extensions.swift */,
 				1E56537D1C908A310049C02D /* UIColor+Extensions.swift */,
@@ -600,6 +603,7 @@
 				4334E51B1D0ED5C5004553A3 /* InteractableImageView.swift in Sources */,
 				1E4CD4381C96CB9A00785FD2 /* CoreImageUtilities.swift in Sources */,
 				43F92A891DE58EF600192F1F /* MusicalEntity.swift in Sources */,
+				435571661F828AF6009B53DE /* NotificationCenter+Extensions.swift in Sources */,
 				1E0FE7F21CC0EF19002C717B /* ImageCache.swift in Sources */,
 				1E5653AF1C908A310049C02D /* Track.swift in Sources */,
 				1EB93AA21CB3FC7900EA5339 /* ArtistsVC.swift in Sources */,
@@ -795,7 +799,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				INFOPLIST_FILE = rsrc/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -832,6 +836,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = E258RKC85V;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -843,7 +848,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				INFOPLIST_FILE = rsrc/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -854,6 +859,8 @@
 				PROVISIONING_PROFILE = "37c0e2ac-4c92-475c-896e-68674c92e62d";
 				PROVISIONING_PROFILE_SPECIFIER = "MPDRemote - prod";
 				RUN_CLANG_STATIC_ANALYZER = YES;
+				SWIFT_DISABLE_SAFETY_CHECKS = YES;
+				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = "compile-time";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/bridgingheader.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

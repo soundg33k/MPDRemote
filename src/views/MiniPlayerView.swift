@@ -23,6 +23,9 @@
 import UIKit
 
 
+let baseHeight = CGFloat(44.0)
+
+
 final class MiniPlayerView : UIView
 {
 	// MARK: - Public properties
@@ -52,11 +55,33 @@ final class MiniPlayerView : UIView
 	private var progressView: UIView!
 
 	// MARK: - Initializers
-	override init(frame: CGRect)
+	override init(frame f: CGRect)
 	{
+		let headerHeight: CGFloat
+		let marginTop: CGFloat
+		if #available(iOS 11, *)
+		{
+			if let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom
+			{
+				headerHeight = baseHeight + bottom
+				marginTop = (UIApplication.shared.keyWindow?.safeAreaInsets.top)! <= 20 ? 20 : (UIApplication.shared.keyWindow?.safeAreaInsets.top)!
+			}
+			else
+			{
+				headerHeight = baseHeight
+				marginTop = 20.0
+			}
+		}
+		else
+		{
+			headerHeight = baseHeight
+			marginTop = 20.0
+		}
+
+		let frame = CGRect(0.0, (UIApplication.shared.keyWindow?.frame.height)! + headerHeight, (UIApplication.shared.keyWindow?.frame.width)!, (UIApplication.shared.keyWindow?.frame.height)! - marginTop - baseHeight)
+
 		super.init(frame: frame)
 		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
-		let headerHeight = CGFloat(44.0)
 
 		// Top shadow
 		self.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, 5.0, frame.width + 4.0, 4.0)).cgPath
@@ -74,6 +99,7 @@ final class MiniPlayerView : UIView
 
 		self.imageView = UIImageView(frame: CGRect(0.0, 0.0, headerHeight, headerHeight))
 		self.imageView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		self.imageView.isUserInteractionEnabled = true
 		self.blurEffectView.contentView.addSubview(self.imageView)
 
 		// Vibrancy over the play/pause button
@@ -127,13 +153,13 @@ final class MiniPlayerView : UIView
 		singleTap.numberOfTapsRequired = 1
 		singleTap.numberOfTouchesRequired = 1
 		singleTap.addTarget(self, action: #selector(singleTap(_:)))
-		self.blurEffectView.addGestureRecognizer(singleTap)
+		self.imageView.addGestureRecognizer(singleTap)
 
 		let doubleTap = UITapGestureRecognizer()
 		doubleTap.numberOfTapsRequired = 2
 		doubleTap.numberOfTouchesRequired = 1
 		doubleTap.addTarget(self, action: #selector(doubleTap(_:)))
-		self.blurEffectView.addGestureRecognizer(doubleTap)
+		self.imageView.addGestureRecognizer(doubleTap)
 		singleTap.require(toFail: doubleTap)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)

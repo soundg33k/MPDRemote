@@ -285,11 +285,13 @@ extension MusicalCollectionView : UICollectionViewDataSource
 				return
 			}
 			MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: true) {
-				if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell,
-				let album = genre.albums.first
+				if let album = genre.albums.first
 				{
 					DispatchQueue.main.async {
-						self._handleCoverForCell(c, at: indexPath, withAlbum: album)
+						if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
+						{
+							self._handleCoverForCell(c, at: indexPath, withAlbum: album)
+						}
 					}
 				}
 			}
@@ -310,11 +312,13 @@ extension MusicalCollectionView : UICollectionViewDataSource
 				return
 			}
 			MusicDataSource.shared.getAlbumsForArtist(artist) {
-				if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell,
-				let album = artist.albums.first
+				if let album = artist.albums.first
 				{
 					DispatchQueue.main.async {
-						self._handleCoverForCell(c, at: indexPath, withAlbum: album)
+						if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
+						{
+							self._handleCoverForCell(c, at: indexPath, withAlbum: album)
+						}
 					}
 				}
 			}
