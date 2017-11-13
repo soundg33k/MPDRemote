@@ -320,13 +320,15 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-volume-lo" translatesAutoresizingMaskIntoConstraints="NO" id="2GJ-5b-uAU">
-                                                        <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
-                                                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <button contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2GJ-5b-uAU">
+                                                        <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
+
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="18" id="3h1-zN-JY8"/>
                                                             <constraint firstAttribute="height" constant="18" id="bK1-Lu-MPv"/>
                                                         </constraints>
+                                                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <state key="normal" image="img-volume-lo"/>
                                                         <variation key="default">
                                                             <mask key="constraints">
                                                                 <exclude reference="3h1-zN-JY8"/>
@@ -339,7 +341,7 @@
                                                                 <include reference="bK1-Lu-MPv"/>
                                                             </mask>
                                                         </variation>
-                                                    </imageView>
+                                                    </button>
                                                 </subviews>
                                                 <constraints>
                                                     <constraint firstItem="2GJ-5b-uAU" firstAttribute="top" secondItem="ZSR-Pt-JIk" secondAttribute="top" id="9BD-gr-FCQ"/>
@@ -360,13 +362,14 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-volume-hi" translatesAutoresizingMaskIntoConstraints="NO" id="uo6-J8-SKh">
-                                                        <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
-                                                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <button contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uo6-J8-SKh">
+                                                        <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="18" id="D9I-ld-GWn"/>
                                                             <constraint firstAttribute="width" constant="18" id="rtV-68-Nfb"/>
                                                         </constraints>
+                                                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <state key="normal" image="img-volume-hi"/>
                                                         <variation key="default">
                                                             <mask key="constraints">
                                                                 <exclude reference="D9I-ld-GWn"/>
@@ -379,7 +382,7 @@
                                                                 <include reference="rtV-68-Nfb"/>
                                                             </mask>
                                                         </variation>
-                                                    </imageView>
+                                                    </button>
                                                 </subviews>
                                                 <constraints>
                                                     <constraint firstItem="uo6-J8-SKh" firstAttribute="top" secondItem="PEo-q7-PlL" secondAttribute="top" id="CYl-8k-vNe"/>
@@ -507,9 +510,9 @@
                         <outlet property="btnPrevious" destination="qc6-Xc-sQp" id="11s-ZW-NEt"/>
                         <outlet property="btnRandom" destination="m8O-Rt-LIj" id="dD4-Un-mmo"/>
                         <outlet property="btnRepeat" destination="p2C-8V-UiH" id="gLo-44-JrW"/>
+                        <outlet property="btnVolumeHi" destination="uo6-J8-SKh" id="jvk-Oh-As0"/>
+                        <outlet property="btnVolumeLo" destination="2GJ-5b-uAU" id="Eb0-2w-jM3"/>
                         <outlet property="coverView" destination="Ew4-hR-lKo" id="pTi-oe-AbQ"/>
-                        <outlet property="ivVolumeHi" destination="uo6-J8-SKh" id="jvk-Oh-As0"/>
-                        <outlet property="ivVolumeLo" destination="2GJ-5b-uAU" id="Eb0-2w-jM3"/>
                         <outlet property="lblAlbumName" destination="OPl-hv-1YS" id="y7P-fp-WAN"/>
                         <outlet property="lblElapsedDuration" destination="4Ye-Jx-h9a" id="b7C-e8-fmC"/>
                         <outlet property="lblRemainingDuration" destination="VvE-vk-dMn" id="0EZ-5c-gbI"/>
