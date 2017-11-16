@@ -84,7 +84,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 			kNYXPrefFuzzySearch : false,
 			kNYXPrefMPDShuffle : false,
 			kNYXPrefMPDRepeat : false,
-			kNYXPrefMPDVolume : 100,
 			kNYXPrefDisplayType : DisplayType.albums.rawValue,
 			kNYXPrefShakeToPlayRandomAlbum : false,
 			kNYXPrefCollectionViewLayoutTable : false,

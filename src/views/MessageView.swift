@@ -28,7 +28,7 @@ final class MessageView : UIView
 {
 	// MARK: - Public properties
 	// Singletion instance
-	static let shared = MessageView(frame: CGRect(0.0, -64.0, (UIApplication.shared.keyWindow?.frame.width)!, 64.0))
+	static let shared = MessageView(frame: .zero)
 	// Message label
 	var label: UILabel!
 	// Image
@@ -39,8 +39,27 @@ final class MessageView : UIView
 	private var _timer: DispatchSourceTimer! = nil
 
 	// MARK: - Initializers
-	override init(frame: CGRect)
+	override init(frame f: CGRect)
 	{
+		let statusHeight: CGFloat
+		if #available(iOS 11, *)
+		{
+			if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top
+			{
+				statusHeight = top < 20 ? 20 : top
+			}
+			else
+			{
+				statusHeight = 20.0
+			}
+		}
+		else
+		{
+			statusHeight = 20.0
+		}
+		let height = statusHeight + 44.0;
+		let frame = CGRect(0.0, -height, (UIApplication.shared.keyWindow?.frame.width)!, height)
+
 		super.init(frame: frame)
 		self.isUserInteractionEnabled = true
 		self.isAccessibilityElement = false
@@ -52,11 +71,11 @@ final class MessageView : UIView
 		self.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
 		self.layer.masksToBounds = false
 
-		self.imageView = UIImageView(frame: CGRect(8.0, 20 + (40 - 24.0) / 2.0, 24.0, 24.0))
+		self.imageView = UIImageView(frame: CGRect(8.0, statusHeight + (40 - 24.0) / 2.0, 24.0, 24.0))
 		self.imageView.isAccessibilityElement = false
 		self.addSubview(self.imageView)
 
-		self.label = UILabel(frame: CGRect(self.imageView.right + 8.0, 22.0, frame.width - self.imageView.right - 8.0, frame.height - 24.0))
+		self.label = UILabel(frame: CGRect(self.imageView.right + 8.0, statusHeight + 2.0, frame.width - self.imageView.right - 8.0, frame.height - statusHeight - 4.0))
 		self.label.textAlignment = .left
 		self.label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		self.label.font = UIFont.boldSystemFont(ofSize: 15.0)

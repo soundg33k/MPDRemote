@@ -27,7 +27,7 @@ MPDRemote
 |         | TODO |
 | ---------|--------- |
 | 📱 | iPad version |
-| ⚙ | Better icons for consistency, I took random free icons on the net. Problem is my skills in design are (void*)0. |
+| 📺 | Apple TV version |
 
 There is no persistence layer apart from cover caching.
 

@@ -25,13 +25,18 @@ import UIKit
 
 extension UIDevice
 {
-	class func isPad() -> Bool
+	func isPad() -> Bool
 	{
-		return current.userInterfaceIdiom == .pad
+		return userInterfaceIdiom == .pad
 	}
 
-	class func isPhone() -> Bool
+	func isPhone() -> Bool
 	{
-		return current.userInterfaceIdiom == .phone
+		return userInterfaceIdiom == .phone
+	}
+
+	func isiPhoneX() -> Bool
+	{
+		return isPhone() && Int(UIScreen.main.nativeBounds.height) == 2436
 	}
 }

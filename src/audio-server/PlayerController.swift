@@ -269,7 +269,7 @@ final class PlayerController
 	}
 
 	// MARK: - Volume
-	func setVolume(_ volume: Int)
+	func setVolume(_ volume: Int, callback: @escaping (Bool) -> Void)
 	{
 		if _connection == nil || _connection.isConnected == false
 		{
@@ -277,7 +277,8 @@ final class PlayerController
 		}
 
 		_queue.async {
-			_ = self._connection.setVolume(UInt32(volume))
+			let result = self._connection.setVolume(UInt32(volume))
+			callback(result.succeeded)
 		}
 	}
 

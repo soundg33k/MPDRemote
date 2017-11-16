@@ -30,7 +30,7 @@ final class MiniPlayerView : UIView
 {
 	// MARK: - Public properties
 	// Singletion instance
-	static let shared = MiniPlayerView(frame: CGRect(0.0, (UIApplication.shared.keyWindow?.frame.height)! + 44, (UIApplication.shared.keyWindow?.frame.width)!, (UIApplication.shared.keyWindow?.frame.height)! - 64))
+	static let shared = MiniPlayerView(frame: .zero)
 	// Visible flag
 	private(set) var visible = false
 	private(set) var fullyVisible = false
@@ -40,9 +40,9 @@ final class MiniPlayerView : UIView
 	private(set) var imageView: UIImageView!
 
 	// MARK: - Private properties
-	fileprivate var blurEffectView: UIVisualEffectView!
+	private var blurEffectView: UIVisualEffectView!
 	// Queue's track list
-	fileprivate var tableView: TracksListTableView!
+	private var tableView: TracksListTableView!
 	// Dummy acessible view for title
 	private var accessibleView: UIView!
 	// Track title
@@ -64,7 +64,7 @@ final class MiniPlayerView : UIView
 			if let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom
 			{
 				headerHeight = baseHeight + bottom
-				marginTop = (UIApplication.shared.keyWindow?.safeAreaInsets.top)! <= 20 ? 20 : (UIApplication.shared.keyWindow?.safeAreaInsets.top)!
+				marginTop = (UIApplication.shared.keyWindow?.safeAreaInsets.top)! < 20 ? 20 : (UIApplication.shared.keyWindow?.safeAreaInsets.top)!
 			}
 			else
 			{
@@ -153,13 +153,27 @@ final class MiniPlayerView : UIView
 		singleTap.numberOfTapsRequired = 1
 		singleTap.numberOfTouchesRequired = 1
 		singleTap.addTarget(self, action: #selector(singleTap(_:)))
-		self.imageView.addGestureRecognizer(singleTap)
+		if UIDevice.current.isiPhoneX()
+		{
+			self.imageView.addGestureRecognizer(singleTap)
+		}
+		else
+		{
+			self.addGestureRecognizer(singleTap)
+		}
 
 		let doubleTap = UITapGestureRecognizer()
 		doubleTap.numberOfTapsRequired = 2
 		doubleTap.numberOfTouchesRequired = 1
 		doubleTap.addTarget(self, action: #selector(doubleTap(_:)))
-		self.imageView.addGestureRecognizer(doubleTap)
+		if UIDevice.current.isiPhoneX()
+		{
+			self.imageView.addGestureRecognizer(doubleTap)
+		}
+		else
+		{
+			self.addGestureRecognizer(doubleTap)
+		}
 		singleTap.require(toFail: doubleTap)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
