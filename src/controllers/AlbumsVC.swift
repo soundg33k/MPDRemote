@@ -53,6 +53,8 @@ final class AlbumsVC : UIViewController
 	{
 		super.viewDidLoad()
 		// Remove back button label
+		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
+		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
 		// Navigation bar title

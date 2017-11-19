@@ -25,20 +25,6 @@ import UIKit
 /* Ugly AppDelegate shortcut */
 func APP_DELEGATE() -> AppDelegate {return UIApplication.shared.delegate as! AppDelegate}
 
-/* Preferences keys */
-public let kNYXPrefCoversDirectory = "app-covers-directory"
-public let kNYXPrefCoversSize = "app-covers-size"
-public let kNYXPrefDisplayType = "app-display-type"
-public let kNYXPrefFuzzySearch = "app-search-fuzzy"
-public let kNYXPrefShakeToPlayRandomAlbum = "app-shake-to-play"
-public let kNYXPrefMPDServer = "mpd-server2"
-public let kNYXPrefMPDShuffle = "mpd-shuffle"
-public let kNYXPrefMPDRepeat = "mpd-repeat"
-public let kNYXPrefWEBServer = "web-server2"
-public let kNYXPrefCollectionViewLayoutTable = "app-cv-layout-table"
-public let kNYXPrefEnableLogging = "app-enable-logging"
-public let kNYXPrefLastKnownVersion = "app-last-version"
-
 
 /* RootVC display type */
 enum DisplayType : Int

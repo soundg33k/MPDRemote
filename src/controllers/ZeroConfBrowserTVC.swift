@@ -97,7 +97,7 @@ final class ZeroConfBrowserTVC : UITableViewController
 	// MARK: - Private
 	fileprivate func currentAudioServer() -> AudioServer?
 	{
-		if let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
+		if let serverAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
 		{
 			var server: AudioServer? = nil
 			do
@@ -171,8 +171,8 @@ extension ZeroConfBrowserTVC
 			let encoder = JSONEncoder()
 			let mpdServer = AudioServer(name: selectedServer.name, hostname: selectedServer.hostname, port: selectedServer.port, password: "")
 			let serverAsData = try encoder.encode(mpdServer)
-			UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
-			UserDefaults.standard.synchronize()
+			Settings.shared.set(serverAsData, forKey: kNYXPrefMPDServer)
+			Settings.shared.synchronize()
 		}
 		catch let error
 		{

@@ -91,7 +91,7 @@ final class CoverOperation : Operation
 		}
 
 		// No mpd server configured, abort
-		guard let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else
+		guard let serverAsData = Settings.shared.data(forKey: kNYXPrefWEBServer) else
 		{
 			Logger.shared.log(type: .error, message: "No value for kNYXPrefWEBServer")
 			isFinished = true

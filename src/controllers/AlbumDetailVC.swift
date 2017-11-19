@@ -70,7 +70,7 @@ final class AlbumDetailVC : UIViewController
 		navigationItem.titleView = titleView
 
 		// Album header view
-		let coverSize = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!) as! NSValue
+		let coverSize = NSKeyedUnarchiver.unarchiveObject(with: Settings.shared.data(forKey: kNYXPrefCoversSize)!) as! NSValue
 		headerView.coverSize = coverSize.cgSizeValue
 		headerHeightConstraint.constant = coverSize.cgSizeValue.height
 
@@ -99,12 +99,12 @@ final class AlbumDetailVC : UIViewController
 			navigationBar.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
 			navigationBar.layer.masksToBounds = false
 
-			let loop = UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat)
+			let loop = Settings.shared.bool(forKey: kNYXPrefMPDRepeat)
 			btnRepeat = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-repeat").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRepeatAction(_:)))
 			btnRepeat.tintColor = loop ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 			btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-			let rand = UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle)
+			let rand = Settings.shared.bool(forKey: kNYXPrefMPDShuffle)
 			btnRandom = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRandomAction(_:)))
 			btnRandom.tintColor = rand ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 			btnRandom.accessibilityLabel = NYXLocalizedString(rand ? "lbl_random_disable" : "lbl_random_enable")
@@ -188,28 +188,26 @@ final class AlbumDetailVC : UIViewController
 	// MARK: - Buttons actions
 	@objc func toggleRandomAction(_ sender: Any?)
 	{
-		let prefs = UserDefaults.standard
-		let random = !prefs.bool(forKey: kNYXPrefMPDShuffle)
+		let random = !Settings.shared.bool(forKey: kNYXPrefMPDShuffle)
 
 		btnRandom.tintColor = random ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		prefs.set(random, forKey: kNYXPrefMPDShuffle)
-		prefs.synchronize()
+		Settings.shared.set(random, forKey: kNYXPrefMPDShuffle)
+		Settings.shared.synchronize()
 
 		PlayerController.shared.setRandom(random)
 	}
 
 	@objc func toggleRepeatAction(_ sender: Any?)
 	{
-		let prefs = UserDefaults.standard
-		let loop = !prefs.bool(forKey: kNYXPrefMPDRepeat)
+		let loop = !Settings.shared.bool(forKey: kNYXPrefMPDRepeat)
 
 		btnRepeat.tintColor = loop ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		prefs.set(loop, forKey: kNYXPrefMPDRepeat)
-		prefs.synchronize()
+		Settings.shared.set(loop, forKey: kNYXPrefMPDRepeat)
+		Settings.shared.synchronize()
 
 		PlayerController.shared.setRepeat(loop)
 	}
@@ -243,7 +241,7 @@ extension AlbumDetailVC : UITableViewDelegate
 		}
 
 		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		PlayerController.shared.playTracks(b, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
+		PlayerController.shared.playTracks(b, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
 	}
 }
 

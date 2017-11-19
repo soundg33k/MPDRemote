@@ -83,16 +83,16 @@ extension TypeChoiceView : UITableViewDataSource
 		{
 			case 0:
 				title = NYXLocalizedString("lbl_albums")
-				selected = UserDefaults.standard.integer(forKey: kNYXPrefDisplayType) == DisplayType.albums.rawValue
+				selected = Settings.shared.integer(forKey: kNYXPrefDisplayType) == DisplayType.albums.rawValue
 			case 1:
 				title = NYXLocalizedString("lbl_artists")
-				selected = UserDefaults.standard.integer(forKey: kNYXPrefDisplayType) == DisplayType.artists.rawValue
+				selected = Settings.shared.integer(forKey: kNYXPrefDisplayType) == DisplayType.artists.rawValue
 			case 2:
 				title = NYXLocalizedString("lbl_genres")
-				selected = UserDefaults.standard.integer(forKey: kNYXPrefDisplayType) == DisplayType.genres.rawValue
+				selected = Settings.shared.integer(forKey: kNYXPrefDisplayType) == DisplayType.genres.rawValue
 			case 3:
 				title = NYXLocalizedString("lbl_playlists")
-				selected = UserDefaults.standard.integer(forKey: kNYXPrefDisplayType) == DisplayType.playlists.rawValue
+				selected = Settings.shared.integer(forKey: kNYXPrefDisplayType) == DisplayType.playlists.rawValue
 			default:
 				break
 		}

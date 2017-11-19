@@ -68,6 +68,7 @@
 		435B63721D1AC11C0029FCE5 /* AlbumCoverGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435B63711D1AC11C0029FCE5 /* AlbumCoverGenerator.swift */; };
 		436736561D9AC68D00ECBCFB /* ZeroConfServerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436736551D9AC68D00ECBCFB /* ZeroConfServerTableViewCell.swift */; };
 		436C438B1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436C438A1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift */; };
+		437583601FBF0B6B00196F35 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4375835F1FBF0B6B00196F35 /* Settings.swift */; };
 		437AE4571EC21783002F9C00 /* ActionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437AE4561EC21783002F9C00 /* ActionResult.swift */; };
 		437E7ADE1D9BFC190097C4AA /* MenuViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437E7ADD1D9BFC190097C4AA /* MenuViewTableViewCell.swift */; };
 		438369441EA91135009520E6 /* AudioOutputsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438369431EA91135009520E6 /* AudioOutputsTVC.swift */; };
@@ -197,6 +198,7 @@
 		435B63711D1AC11C0029FCE5 /* AlbumCoverGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AlbumCoverGenerator.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		436736551D9AC68D00ECBCFB /* ZeroConfServerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfServerTableViewCell.swift; sourceTree = "<group>"; };
 		436C438A1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicator.swift; sourceTree = "<group>"; };
+		4375835F1FBF0B6B00196F35 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		437AE4561EC21783002F9C00 /* ActionResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionResult.swift; sourceTree = "<group>"; };
 		437E7ADD1D9BFC190097C4AA /* MenuViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewTableViewCell.swift; sourceTree = "<group>"; };
 		438369431EA91135009520E6 /* AudioOutputsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioOutputsTVC.swift; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 		43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CoverWebServer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		43E187521D1BEF7400C19ECD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/main-ipad.storyboard"; sourceTree = "<group>"; };
 		43EA923A1D100C380074389A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/main.storyboard; sourceTree = "<group>"; };
+		43EB6F921FBEDD8C00B6DB1C /* MPDRemote.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MPDRemote.entitlements; sourceTree = "<group>"; };
 		43EEC04F1DEEEC3500DA6A00 /* FileManager+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "FileManager+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		43F7DEF41F6D94D200AA2F44 /* OperationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationManager.swift; sourceTree = "<group>"; };
 		43F92A881DE58EF600192F1F /* MusicalEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicalEntity.swift; sourceTree = "<group>"; };
@@ -312,6 +315,7 @@
 		1E2B80B11C7EF97300D2273F /* rsrc */ = {
 			isa = PBXGroup;
 			children = (
+				43EB6F921FBEDD8C00B6DB1C /* MPDRemote.entitlements */,
 				1E2B80C71C7EF98B00D2273F /* Assets.xcassets */,
 				1E2B80B21C7EF97300D2273F /* LaunchScreen.storyboard */,
 				1E2B80B41C7EF97300D2273F /* Info.plist */,
@@ -414,6 +418,7 @@
 				1E5653871C908A310049C02D /* MathUtilities.swift */,
 				436C438A1E3FA2DE00CA03D8 /* NetworkActivityIndicator.swift */,
 				43F7DEF41F6D94D200AA2F44 /* OperationManager.swift */,
+				4375835F1FBF0B6B00196F35 /* Settings.swift */,
 				43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */,
 			);
 			path = misc;
@@ -517,6 +522,9 @@
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 0;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
 							};
 						};
 					};
@@ -632,6 +640,7 @@
 				43366FC71D9ABD880016AD9C /* ZeroConfBrowserTVC.swift in Sources */,
 				430B0EED1DBE33980008B684 /* CGContext+Extensions.swift in Sources */,
 				433305001DE601B1003469F4 /* PlaylistDetailVC.swift in Sources */,
+				437583601FBF0B6B00196F35 /* Settings.swift in Sources */,
 				43DCAFA51D91940C00D0B908 /* CoverWebServer.swift in Sources */,
 				436736561D9AC68D00ECBCFB /* ZeroConfServerTableViewCell.swift in Sources */,
 				1E56539D1C908A310049C02D /* RootVC.swift in Sources */,
@@ -785,6 +794,7 @@
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CODE_SIGN_ENTITLEMENTS = rsrc/MPDRemote.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = E258RKC85V;
@@ -833,6 +843,7 @@
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CODE_SIGN_ENTITLEMENTS = rsrc/MPDRemote.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = E258RKC85V;

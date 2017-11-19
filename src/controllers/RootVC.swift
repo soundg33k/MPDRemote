@@ -44,7 +44,7 @@ final class RootVC : MenuVC
 	// View to change the type of items in the collection view
 	fileprivate var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
-	fileprivate var _displayType = DisplayType(rawValue: UserDefaults.standard.integer(forKey: kNYXPrefDisplayType))!
+	fileprivate var _displayType = DisplayType(rawValue: Settings.shared.integer(forKey: kNYXPrefDisplayType))!
 	// Audio server changed
 	fileprivate var _serverChanged = false
 	// Previewing context for peek & pop
@@ -57,6 +57,8 @@ final class RootVC : MenuVC
 	{
 		super.viewDidLoad()
 		// Remove back button label
+		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
+		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
@@ -111,7 +113,7 @@ final class RootVC : MenuVC
 		// Initialize the mpd connection
 		if MusicDataSource.shared.server == nil
 		{
-			if let serverAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
+			if let serverAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
 			{
 				do
 				{
@@ -263,13 +265,13 @@ final class RootVC : MenuVC
 			{
 				case .albums:
 					let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
-					PlayerController.shared.playAlbum(album, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
+					PlayerController.shared.playAlbum(album, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
 				case .artists:
 					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					MusicDataSource.shared.getAlbumsForArtist(artist) {
 						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.flatMap({$0.tracks}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
+							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
 						}
 					}
 				case .genres:
@@ -277,12 +279,12 @@ final class RootVC : MenuVC
 					MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
 						MusicDataSource.shared.getTracksForAlbums(genre.albums) {
 							let ar = genre.albums.flatMap({$0.tracks}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
+							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
 						}
 					}
 				case .playlists:
 					let playlist = searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
-					PlayerController.shared.playPlaylist(playlist, shuffle: UserDefaults.standard.bool(forKey: kNYXPrefMPDShuffle), loop: UserDefaults.standard.bool(forKey: kNYXPrefMPDRepeat))
+					PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
 			}
 		}
 	}
@@ -618,7 +620,7 @@ extension RootVC : UISearchBarDelegate
 				return
 			}
 
-			if UserDefaults.standard.bool(forKey: kNYXPrefFuzzySearch)
+			if Settings.shared.bool(forKey: kNYXPrefFuzzySearch)
 			{
 				collectionView.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
 			}
@@ -645,8 +647,8 @@ extension RootVC : TypeChoiceViewDelegate
 		}
 		_displayType = type
 
-		UserDefaults.standard.set(type.rawValue, forKey: kNYXPrefDisplayType)
-		UserDefaults.standard.synchronize()
+		Settings.shared.set(type.rawValue, forKey: kNYXPrefDisplayType)
+		Settings.shared.synchronize()
 
 		// Longpress / peek & pop
 		updateLongpressState()
@@ -684,7 +686,7 @@ extension RootVC
 	{
 		if motion == .motionShake
 		{
-			if UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum) == false || MusicDataSource.shared.albums.count == 0
+			if Settings.shared.bool(forKey: kNYXPrefShakeToPlayRandomAlbum) == false || MusicDataSource.shared.albums.count == 0
 			{
 				return
 			}

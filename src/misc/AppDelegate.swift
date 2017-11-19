@@ -60,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool
 	{
 		// Register default preferences
-		_registerDefaultPreferences()
+		Settings.shared.initialize()
 
 		// URL cache
 		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
@@ -68,42 +68,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		homeVC = window?.rootViewController
 
 		return true
-	}
-
-	// MARK: - Private
-	private func _registerDefaultPreferences()
-	{
-		let coversDirectoryPath = "covers"
-		let columns = CGFloat(3)
-		let span = CGFloat(10)
-		let width = ceil((UIScreen.main.bounds.width / columns) - (2 * span))
-		let defaults: [String: Any] =
-		[
-			kNYXPrefCoversDirectory : coversDirectoryPath,
-			kNYXPrefCoversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width, width))),
-			kNYXPrefFuzzySearch : false,
-			kNYXPrefMPDShuffle : false,
-			kNYXPrefMPDRepeat : false,
-			kNYXPrefDisplayType : DisplayType.albums.rawValue,
-			kNYXPrefShakeToPlayRandomAlbum : false,
-			kNYXPrefCollectionViewLayoutTable : false,
-			kNYXPrefEnableLogging : false,
-			kNYXPrefLastKnownVersion : Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? ""
-		]
-
-		let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
-
-		do
-		{
-			try FileManager.default.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
-		}
-		catch let error
-		{
-			Logger.shared.log(error: error)
-			fatalError("Failed to create covers directory")
-		}
-
-		UserDefaults.standard.register(defaults: defaults)
-		UserDefaults.standard.synchronize()
 	}
 }

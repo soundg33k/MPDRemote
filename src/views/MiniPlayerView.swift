@@ -203,7 +203,7 @@ final class MiniPlayerView : UIView
 		}
 		else
 		{
-			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!
+			let sizeAsData = Settings.shared.data(forKey: kNYXPrefCoversSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			if album.path != nil
 			{

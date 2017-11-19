@@ -110,7 +110,7 @@ final class ServerVC : MenuTVC
 
 		let decoder = JSONDecoder()
 
-		if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
+		if let mpdServerAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
 		{
 			do
 			{
@@ -127,7 +127,7 @@ final class ServerVC : MenuTVC
 			Logger.shared.log(type: .debug, message: "No audio server registered yet")
 		}
 
-		if let webServerAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer)
+		if let webServerAsData = Settings.shared.data(forKey: kNYXPrefWEBServer)
 		{
 			do
 			{
@@ -203,7 +203,7 @@ final class ServerVC : MenuTVC
 			do
 			{
 				let serverAsData = try encoder.encode(mpdServer)
-				UserDefaults.standard.set(serverAsData, forKey: kNYXPrefMPDServer)
+				Settings.shared.set(serverAsData, forKey: kNYXPrefMPDServer)
 			}
 			catch let error
 			{
@@ -218,7 +218,7 @@ final class ServerVC : MenuTVC
 		}
 		else
 		{
-			UserDefaults.standard.removeObject(forKey: kNYXPrefMPDServer)
+			Settings.shared.removeObject(forKey: kNYXPrefMPDServer)
 			let alertController = UIAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle: .alert)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel) { (action) in
 			}
@@ -250,7 +250,7 @@ final class ServerVC : MenuTVC
 			do
 			{
 				let serverAsData = try encoder.encode(webServer)
-				UserDefaults.standard.set(serverAsData, forKey: kNYXPrefWEBServer)
+				Settings.shared.set(serverAsData, forKey: kNYXPrefWEBServer)
 			}
 			catch let error
 			{
@@ -259,10 +259,10 @@ final class ServerVC : MenuTVC
 		}
 		else
 		{
-			UserDefaults.standard.removeObject(forKey: kNYXPrefWEBServer)
+			Settings.shared.removeObject(forKey: kNYXPrefWEBServer)
 		}
 
-		UserDefaults.standard.synchronize()
+		Settings.shared.synchronize()
 	}
 
 	@IBAction func browserZeroConfServers(_ sender: Any?)
@@ -364,7 +364,7 @@ final class ServerVC : MenuTVC
 	{
 		let clearBlock = { () -> Void in
 			let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
-			let coversDirectoryName = UserDefaults.standard.string(forKey: kNYXPrefCoversDirectory)!
+			let coversDirectoryName = Settings.shared.string(forKey: kNYXPrefCoversDirectory)!
 			let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
 
 			do

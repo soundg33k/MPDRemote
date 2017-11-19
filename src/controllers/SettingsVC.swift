@@ -78,9 +78,9 @@ final class SettingsVC : MenuTVC
 	{
 		super.viewWillAppear(animated)
 
-		swShake.isOn = UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
-		swFuzzySearch.isOn = UserDefaults.standard.bool(forKey: kNYXPrefFuzzySearch)
-		swLayoutAsTable.isOn = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
+		swShake.isOn = Settings.shared.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
+		swFuzzySearch.isOn = Settings.shared.bool(forKey: kNYXPrefFuzzySearch)
+		swLayoutAsTable.isOn = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
 
 		let version = applicationVersionAndBuild()
 		lblVersion.text = "\(version.version) (\(version.build))"
@@ -99,31 +99,31 @@ final class SettingsVC : MenuTVC
 	// MARK: - IBActions
 	@IBAction func toggleShakeToPlay(_ sender: Any?)
 	{
-		let shake = UserDefaults.standard.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
-		UserDefaults.standard.set(!shake, forKey: kNYXPrefShakeToPlayRandomAlbum)
-		UserDefaults.standard.synchronize()
+		let shake = Settings.shared.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
+		Settings.shared.set(!shake, forKey: kNYXPrefShakeToPlayRandomAlbum)
+		Settings.shared.synchronize()
 	}
 
 	@IBAction func toggleFuzzySearch(_ sender: Any?)
 	{
-		let fuzzySearch = UserDefaults.standard.bool(forKey: kNYXPrefFuzzySearch)
-		UserDefaults.standard.set(!fuzzySearch, forKey: kNYXPrefFuzzySearch)
-		UserDefaults.standard.synchronize()
+		let fuzzySearch = Settings.shared.bool(forKey: kNYXPrefFuzzySearch)
+		Settings.shared.set(!fuzzySearch, forKey: kNYXPrefFuzzySearch)
+		Settings.shared.synchronize()
 	}
 
 	@IBAction func toggleTableLayout(_ sender: Any?)
 	{
-		let tableLayout = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
-		UserDefaults.standard.set(!tableLayout, forKey: kNYXPrefCollectionViewLayoutTable)
-		UserDefaults.standard.synchronize()
+		let tableLayout = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
+		Settings.shared.set(!tableLayout, forKey: kNYXPrefCollectionViewLayoutTable)
+		Settings.shared.synchronize()
 		NotificationCenter.default.post(name: .collectionViewsLayoutDidChange, object: nil)
 	}
 
 	@IBAction func toggleLogging(_ sender: Any?)
 	{
-		let logging = UserDefaults.standard.bool(forKey: kNYXPrefEnableLogging)
-		UserDefaults.standard.set(!logging, forKey: kNYXPrefEnableLogging)
-		UserDefaults.standard.synchronize()
+		let logging = Settings.shared.bool(forKey: kNYXPrefEnableLogging)
+		Settings.shared.set(!logging, forKey: kNYXPrefEnableLogging)
+		Settings.shared.synchronize()
 	}
 
 	// MARK: - Private
@@ -156,7 +156,7 @@ final class SettingsVC : MenuTVC
 			mailComposerVC.addAttachmentData(data, mimeType: "text/plain" , fileName: "logs.txt")
 
 			var message = "MPDRemote \(applicationVersionAndBuild().version) (\(applicationVersionAndBuild().build))\niOS \(UIDevice.current.systemVersion)\n\n"
-			if let mpdServerAsData = UserDefaults.standard.data(forKey: kNYXPrefMPDServer)
+			if let mpdServerAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
 			{
 				do
 				{
@@ -169,7 +169,7 @@ final class SettingsVC : MenuTVC
 				}
 			}
 
-			if let webServerAsData = UserDefaults.standard.data(forKey: kNYXPrefWEBServer)
+			if let webServerAsData = Settings.shared.data(forKey: kNYXPrefWEBServer)
 			{
 				do
 				{

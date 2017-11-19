@@ -160,7 +160,7 @@ final class MusicalCollectionView : UICollectionView
 		self.isPrefetchingEnabled = true
 		self.prefetchDataSource = self
 
-		let layoutAsTable = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
+		let layoutAsTable = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
 		self.layoutType = layoutAsTable ? .table : .collection
 
 		self.setCollectionLayout(animated: false)
@@ -214,7 +214,7 @@ final class MusicalCollectionView : UICollectionView
 	// MARK: - Notifications
 	@objc public func collectionViewsLayoutDidChangeNotification(_ notification: Notification)
 	{
-		let layoutAsTable = UserDefaults.standard.bool(forKey: kNYXPrefCollectionViewLayoutTable)
+		let layoutAsTable = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
 		self.layoutType = layoutAsTable ? .table : .collection
 	}
 }
@@ -335,7 +335,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 
 		// Get local URL for cover
-		guard let _ = UserDefaults.standard.data(forKey: kNYXPrefWEBServer) else { return }
+		guard let _ = Settings.shared.data(forKey: kNYXPrefWEBServer) else { return }
 		guard let coverURL = album.localCoverURL else
 		{
 			Logger.shared.log(type: .error, message: "No cover file URL for \(album)") // should not happen
@@ -360,7 +360,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 				return
 			}
 
-			let sizeAsData = UserDefaults.standard.data(forKey: kNYXPrefCoversSize)!
+			let sizeAsData = Settings.shared.data(forKey: kNYXPrefCoversSize)!
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			if album.path != nil
 			{
