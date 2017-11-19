@@ -84,7 +84,7 @@ extension AudioOutputsTVC
 		cell.textLabel?.text = output.name
 		cell.accessoryType = output.enabled ? .checkmark : .none
 		cell.textLabel?.isAccessibilityElement = false
-		cell.accessibilityLabel = output.name + (output.enabled ? " : on" : " : off")
+		cell.accessibilityLabel = "\(output.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(output.enabled ? "lbl_enabled" : "lbl_disabled"))"
 
 		return cell
 	}

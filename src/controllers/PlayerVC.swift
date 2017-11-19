@@ -54,11 +54,10 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	@IBOutlet private var lblRemainingDuration: UILabel! = nil
 	// Volume control
 	@IBOutlet private var sliderVolume: UISlider! = nil
-    // Vol low button
-    @IBOutlet private var btnVolumeLo: UIButton! = nil
-    // Vol hi button
-    @IBOutlet private var btnVolumeHi: UIButton! = nil
-    
+	// Low volume image
+	@IBOutlet private var btnVolumeLo: UIButton! = nil
+	// High volume image
+	@IBOutlet private var btnVolumeHi: UIButton! = nil
 	// Album tracks view
 	@IBOutlet fileprivate var trackListView: TracksListTableView! = nil
 
@@ -72,11 +71,13 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		sliderPosition.addTarget(self, action: #selector(changeTrackPositionAction(_:)), for: .touchUpInside)
 
 		// Slider volume
-		sliderVolume.value = Float(UserDefaults.standard.integer(forKey: kNYXPrefMPDVolume))
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
-        
-        btnVolumeLo.addTarget(self, action: #selector(decreaseVolumeAction(_:)), for: .touchUpInside)
-        btnVolumeHi.addTarget(self, action: #selector(increaseVolumeAction(_:)), for: .touchUpInside)
+		btnVolumeLo.addTarget(self, action: #selector(decreaseVolumeAction(_:)), for: .touchUpInside)
+		btnVolumeHi.addTarget(self, action: #selector(increaseVolumeAction(_:)), for: .touchUpInside)
+		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
 
 		btnPlay.addTarget(PlayerController.shared, action: #selector(PlayerController.togglePause), for: .touchUpInside)
 
@@ -145,10 +146,22 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 
 		PlayerController.shared.getVolume { (volume: Int) in
 			DispatchQueue.main.async {
-				self.sliderVolume.value = Float(volume)
-				self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
-				UserDefaults.standard.set(volume, forKey: kNYXPrefMPDVolume)
-				UserDefaults.standard.synchronize()
+				if volume == -1
+				{
+					self.sliderVolume.isEnabled = false
+					self.btnVolumeLo.isEnabled = false
+					self.btnVolumeHi.isEnabled = false
+					self.sliderVolume.value = 0
+					self.sliderVolume.accessibilityLabel = NYXLocalizedString("lbl_volume_control_disabled")
+				}
+				else
+				{
+					self.sliderVolume.isEnabled = true
+					self.btnVolumeLo.isEnabled = true
+					self.btnVolumeHi.isEnabled = true
+					self.sliderVolume.value = Float(volume)
+					self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
+				}
 			}
 		}
 
@@ -318,32 +331,20 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		}
 	}
 
-    func setVolume(_ valueToSet: Float)
-    {
-        sliderVolume.value = valueToSet
-        let volume = Int(ceil(sliderVolume.value))
-        let prefs = UserDefaults.standard
-        prefs.set(volume, forKey: kNYXPrefMPDVolume)
-        prefs.synchronize()
-        sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
-        
-        PlayerController.shared.setVolume(volume)
-    }
-    
 	@objc func changeVolumeAction(_ sender: UISlider?)
 	{
-        setVolume(sliderVolume.value)
+		setVolume(sliderVolume.value)
 	}
-    
-    @objc func increaseVolumeAction(_ sender: UIButton?)
-    {
-        setVolume(sliderVolume.value + 1)
-    }
-    
-    @objc func decreaseVolumeAction(_ sender: UIButton?)
-    {
-        setVolume(sliderVolume.value - 1)
-    }
+
+	@objc func increaseVolumeAction(_ sender: UIButton?)
+	{
+		setVolume(sliderVolume.value + 1)
+	}
+
+	@objc func decreaseVolumeAction(_ sender: UIButton?)
+	{
+		setVolume(sliderVolume.value - 1)
+	}
 
 	// MARK: - Notifications
 	@objc func playingTrackNotification(_ aNotification: Notification?)
@@ -398,6 +399,24 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			btnPlay.setImage(imgPause.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
 			btnPlay.setImage(imgPause.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
+		}
+	}
+
+	func setVolume(_ valueToSet: Float)
+	{
+		let tmp = clamp(ceil(valueToSet), lower: 0.0, upper: 100.0)
+		let volume = Int(tmp)
+
+		PlayerController.shared.setVolume(volume) { (success: Bool) in
+			if success
+			{
+				DispatchQueue.main.async {
+					self.sliderVolume.value = tmp
+					self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
+					self.btnVolumeLo.isEnabled = valueToSet > 0;
+					self.btnVolumeHi.isEnabled = valueToSet < 100;
+				}
+			}
 		}
 	}
 }
@@ -462,7 +481,7 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 			toViewController.view.alpha = 0.0
 			MiniPlayerView.shared.stayHidden = true
 			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
-				iv.frame = CGRect(32, 100, bounds.width - 64, bounds.width - 64)
+				iv.frame = CGRect(32, UIDevice.current.isiPhoneX() ? 124 : 100, bounds.width - 64, bounds.width - 64)
 				MiniPlayerView.shared.hide()
 			}, completion: { finished in
 				UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {

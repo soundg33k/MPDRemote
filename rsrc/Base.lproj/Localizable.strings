@@ -5,6 +5,9 @@
 "lbl_played" = "played";
 "lbl_megabytes" = "MB";
 "lbl_error" = "Error";
+"lbl_enabled" = "Enabled";
+"lbl_disabled" = "Disabled";
+"lbl_is" = "is";
 
 "lbl_track" = "track";
 "lbl_tracks" = "tracks";
@@ -34,6 +37,7 @@
 "lbl_troubleshoot" = "Troubleshooting";
 "lbl_enable_logging" = "Enable logging";
 "lbl_send_logs" = "Send logs";
+"lbl_volume_control_disabled" = "Volume control is disabled";
 
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";

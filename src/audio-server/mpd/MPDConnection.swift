@@ -710,7 +710,7 @@ final class MPDConnection : AudioServerConnection
 		let result = getStatus()
 		if result.succeeded == false
 		{
-			return ActionResult<Int>(succeeded: false, entity: 100, messages: result.messages)
+			return ActionResult<Int>(succeeded: false, entity: -1, messages: result.messages)
 		}
 		return ActionResult<Int>(succeeded: true, entity: Int(mpd_status_get_volume(result.entity!)))
 	}
