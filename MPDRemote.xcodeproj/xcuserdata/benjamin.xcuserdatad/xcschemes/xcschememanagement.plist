@@ -4,7 +4,12 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>MPDRemote.xcscheme</key>
+		<key>MPDRemote-TV.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>MPDRemote.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -13,6 +18,11 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>1E19ACE91C7DCC2D00E602FB</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>43AFC5C81FC2EA1E0067EE05</key>
 		<dict>
 			<key>primary</key>
 			<true/>

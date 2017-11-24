@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/nyxouf/Dropbox/Projects/volumios/MPDRemote.xcodeproj">
+      location = "group:/Users/benjamin/sync/projects/MPDRemote/external/mpdclient-src/libmpdclient.tvos.a">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>
