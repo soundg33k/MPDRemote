@@ -839,6 +839,12 @@ final class MPDConnection : AudioServerConnection
 		return ActionResult<[String : String]>(succeeded: true, entity: entity)
 	}
 
+	func updateDatabase() -> ActionResult<Void>
+	{
+		let ret = mpd_run_update(_connection, nil)
+		return ActionResult(succeeded: ret > 0)
+	}
+
 	// MARK: - Private
 	private func getLastErrorMessageForConnection() -> Message
 	{

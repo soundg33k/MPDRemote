@@ -26,7 +26,7 @@ import UIKit
 private let headerSectionHeight: CGFloat = 32.0
 
 
-final class ServerVC : MenuTVC
+final class ServerVC : UITableViewController, CenterViewController
 {
 	// MARK: - Private properties
 	// MPD Server name
@@ -63,6 +63,8 @@ final class ServerVC : MenuTVC
 	private var _keyboardVisible = false
 	// Navigation title
 	private var titleView: UILabel!
+	// Delegate
+	var containerDelegate: ContainerVCDelegate? = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -267,11 +269,16 @@ final class ServerVC : MenuTVC
 
 	@IBAction func browserZeroConfServers(_ sender: Any?)
 	{
-		let sb = UIStoryboard(name: "main", bundle: nil)
+		let sb = UIStoryboard(name: "main-iphone", bundle: nil)
 		let nvc = sb.instantiateViewController(withIdentifier: "ZeroConfBrowserNVC") as! NYXNavigationController
 		let vc = nvc.topViewController as! ZeroConfBrowserTVC
 		vc.delegate = self
 		self.navigationController?.present(nvc, animated: true, completion: nil)
+	}
+
+	@objc @IBAction func showLeftViewAction(_ sender: Any?)
+	{
+		containerDelegate?.toggleMenu()
 	}
 
 	// MARK: - Notifications
@@ -468,6 +475,12 @@ extension ServerVC
 				popController.delegate = self
 				self.present(vc, animated: true, completion: {
 				});
+			}
+		}
+		else if indexPath.section == 0 && indexPath.row == 5
+		{
+			MusicDataSource.shared.updateDatabase() {_ in
+				
 			}
 		}
 		else if indexPath.section == 1 && indexPath.row == 3

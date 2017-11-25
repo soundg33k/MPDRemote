@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class RootVC : MenuVC
+final class RootVC : UIViewController, CenterViewController
 {
 	// MARK: - Private properties
 	// Albums view
@@ -51,6 +51,8 @@ final class RootVC : MenuVC
 	fileprivate var _previewingContext: UIViewControllerPreviewing! = nil
 	// Long press gesture for devices without force touch
 	fileprivate var _longPress: UILongPressGestureRecognizer! = nil
+	// Delegate
+	var containerDelegate: ContainerVCDelegate? = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -64,6 +66,11 @@ final class RootVC : MenuVC
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
 		navigationItem.rightBarButtonItem = searchButton
+
+		// Hamburger button
+		let b = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
+		b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
+		navigationItem.leftBarButtonItem = b
 
 		// Searchbar
 		let navigationBar = (navigationController?.navigationBar)!
@@ -158,8 +165,8 @@ final class RootVC : MenuVC
 			else
 			{
 				Logger.shared.log(type: .debug, message: "No MPD server registered yet")
-				let serverVC = APP_DELEGATE().serverVC
-				APP_DELEGATE().window?.rootViewController = serverVC
+				//let serverVC = APP_DELEGATE().serverVC
+				//APP_DELEGATE().window?.rootViewController = serverVC
 			}
 		}
 
@@ -498,6 +505,11 @@ final class RootVC : MenuVC
 		})
 	}
 
+	@objc func showLeftViewAction(_ sender: Any?)
+	{
+		containerDelegate?.toggleMenu()
+	}
+
 	// MARK: - Private
 	fileprivate func showNavigationBar(animated: Bool = true)
 	{
@@ -574,12 +586,12 @@ extension RootVC : MusicalCollectionViewDelegate
 	func didSelectItem(indexPath: IndexPath)
 	{
 		// If menu is visible ignore default behavior and hide it
-		if menuView.visible
+		/*if menuView.visible
 		{
 			collectionView.deselectItem(at: indexPath, animated: false)
 			showLeftViewAction(nil)
 			return
-		}
+		}*/
 
 		switch _displayType
 		{
@@ -759,7 +771,7 @@ extension RootVC : UIViewControllerPreviewingDelegate
 		if let indexPath = collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath)
 		{
 			previewingContext.sourceRect = cellAttributes.frame
-			let sb = UIStoryboard(name: "main", bundle: .main)
+			let sb = UIStoryboard(name: "main-iphone", bundle: .main)
 			let row = indexPath.row
 			if _displayType == .albums
 			{

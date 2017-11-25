@@ -26,7 +26,7 @@ import UIKit
 private let headerSectionHeight: CGFloat = 32.0
 
 
-final class StatsVC : MenuTVC
+final class StatsVC : UITableViewController, CenterViewController
 {
 	// MARK: - Private properties
 	// Datasource
@@ -55,6 +55,8 @@ final class StatsVC : MenuTVC
 	@IBOutlet private var lblCellMPDDBLastUpdate: UILabel! = nil
 	// Navigation title
 	private var titleView: UILabel!
+	// Delegate
+	var containerDelegate: ContainerVCDelegate? = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -100,6 +102,12 @@ final class StatsVC : MenuTVC
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return .default
+	}
+
+	// MARK: - IBActions
+	@objc @IBAction func showLeftViewAction(_ sender: Any?)
+	{
+		containerDelegate?.toggleMenu()
 	}
 
 	// MARK: - Private

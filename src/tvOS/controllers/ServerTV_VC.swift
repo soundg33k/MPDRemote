@@ -241,7 +241,7 @@ final class ServerTV_VC : UIViewController
 
 	@IBAction func browserZeroConfServers(_ sender: Any?)
 	{
-		/*let sb = UIStoryboard(name: "main", bundle: nil)
+		/*let sb = UIStoryboard(name: "main-atv", bundle: nil)
 		let nvc = sb.instantiateViewController(withIdentifier: "ZeroConfBrowserNVC") as! NYXNavigationController
 		let vc = nvc.topViewController as! ZeroConfBrowserTVC
 		vc.delegate = self

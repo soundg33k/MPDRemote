@@ -223,7 +223,7 @@ extension AlbumsVC : UIViewControllerPreviewingDelegate
 		if let indexPath = collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath)
 		{
 			previewingContext.sourceRect = cellAttributes.frame
-			let sb = UIStoryboard(name: "main", bundle: .main)
+			let sb = UIStoryboard(name: "main-iphone", bundle: .main)
 
 			let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
 

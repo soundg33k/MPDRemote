@@ -27,7 +27,7 @@ import MessageUI
 private let headerSectionHeight: CGFloat = 32.0
 
 
-final class SettingsVC : MenuTVC
+final class SettingsVC : UITableViewController, CenterViewController
 {
 	// MARK: - Private properties
 	// Version label
@@ -52,6 +52,8 @@ final class SettingsVC : MenuTVC
 	@IBOutlet private var swLogging: UISwitch!
 	// Navigation title
 	private var titleView: UILabel!
+	// Delegate
+	var containerDelegate: ContainerVCDelegate? = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -124,6 +126,11 @@ final class SettingsVC : MenuTVC
 		let logging = Settings.shared.bool(forKey: kNYXPrefEnableLogging)
 		Settings.shared.set(!logging, forKey: kNYXPrefEnableLogging)
 		Settings.shared.synchronize()
+	}
+
+	@objc @IBAction func showLeftViewAction(_ sender: Any?)
+	{
+		containerDelegate?.toggleMenu()
 	}
 
 	// MARK: - Private

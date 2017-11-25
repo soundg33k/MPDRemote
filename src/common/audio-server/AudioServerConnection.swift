@@ -98,6 +98,7 @@ protocol AudioServerConnection
 
 	// MARK: - Stats
 	func getStats() -> ActionResult<[String : String]>
+	func updateDatabase() -> ActionResult<Void>
 
 	// MARK: - Outputs
 	func getAvailableOutputs() -> ActionResult<[AudioOutput]>
