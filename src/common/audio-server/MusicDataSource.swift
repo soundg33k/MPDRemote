@@ -352,7 +352,7 @@ final class MusicDataSource
 
 		_queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.updateDatabase()
+			_ = strongSelf._connection.updateDatabase()
 		}
 	}
 
