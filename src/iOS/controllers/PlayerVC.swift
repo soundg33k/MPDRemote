@@ -148,17 +148,19 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 			DispatchQueue.main.async {
 				if volume == -1
 				{
-					self.sliderVolume.isEnabled = false
-					self.btnVolumeLo.isEnabled = false
-					self.btnVolumeHi.isEnabled = false
+					self.sliderVolume.isHidden = true
+					self.btnVolumeLo.isHidden = true
+					self.btnVolumeHi.isHidden = true
 					self.sliderVolume.value = 0
 					self.sliderVolume.accessibilityLabel = NYXLocalizedString("lbl_volume_control_disabled")
 				}
 				else
 				{
-					self.sliderVolume.isEnabled = true
-					self.btnVolumeLo.isEnabled = true
-					self.btnVolumeHi.isEnabled = true
+					self.sliderVolume.isHidden = false
+					self.btnVolumeLo.isHidden = false
+					self.btnVolumeHi.isHidden = false
+					self.btnVolumeLo.isEnabled = volume > 0
+					self.btnVolumeHi.isEnabled = volume < 100
 					self.sliderVolume.value = Float(volume)
 					self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
 				}
@@ -411,8 +413,8 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 				DispatchQueue.main.async {
 					self.sliderVolume.value = tmp
 					self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
-					self.btnVolumeLo.isEnabled = valueToSet > 0;
-					self.btnVolumeHi.isEnabled = valueToSet < 100;
+					self.btnVolumeLo.isEnabled = valueToSet > 0
+					self.btnVolumeHi.isEnabled = valueToSet < 100
 				}
 			}
 		}
