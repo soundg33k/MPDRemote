@@ -27,6 +27,7 @@ import QuartzCore
 protocol ContainerVCDelegate
 {
 	func toggleMenu()
+	func isMenuVisible() -> Bool
 }
 
 protocol CenterViewController
@@ -166,6 +167,11 @@ extension ContainerVC : ContainerVCDelegate
 		}
 
 		showMenu(expand: menuVisible == false)
+	}
+
+	func isMenuVisible() -> Bool
+	{
+		return menuVisible
 	}
 }
 

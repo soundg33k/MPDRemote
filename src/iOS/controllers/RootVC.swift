@@ -586,12 +586,12 @@ extension RootVC : MusicalCollectionViewDelegate
 	func didSelectItem(indexPath: IndexPath)
 	{
 		// If menu is visible ignore default behavior and hide it
-		/*if menuView.visible
+		if (containerDelegate?.isMenuVisible())!
 		{
 			collectionView.deselectItem(at: indexPath, animated: false)
 			showLeftViewAction(nil)
 			return
-		}*/
+		}
 
 		switch _displayType
 		{
