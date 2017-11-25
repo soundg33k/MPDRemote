@@ -33,25 +33,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	private(set) var homeVC: UIViewController! = nil
 	// Server configuration VC
 	private(set) lazy var serverVC: UIViewController = {
-		let sb = UIStoryboard(name: "main", bundle: nil)
+		let sb = UIStoryboard(name: "main-iphone", bundle: nil)
 		let vc = sb.instantiateViewController(withIdentifier: "ServerNVC")
 		return vc
 	}()
 	// Player VC
 	private(set) lazy var playerVC: PlayerVC = {
-		let sb = UIStoryboard(name: "main", bundle: nil)
+		let sb = UIStoryboard(name: "main-iphone", bundle: nil)
 		let vc = sb.instantiateViewController(withIdentifier: "PlayerVC")
 		return vc as! PlayerVC
 	}()
 	// Stats VC
 	private(set) lazy var statsVC: UIViewController = {
-		let sb = UIStoryboard(name: "main", bundle: nil)
+		let sb = UIStoryboard(name: "main-iphone", bundle: nil)
 		let vc = sb.instantiateViewController(withIdentifier: "StatsNVC")
 		return vc
 	}()
 	// Settings VC
 	private(set) lazy var settingsVC: UIViewController = {
-		let sb = UIStoryboard(name: "main", bundle: nil)
+		let sb = UIStoryboard(name: "main-iphone", bundle: nil)
 		let vc = sb.instantiateViewController(withIdentifier: "SettingsNVC")
 		return vc
 	}()
