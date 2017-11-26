@@ -343,7 +343,7 @@ final class MusicDataSource
 		}
 	}
 
-	func updateDatabase(_ callback: @escaping ([String : String]) -> Void)
+	func updateDatabase(_ callback: @escaping (Bool) -> Void)
 	{
 		if _connection == nil || _connection.isConnected == false
 		{
@@ -352,7 +352,8 @@ final class MusicDataSource
 
 		_queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.updateDatabase()
+			let result = strongSelf._connection.updateDatabase()
+			callback(result.succeeded)
 		}
 	}
 

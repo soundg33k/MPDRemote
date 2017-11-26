@@ -479,8 +479,17 @@ extension ServerVC
 		}
 		else if indexPath.section == 0 && indexPath.row == 5
 		{
-			MusicDataSource.shared.updateDatabase() {_ in
-				
+			MusicDataSource.shared.updateDatabase() { succeeded in
+				if succeeded == false
+				{
+					DispatchQueue.main.async {
+						let alertController = UIAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_update_mpd_failed"), preferredStyle: .alert)
+						let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
+						}
+						alertController.addAction(okAction)
+						self.present(alertController, animated: true, completion: nil)
+					}
+				}
 			}
 		}
 		else if indexPath.section == 1 && indexPath.row == 3
