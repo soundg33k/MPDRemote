@@ -29,6 +29,8 @@ final class OperationManager
 	static let shared = OperationManager()
 	// Global operation queue
 	private var operationQueue: OperationQueue! = nil
+	//
+	//private var _bla = [String]()
 
 	// MARK: - Initializers
 	init()
@@ -39,11 +41,27 @@ final class OperationManager
 
 	func addOperation(_ operation: Operation)
 	{
+		/*if operation is CoverOperation
+		{
+			let op = operation as! CoverOperation
+			if _bla.contains(op.album.uniqueIdentifier)
+			{
+				return
+			}
+			else
+			{
+				_bla.append(op.album.uniqueIdentifier)
+				op.completionBlock = { [weak self] in
+					self?._bla.removeObject(object: op.album.uniqueIdentifier)
+				}
+			}
+		}*/
 		operationQueue.addOperation(operation)
 	}
 
 	func cancelAllOperations()
 	{
+		//_bla.removeAll()
 		operationQueue.cancelAllOperations()
 	}
 }

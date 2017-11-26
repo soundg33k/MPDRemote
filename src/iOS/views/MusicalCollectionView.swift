@@ -169,12 +169,12 @@ final class MusicalCollectionView : UICollectionView
 	}
 
 	// MARK: - Private
-	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
+	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
 	{
 		let key = album.uniqueIdentifier
-		if let cop = _downloadOperations[key] as! CoverOperation?
+		if let _ = _downloadOperations[key]
 		{
-			return cop
+			return
 		}
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
 		weak var weakOperation = downloadOperation
@@ -191,8 +191,6 @@ final class MusicalCollectionView : UICollectionView
 		_downloadOperations[key] = downloadOperation
 
 		OperationManager.shared.addOperation(downloadOperation)
-
-		return downloadOperation
 	}
 
 	fileprivate func setCollectionLayout(animated: Bool)
@@ -349,11 +347,11 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 		else
 		{
-			if let op = cell.associatedObject as! CoverOperation?
+			/*if let op = cell.associatedObject as! CoverOperation?
 			{
 				Logger.shared.log(type: .debug, message: "canceling \(op)")
 				op.cancel()
-			}
+			}*/
 
 			if myDelegate.isSearching(actively: true)
 			{
@@ -364,7 +362,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			if album.path != nil
 			{
-				cell.associatedObject = downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
+				downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
 						{
@@ -376,7 +374,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			else
 			{
 				MusicDataSource.shared.getPathForAlbum(album) {
-					cell.associatedObject = self.downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
+					self.downloadCoverForAlbum(album, cropSize: cropSize.cgSizeValue) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
 							{
