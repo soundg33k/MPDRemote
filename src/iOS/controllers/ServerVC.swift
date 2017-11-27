@@ -55,6 +55,7 @@ final class ServerVC : UITableViewController, CenterViewController
 	@IBOutlet private var lblCellWEBPort: UILabel! = nil
 	@IBOutlet private var lblCellWEBCoverName: UILabel! = nil
 	@IBOutlet private var lblClearCache: UILabel! = nil
+	@IBOutlet private var lblUpdateDatabase: UILabel! = nil
 	// MPD Server
 	private var mpdServer: AudioServer?
 	// WEB Server for covers
@@ -98,6 +99,7 @@ final class ServerVC : UITableViewController, CenterViewController
 		lblCellWEBPort.text = NYXLocalizedString("lbl_server_port")
 		lblCellWEBCoverName.text = NYXLocalizedString("lbl_server_covername")
 		lblClearCache.text = NYXLocalizedString("lbl_server_coverclearcache")
+		lblUpdateDatabase.text = NYXLocalizedString("lbl_update_db")
 		tfMPDName.placeholder = NYXLocalizedString("lbl_server_defaultname")
 
 		// Keyboard appearance notifications

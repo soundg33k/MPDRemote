@@ -1560,7 +1560,7 @@
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Update database" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="htf-uY-CP0">
                                                     <rect key="frame" x="16" y="11" width="343" height="22"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -1776,6 +1776,7 @@
                         <outlet property="lblCellWEBPort" destination="PM6-Ma-bBD" id="xjV-tb-Abx"/>
                         <outlet property="lblClearCache" destination="F6M-My-INM" id="qTH-Rn-Wmx"/>
                         <outlet property="lblMPDOutput" destination="b3j-5j-WlL" id="aAL-el-WTb"/>
+                        <outlet property="lblUpdateDatabase" destination="htf-uY-CP0" id="o4A-ed-Pyn"/>
                         <outlet property="tfMPDHostname" destination="hgY-GW-OCq" id="z7D-Kl-0Fu"/>
                         <outlet property="tfMPDName" destination="laC-TR-fsQ" id="aqm-J1-adn"/>
                         <outlet property="tfMPDPassword" destination="Gvp-BY-hz5" id="Ltq-tM-vlj"/>

@@ -139,8 +139,3 @@ extension UIColor
 		return contrast > 1.6
 	}
 }
-
-prefix func ~(c: UIColor) -> UIColor
-{
-	return c.inverted()
-}

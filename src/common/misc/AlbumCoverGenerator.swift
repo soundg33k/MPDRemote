@@ -48,12 +48,12 @@ func generateCoverFromString(_ string: String, size: CGSize, useGradient: Bool =
 	let backgroundColor = UIColor(rgb: string.djb2())
 	if useGradient
 	{
-		if let gradient = makeLinearGradient(startColor: backgroundColor, endColor: ~backgroundColor)
+		if let gradient = makeLinearGradient(startColor: backgroundColor, endColor: backgroundColor.inverted())
 		{
-			return UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: size.width / 4.0)!, fontColor: ~backgroundColor, gradient: gradient, maxSize: size)
+			return UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: size.width / 4.0)!, fontColor: backgroundColor.inverted(), gradient: gradient, maxSize: size)
 		}
 	}
-	return UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: size.width / 4.0)!, fontColor: ~backgroundColor, backgroundColor: backgroundColor, maxSize: size)
+	return UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: size.width / 4.0)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: size)
 }
 
 private func makeLinearGradient(startColor: UIColor, endColor: UIColor) -> CGGradient?

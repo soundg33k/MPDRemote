@@ -38,6 +38,7 @@
 "lbl_enable_logging" = "Enable logging";
 "lbl_send_logs" = "Send logs";
 "lbl_volume_control_disabled" = "Volume control is disabled";
+"lbl_update_db" = "Update database";
 
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";

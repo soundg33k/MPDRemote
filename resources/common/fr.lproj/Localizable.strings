@@ -38,6 +38,7 @@
 "lbl_enable_logging" = "Activer les logs";
 "lbl_send_logs" = "Envoyer les logs";
 "lbl_volume_control_disabled" = "Le contrôle du volume est désactivé";
+"lbl_update_db" = "MaJ base de données";
 
 "lbl_alert_playalbum_shuffle" = "Aléatoire";
 "lbl_alert_playalbum_addqueue" = "Ajouter à la liste";
