@@ -1,4 +1,4 @@
-// RootVC.swift
+// LibraryVC.swift
 // Copyright (c) 2017 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@
 import UIKit
 
 
-final class RootVC : UIViewController, CenterViewController
+final class LibraryVC : UIViewController, CenterViewController
 {
 	// MARK: - Private properties
 	// Albums view
@@ -165,8 +165,7 @@ final class RootVC : UIViewController, CenterViewController
 			else
 			{
 				Logger.shared.log(type: .debug, message: "No MPD server registered yet")
-				//let serverVC = APP_DELEGATE().serverVC
-				//APP_DELEGATE().window?.rootViewController = serverVC
+				containerDelegate?.showServerVC()
 			}
 		}
 
@@ -576,7 +575,7 @@ final class RootVC : UIViewController, CenterViewController
 }
 
 // MARK: - MusicalCollectionViewDelegate
-extension RootVC : MusicalCollectionViewDelegate
+extension LibraryVC : MusicalCollectionViewDelegate
 {
 	func isSearching(actively: Bool) -> Bool
 	{
@@ -608,7 +607,7 @@ extension RootVC : MusicalCollectionViewDelegate
 }
 
 // MARK: - UISearchBarDelegate
-extension RootVC : UISearchBarDelegate
+extension LibraryVC : UISearchBarDelegate
 {
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar)
 	{
@@ -659,7 +658,7 @@ extension RootVC : UISearchBarDelegate
 }
 
 // MARK: - TypeChoiceViewDelegate
-extension RootVC : TypeChoiceViewDelegate
+extension LibraryVC : TypeChoiceViewDelegate
 {
 	func didSelectDisplayType(_ type: DisplayType)
 	{
@@ -699,7 +698,7 @@ extension RootVC : TypeChoiceViewDelegate
 }
 
 // MARK: - UIResponder
-extension RootVC
+extension LibraryVC
 {
 	override var canBecomeFirstResponder: Bool
 	{
@@ -759,7 +758,7 @@ extension NYXNavigationController : UIViewControllerTransitioningDelegate
 }
 
 // MARK: - UIViewControllerPreviewingDelegate
-extension RootVC : UIViewControllerPreviewingDelegate
+extension LibraryVC : UIViewControllerPreviewingDelegate
 {
 	public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
 	{

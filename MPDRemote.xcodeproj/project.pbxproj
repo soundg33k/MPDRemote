@@ -19,7 +19,7 @@
 		1E5653991C908A310049C02D /* TrackTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653701C908A310049C02D /* TrackTableViewCell.swift */; };
 		1E56539A1C908A310049C02D /* AlbumDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653721C908A310049C02D /* AlbumDetailVC.swift */; };
 		1E56539C1C908A310049C02D /* NYXNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653741C908A310049C02D /* NYXNavigationController.swift */; };
-		1E56539D1C908A310049C02D /* RootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653751C908A310049C02D /* RootVC.swift */; };
+		1E56539D1C908A310049C02D /* LibraryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653751C908A310049C02D /* LibraryVC.swift */; };
 		1E56539E1C908A310049C02D /* ServerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653761C908A310049C02D /* ServerVC.swift */; };
 		1E56539F1C908A310049C02D /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653781C908A310049C02D /* Array+Extensions.swift */; };
 		1E5653A01C908A310049C02D /* CGPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653791C908A310049C02D /* CGPoint+Extensions.swift */; };
@@ -147,7 +147,7 @@
 		1E5653701C908A310049C02D /* TrackTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackTableViewCell.swift; sourceTree = "<group>"; };
 		1E5653721C908A310049C02D /* AlbumDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AlbumDetailVC.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1E5653741C908A310049C02D /* NYXNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYXNavigationController.swift; sourceTree = "<group>"; };
-		1E5653751C908A310049C02D /* RootVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootVC.swift; sourceTree = "<group>"; };
+		1E5653751C908A310049C02D /* LibraryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryVC.swift; sourceTree = "<group>"; };
 		1E5653761C908A310049C02D /* ServerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerVC.swift; sourceTree = "<group>"; };
 		1E5653781C908A310049C02D /* Array+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "Array+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1E5653791C908A310049C02D /* CGPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "CGPoint+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -426,9 +426,9 @@
 				1EB93AA11CB3FC7900EA5339 /* ArtistsVC.swift */,
 				438369431EA91135009520E6 /* AudioOutputsTVC.swift */,
 				43C300E61FC9B04C00A02218 /* ContainerVC.swift */,
+				1E5653751C908A310049C02D /* LibraryVC.swift */,
 				1E441D4A1CAC048C009DCEF4 /* PlayerVC.swift */,
 				433304FF1DE601B1003469F4 /* PlaylistDetailVC.swift */,
-				1E5653751C908A310049C02D /* RootVC.swift */,
 				1E5653761C908A310049C02D /* ServerVC.swift */,
 				43BE323F1DB5083A0062A7B1 /* SettingsVC.swift */,
 				43C300E71FC9B04D00A02218 /* SideMenuVC.swift */,
@@ -836,7 +836,7 @@
 				437583601FBF0B6B00196F35 /* Settings.swift in Sources */,
 				43DCAFA51D91940C00D0B908 /* CoverWebServer.swift in Sources */,
 				436736561D9AC68D00ECBCFB /* ZeroConfServerTableViewCell.swift in Sources */,
-				1E56539D1C908A310049C02D /* RootVC.swift in Sources */,
+				1E56539D1C908A310049C02D /* LibraryVC.swift in Sources */,
 				1E5653B41C908A310049C02D /* CoverOperation.swift in Sources */,
 				1E5653A21C908A310049C02D /* CGSize+Extensions.swift in Sources */,
 				1E5653AD1C908A310049C02D /* MathUtilities.swift in Sources */,

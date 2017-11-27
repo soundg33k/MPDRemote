@@ -117,7 +117,7 @@ final class CoverOperation : Operation
 		}
 
 		// No cover stuff configured, abort
-		if String.isNullOrWhiteSpace(server.hostname) || String.isNullOrWhiteSpace(server.coverName)
+		/*if String.isNullOrWhiteSpace(server.hostname) || String.isNullOrWhiteSpace(server.coverName)
 		{
 			Logger.shared.log(type: .error, message: "The web server configured is invalid. hostname = \(server.hostname) coverName = \(server.coverName)")
 			isFinished = true
@@ -144,6 +144,13 @@ final class CoverOperation : Operation
 		guard let finalURL = urlComponents.url else
 		{
 			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
+			isFinished = true
+			return
+		}*/
+
+		guard let finalURL = server.coverURLForPath(path) else
+		{
+			Logger.shared.log(type: .error, message: "Unable to create URL for <\(path)>")
 			isFinished = true
 			return
 		}

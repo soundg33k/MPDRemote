@@ -28,6 +28,7 @@ protocol ContainerVCDelegate
 {
 	func toggleMenu()
 	func isMenuVisible() -> Bool
+	func showServerVC()
 }
 
 protocol CenterViewController
@@ -173,6 +174,19 @@ extension ContainerVC : ContainerVCDelegate
 	{
 		return menuVisible
 	}
+
+	func showServerVC()
+	{
+		if self.selectedVC != .server
+		{
+			self.selectedVC = .server
+			_updateCenterVC()
+			if menuVisible
+			{
+				self.toggleMenu()
+			}
+		}
+	}
 }
 
 // MARK: - SideMenuVCDelegate
@@ -251,8 +265,7 @@ private extension UIStoryboard
 
 	static func libraryVC() -> NYXNavigationController?
 	{
-		let root = main().instantiateInitialViewController() as? NYXNavigationController
-		return root
+		return main().instantiateViewController(withIdentifier: "RootNVC") as? NYXNavigationController
 	}
 
 	static func serverTVC() -> NYXNavigationController?
