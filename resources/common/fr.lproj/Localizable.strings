@@ -50,6 +50,7 @@
 "lbl_alert_logsexport_fail_msg" = "L'exportation des logs a échoué";
 "lbl_alert_nomailaccount_msg" = "Pas de compte mail configuré";
 "lbl_alert_update_mpd_failed" = "Echec de la mise-à-jour de la base de données MPD";
+"lbl_alert_update_mpd_succeeded" = "Base de données mise-à-jour avec succès";
 
 "lbl_server_name" = "Nom";
 "lbl_server_host" = "Serveur";

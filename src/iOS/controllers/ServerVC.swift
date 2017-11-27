@@ -480,14 +480,14 @@ extension ServerVC
 		else if indexPath.section == 0 && indexPath.row == 5
 		{
 			MusicDataSource.shared.updateDatabase() { succeeded in
-				if succeeded == false
-				{
-					DispatchQueue.main.async {
-						let alertController = UIAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_update_mpd_failed"), preferredStyle: .alert)
-						let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
-						}
-						alertController.addAction(okAction)
-						self.present(alertController, animated: true, completion: nil)
+				DispatchQueue.main.async {
+					if succeeded == false
+					{
+						MessageView.shared.showWithMessage(message: Message(content: NYXLocalizedString("lbl_alert_update_mpd_failed"), type: .error))
+					}
+					else
+					{
+						MessageView.shared.showWithMessage(message: Message(content: NYXLocalizedString("lbl_alert_update_mpd_succeeded"), type: .success))
 					}
 				}
 			}
