@@ -202,7 +202,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 		}
 	}
 
-	/*private var _associatedKey = "fr.whine.key.cell"
+	private var _associatedKey = "fr.whine.key.cell"
 	var associatedObject: Any?
 	{
 		set
@@ -213,5 +213,5 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 		{
 			return objc_getAssociatedObject(self, &_associatedKey)
 		}
-	}*/
+	}
 }
