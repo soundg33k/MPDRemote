@@ -265,7 +265,7 @@ private extension UIStoryboard
 
 	static func libraryVC() -> NYXNavigationController?
 	{
-		return main().instantiateViewController(withIdentifier: "RootNVC") as? NYXNavigationController
+		return main().instantiateViewController(withIdentifier: "LibraryNVC") as? NYXNavigationController
 	}
 
 	static func serverTVC() -> NYXNavigationController?
