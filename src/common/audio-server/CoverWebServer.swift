@@ -47,7 +47,7 @@ struct CoverWebServer : Codable, Equatable
 	init(name: String, hostname: String, port: UInt16, coverName: String)
 	{
 		self.name = name
-		self.hostname = CoverWebServer.sanitizeHostname(hostname)
+		self.hostname = CoverWebServer.sanitizeHostname(hostname, port)
 		self.port = port
 		self.coverName = coverName
 	}
@@ -69,7 +69,7 @@ struct CoverWebServer : Codable, Equatable
 	}
 
 	// MARK: - Private
-	private static func sanitizeHostname(_ hostname: String) -> String
+	private static func sanitizeHostname(_ hostname: String, _ port: UInt16) -> String
 	{
 		var h: String
 		if hostname.hasPrefix("http://") || hostname.hasPrefix("https://")
@@ -78,7 +78,14 @@ struct CoverWebServer : Codable, Equatable
 		}
 		else
 		{
-			h = "http://" + hostname
+			if port == 443
+			{
+				h = "https://" + hostname
+			}
+			else
+			{
+				h = "http://" + hostname
+			}
 		}
 
 		if h.last == "/"

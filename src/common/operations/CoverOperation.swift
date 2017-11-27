@@ -85,11 +85,15 @@ final class CoverOperation : Operation
 		}
 
 		// No path for album, abort
-		guard let path = album.path else
+		guard var path = album.path else
 		{
 			Logger.shared.log(type: .error, message: "No path defined for album <\(album.name)>")
 			isFinished = true
 			return
+		}
+		if path[0] != "/"
+		{
+			path = "/" + path
 		}
 
 		// No mpd server configured, abort
@@ -129,10 +133,17 @@ final class CoverOperation : Operation
 			return
 		}
 
-		let urlAsString = "\(server.hostname):\(server.port)\(fullCoverFilePath[0] == "/" ? "" : "/")\(fullCoverFilePath)"
-		guard let finalURL = URL(string: urlAsString) else
+		guard var urlComponents = URLComponents(string: server.hostname) else
 		{
-			Logger.shared.log(type: .error, message: "URL error <\(urlAsString)>")
+			Logger.shared.log(type: .error, message: "Unable to create URL components for <\(server.hostname)>")
+			isFinished = true
+			return
+		}
+		urlComponents.port = Int(server.port)
+		urlComponents.path = fullCoverFilePath
+		guard let finalURL = urlComponents.url else
+		{
+			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
 			isFinished = true
 			return
 		}
