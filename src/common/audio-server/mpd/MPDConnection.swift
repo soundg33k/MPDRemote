@@ -835,7 +835,6 @@ final class MPDConnection : AudioServerConnection
 		entity["mpduptime"] = String(mpduptime)
 		entity["mpdplaytime"] = String(mpdplaytime)
 		entity["mpddbupdate"] = String(mpddbupdate)
-		//let entity = ["albums" : String(nalbums), "artists" : String(nartists), "songs" : String(nsongs), "dbplaytime" : String(dbplaytime), "mpduptime" : String(mpduptime), "mpdplaytime" : String(mpdplaytime), "mpddbupdate" : String(mpddbupdate)]
 		return ActionResult<[String : String]>(succeeded: true, entity: entity)
 	}
 

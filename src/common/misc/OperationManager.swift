@@ -37,6 +37,7 @@ final class OperationManager
 		operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
 	}
 
+	// MARK: - Public
 	func addOperation(_ operation: Operation)
 	{
 		operationQueue.addOperation(operation)
