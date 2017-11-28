@@ -76,6 +76,11 @@ final class ContainerVC : UIViewController
 		_updateCenterVC()
 	}
 
+	override var preferredStatusBarStyle: UIStatusBarStyle
+	{
+		return centerViewController != nil ? centerViewController.preferredStatusBarStyle : .default
+	}
+
 	// MARK: - Private
 	private func _updateCenterVC()
 	{
