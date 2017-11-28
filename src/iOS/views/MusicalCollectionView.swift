@@ -401,7 +401,7 @@ extension MusicalCollectionView : UICollectionViewDelegate
 	func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
 	{
 		// When searching things can go wrong, this prevent some crashes
-		let src = myDelegate.isSearching(actively: false) ? searchResults : items
+		/*let src = myDelegate.isSearching(actively: false) ? searchResults : items
 		if indexPath.row >= src.count
 		{
 			return
@@ -424,13 +424,13 @@ extension MusicalCollectionView : UICollectionViewDelegate
 		guard let album = tmpAlbum else { return }
 
 		// Remove download cover operation if still in queue
-		let key = album.uniqueIdentifier
+		/et key = album.uniqueIdentifier
 		if let op = _downloadOperations[key] as! CoverOperation?
 		{
 			Logger.shared.log(type: .debug, message: "canceling \(op)")
 			_downloadOperations.removeValue(forKey: key)
 			op.cancel()
-		}
+		}*/
 	}
 }
 

@@ -97,6 +97,21 @@ struct CoverWebServer : Codable, Equatable
 			}
 			urlPath = urlPath + path
 		}
+
+		guard let tmp = urlPath.last else
+		{
+			return nil
+		}
+
+		if tmp != "/"
+		{
+			urlPath = urlPath + "/" + coverName
+		}
+		else
+		{
+			urlPath = urlPath + coverName
+		}
+
 		urlComponents.path = urlPath
 
 		guard let finalURL = urlComponents.url else
