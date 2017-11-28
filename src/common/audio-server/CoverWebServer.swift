@@ -82,7 +82,23 @@ struct CoverWebServer : Codable, Equatable
 			return nil
 		}
 		urlComponents.port = Int(port)
-		urlComponents.path = path
+
+		let urlHostname = URL(string: hostname)!
+		var urlPath = urlHostname.path
+		if String.isNullOrWhiteSpace(urlPath) || urlPath == "/"
+		{
+			urlPath = path
+		}
+		else
+		{
+			if urlPath[0] != "/"
+			{
+				urlPath = "/" + urlPath
+			}
+			urlPath = urlPath + path
+		}
+		urlComponents.path = urlPath
+
 		guard let finalURL = urlComponents.url else
 		{
 			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
