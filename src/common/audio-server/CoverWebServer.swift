@@ -76,21 +76,13 @@ struct CoverWebServer : Codable, Equatable
 			return nil
 		}
 
-		let allowedCharacters = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_/.")
-		let fullCoverFileURL = URL(fileURLWithPath: path).appendingPathComponent(coverName)
-		guard let fullCoverFilePath = fullCoverFileURL.path.addingPercentEncoding(withAllowedCharacters: allowedCharacters) else
-		{
-			Logger.shared.log(type: .error, message: "Invalid file URL <\(fullCoverFileURL)>")
-			return nil
-		}
-
 		guard var urlComponents = URLComponents(string: hostname) else
 		{
 			Logger.shared.log(type: .error, message: "Unable to create URL components for <\(hostname)>")
 			return nil
 		}
 		urlComponents.port = Int(port)
-		urlComponents.path = fullCoverFilePath
+		urlComponents.path = path
 		guard let finalURL = urlComponents.url else
 		{
 			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")

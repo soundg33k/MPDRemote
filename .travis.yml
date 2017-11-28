@@ -1,5 +1,5 @@
 language: swift
 osx_image: xcode9
 script:
-    - xcodebuild clean build -project MPDRemote.xcodeproj -scheme MPDRemote -destination "platform=iOS Simulator,name=iPhone 7,OS=10.3" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
-    - xcodebuild clean build -project MPDRemote.xcodeproj -scheme MPDRemote-TV -destination "platform=tvOS Simulator,name=Apple TV,OS=11.0" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
+    - xcodebuild clean build -project MPDRemote.xcodeproj -scheme MPDRemote -destination "platform=iOS Simulator,name=iPhone 7,OS=10.3.1" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
+    #- xcodebuild clean build -project MPDRemote.xcodeproj -scheme MPDRemote-TV -destination "platform=tvOS Simulator,name=Generic tvOS Simulator Device,OS=11.0" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet

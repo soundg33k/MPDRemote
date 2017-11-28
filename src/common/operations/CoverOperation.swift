@@ -57,6 +57,8 @@ final class CoverOperation : Operation
 	private var localURLSession: Foundation.URLSession {
 		return Foundation.URLSession(configuration: localURLSessionConfiguration, delegate: self, delegateQueue: nil)
 	}
+	// URL
+	private var coverURL: URL? = nil
 
 	// MARK : Public properties
 	// Album
@@ -116,44 +118,13 @@ final class CoverOperation : Operation
 			return
 		}
 
-		// No cover stuff configured, abort
-		/*if String.isNullOrWhiteSpace(server.hostname) || String.isNullOrWhiteSpace(server.coverName)
-		{
-			Logger.shared.log(type: .error, message: "The web server configured is invalid. hostname = \(server.hostname) coverName = \(server.coverName)")
-			isFinished = true
-			return
-		}
-
-		let allowedCharacters = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_/.")
-		let fullCoverFileURL = URL(fileURLWithPath: path).appendingPathComponent(server.coverName)
-		guard let fullCoverFilePath = fullCoverFileURL.path.addingPercentEncoding(withAllowedCharacters: allowedCharacters) else
-		{
-			Logger.shared.log(type: .error, message: "Invalid file URL <\(fullCoverFileURL)>")
-			isFinished = true
-			return
-		}
-
-		guard var urlComponents = URLComponents(string: server.hostname) else
-		{
-			Logger.shared.log(type: .error, message: "Unable to create URL components for <\(server.hostname)>")
-			isFinished = true
-			return
-		}
-		urlComponents.port = Int(server.port)
-		urlComponents.path = fullCoverFilePath
-		guard let finalURL = urlComponents.url else
-		{
-			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
-			isFinished = true
-			return
-		}*/
-
 		guard let finalURL = server.coverURLForPath(path) else
 		{
 			Logger.shared.log(type: .error, message: "Unable to create URL for <\(path)>")
 			isFinished = true
 			return
 		}
+		self.coverURL = finalURL
 
 		var request = URLRequest(url: finalURL)
 		request.addValue("image/*", forHTTPHeaderField: "Accept")
@@ -167,7 +138,7 @@ final class CoverOperation : Operation
 	{
 		guard let cover = UIImage(data: incomingData) else
 		{
-			Logger.shared.log(type: .error, message: "Invalid cover data for <\(album.name)> (\(incomingData.count)b)")
+			Logger.shared.log(type: .error, message: "Invalid cover data for <\(album.name)> (\(incomingData.count)b) [\(String(describing: coverURL))]")
 			return
 		}
 		guard let thumbnail = cover.smartCropped(toSize: cropSize) else

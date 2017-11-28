@@ -349,11 +349,11 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 		else
 		{
-			if let op = cell.associatedObject as! CoverOperation?
+			/*if let op = cell.associatedObject as! CoverOperation?
 			{
 				Logger.shared.log(type: .debug, message: "canceling \(op)")
 				op.cancel()
-			}
+			}*/
 
 			if myDelegate.isSearching(actively: true)
 			{
