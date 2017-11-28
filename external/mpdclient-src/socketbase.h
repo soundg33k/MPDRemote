@@ -29,29 +29,19 @@
 /*! \file
  * \brief MPD client library
  *
- * Do not include this header directly.  Use mpd/client.h or
- * mpd/parser.h instead.
+ * Do not include this header directly.  Use mpd/client.h instead.
  */
 
-#ifndef MPD_PROTOCOL_H
-#define MPD_PROTOCOL_H
+#ifndef LIBMPDCLIENT_SOCKET_H
+#define LIBMPDCLIENT_SOCKET_H
 
-enum mpd_server_error {
-	MPD_SERVER_ERROR_UNK = -1,
-
-	MPD_SERVER_ERROR_NOT_LIST = 1,
-	MPD_SERVER_ERROR_ARG = 2,
-	MPD_SERVER_ERROR_PASSWORD = 3,
-	MPD_SERVER_ERROR_PERMISSION = 4,
-	MPD_SERVER_ERROR_UNKNOWN_CMD = 5,
-
-	MPD_SERVER_ERROR_NO_EXIST = 50,
-	MPD_SERVER_ERROR_PLAYLIST_MAX = 51,
-	MPD_SERVER_ERROR_SYSTEM = 52,
-	MPD_SERVER_ERROR_PLAYLIST_LOAD = 53,
-	MPD_SERVER_ERROR_UPDATE_ALREADY = 54,
-	MPD_SERVER_ERROR_PLAYER_SYNC = 55,
-	MPD_SERVER_ERROR_EXIST = 56,
-};
+#ifdef WIN32
+#include <winsock2.h>
+typedef SOCKET mpd_socket_t;
+#define MPD_INVALID_SOCKET INVALID_SOCKET
+#else
+typedef int mpd_socket_t;
+#define MPD_INVALID_SOCKET -1
+#endif
 
 #endif
