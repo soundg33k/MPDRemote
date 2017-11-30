@@ -25,8 +25,8 @@ import UIKit
 
 protocol SideMenuVCDelegate
 {
-	func didSelectMenuItem(_ selectedVC: SelectedVC)
-	func getSelectedController() -> SelectedVC
+	func didSelectMenuItem(_ selectedVC: SelectedVCType)
+	func getSelectedController() -> SelectedVCType
 }
 
 final class SideMenuVC : UIViewController
@@ -114,21 +114,21 @@ extension SideMenuVC : UITableViewDelegate
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
 		tableView.deselectRow(at: indexPath, animated: false)
-		var selectedVC = SelectedVC.library
+		var selectedVC = SelectedVCType.library
 		switch (indexPath.row)
 		{
-		case 0:
-			selectedVC = .library
-		case 1:
-			selectedVC = .server
-		case 2:
-			selectedVC = .settings
-		case 3:
-			selectedVC = .stats
-		case numberOfRows:
-			return
-		default:
-			break
+			case 0:
+				selectedVC = .library
+			case 1:
+				selectedVC = .server
+			case 2:
+				selectedVC = .settings
+			case 3:
+				selectedVC = .stats
+			case numberOfRows:
+				return
+			default:
+				break
 		}
 
 		/*if newTopViewController === APP_DELEGATE().homeVC

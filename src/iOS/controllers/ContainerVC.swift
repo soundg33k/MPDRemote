@@ -36,7 +36,7 @@ protocol CenterViewController
 	var containerDelegate: ContainerVCDelegate? {get set}
 }
 
-enum SelectedVC
+enum SelectedVCType
 {
 	case library
 	case settings
@@ -48,11 +48,14 @@ final class ContainerVC : UIViewController
 {
 	// MARK: - Private properties
 	// Main VC
-	private var centerViewController: NYXNavigationController! = nil
+	private var mainViewController: NYXNavigationController! = nil
 	// Menu VC
-	private var leftViewController: SideMenuVC? = nil
-	// Offset
-	private let expandedOffset: CGFloat = 120.0
+	private var menuViewController: SideMenuVC? = nil
+	// VCs
+	private var libraryViewController: NYXNavigationController! = nil
+	private var serverViewController: NYXNavigationController! = nil
+	private var settingsViewController: NYXNavigationController! = nil
+	private var statsViewController: NYXNavigationController! = nil
 	// Current display state
 	private var menuVisible = false
 	{
@@ -62,7 +65,7 @@ final class ContainerVC : UIViewController
 		}
 	}
 	// Current displayed VC
-	private var selectedVC = SelectedVC.library
+	private var selectedVCType = SelectedVCType.library
 	// Pan gesture
 	private var panGestureRecognizer: UIPanGestureRecognizer! = nil
 
@@ -73,54 +76,66 @@ final class ContainerVC : UIViewController
 
 		panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
 
-		_updateCenterVC()
+		self._updateCenterVC()
 	}
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return centerViewController != nil ? centerViewController.preferredStatusBarStyle : .default
+		return mainViewController != nil ? mainViewController.preferredStatusBarStyle : .default
 	}
 
 	// MARK: - Private
 	private func _updateCenterVC()
 	{
 		// Remove current VC
-		if let currentCenterVC = centerViewController
+		if let currentCenterVC = mainViewController
 		{
-			if let v = currentCenterVC.view
+			if let currentCenterVCView = currentCenterVC.view
 			{
-				v.removeGestureRecognizer(panGestureRecognizer)
+				currentCenterVCView.removeGestureRecognizer(panGestureRecognizer)
 			}
 			currentCenterVC.remove()
 		}
 
-		// Instantiate new VC
-		let newVC: NYXNavigationController!
-		switch self.selectedVC
+		// Add the new VC
+		switch selectedVCType
 		{
 			case .library:
-				newVC = UIStoryboard.libraryVC()
+				if libraryViewController == nil
+				{
+					libraryViewController = UIStoryboard.libraryVC()
+				}
+				mainViewController = libraryViewController
 			case .server:
-				newVC = UIStoryboard.serverTVC()
+				if serverViewController == nil
+				{
+					serverViewController = UIStoryboard.serverTVC()
+				}
+				mainViewController = serverViewController
 			case .settings:
-				newVC = UIStoryboard.settingsTVC()
+				if settingsViewController == nil
+				{
+					settingsViewController = UIStoryboard.settingsTVC()
+				}
+				mainViewController = settingsViewController
 			case .stats:
-				newVC = UIStoryboard.statsTVC()
+				if statsViewController == nil
+				{
+					statsViewController = UIStoryboard.statsTVC()
+				}
+				mainViewController = statsViewController
 		}
+		self.add(mainViewController)
 
-		// Add the new VC
-		centerViewController = newVC
-		self.add(centerViewController)
-
-		var vc = centerViewController.topViewController as! CenterViewController
+		var vc = mainViewController.topViewController as! CenterViewController
 		vc.containerDelegate = self
 
-		centerViewController.view.addGestureRecognizer(panGestureRecognizer)
+		mainViewController.view.addGestureRecognizer(panGestureRecognizer)
 	}
 
 	private func addMenuViewController()
 	{
-		guard leftViewController == nil else { return }
+		guard menuViewController == nil else { return }
 
 		if let vc = UIStoryboard.leftViewController()
 		{
@@ -130,7 +145,7 @@ final class ContainerVC : UIViewController
 			addChildViewController(vc)
 			vc.didMove(toParentViewController: self)
 
-			leftViewController = vc
+			menuViewController = vc
 		}
 	}
 
@@ -138,27 +153,32 @@ final class ContainerVC : UIViewController
 	{
 		if expand
 		{
-			self.menuVisible = true
+			menuVisible = true
 			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-				self.centerViewController.view.frame.origin.x = self.centerViewController.view.frame.width - self.expandedOffset
+				self.mainViewController.view.frame.origin.x = self.mainViewController.view.frame.width - (UIScreen.main.bounds.width / 3.0)
 			}, completion: { finished in
 			})
 		}
 		else
 		{
+			// First time loading a VC
+			if Int(mainViewController.view.frame.origin.x) == 0
+			{
+				mainViewController.view.frame.origin.x = mainViewController.view.frame.width - (UIScreen.main.bounds.width / 3.0)
+			}
 			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-				self.centerViewController.view.frame.origin.x = 0.0
+				self.mainViewController.view.frame.origin.x = 0.0
 			}, completion: { finished in
 				self.menuVisible = false
-				self.leftViewController?.view.removeFromSuperview()
-				self.leftViewController = nil
+				self.menuViewController?.view.removeFromSuperview()
+				self.menuViewController = nil
 			})
 		}
 	}
 
 	private func toggleShadow(_ showShadow: Bool)
 	{
-		centerViewController.view.layer.shadowOpacity = showShadow ? 0.8 : 0.0
+		mainViewController.view.layer.shadowOpacity = showShadow ? 0.8 : 0.0
 	}
 }
 
@@ -169,10 +189,10 @@ extension ContainerVC : ContainerVCDelegate
 	{
 		if menuVisible == false
 		{
-			addMenuViewController()
+			self.addMenuViewController()
 		}
 
-		showMenu(expand: menuVisible == false)
+		self.showMenu(expand: menuVisible == false)
 	}
 
 	func isMenuVisible() -> Bool
@@ -182,10 +202,10 @@ extension ContainerVC : ContainerVCDelegate
 
 	func showServerVC()
 	{
-		if self.selectedVC != .server
+		if selectedVCType != .server
 		{
-			self.selectedVC = .server
-			_updateCenterVC()
+			selectedVCType = .server
+			self._updateCenterVC()
 			if menuVisible
 			{
 				self.toggleMenu()
@@ -197,19 +217,19 @@ extension ContainerVC : ContainerVCDelegate
 // MARK: - SideMenuVCDelegate
 extension ContainerVC : SideMenuVCDelegate
 {
-	func didSelectMenuItem(_ selectedVC: SelectedVC)
+	func didSelectMenuItem(_ selectedVC: SelectedVCType)
 	{
-		if self.selectedVC != selectedVC
+		if selectedVC != selectedVC
 		{
-			self.selectedVC = selectedVC
-			_updateCenterVC()
+			selectedVCType = selectedVC
+			self._updateCenterVC()
 			self.toggleMenu()
 		}
 	}
 
-	func getSelectedController() -> SelectedVC
+	func getSelectedController() -> SelectedVCType
 	{
-		return self.selectedVC
+		return selectedVCType
 	}
 }
 
@@ -227,13 +247,13 @@ extension ContainerVC : UIGestureRecognizerDelegate
 				{
 					if leftToRight
 					{
-						addMenuViewController()
+						self.addMenuViewController()
 					}
 					else
 					{
 						recognizer.isEnabled = false
 					}
-					toggleShadow(true)
+					self.toggleShadow(true)
 				}
 			case .changed:
 				if let rview = recognizer.view
@@ -242,10 +262,10 @@ extension ContainerVC : UIGestureRecognizerDelegate
 					recognizer.setTranslation(.zero, in: view)
 				}
 			case .ended:
-				if let _ = leftViewController, let rview = recognizer.view
+				if let _ = menuViewController, let rview = recognizer.view
 				{
 					let hasMovedGreaterThanHalfway = rview.center.x > view.bounds.size.width
-					showMenu(expand: hasMovedGreaterThanHalfway)
+					self.showMenu(expand: hasMovedGreaterThanHalfway)
 				}
 				recognizer.isEnabled = true
 			case .cancelled:
