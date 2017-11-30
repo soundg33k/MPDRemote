@@ -219,7 +219,7 @@ extension ContainerVC : SideMenuVCDelegate
 {
 	func didSelectMenuItem(_ selectedVC: SelectedVCType)
 	{
-		if selectedVC != selectedVC
+		if selectedVCType != selectedVC
 		{
 			selectedVCType = selectedVC
 			self._updateCenterVC()
