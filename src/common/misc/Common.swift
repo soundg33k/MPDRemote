@@ -22,9 +22,6 @@
 
 import UIKit
 
-/* Ugly AppDelegate shortcut */
-func APP_DELEGATE() -> AppDelegate {return UIApplication.shared.delegate as! AppDelegate}
-
 
 /* RootVC display type */
 enum DisplayType : Int

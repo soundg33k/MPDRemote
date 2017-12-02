@@ -43,11 +43,13 @@ final class Settings
 {
 	// Singletion instance
 	static let shared = Settings()
+	//
+	private var defaults: UserDefaults
 
 	// MARK: - Initializers
 	init()
 	{
-
+		self.defaults = UserDefaults(suiteName: "group.mpdremote.settings")!
 	}
 
 	// MARK: - Public
@@ -59,51 +61,51 @@ final class Settings
 
 	func synchronize()
 	{
-		UserDefaults.standard.synchronize()
+		defaults.synchronize()
 		NSUbiquitousKeyValueStore.default.synchronize()
 	}
 
 	func bool(forKey: String) -> Bool
 	{
-		return UserDefaults.standard.bool(forKey: forKey)
+		return defaults.bool(forKey: forKey)
 	}
 
 	func data(forKey: String) -> Data?
 	{
-		return UserDefaults.standard.data(forKey: forKey)
+		return defaults.data(forKey: forKey)
 	}
 
 	func integer(forKey: String) -> Int
 	{
-		return UserDefaults.standard.integer(forKey: forKey)
+		return defaults.integer(forKey: forKey)
 	}
 
 	func string(forKey: String) -> String?
 	{
-		return UserDefaults.standard.string(forKey: forKey)
+		return defaults.string(forKey: forKey)
 	}
 
 	func set(_ value: Bool, forKey: String)
 	{
-		UserDefaults.standard.set(value, forKey: forKey)
+		defaults.set(value, forKey: forKey)
 		NSUbiquitousKeyValueStore.default.set(value, forKey: forKey)
 	}
 
 	func set(_ value: Data, forKey: String)
 	{
-		UserDefaults.standard.set(value, forKey: forKey)
+		defaults.set(value, forKey: forKey)
 		NSUbiquitousKeyValueStore.default.set(value, forKey: forKey)
 	}
 
 	func set(_ value: Int, forKey: String)
 	{
-		UserDefaults.standard.set(value, forKey: forKey)
+		defaults.set(value, forKey: forKey)
 		NSUbiquitousKeyValueStore.default.set(value, forKey: forKey)
 	}
 
 	func removeObject(forKey: String)
 	{
-		UserDefaults.standard.removeObject(forKey: forKey)
+		defaults.removeObject(forKey: forKey)
 		NSUbiquitousKeyValueStore.default.removeObject(forKey: forKey)
 	}
 
@@ -114,7 +116,7 @@ final class Settings
 		let columns = CGFloat(3)
 		let span = CGFloat(10)
 		let width = ceil((UIScreen.main.bounds.width / columns) - (2 * span))
-		let defaults: [String: Any] =
+		let defaultsValues: [String: Any] =
 			[
 				kNYXPrefCoversDirectory : coversDirectoryPath,
 				kNYXPrefCoversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width, width))),
@@ -142,8 +144,8 @@ final class Settings
 			fatalError("Failed to create covers directory")
 		}
 
-		UserDefaults.standard.register(defaults: defaults)
-		UserDefaults.standard.synchronize()
+		defaults.register(defaults: defaultsValues)
+		defaults.synchronize()
 	}
 
 	private func _iCloudInit()
@@ -157,10 +159,10 @@ final class Settings
 
 	private func _checkIntegrity()
 	{
-		let keys = UserDefaults.standard.dictionaryRepresentation().keys
+		let keys = defaults.dictionaryRepresentation().keys
 		for key in keys
 		{
-			let localValue = UserDefaults.standard.object(forKey: key)
+			let localValue = defaults.object(forKey: key)
 			if NSUbiquitousKeyValueStore.default.object(forKey: key) == nil
 			{
 				NSUbiquitousKeyValueStore.default.set(localValue, forKey: key)
@@ -195,10 +197,10 @@ final class Settings
 					continue
 				}
 
-				UserDefaults.standard.set(value, forKey: key);
+				defaults.set(value, forKey: key);
 			}
 
-			UserDefaults.standard.synchronize()
+			defaults.synchronize()
 		}
 	}
 }
