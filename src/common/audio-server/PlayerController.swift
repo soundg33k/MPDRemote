@@ -352,6 +352,23 @@ final class PlayerController
 		}
 	}
 
+	func getTrackInformation(_ track: Track, callback: @escaping ([String : String]) -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			let ret = strongSelf._connection.getAudioFormat()
+			if ret.succeeded
+			{
+				callback(ret.entity!)
+			}
+		}
+	}
+
 	// MARK: - Private
 	private func startTimer(_ interval: Int)
 	{

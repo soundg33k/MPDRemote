@@ -46,12 +46,16 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	@IBOutlet private var btnRandom: UIButton! = nil
 	// Repeat button
 	@IBOutlet private var btnRepeat: UIButton! = nil
+	// Song technical info button
+	@IBOutlet private var btnStats: UIButton! = nil
 	// Progress bar
 	@IBOutlet private var sliderPosition: UISlider! = nil
 	// Track title
 	@IBOutlet private var lblElapsedDuration: UILabel! = nil
 	// Track artist name
 	@IBOutlet private var lblRemainingDuration: UILabel! = nil
+	//
+	@IBOutlet private var lblTrackInformation: UILabel! = nil
 	// Volume control
 	@IBOutlet private var sliderVolume: UISlider! = nil
 	// Low volume image
@@ -106,6 +110,13 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+
+		let imageStats = #imageLiteral(resourceName: "btn-stats")
+		btnStats.setImage(imageStats.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
+		btnStats.setImage(imageStats.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnStats.setImage(imageStats.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
+		btnStats.addTarget(self, action: #selector(toggleStats(_:)), for: .touchUpInside)
+		btnStats.accessibilityLabel = NYXLocalizedString("lbl_show_songs_stats")
 
 		coverView.delegate = self
 		// Useless motion effect
@@ -313,6 +324,17 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		PlayerController.shared.setRepeat(loop)
 	}
 
+	@objc func toggleStats(_ sender: Any?)
+	{
+		if lblTrackInformation.isHidden == false
+		{
+			lblTrackInformation.isHidden = true
+			return
+		}
+
+		self.updateCurrentTrackInformation()
+	}
+
 	@objc func changeTrackPositionAction(_ sender: UISlider?)
 	{
 		if let track = PlayerController.shared.currentTrack
@@ -366,6 +388,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		lblTrackArtist.text = track.artist
 		lblAlbumName.text = album.name
 		sliderPosition.maximumValue = Float(track.duration.seconds)
+		self.updateCurrentTrackInformation()
 	}
 
 	@objc func playerStatusChangedNotification(_ aNotification: Notification?)
@@ -407,6 +430,23 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 					self.btnVolumeHi.isEnabled = valueToSet < 100
 				}
 			}
+		}
+	}
+
+	func updateCurrentTrackInformation()
+	{
+		if let track = PlayerController.shared.currentTrack
+		{
+			PlayerController.shared.getTrackInformation(track, callback: { (infos: [String : String]) in
+				let channels = Int(infos["channels"]!)!
+				let bits = Int(infos["bits"]!)!
+				let samplerate = Int(infos["samplerate"]!)!
+				let formatted = "\(bits)Bits / \(samplerate)Hz (\(channels == 1 ? "Mono" : "Stereo"))"
+				DispatchQueue.main.async {
+					self.lblTrackInformation.text = formatted
+					self.lblTrackInformation.isHidden = false
+				}
+			})
 		}
 	}
 }

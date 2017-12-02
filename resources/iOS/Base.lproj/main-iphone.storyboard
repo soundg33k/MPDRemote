@@ -402,8 +402,27 @@
                                                 </mask>
                                             </variation>
                                         </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qFn-f3-m5u">
+                                            <rect key="frame" x="165.5" y="623" width="44" height="44"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="Hte-oe-GfA"/>
+                                                <constraint firstAttribute="width" constant="44" id="zZo-ff-kQy"/>
+                                            </constraints>
+                                            <state key="normal" image="btn-stats"/>
+                                        </button>
+                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="16bits / 44100Hz (Stereo)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZRx-af-Dfu">
+                                            <rect key="frame" x="32" y="367" width="311" height="44"/>
+                                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.75" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="f9y-bO-DVJ"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="ZRx-af-Dfu" firstAttribute="bottom" secondItem="Ew4-hR-lKo" secondAttribute="bottom" id="18S-wd-zOO"/>
                                         <constraint firstAttribute="trailing" secondItem="asM-Pj-CHA" secondAttribute="trailing" id="1Cu-eV-sXw"/>
                                         <constraint firstItem="asM-Pj-CHA" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" id="1Lk-Gb-isw"/>
                                         <constraint firstItem="uvF-2h-IoX" firstAttribute="top" secondItem="5Ip-c5-MCk" secondAttribute="bottom" constant="16" id="1tz-zm-ktS"/>
@@ -411,9 +430,11 @@
                                         <constraint firstItem="axa-kT-1Qb" firstAttribute="top" secondItem="Ew4-hR-lKo" secondAttribute="bottom" constant="8" id="7ao-R4-iVL"/>
                                         <constraint firstItem="F7R-Zg-X0C" firstAttribute="top" secondItem="5Ip-c5-MCk" secondAttribute="bottom" constant="16" id="8RJ-BI-u1h"/>
                                         <constraint firstItem="GBB-qS-lDJ" firstAttribute="top" secondItem="uvF-2h-IoX" secondAttribute="bottom" constant="12" id="8Su-x2-XP4"/>
+                                        <constraint firstItem="ZRx-af-Dfu" firstAttribute="width" secondItem="Ew4-hR-lKo" secondAttribute="width" id="9Ak-xx-nGF"/>
                                         <constraint firstItem="qc6-Xc-sQp" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="32" id="9R9-fC-sdB"/>
                                         <constraint firstAttribute="trailing" secondItem="l8r-jm-h81" secondAttribute="trailing" constant="32" id="9ws-tJ-tzE"/>
                                         <constraint firstItem="l8r-jm-h81" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="32" id="BV4-j7-ahz"/>
+                                        <constraint firstItem="qFn-f3-m5u" firstAttribute="centerX" secondItem="AMx-5w-MWj" secondAttribute="centerX" id="C1d-it-j3M"/>
                                         <constraint firstAttribute="trailing" secondItem="5Ip-c5-MCk" secondAttribute="trailing" constant="32" id="CNI-Iu-LmM"/>
                                         <constraint firstItem="p2C-8V-UiH" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="20" id="E4C-rR-bzy"/>
                                         <constraint firstItem="4ZB-PB-B1m" firstAttribute="top" secondItem="asM-Pj-CHA" secondAttribute="bottom" id="M5z-e0-JkS"/>
@@ -422,6 +443,7 @@
                                         <constraint firstAttribute="trailing" secondItem="zKD-4S-8Av" secondAttribute="trailing" constant="32" id="OEn-pJ-rC9"/>
                                         <constraint firstItem="Ew4-hR-lKo" firstAttribute="top" secondItem="KnL-Ck-MdI" secondAttribute="bottom" constant="20" id="OXu-2t-kDG"/>
                                         <constraint firstAttribute="trailing" secondItem="GBB-qS-lDJ" secondAttribute="trailing" constant="32" id="OYF-YR-yON"/>
+                                        <constraint firstItem="ZRx-af-Dfu" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="32" id="PsM-7U-6SP"/>
                                         <constraint firstAttribute="trailing" secondItem="RrV-dE-rsX" secondAttribute="trailing" constant="32" id="Q8r-DD-KrI"/>
                                         <constraint firstItem="4ZB-PB-B1m" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" id="QSd-f3-c0w"/>
                                         <constraint firstItem="nLD-c8-QP0" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" constant="32" id="Vgi-RP-gLZ"/>
@@ -436,6 +458,7 @@
                                         <constraint firstAttribute="trailing" secondItem="m8O-Rt-LIj" secondAttribute="trailing" constant="20" id="fhA-bc-WaC"/>
                                         <constraint firstItem="KnL-Ck-MdI" firstAttribute="leading" secondItem="AMx-5w-MWj" secondAttribute="leading" id="goX-IK-bL7"/>
                                         <constraint firstAttribute="trailing" secondItem="uvF-2h-IoX" secondAttribute="trailing" constant="32" id="kUm-oa-uT7"/>
+                                        <constraint firstItem="qFn-f3-m5u" firstAttribute="top" secondItem="p2C-8V-UiH" secondAttribute="top" id="kvx-fV-ifH"/>
                                         <constraint firstAttribute="trailing" secondItem="4ZB-PB-B1m" secondAttribute="trailing" id="qCL-5g-2qe"/>
                                         <constraint firstItem="l8r-jm-h81" firstAttribute="width" secondItem="Ew4-hR-lKo" secondAttribute="width" id="tlO-Mk-S51"/>
                                         <constraint firstItem="F7R-Zg-X0C" firstAttribute="centerX" secondItem="AMx-5w-MWj" secondAttribute="centerX" id="wBQ-gd-Dmt"/>
@@ -467,6 +490,7 @@
                         <outlet property="btnPrevious" destination="qc6-Xc-sQp" id="11s-ZW-NEt"/>
                         <outlet property="btnRandom" destination="m8O-Rt-LIj" id="dD4-Un-mmo"/>
                         <outlet property="btnRepeat" destination="p2C-8V-UiH" id="gLo-44-JrW"/>
+                        <outlet property="btnStats" destination="qFn-f3-m5u" id="JbK-L0-Zzv"/>
                         <outlet property="btnVolumeHi" destination="HsO-fi-xJO" id="tH1-T1-CYJ"/>
                         <outlet property="btnVolumeLo" destination="zoB-Qf-DqW" id="8Nc-Jv-Rbc"/>
                         <outlet property="coverView" destination="Ew4-hR-lKo" id="pTi-oe-AbQ"/>
@@ -474,6 +498,7 @@
                         <outlet property="lblElapsedDuration" destination="4Ye-Jx-h9a" id="b7C-e8-fmC"/>
                         <outlet property="lblRemainingDuration" destination="VvE-vk-dMn" id="0EZ-5c-gbI"/>
                         <outlet property="lblTrackArtist" destination="bx5-xD-8Ba" id="l8Y-jV-rGf"/>
+                        <outlet property="lblTrackInformation" destination="ZRx-af-Dfu" id="4m0-Tx-HCu"/>
                         <outlet property="lblTrackTitle" destination="vcY-wR-aHq" id="5W3-FT-dVk"/>
                         <outlet property="sliderPosition" destination="5Ip-c5-MCk" id="WYg-07-Qs5"/>
                         <outlet property="sliderVolume" destination="RrV-dE-rsX" id="5k5-Jm-SWg"/>
@@ -2306,6 +2331,7 @@
         <image name="btn-random" width="24" height="24"/>
         <image name="btn-repeat" width="24" height="24"/>
         <image name="btn-search" width="24" height="24"/>
+        <image name="btn-stats" width="24" height="24"/>
         <image name="img-volume-hi" width="18" height="18"/>
         <image name="img-volume-lo" width="18" height="18"/>
     </resources>

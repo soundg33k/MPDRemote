@@ -222,36 +222,38 @@ final class AutoScrollLabel : UIView
 
 	@objc public func scrollLabelIfNeeded()
 	{
-		if String.isNullOrWhiteSpace(text)
-		{
-			return
-		}
-
-		let labelWidth = mainLabel.bounds.width
-		if labelWidth <= self.bounds.width
-		{
-			return
-		}
-
-		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(AutoScrollLabel.scrollLabelIfNeeded), object: nil)
-
-		scrollView.layer.removeAllAnimations()
-
-		let scrollLeft = (direction == .left)
-		self.scrollView.contentOffset = scrollLeft ? .zero : CGPoint(x: labelWidth + kNYXLabelSpacing, y: 0)
-
-		// Scroll animation
-		let duration = Double(labelWidth) / scrollSpeed
-		UIView.animate(withDuration: duration, delay: pauseInterval, options: [.curveLinear, .allowUserInteraction], animations: {() -> Void in
-			self.scrollView.contentOffset = scrollLeft ? CGPoint(x: labelWidth + kNYXLabelSpacing, y: 0) : .zero
-		}) { finished in
-			self.isScrolling = false
-
-			self.applyGradientMaskForFadeLength(fadeLengthIn: self.fadeLength, fade: false)
-
-			if finished
+		DispatchQueue.main.async {
+			if String.isNullOrWhiteSpace(self.text)
 			{
-				self.performSelector(inBackground: #selector(AutoScrollLabel.scrollLabelIfNeeded), with: nil)
+				return
+			}
+
+			let labelWidth = self.mainLabel.bounds.width
+			if labelWidth <= self.bounds.width
+			{
+				return
+			}
+
+			NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(AutoScrollLabel.scrollLabelIfNeeded), object: nil)
+
+			self.scrollView.layer.removeAllAnimations()
+
+			let scrollLeft = (self.direction == .left)
+			self.scrollView.contentOffset = scrollLeft ? .zero : CGPoint(x: labelWidth + kNYXLabelSpacing, y: 0)
+
+			// Scroll animation
+			let duration = Double(labelWidth) / self.scrollSpeed
+			UIView.animate(withDuration: duration, delay: self.pauseInterval, options: [.curveLinear, .allowUserInteraction], animations: {() -> Void in
+				self.scrollView.contentOffset = scrollLeft ? CGPoint(x: labelWidth + kNYXLabelSpacing, y: 0) : .zero
+			}) { finished in
+				self.isScrolling = false
+
+				self.applyGradientMaskForFadeLength(fadeLengthIn: self.fadeLength, fade: false)
+
+				if finished
+				{
+					self.performSelector(inBackground: #selector(AutoScrollLabel.scrollLabelIfNeeded), with: nil)
+				}
 			}
 		}
 	}

@@ -95,6 +95,7 @@ protocol AudioServerConnection
 	// MARK: - Player status
 	func getStatus() -> ActionResult<OpaquePointer>
 	func getPlayerInfos() -> ActionResult<[String : Any]>
+	func getAudioFormat() -> ActionResult<[String : String]>
 
 	// MARK: - Stats
 	func getStats() -> ActionResult<[String : String]>

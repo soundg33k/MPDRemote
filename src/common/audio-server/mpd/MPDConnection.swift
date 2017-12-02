@@ -763,6 +763,28 @@ final class MPDConnection : AudioServerConnection
 		return ActionResult<[String : Any]>(succeeded: false, message: Message(content: "No matching album found.", type: .error))
 	}
 
+	func getAudioFormat() -> ActionResult<[String : String]>
+	{
+		let result = getStatus()
+		if result.succeeded == false
+		{
+			return ActionResult<[String : String]>(succeeded: false, entity: nil, messages: result.messages)
+		}
+
+		let status = result.entity!
+		guard let audioFormat = mpd_status_get_audio_format(status) else
+		{
+			return ActionResult<[String : String]>(succeeded: false, entity: nil, messages: result.messages)
+		}
+
+		var object = [String : String]()
+		object["samplerate"] = "\(audioFormat.pointee.sample_rate)"
+		object["bits"] = "\(audioFormat.pointee.bits)"
+		object["channels"] = "\(audioFormat.pointee.channels)"
+
+		return ActionResult<[String : String]>(succeeded: true, entity: object, messages: result.messages)
+	}
+
 	// MARK: - Outputs
 	func getAvailableOutputs() -> ActionResult<[AudioOutput]>
 	{

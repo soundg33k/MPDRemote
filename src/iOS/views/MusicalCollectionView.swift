@@ -159,9 +159,7 @@ final class MusicalCollectionView : UICollectionView
 		self.delegate = self
 		self.isPrefetchingEnabled = true
 		self.prefetchDataSource = self
-
-		let layoutAsTable = false //Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
-		self.layoutType = layoutAsTable ? .table : .collection
+		self.layoutType = .collection
 
 		self.setCollectionLayout(animated: false)
 
