@@ -63,14 +63,19 @@ final class LibraryVC : UIViewController, CenterViewController
 		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
+		// Search button
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
 		navigationItem.rightBarButtonItem = searchButton
 
-		// Hamburger button
-		let b = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
-		b.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
-		navigationItem.leftBarButtonItem = b
+		// Menu button
+		let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
+		menuButton.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
+		// Display layout button
+		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: kNYXPrefLayoutLibraryCollection)
+		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
+		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
+		navigationItem.leftBarButtonItems = [menuButton, displayButton]
 
 		// Searchbar
 		let navigationBar = (navigationController?.navigationBar)!
@@ -93,6 +98,7 @@ final class LibraryVC : UIViewController, CenterViewController
 
 		// Collection view
 		collectionView.myDelegate = self
+		collectionView.layoutType = layoutCollectionViewAsCollection ? .collection : .table
 
 		// Longpress
 		_longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
@@ -211,6 +217,13 @@ final class LibraryVC : UIViewController, CenterViewController
 
 			_serverChanged = false
 		}
+	}
+
+	override func viewDidAppear(_ animated: Bool)
+	{
+		super.viewDidAppear(animated)
+
+
 	}
 
 	override func viewWillDisappear(_ animated: Bool)
@@ -507,6 +520,25 @@ final class LibraryVC : UIViewController, CenterViewController
 	@objc func showLeftViewAction(_ sender: Any?)
 	{
 		containerDelegate?.toggleMenu()
+	}
+
+	@objc func changeCollectionLayoutType(_ sender: Any?)
+	{
+		var b = Settings.shared.bool(forKey: kNYXPrefLayoutLibraryCollection)
+		b = !b
+		Settings.shared.set(b, forKey: kNYXPrefLayoutLibraryCollection)
+		Settings.shared.synchronize()
+
+		collectionView.layoutType = b ? .collection : .table
+		if let buttons = navigationItem.leftBarButtonItems
+		{
+			if buttons.count >= 2
+			{
+				let btn = buttons[1]
+				btn.image = b ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection")
+				btn.accessibilityLabel = NYXLocalizedString(b ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
+			}
+		}
 	}
 
 	// MARK: - Private

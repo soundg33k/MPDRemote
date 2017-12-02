@@ -41,7 +41,7 @@ final class InteractableImageView : UIImageView
 		self.addGestureRecognizer(singleTap)
 
 		// Swipe left
-		let leftSwipe = UISwipeGestureRecognizer()
+		/*let leftSwipe = UISwipeGestureRecognizer()
 		leftSwipe.direction = .left
 		leftSwipe.addTarget(self, action: #selector(swipeLeft(_:)))
 		self.addGestureRecognizer(leftSwipe)
@@ -50,7 +50,7 @@ final class InteractableImageView : UIImageView
 		let rightSwipe = UISwipeGestureRecognizer()
 		rightSwipe.direction = .right
 		rightSwipe.addTarget(self, action: #selector(swipeRight(_:)))
-		self.addGestureRecognizer(rightSwipe)
+		self.addGestureRecognizer(rightSwipe)*/
 	}
 
 	// MARK: - Gestures
@@ -62,7 +62,7 @@ final class InteractableImageView : UIImageView
 		}
 	}
 
-	@objc func swipeLeft(_ gesture: UISwipeGestureRecognizer)
+	/*@objc func swipeLeft(_ gesture: UISwipeGestureRecognizer)
 	{
 		if gesture.state == .ended
 		{
@@ -76,12 +76,12 @@ final class InteractableImageView : UIImageView
 		{
 			self.delegate?.didSwipeRight()
 		}
-	}
+	}*/
 }
 
 protocol InteractableImageViewDelegate : class
 {
 	func didTap()
-	func didSwipeLeft()
-	func didSwipeRight()
+	//func didSwipeLeft()
+	//func didSwipeRight()
 }

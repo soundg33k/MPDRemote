@@ -114,11 +114,20 @@ struct CoverWebServer : Codable, Equatable
 
 		urlComponents.path = urlPath
 
-		guard let finalURL = urlComponents.url else
+		guard let tmpURL = urlComponents.url else
 		{
 			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
 			return nil
 		}
+
+		// Fix grapheme cluster encode
+		var aaa = tmpURL.absoluteString.replacingOccurrences(of: "e%CC%81", with: "%C3%A9") // é
+		aaa = aaa.replacingOccurrences(of: "e%CC%88", with: "%C3%AB") // ë
+		aaa = aaa.replacingOccurrences(of: "a%CC%80", with: "%C3%A0") // à
+		aaa = aaa.replacingOccurrences(of: "c%CC%A7", with: "%C3%A7") // ç
+		aaa = aaa.replacingOccurrences(of: "o%CC%88", with: "%C3%B6") // ö
+
+		let finalURL = URL(string: aaa)
 
 		return finalURL
 	}

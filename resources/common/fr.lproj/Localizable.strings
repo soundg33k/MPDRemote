@@ -77,6 +77,7 @@
 
 "lbl_pref_shaketoplayrandom" = "Secouer pour jouer 1 album aléatoire";
 "lbl_pref_layoutastable" = "Disposition en liste";
+"lbl_pref_layoutascollection" = "Disposition en collection";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";

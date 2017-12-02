@@ -24,7 +24,7 @@ import UIKit
 import QuartzCore
 
 
-protocol ContainerVCDelegate
+protocol ContainerVCDelegate : class
 {
 	func toggleMenu()
 	func isMenuVisible() -> Bool
@@ -33,7 +33,7 @@ protocol ContainerVCDelegate
 
 protocol CenterViewController
 {
-	var containerDelegate: ContainerVCDelegate? {get set}
+	weak var containerDelegate: ContainerVCDelegate? {get set}
 }
 
 enum SelectedVCType
@@ -61,7 +61,7 @@ final class ContainerVC : UIViewController
 	{
 		didSet
 		{
-			toggleShadow(menuVisible)
+			self.toggleShadow(menuVisible)
 		}
 	}
 	// Current displayed VC
@@ -75,6 +75,7 @@ final class ContainerVC : UIViewController
 		super.viewDidLoad()
 
 		panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+		panGestureRecognizer.delegate = self
 
 		self._updateCenterVC()
 	}
@@ -82,6 +83,46 @@ final class ContainerVC : UIViewController
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return mainViewController != nil ? mainViewController.preferredStatusBarStyle : .default
+	}
+
+	// MARK: - Gestures
+	@objc func pan(_ recognizer: UIPanGestureRecognizer)
+	{
+		let leftToRight = (recognizer.velocity(in: view).x > 0)
+
+		switch recognizer.state
+		{
+		case .began:
+			if menuVisible == false
+			{
+				if leftToRight
+				{
+					self.addMenuViewController()
+				}
+				else
+				{
+					recognizer.isEnabled = false
+				}
+				self.toggleShadow(true)
+			}
+		case .changed:
+			if let rview = recognizer.view
+			{
+				rview.center.x = rview.center.x + recognizer.translation(in: view).x
+				recognizer.setTranslation(.zero, in: view)
+			}
+		case .ended:
+			if let _ = menuViewController, let rview = recognizer.view
+			{
+				let hasMovedGreaterThanHalfway = rview.center.x > view.bounds.size.width
+				self.showMenu(expand: hasMovedGreaterThanHalfway)
+			}
+			recognizer.isEnabled = true
+		case .cancelled:
+			recognizer.isEnabled = true
+		default:
+			break
+		}
 	}
 
 	// MARK: - Private
@@ -236,43 +277,19 @@ extension ContainerVC : SideMenuVCDelegate
 // MARK: - UIGestureRecognizerDelegate
 extension ContainerVC : UIGestureRecognizerDelegate
 {
-	@objc func pan(_ recognizer: UIPanGestureRecognizer)
+	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool
 	{
-		let leftToRight = (recognizer.velocity(in: view).x > 0)
-
-		switch recognizer.state
+		if selectedVCType == .library
 		{
-			case .began:
-				if menuVisible == false
+			if let topVC = mainViewController.topViewController
+			{
+				if topVC.isKind(of: LibraryVC.classForCoder()) == false
 				{
-					if leftToRight
-					{
-						self.addMenuViewController()
-					}
-					else
-					{
-						recognizer.isEnabled = false
-					}
-					self.toggleShadow(true)
+					return false
 				}
-			case .changed:
-				if let rview = recognizer.view
-				{
-					rview.center.x = rview.center.x + recognizer.translation(in: view).x
-					recognizer.setTranslation(.zero, in: view)
-				}
-			case .ended:
-				if let _ = menuViewController, let rview = recognizer.view
-				{
-					let hasMovedGreaterThanHalfway = rview.center.x > view.bounds.size.width
-					self.showMenu(expand: hasMovedGreaterThanHalfway)
-				}
-				recognizer.isEnabled = true
-			case .cancelled:
-				recognizer.isEnabled = true
-			default:
-				break
+			}
 		}
+		return true
 	}
 }
 

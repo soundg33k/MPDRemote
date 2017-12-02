@@ -1918,54 +1918,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection headerTitle="User Interface" id="kzg-Vd-jWm">
-                                <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="bwZ-ph-1ww">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bwZ-ph-1ww" id="m2d-aW-Gzv">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ecb-Fz-3dS">
-                                                    <rect key="frame" x="310" y="6" width="51" height="31"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="31" id="cPB-DB-9iL"/>
-                                                        <constraint firstAttribute="width" constant="49" id="qtJ-gB-p4K"/>
-                                                    </constraints>
-                                                    <color key="tintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <color key="onTintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <connections>
-                                                        <action selector="toggleTableLayout:" destination="NNC-tO-Tiv" eventType="valueChanged" id="gp0-vm-DrH"/>
-                                                    </connections>
-                                                </switch>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Layout as table" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7UB-38-gHM">
-                                                    <rect key="frame" x="16" y="0.0" width="240" height="44"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="240" id="BTg-NY-r8n"/>
-                                                        <constraint firstAttribute="height" constant="44" id="e48-IW-7hx"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="ecb-Fz-3dS" secondAttribute="trailing" constant="16" id="4zn-Td-QO8"/>
-                                                <constraint firstItem="7UB-38-gHM" firstAttribute="leading" secondItem="m2d-aW-Gzv" secondAttribute="leading" constant="16" id="I9R-VE-yym"/>
-                                                <constraint firstItem="7UB-38-gHM" firstAttribute="top" secondItem="m2d-aW-Gzv" secondAttribute="top" id="KFg-BY-gIY"/>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7UB-38-gHM" secondAttribute="trailing" constant="20" symbolic="YES" id="hrP-i9-YSP"/>
-                                                <constraint firstItem="ecb-Fz-3dS" firstAttribute="top" secondItem="m2d-aW-Gzv" secondAttribute="top" constant="6" id="sfx-Zy-PtF"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
                             <tableViewSection headerTitle="Behaviour" id="bg9-bq-Ook">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="hFK-ZA-ZeW">
-                                        <rect key="frame" x="0.0" y="155.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hFK-ZA-ZeW" id="ArT-zK-rf3">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -1977,7 +1933,6 @@
                                                         <constraint firstAttribute="width" constant="49" id="5B3-ct-zsh"/>
                                                         <constraint firstAttribute="height" constant="31" id="ee8-9T-PYK"/>
                                                     </constraints>
-                                                    <color key="tintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="onTintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <connections>
                                                         <action selector="toggleShakeToPlay:" destination="NNC-tO-Tiv" eventType="valueChanged" id="tnK-mZ-9NN"/>
@@ -2010,7 +1965,7 @@
                             <tableViewSection headerTitle="Search" id="kt3-iO-BOv">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="sSi-Un-oqM">
-                                        <rect key="frame" x="0.0" y="255.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="155.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sSi-Un-oqM" id="cfM-KF-LnC">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -2033,7 +1988,6 @@
                                                         <constraint firstAttribute="width" constant="49" id="9S5-GT-rpR"/>
                                                         <constraint firstAttribute="height" constant="31" id="mGk-X9-0Gv"/>
                                                     </constraints>
-                                                    <color key="tintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="onTintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <connections>
                                                         <action selector="toggleFuzzySearch:" destination="NNC-tO-Tiv" eventType="valueChanged" id="PJT-oP-N3J"/>
@@ -2055,7 +2009,7 @@
                             <tableViewSection headerTitle="Troubleshooting" id="4ua-Ow-IAx">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="kn1-7h-Ce1">
-                                        <rect key="frame" x="0.0" y="355.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="255.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kn1-7h-Ce1" id="XKj-ON-XXD">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -2077,7 +2031,6 @@
                                                         <constraint firstAttribute="height" constant="31" id="LNp-ph-hCK"/>
                                                         <constraint firstAttribute="width" constant="49" id="vSZ-tD-nEc"/>
                                                     </constraints>
-                                                    <color key="tintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="onTintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <connections>
                                                         <action selector="toggleLogging:" destination="NNC-tO-Tiv" eventType="valueChanged" id="9oK-UP-ZMo"/>
@@ -2095,7 +2048,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="9eb-TW-Pba">
-                                        <rect key="frame" x="0.0" y="399.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="299.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9eb-TW-Pba" id="cvu-2v-7LD">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -2121,7 +2074,7 @@
                             <tableViewSection headerTitle="Version" id="IX6-bh-PEu">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="kcr-BA-9hI">
-                                        <rect key="frame" x="0.0" y="499.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="399.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kcr-BA-9hI" id="esz-EX-BIt">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -2160,12 +2113,10 @@
                     <connections>
                         <outlet property="lblEnableLogging" destination="J9n-57-Hwu" id="7gd-6w-MtN"/>
                         <outlet property="lblFuzzySearch" destination="Pbt-FY-XFv" id="2z0-44-WGM"/>
-                        <outlet property="lblLayoutAsTable" destination="7UB-38-gHM" id="JiK-x5-qZj"/>
                         <outlet property="lblSendLogs" destination="92m-Z3-j26" id="4mM-0Y-SJz"/>
                         <outlet property="lblShake" destination="8Qq-Sh-Y4z" id="bvG-mk-gOW"/>
                         <outlet property="lblVersion" destination="Ohm-Lv-BB0" id="PiB-Dg-sqc"/>
                         <outlet property="swFuzzySearch" destination="xx2-U7-PLX" id="yg4-2t-BJl"/>
-                        <outlet property="swLayoutAsTable" destination="ecb-Fz-3dS" id="z5w-zX-iay"/>
                         <outlet property="swLogging" destination="tj7-T6-N88" id="Zjy-tR-m5p"/>
                         <outlet property="swShake" destination="mZ0-c0-8vQ" id="CpD-Ta-uhI"/>
                     </connections>

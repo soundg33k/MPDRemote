@@ -100,6 +100,11 @@ final class Logger
 		self.log(type: .error, message: error.localizedDescription)
 	}
 
+	public func log(string: String)
+	{
+		self.log(type: .debug, message: string)
+	}
+
 	public func export() -> Data?
 	{
 		let str = _logs.reduce("") { $0 + $1.description + "\n\n"}

@@ -65,9 +65,17 @@ final class AlbumsVC : UIViewController
 		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		navigationItem.titleView = titleView
 
+		// Display layout button
+		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: kNYXPrefLayoutAlbumsCollection)
+		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
+		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
+		navigationItem.leftBarButtonItems = [displayButton]
+		navigationItem.leftItemsSupplementBackButton = true
+
 		// CollectionView
 		collectionView.myDelegate = self
 		collectionView.displayType = .albums
+		collectionView.layoutType = layoutCollectionViewAsCollection ? .collection : .table
 
 		// Longpress
 		_longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
@@ -169,6 +177,26 @@ final class AlbumsVC : UIViewController
 			alertController.addAction(addQueueAction)
 
 			present(alertController, animated: true, completion: nil)
+		}
+	}
+
+	// MARK: - Actions
+	@objc func changeCollectionLayoutType(_ sender: Any?)
+	{
+		var b = Settings.shared.bool(forKey: kNYXPrefLayoutAlbumsCollection)
+		b = !b
+		Settings.shared.set(b, forKey: kNYXPrefLayoutAlbumsCollection)
+		Settings.shared.synchronize()
+
+		collectionView.layoutType = b ? .collection : .table
+		if let buttons = navigationItem.leftBarButtonItems
+		{
+			if buttons.count >= 1
+			{
+				let btn = buttons[0]
+				btn.image = b ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection")
+				btn.accessibilityLabel = NYXLocalizedString(b ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
+			}
 		}
 	}
 

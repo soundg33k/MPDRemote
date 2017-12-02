@@ -160,7 +160,7 @@ final class MusicalCollectionView : UICollectionView
 		self.isPrefetchingEnabled = true
 		self.prefetchDataSource = self
 
-		let layoutAsTable = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
+		let layoutAsTable = false //Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
 		self.layoutType = layoutAsTable ? .table : .collection
 
 		self.setCollectionLayout(animated: false)
@@ -214,8 +214,8 @@ final class MusicalCollectionView : UICollectionView
 	// MARK: - Notifications
 	@objc public func collectionViewsLayoutDidChangeNotification(_ notification: Notification)
 	{
-		let layoutAsTable = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
-		self.layoutType = layoutAsTable ? .table : .collection
+		//let layoutAsTable = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
+		//self.layoutType = layoutAsTable ? .table : .collection
 	}
 }
 

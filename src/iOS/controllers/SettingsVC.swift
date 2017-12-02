@@ -40,10 +40,6 @@ final class SettingsVC : UITableViewController, CenterViewController
 	@IBOutlet private var lblFuzzySearch: UILabel!
 	// Fuzzy search switch
 	@IBOutlet private var swFuzzySearch: UISwitch!
-	// Layout as table label
-	@IBOutlet private var lblLayoutAsTable: UILabel!
-	// Layout as table switch
-	@IBOutlet private var swLayoutAsTable: UISwitch!
 	// Send logs label
 	@IBOutlet private var lblSendLogs: UILabel!
 	// Label logging
@@ -72,7 +68,6 @@ final class SettingsVC : UITableViewController, CenterViewController
 
 		lblShake.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
 		lblFuzzySearch.text = NYXLocalizedString("lbl_fuzzysearch")
-		lblLayoutAsTable.text = NYXLocalizedString("lbl_pref_layoutastable")
 		lblEnableLogging.text = NYXLocalizedString("lbl_enable_logging")
 	}
 
@@ -82,7 +77,6 @@ final class SettingsVC : UITableViewController, CenterViewController
 
 		swShake.isOn = Settings.shared.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
 		swFuzzySearch.isOn = Settings.shared.bool(forKey: kNYXPrefFuzzySearch)
-		swLayoutAsTable.isOn = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
 
 		let version = applicationVersionAndBuild()
 		lblVersion.text = "\(version.version) (\(version.build))"
@@ -111,14 +105,6 @@ final class SettingsVC : UITableViewController, CenterViewController
 		let fuzzySearch = Settings.shared.bool(forKey: kNYXPrefFuzzySearch)
 		Settings.shared.set(!fuzzySearch, forKey: kNYXPrefFuzzySearch)
 		Settings.shared.synchronize()
-	}
-
-	@IBAction func toggleTableLayout(_ sender: Any?)
-	{
-		let tableLayout = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
-		Settings.shared.set(!tableLayout, forKey: kNYXPrefCollectionViewLayoutTable)
-		Settings.shared.synchronize()
-		NotificationCenter.default.post(name: .collectionViewsLayoutDidChange, object: nil)
 	}
 
 	@IBAction func toggleLogging(_ sender: Any?)

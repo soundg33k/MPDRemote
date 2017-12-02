@@ -286,16 +286,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		}
 	}
 
-	func didSwipeLeft()
-	{
-		PlayerController.shared.requestNextTrack()
-	}
-
-	func didSwipeRight()
-	{
-		PlayerController.shared.requestPreviousTrack()
-	}
-
 	// MARK: - Buttons actions
 	@objc func toggleRandomAction(_ sender: Any?)
 	{

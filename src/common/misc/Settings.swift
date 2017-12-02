@@ -32,9 +32,11 @@ public let kNYXPrefMPDServer = "mpd-server2"
 public let kNYXPrefMPDShuffle = "mpd-shuffle"
 public let kNYXPrefMPDRepeat = "mpd-repeat"
 public let kNYXPrefWEBServer = "web-server2"
-public let kNYXPrefCollectionViewLayoutTable = "app-cv-layout-table"
 public let kNYXPrefEnableLogging = "app-enable-logging"
 public let kNYXPrefLastKnownVersion = "app-last-version"
+public let kNYXPrefLayoutLibraryCollection = "app-layout-library-collection"
+public let kNYXPrefLayoutArtistsCollection = "app-layout-artists-collection"
+public let kNYXPrefLayoutAlbumsCollection = "app-layout-albums-collection"
 
 
 final class Settings
@@ -121,8 +123,10 @@ final class Settings
 				kNYXPrefMPDRepeat : false,
 				kNYXPrefDisplayType : DisplayType.albums.rawValue,
 				kNYXPrefShakeToPlayRandomAlbum : false,
-				kNYXPrefCollectionViewLayoutTable : false,
 				kNYXPrefEnableLogging : false,
+				kNYXPrefLayoutLibraryCollection : true,
+				kNYXPrefLayoutAlbumsCollection : false,
+				kNYXPrefLayoutArtistsCollection : false,
 				kNYXPrefLastKnownVersion : Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? ""
 		]
 

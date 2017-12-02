@@ -23,7 +23,7 @@
 import UIKit
 
 
-protocol SideMenuVCDelegate
+protocol SideMenuVCDelegate : class
 {
 	func didSelectMenuItem(_ selectedVC: SelectedVCType)
 	func getSelectedController() -> SelectedVCType
@@ -35,7 +35,7 @@ final class SideMenuVC : UIViewController
 	// Table view
 	@IBOutlet fileprivate var tableView: UITableView!
 	// Menu delegate
-	var menuDelegate: SideMenuVCDelegate?
+	weak var menuDelegate: SideMenuVCDelegate? = nil
 	// MARK: - Private properties
 	private let numberOfRows = 4
 

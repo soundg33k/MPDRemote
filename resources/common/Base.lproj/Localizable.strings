@@ -76,7 +76,8 @@
 "lbl_section_database" = "Database";
 
 "lbl_pref_shaketoplayrandom" = "Shake to play random album";
-"lbl_pref_layoutastable" = "Table layout";
+"lbl_pref_layoutastable" = "Layout as table";
+"lbl_pref_layoutascollection" = "Layout as collection";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";
