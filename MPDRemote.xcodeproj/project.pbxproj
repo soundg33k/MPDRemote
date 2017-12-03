@@ -831,7 +831,7 @@
 					433B50BD1FD30E7C0015D479 = {
 						CreatedOnToolsVersion = 9.1;
 						DevelopmentTeam = E258RKC85V;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -915,7 +915,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}\"/resources/iOS/Info.plist)\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/resources/iOS/Info.plist";
+			shellScript = "#buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}\"/resources/iOS/Info.plist)\n#buildNumber=$(($buildNumber + 1))\n#/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/resources/iOS/Info.plist\n#/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/resources/widget/Info.plist";
 		};
 		43E8C01E1FC2F3EE004F4ACB /* Script: Increase build number */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1291,6 +1291,7 @@
 				OTHER_SWIFT_FLAGS = "-D NYX_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.mpdremote;
 				PRODUCT_NAME = MPDRemote;
+				PROVISIONING_PROFILE = "b15d0fef-397c-4606-a8e8-33aac4698a13";
 				PROVISIONING_PROFILE_SPECIFIER = "MPDRemote - dev";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
@@ -1372,7 +1373,7 @@
 				CODE_SIGN_ENTITLEMENTS = "resources/widget/MPDRemote-Widget.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = E258RKC85V;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = resources/widget/Info.plist;
@@ -1384,6 +1385,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.whine.mpdremote.MPDRemote-Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "c8a6f178-f131-405f-8110-b2f5e694cafd";
+				PROVISIONING_PROFILE_SPECIFIER = mpdremote.widget.dev;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
@@ -1412,7 +1415,7 @@
 				CODE_SIGN_ENTITLEMENTS = "resources/widget/MPDRemote-Widget.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = E258RKC85V;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = resources/widget/Info.plist;
@@ -1424,6 +1427,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.whine.mpdremote.MPDRemote-Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "176f5591-38b6-45a3-87de-ed01ee23f753";
+				PROVISIONING_PROFILE_SPECIFIER = mpdremote.widget.prod;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = resources/common/bridgingheader.h;

@@ -195,7 +195,7 @@ extension SettingsVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		if indexPath.section == 3 && indexPath.row == 1
+		if indexPath.section == 2 && indexPath.row == 1
 		{
 			sendLogs()
 		}
@@ -217,14 +217,12 @@ extension SettingsVC
 		switch section
 		{
 			case 0:
-				label.text = NYXLocalizedString("lbl_ui").uppercased()
-			case 1:
 				label.text = NYXLocalizedString("lbl_behaviour").uppercased()
-			case 2:
+			case 1:
 				label.text = NYXLocalizedString("lbl_search").uppercased()
-			case 3:
+			case 2:
 				label.text = NYXLocalizedString("lbl_troubleshoot").uppercased()
-			case 4:
+			case 3:
 				label.text = NYXLocalizedString("lbl_version").uppercased()
 			default:
 				break

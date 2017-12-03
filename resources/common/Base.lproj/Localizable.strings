@@ -52,7 +52,7 @@
 "lbl_alert_logsexport_fail_msg" = "Exporting logs failed";
 "lbl_alert_nomailaccount_msg" = "No email account configured";
 "lbl_alert_update_mpd_failed" = "Failed to update MPD database";
-"lbl_alert_update_mpd_succeeded" = "Successfully update MPD database";
+"lbl_alert_update_mpd_succeeded" = "Successfully updated MPD database";
 
 "lbl_server_name" = "Name";
 "lbl_server_host" = "Server";
