@@ -124,6 +124,8 @@ struct CoverWebServer : Codable, Equatable
 		var aaa = tmpURL.absoluteString.replacingOccurrences(of: "e%CC%81", with: "%C3%A9") // é
 		aaa = aaa.replacingOccurrences(of: "e%CC%88", with: "%C3%AB") // ë
 		aaa = aaa.replacingOccurrences(of: "a%CC%80", with: "%C3%A0") // à
+		aaa = aaa.replacingOccurrences(of: "a%CC%8A", with: "%C3%A5") // å
+		aaa = aaa.replacingOccurrences(of: "a%CC%81", with: "%C3%A1") // á
 		aaa = aaa.replacingOccurrences(of: "c%CC%A7", with: "%C3%A7") // ç
 		aaa = aaa.replacingOccurrences(of: "o%CC%88", with: "%C3%B6") // ö
 
