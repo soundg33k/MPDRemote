@@ -373,6 +373,12 @@ final class MusicDataSource
 		_queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf._connection.createPlaylist(name: name)
+			if result.succeeded == false
+			{
+				DispatchQueue.main.async {
+					_ = strongSelf.reinitialize()
+				}
+			}
 			callback(result)
 		}
 	}
