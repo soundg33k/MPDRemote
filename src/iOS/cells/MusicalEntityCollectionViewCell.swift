@@ -154,6 +154,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 			self.imageView.frame = CGRect(.zero, frame.height, frame.height)
 			self.label.frame = CGRect(self.imageView.width + 4.0, (frame.height - 20.0) / 2.0, frame.width - self.imageView.width - 8.0, 20.0)
 			self.label.textAlignment = .left
+			self.label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 14.0)
 			self.detailLabel.frame = CGRect(self.imageView.width + 4.0, frame.height - 24.0, frame.width - self.imageView.width - 8.0, 20.0)
 			self.detailLabel.textAlignment = .left
 			self.detailLabel.isHidden = true
@@ -163,6 +164,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 			self.imageView.frame = CGRect(.zero, frame.width, frame.height - 20.0)
 			self.label.frame = CGRect(0.0, self.imageView.bottom, frame.width, 20.0)
 			self.label.textAlignment = .center
+			self.label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
 			self.detailLabel.isHidden = true
 		}
 	}
