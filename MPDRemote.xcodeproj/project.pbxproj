@@ -297,9 +297,10 @@
 		4303DE931D9036660083C686 /* AudioServerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioServerConnection.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		4303DE951D9036660083C686 /* MPDConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDConnection.swift; sourceTree = "<group>"; };
 		430B0EEC1DBE33980008B684 /* CGContext+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "CGContext+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		431D9FDA1FD9932800CC0F9B /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MultipeerConnectivity.framework; sourceTree = "<group>"; };
 		4320244F1EC345D7001A667A /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		432785C81DF1C70B00A4A04D /* Number+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Number+Extensions.swift"; sourceTree = "<group>"; };
+		432F9EE51FD9DD26002204FD /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS11.1.sdk/System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = DEVELOPER_DIR; };
+		432F9EE61FD9DD2D002204FD /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		4330666B1EAE4F660066F5E0 /* TracksListTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracksListTableView.swift; sourceTree = "<group>"; };
 		4330666D1EAF861B0066F5E0 /* MusicalCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicalCollectionView.swift; sourceTree = "<group>"; };
 		433304FF1DE601B1003469F4 /* PlaylistDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistDetailVC.swift; sourceTree = "<group>"; };
@@ -620,7 +621,8 @@
 		433B50BF1FD30E7C0015D479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				431D9FDA1FD9932800CC0F9B /* MultipeerConnectivity.framework */,
+				432F9EE51FD9DD26002204FD /* MultipeerConnectivity.framework */,
+				432F9EE61FD9DD2D002204FD /* MultipeerConnectivity.framework */,
 				433B50C01FD30E7C0015D479 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;

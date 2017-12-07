@@ -11,13 +11,14 @@ MPDRemote
 
 |         | FEATURES |
 | --------- | --------- |
-| 🗄 | Browse by albums, artists, genres, playlists |
-| 🔎 | Fuzzy search for albums, artists, genres |
+| 🗄 | Browse by albums, artists, albums artists, genres, playlists |
+| 🔎 | Fuzzy search for albums, albums artists, artists, genres |
 | ⏪ ⏯ ⏩ | Play, pause, next, previous |
 | 🔀 🔁 | Shuffle & repeat |
 | 🔈 | Volume control |
 | 📍 | Track position control |
 | ➕ | Add album, artist, genre, playlist to current play queue |
+| 🎵 | Playlist management
 | 💬 | VoiceOver compliant |
 | 🌐 | Automatically find MPD server with Bonjour/Zeroconf |
 | 🔊 | Audio output selection |
