@@ -90,7 +90,7 @@ final class AlbumsVC : UIViewController
 
 		if artist.albums.count <= 0
 		{
-			MusicDataSource.shared.getAlbumsForArtist(artist) {
+			MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: MusicDataSource.shared.displayType == .albumsartists) {
 				DispatchQueue.main.async {
 					self.collectionView.items = self.artist.albums
 					self.collectionView.reloadData()
@@ -270,7 +270,7 @@ extension AlbumsVC
 	override var previewActionItems: [UIPreviewActionItem]
 	{
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
-			MusicDataSource.shared.getAlbumsForArtist(self.artist) {
+			MusicDataSource.shared.getAlbumsForArtist(self.artist, isAlbumArtist: MusicDataSource.shared.displayType == .albumsartists) {
 				MusicDataSource.shared.getTracksForAlbums(self.artist.albums) {
 					let ar = self.artist.albums.flatMap({$0.tracks}).flatMap({$0})
 					PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
@@ -280,7 +280,7 @@ extension AlbumsVC
 		}
 
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
-			MusicDataSource.shared.getAlbumsForArtist(self.artist) {
+			MusicDataSource.shared.getAlbumsForArtist(self.artist, isAlbumArtist: MusicDataSource.shared.displayType == .albumsartists) {
 				MusicDataSource.shared.getTracksForAlbums(self.artist.albums) {
 					let ar = self.artist.albums.flatMap({$0.tracks}).flatMap({$0})
 					PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
@@ -290,7 +290,7 @@ extension AlbumsVC
 		}
 
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
-			MusicDataSource.shared.getAlbumsForArtist(self.artist) {
+			MusicDataSource.shared.getAlbumsForArtist(self.artist, isAlbumArtist: MusicDataSource.shared.displayType == .albumsartists) {
 				for album in self.artist.albums
 				{
 					PlayerController.shared.addAlbumToQueue(album)

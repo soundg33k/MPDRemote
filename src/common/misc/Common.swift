@@ -28,6 +28,7 @@ enum DisplayType : Int
 {
 	case albums
 	case artists
+	case albumsartists
 	case genres
 	case playlists
 }

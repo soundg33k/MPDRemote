@@ -111,14 +111,16 @@ final class MPDConnection : AudioServerConnection
 			{
 				switch displayType
 				{
-				case .albums:
-					list.append(Album(name: name))
-				case .genres:
-					list.append(Genre(name: name))
-				case .artists:
-					list.append(Artist(name: name))
-				case .playlists:
-					raise(0)
+					case .albums:
+						list.append(Album(name: name))
+					case .artists:
+						list.append(Artist(name: name))
+					case .albumsartists:
+						list.append(Artist(name: name))
+					case .genres:
+						list.append(Genre(name: name))
+					case .playlists:
+						raise(0)
 				}
 			}
 
@@ -180,13 +182,13 @@ final class MPDConnection : AudioServerConnection
 		return ActionResult<[Album]>(succeeded: true, entity: list)
 	}
 
-	func getAlbumsForArtist(_ artist: Artist) -> ActionResult<[Album]>
+	func getAlbumsForArtist(_ artist: Artist, isAlbumArtist: Bool = false) -> ActionResult<[Album]>
 	{
 		if mpd_search_db_tags(_connection, MPD_TAG_ALBUM) == false
 		{
 			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
-		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist.name) == false
+		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, isAlbumArtist ? MPD_TAG_ALBUM_ARTIST : MPD_TAG_ARTIST, artist.name) == false
 		{
 			return ActionResult<[Album]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
@@ -984,6 +986,8 @@ final class MPDConnection : AudioServerConnection
 				return MPD_TAG_GENRE
 			case .artists:
 				return MPD_TAG_ARTIST
+			case .albumsartists:
+				return MPD_TAG_ALBUM_ARTIST
 			case .playlists:
 				return MPD_TAG_UNKNOWN
 		}

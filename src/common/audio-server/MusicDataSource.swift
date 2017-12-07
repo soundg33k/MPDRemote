@@ -40,6 +40,8 @@ final class MusicDataSource
 	private(set) var artists = [Artist]()
 	// Playlists list
 	private(set) var playlists = [Playlist]()
+	//
+	private(set) var albumsartists = [Artist]()
 
 	// MARK: - Private properties
 	// MPD Connection
@@ -113,10 +115,12 @@ final class MusicDataSource
 		{
 			case .albums:
 				return albums
-			case .genres:
-				return genres
 			case .artists:
 				return artists
+			case .albumsartists:
+				return albumsartists
+			case .genres:
+				return genres
 			case .playlists:
 				return playlists
 		}
@@ -143,14 +147,16 @@ final class MusicDataSource
 				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
 				switch (displayType)
 				{
-				case .albums:
-					strongSelf.albums = (result.entity as! [Album]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-				case .genres:
-					strongSelf.genres = (result.entity as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-				case .artists:
-					strongSelf.artists = (result.entity as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-				case .playlists:
-					strongSelf.playlists = (result.entity as! [Playlist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					case .albums:
+						strongSelf.albums = (result.entity as! [Album]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					case .artists:
+						strongSelf.artists = (result.entity as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					case .albumsartists:
+						strongSelf.albumsartists = (result.entity as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					case .genres:
+						strongSelf.genres = (result.entity as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					case .playlists:
+						strongSelf.playlists = (result.entity as! [Playlist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 				}
 
 				callback()
@@ -180,7 +186,7 @@ final class MusicDataSource
 		}
 	}
 
-	func getAlbumsForArtist(_ artist: Artist, callback: @escaping () -> Void)
+	func getAlbumsForArtist(_ artist: Artist, isAlbumArtist: Bool = false, callback: @escaping () -> Void)
 	{
 		if _connection == nil || _connection.isConnected == false
 		{
@@ -189,7 +195,7 @@ final class MusicDataSource
 
 		_queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getAlbumsForArtist(artist)
+			let result = strongSelf._connection.getAlbumsForArtist(artist, isAlbumArtist: isAlbumArtist)
 			if result.succeeded == false
 			{
 

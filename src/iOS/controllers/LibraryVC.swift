@@ -269,7 +269,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		else if segue.identifier == "root-artists-to-albums"
 		{
 			let row = collectionView.indexPathsForSelectedItems![0].row
-			let artist = searching ? collectionView.searchResults[row] as! Artist : MusicDataSource.shared.artists[row]
+			let artist = searching ? collectionView.searchResults[row] as! Artist : (_displayType == .artists ? MusicDataSource.shared.artists[row] : MusicDataSource.shared.albumsartists[row])
 			let vc = segue.destination as! AlbumsVC
 			vc.artist = artist
 		}
@@ -300,6 +300,14 @@ final class LibraryVC : UIViewController, CenterViewController
 				case .artists:
 					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					MusicDataSource.shared.getAlbumsForArtist(artist) {
+						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+							let ar = artist.albums.flatMap({$0.tracks}).flatMap({$0})
+							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
+						}
+					}
+				case .albumsartists:
+					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
+					MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
 						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.flatMap({$0.tracks}).flatMap({$0})
 							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
@@ -406,6 +414,44 @@ final class LibraryVC : UIViewController, CenterViewController
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(addQueueAction)
+				case .albumsartists:
+					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
+					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
+						MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
+							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+								let ar = artist.albums.flatMap({$0.tracks}).flatMap({$0})
+								PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
+							}
+						}
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(playAction)
+					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
+						MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
+							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+								let ar = artist.albums.flatMap({$0.tracks}).flatMap({$0})
+								PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
+							}
+						}
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(shuffleAction)
+					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
+						MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
+							for album in artist.albums
+							{
+								PlayerController.shared.addAlbumToQueue(album)
+							}
+						}
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(addQueueAction)
 				case .genres:
 					let genre = self.searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
@@ -471,7 +517,7 @@ final class LibraryVC : UIViewController, CenterViewController
 	{
 		if _typeChoiceView == nil
 		{
-			_typeChoiceView = TypeChoiceView(frame: CGRect(0.0, (self.navigationController?.navigationBar.bottom)!, collectionView.width, 176.0))
+			_typeChoiceView = TypeChoiceView(frame: CGRect(0.0, (self.navigationController?.navigationBar.bottom)!, collectionView.width, 220.0))
 			_typeChoiceView.delegate = self
 		}
 
@@ -563,12 +609,15 @@ final class LibraryVC : UIViewController, CenterViewController
 			case .albums:
 				let n = MusicDataSource.shared.albums.count
 				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_album") : NYXLocalizedString("lbl_albums"))"
-			case .genres:
-				let n = MusicDataSource.shared.genres.count
-				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_genre") : NYXLocalizedString("lbl_genres"))"
 			case .artists:
 				let n = MusicDataSource.shared.artists.count
 				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_artist") : NYXLocalizedString("lbl_artists"))"
+			case .albumsartists:
+				let n = MusicDataSource.shared.albumsartists.count
+				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_albumartist") : NYXLocalizedString("lbl_albumartists"))"
+			case .genres:
+				let n = MusicDataSource.shared.genres.count
+				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_genre") : NYXLocalizedString("lbl_genres"))"
 			case .playlists:
 				let n = MusicDataSource.shared.playlists.count
 				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_playlist") : NYXLocalizedString("lbl_playlists"))"
@@ -628,10 +677,12 @@ extension LibraryVC : MusicalCollectionViewDelegate
 		{
 			case .albums:
 				performSegue(withIdentifier: "root-albums-to-detail-album", sender: self)
-			case .genres:
-				performSegue(withIdentifier: "root-genres-to-artists", sender: self)
 			case .artists:
 				performSegue(withIdentifier: "root-artists-to-albums", sender: self)
+			case .albumsartists:
+				performSegue(withIdentifier: "root-artists-to-albums", sender: self)
+			case .genres:
+				performSegue(withIdentifier: "root-genres-to-artists", sender: self)
 			case .playlists:
 				performSegue(withIdentifier: "root-playlists-to-detail-playlist", sender: self)
 		}

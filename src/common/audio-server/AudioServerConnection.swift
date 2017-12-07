@@ -66,7 +66,7 @@ protocol AudioServerConnection
 	// MARK: - Get infos about tracks / albums / etc…
 	func getListForDisplayType(_ displayType: DisplayType) -> ActionResult<[MusicalEntity]>
 	func getAlbumsForGenre(_ genre: Genre, firstOnly: Bool) -> ActionResult<[Album]>
-	func getAlbumsForArtist(_ artist: Artist) -> ActionResult<[Album]>
+	func getAlbumsForArtist(_ artist: Artist, isAlbumArtist: Bool) -> ActionResult<[Album]>
 	func getArtistsForGenre(_ genre: Genre) -> ActionResult<[Artist]>
 	func getPathForAlbum(_ album: Album) -> ActionResult<String>
 	func getTracksForAlbum(_ album: Album) -> ActionResult<[Track]>

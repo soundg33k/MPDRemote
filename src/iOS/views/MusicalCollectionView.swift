@@ -259,10 +259,12 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		{
 			case .albums:
 				_handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
-			case .genres:
-				_configureCellForGenre(cell, indexPath: indexPath, genre: entity as! Genre)
 			case .artists:
 				_configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
+			case .albumsartists:
+				_configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
+			case .genres:
+				_configureCellForGenre(cell, indexPath: indexPath, genre: entity as! Genre)
 			case .playlists:
 				cell.image = generateCoverForPlaylist(entity as! Playlist, size: cell.imageView.size)
 		}
@@ -309,7 +311,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			{
 				return
 			}
-			MusicDataSource.shared.getAlbumsForArtist(artist) {
+			MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: displayType == .albumsartists) {
 				if let album = artist.albums.first
 				{
 					DispatchQueue.main.async {
@@ -458,7 +460,7 @@ extension MusicalCollectionView : UICollectionViewDataSourcePrefetching
 				}
 			}
 		}
-		else if displayType == .artists
+		else if displayType == .artists || displayType == .albumsartists
 		{
 			for indexPath in indexPaths
 			{
@@ -467,7 +469,7 @@ extension MusicalCollectionView : UICollectionViewDataSourcePrefetching
 					let artist = src[indexPath.row] as! Artist
 					if artist.albums.first == nil
 					{
-						MusicDataSource.shared.getAlbumsForArtist(artist) {}
+						MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: displayType == .albumsartists) {}
 					}
 				}
 			}

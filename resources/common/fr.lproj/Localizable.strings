@@ -86,6 +86,8 @@
 "lbl_genres" = "Genres";
 "lbl_artist" = "Artiste";
 "lbl_artists" = "Artistes";
+"lbl_albumartist" = "Album artist";
+"lbl_albumartists" = "Albums artists";
 "lbl_playlist" = "Liste";
 "lbl_playlists" = "Listes";
 "lbl_song" = "Chanson";
