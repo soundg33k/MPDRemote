@@ -66,7 +66,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		// Search button
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
-		navigationItem.rightBarButtonItem = searchButton
+		navigationItem.rightBarButtonItems = [searchButton]
 
 		// Menu button
 		let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
@@ -149,6 +149,7 @@ final class LibraryVC : UIViewController, CenterViewController
 							self.collectionView.displayType = self._displayType
 							self.collectionView.reloadData()
 							self.updateNavigationTitle()
+							self.updateNavigationButtons()
 						}
 					}
 
@@ -201,6 +202,7 @@ final class LibraryVC : UIViewController, CenterViewController
 					self.collectionView.reloadData()
 					self.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
 					self.updateNavigationTitle()
+					self.updateNavigationButtons()
 				}
 			}
 
@@ -506,6 +508,30 @@ final class LibraryVC : UIViewController, CenterViewController
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
+					let deleteAction = UIAlertAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action) in
+						MusicDataSource.shared.deletePlaylist(name: playlist.name) { (result: ActionResult<Void>) in
+							if result.succeeded
+							{
+								MusicDataSource.shared.getListForDisplayType(.playlists) {
+									DispatchQueue.main.async {
+										self.collectionView.items = MusicDataSource.shared.selectedList()
+										self.collectionView.reloadData()
+										self.updateNavigationTitle()
+									}
+								}
+							}
+							else
+							{
+								DispatchQueue.main.async {
+									MessageView.shared.showWithMessage(message: result.messages.first!)
+								}
+							}
+						}
+						self.longPressRecognized = false
+						cell.longPressed = false
+						MiniPlayerView.shared.stayHidden = false
+					}
+					alertController.addAction(deleteAction)
 			}
 
 			present(alertController, animated: true, completion: nil)
@@ -587,6 +613,52 @@ final class LibraryVC : UIViewController, CenterViewController
 		}
 	}
 
+	@objc func createPlaylistAction(_ sender: Any?)
+	{
+		let alertController = UIAlertController(title: NYXLocalizedString("lbl_create_playlist_name"), message: nil, preferredStyle: .alert)
+
+		alertController.addAction(UIAlertAction(title: "Save", style: .default, handler: { alert -> Void in
+			let textField = alertController.textFields![0] as UITextField
+
+			if String.isNullOrWhiteSpace(textField.text)
+			{
+				let errorAlert = UIAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
+				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: { alert -> Void in
+				}))
+				self.present(errorAlert, animated: true, completion: nil)
+			}
+			else
+			{
+				MusicDataSource.shared.createPlaylist(name: textField.text!) { (result: ActionResult<Void>) in
+					if result.succeeded
+					{
+						MusicDataSource.shared.getListForDisplayType(.playlists) {
+							DispatchQueue.main.async {
+								self.collectionView.items = MusicDataSource.shared.selectedList()
+								self.collectionView.reloadData()
+								self.updateNavigationTitle()
+							}
+						}
+					}
+					else
+					{
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: result.messages.first!)
+						}
+					}
+				}
+			}
+		}))
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel, handler: nil))
+
+		alertController.addTextField(configurationHandler: { (textField) -> Void in
+			textField.placeholder = NYXLocalizedString("lbl_create_playlist_placeholder")
+			textField.textAlignment = .left
+		})
+
+		self.present(alertController, animated: true, completion: nil)
+	}
+
 	// MARK: - Private
 	fileprivate func showNavigationBar(animated: Bool = true)
 	{
@@ -628,8 +700,12 @@ final class LibraryVC : UIViewController, CenterViewController
 		titleView.setAttributedTitle(astr2, for: .highlighted)
 	}
 
-	fileprivate func updateLongpressState()
+	private func updateLongpressState()
 	{
+		#if NYX_DEBUG
+			collectionView.addGestureRecognizer(_longPress)
+			_longPress.isEnabled = true
+		#else
 		if traitCollection.forceTouchCapability == .available
 		{
 			collectionView.removeGestureRecognizer(_longPress)
@@ -640,6 +716,25 @@ final class LibraryVC : UIViewController, CenterViewController
 		{
 			collectionView.addGestureRecognizer(_longPress)
 			_longPress.isEnabled = true
+		}
+		#endif
+	}
+
+	private func updateNavigationButtons()
+	{
+		// Search button
+		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
+		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
+		if _displayType == .playlists
+		{
+			// Create playlist button
+			let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
+			createButton.accessibilityLabel = NYXLocalizedString("lbl_create_playlist")
+			navigationItem.rightBarButtonItems = [searchButton, createButton]
+		}
+		else
+		{
+			navigationItem.rightBarButtonItems = [searchButton]
 		}
 	}
 
@@ -774,9 +869,12 @@ extension LibraryVC : TypeChoiceViewDelegate
 				{
 					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
 				}
+
 				self.updateNavigationTitle()
 			}
 		}
+
+		updateNavigationButtons()
 	}
 }
 

@@ -136,10 +136,12 @@ final class PlaylistDetailVC : UIViewController
 		super.viewWillDisappear(animated)
 
 		// Remove navbar shadow
-		let navigationBar = navigationController!.navigationBar
-		navigationBar.layer.shadowPath = nil
-		navigationBar.layer.shadowRadius = 0.0
-		navigationBar.layer.shadowOpacity = 0.0
+		if let navigationBar = navigationController?.navigationBar
+		{
+			navigationBar.layer.shadowPath = nil
+			navigationBar.layer.shadowRadius = 0.0
+			navigationBar.layer.shadowOpacity = 0.0
+		}
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -237,6 +239,43 @@ extension PlaylistDetailVC : UITableViewDelegate
 
 		PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat), position: UInt32(indexPath.row))
 	}
+
+	@available(iOS 11.0, *)
+	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+	{
+		// Dummy cell
+		guard let tracks = playlist.tracks else { return nil }
+		if indexPath.row >= tracks.count
+		{
+			return nil
+		}
+
+		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist"), handler: { (action, view, completionHandler ) in
+			MusicDataSource.shared.removeTrackFromPlaylist(playlist: self.playlist, track: tracks[indexPath.row]) { (result: ActionResult<Void>) in
+				if result.succeeded == false
+				{
+					DispatchQueue.main.async {
+						MessageView.shared.showWithMessage(message: result.messages.first!)
+					}
+				}
+				else
+				{
+					MusicDataSource.shared.getTracksForPlaylist(self.playlist) {
+						DispatchQueue.main.async {
+							self.updateNavigationTitle()
+							self.tableView.tracks = self.playlist.tracks!
+						}
+					}
+				}
+			}
+
+			completionHandler(true)
+		})
+		action.image = #imageLiteral(resourceName: "btn-trash")
+		action.backgroundColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+
+		return UISwipeActionsConfiguration(actions: [action])
+	}
 }
 
 // MARK: - Peek & Pop
@@ -254,6 +293,16 @@ extension PlaylistDetailVC
 			MiniPlayerView.shared.stayHidden = false
 		}
 
-		return [playAction, shuffleAction]
+		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action, viewController) in
+			MusicDataSource.shared.deletePlaylist(name: self.playlist.name) { (result: ActionResult<Void>) in
+				if result.succeeded == false
+				{
+					MessageView.shared.showWithMessage(message: result.messages.first!)
+				}
+			}
+			MiniPlayerView.shared.stayHidden = false
+		}
+
+		return [playAction, shuffleAction, deleteAction]
 	}
 }

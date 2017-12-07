@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1E0FE7F21CC0EF19002C717B /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0FE7F11CC0EF19002C717B /* ImageCache.swift */; };
-		1E13A2221CBD4A8000AEEE2B /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E13A2211CBD4A8000AEEE2B /* MultipeerConnectivity.framework */; };
 		1E2B80BE1C7EF97300D2273F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2B80B21C7EF97300D2273F /* LaunchScreen.storyboard */; };
 		1E2B80C81C7EF98B00D2273F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E2B80C71C7EF98B00D2273F /* Assets.xcassets */; };
 		1E2EFCA71CBF9A1700906CF2 /* StatsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2EFCA61CBF9A1700906CF2 /* StatsVC.swift */; };
@@ -132,7 +131,6 @@
 		43DCAFA51D91940C00D0B908 /* CoverWebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */; };
 		43E187531D1BEF7400C19ECD /* main-ipad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43E187511D1BEF7400C19ECD /* main-ipad.storyboard */; };
 		43E786471FC4562D0012818D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1E79F7DF1C84B22E002F1D52 /* Localizable.strings */; };
-		43E8C0231FC2F4BB004F4ACB /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E13A2211CBD4A8000AEEE2B /* MultipeerConnectivity.framework */; };
 		43E8C02D1FC33E48004F4ACB /* AudioServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA21D9193C500D0B908 /* AudioServer.swift */; };
 		43E8C02E1FC33E48004F4ACB /* AudioServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4303DE931D9036660083C686 /* AudioServerConnection.swift */; };
 		43E8C02F1FC33E48004F4ACB /* CoverWebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DCAFA41D91940C00D0B908 /* CoverWebServer.swift */; };
@@ -174,6 +172,7 @@
 		43E8C0531FC33E5D004F4ACB /* CoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5653911C908A310049C02D /* CoverOperation.swift */; };
 		43E8C0561FC341D2004F4ACB /* libmpdclient.ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E8C0551FC341D1004F4ACB /* libmpdclient.ios.a */; };
 		43EA923B1D100C380074389A /* main-iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43EA92391D100C380074389A /* main-iphone.storyboard */; };
+		43EBC3721FD9C0D8005BBDB0 /* PlaylistsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EBC3711FD9C0D8005BBDB0 /* PlaylistsTVC.swift */; };
 		43EEC0501DEEEC3500DA6A00 /* FileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EEC04F1DEEEC3500DA6A00 /* FileManager+Extensions.swift */; };
 		43F7DEF51F6D94D200AA2F44 /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F7DEF41F6D94D200AA2F44 /* OperationManager.swift */; };
 		43F92A891DE58EF600192F1F /* MusicalEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F92A881DE58EF600192F1F /* MusicalEntity.swift */; };
@@ -205,7 +204,6 @@
 
 /* Begin PBXFileReference section */
 		1E0FE7F11CC0EF19002C717B /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ImageCache.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		1E13A2211CBD4A8000AEEE2B /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		1E19ACEA1C7DCC2D00E602FB /* MPDRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MPDRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E2B80B31C7EF97300D2273F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E2B80B41C7EF97300D2273F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -299,6 +297,7 @@
 		4303DE931D9036660083C686 /* AudioServerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioServerConnection.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		4303DE951D9036660083C686 /* MPDConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDConnection.swift; sourceTree = "<group>"; };
 		430B0EEC1DBE33980008B684 /* CGContext+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "CGContext+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		431D9FDA1FD9932800CC0F9B /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MultipeerConnectivity.framework; sourceTree = "<group>"; };
 		4320244F1EC345D7001A667A /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		432785C81DF1C70B00A4A04D /* Number+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Number+Extensions.swift"; sourceTree = "<group>"; };
 		4330666B1EAE4F660066F5E0 /* TracksListTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracksListTableView.swift; sourceTree = "<group>"; };
@@ -343,6 +342,7 @@
 		43E8C0551FC341D1004F4ACB /* libmpdclient.ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmpdclient.ios.a; sourceTree = "<group>"; };
 		43EA923A1D100C380074389A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/main-iphone.storyboard"; sourceTree = "<group>"; };
 		43EB6F921FBEDD8C00B6DB1C /* MPDRemote.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MPDRemote.entitlements; sourceTree = "<group>"; };
+		43EBC3711FD9C0D8005BBDB0 /* PlaylistsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistsTVC.swift; sourceTree = "<group>"; };
 		43EEC04F1DEEEC3500DA6A00 /* FileManager+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "FileManager+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		43F7DEF41F6D94D200AA2F44 /* OperationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationManager.swift; sourceTree = "<group>"; };
 		43F92A881DE58EF600192F1F /* MusicalEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicalEntity.swift; sourceTree = "<group>"; };
@@ -353,7 +353,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E13A2221CBD4A8000AEEE2B /* MultipeerConnectivity.framework in Frameworks */,
 				43E8C0561FC341D2004F4ACB /* libmpdclient.ios.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -371,7 +370,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43E8C0231FC2F4BB004F4ACB /* MultipeerConnectivity.framework in Frameworks */,
 				43D39FBB1FC43A910064B3AC /* libmpdclient.tvos.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,21 +377,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1E13A2231CBD4A8800AEEE2B /* frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1E13A2211CBD4A8000AEEE2B /* MultipeerConnectivity.framework */,
-			);
-			name = frameworks;
-			sourceTree = "<group>";
-		};
 		1E19ACE11C7DCC2D00E602FB = {
 			isa = PBXGroup;
 			children = (
 				1E56536D1C908A310049C02D /* src */,
 				1E2B80B11C7EF97300D2273F /* resources */,
 				1E3424341C948B4C009F6BF8 /* external */,
-				1E13A2231CBD4A8800AEEE2B /* frameworks */,
 				433B50BF1FD30E7C0015D479 /* Frameworks */,
 				1E19ACEB1C7DCC2D00E602FB /* Products */,
 			);
@@ -519,6 +508,7 @@
 				1E5653751C908A310049C02D /* LibraryVC.swift */,
 				1E441D4A1CAC048C009DCEF4 /* PlayerVC.swift */,
 				433304FF1DE601B1003469F4 /* PlaylistDetailVC.swift */,
+				43EBC3711FD9C0D8005BBDB0 /* PlaylistsTVC.swift */,
 				1E5653761C908A310049C02D /* ServerVC.swift */,
 				43BE323F1DB5083A0062A7B1 /* SettingsVC.swift */,
 				43C300E71FC9B04D00A02218 /* SideMenuVC.swift */,
@@ -630,6 +620,7 @@
 		433B50BF1FD30E7C0015D479 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				431D9FDA1FD9932800CC0F9B /* MultipeerConnectivity.framework */,
 				433B50C01FD30E7C0015D479 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
@@ -953,6 +944,7 @@
 				1EB93AA61CB4113300EA5339 /* Artist.swift in Sources */,
 				1E86D3DD1CB7B0C90001E203 /* Genre.swift in Sources */,
 				43EEC0501DEEEC3500DA6A00 /* FileManager+Extensions.swift in Sources */,
+				43EBC3721FD9C0D8005BBDB0 /* PlaylistsTVC.swift in Sources */,
 				1E3424361C948E8D009F6BF8 /* Duration.swift in Sources */,
 				432024501EC345D7001A667A /* MessageView.swift in Sources */,
 				1E5E45C91C92D20C00B3CB02 /* UIView+Extensions.swift in Sources */,

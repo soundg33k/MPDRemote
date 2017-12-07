@@ -96,6 +96,14 @@
 "lbl_server_uptime" = "Uptime";
 "lbl_server_playtime" = "Durée jouée";
 "lbl_server_lastdbupdate" = "Dernière MàJ";
+"lbl_add_to_playlist" = "Ajouter à une liste de lecture";
+"lbl_remove_from_playlist" = "Supprimer de la liste de lecture";
+"lbl_create_playlist" = "Créer une nouvele liste de lecture";
+"lbl_create_playlist_name" = "Nom de la liste :";
+"lbl_playlist_create_emptyname" = "Le nom de la liste ne doit pas être vide";
+"lbl_create_playlist_placeholder" = "Nouvelle liste";
+"lbl_delete_playlist" = "Supprimer la liste";
+"lbl_playlist_track_added" = "ajouté à";
 
 "lbl_message_no_mpd_server" = "Pas de serveur MPD configuré";
 

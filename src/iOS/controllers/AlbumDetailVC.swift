@@ -243,6 +243,77 @@ extension AlbumDetailVC : UITableViewDelegate
 		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
 		PlayerController.shared.playTracks(b, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
 	}
+
+	@available(iOS 11.0, *)
+	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+	{
+		// Dummy cell
+		guard let tracks = album.tracks else { return nil }
+		if indexPath.row >= tracks.count
+		{
+			return nil
+		}
+
+		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_add_to_playlist"), handler: { (action, view, completionHandler ) in
+			MusicDataSource.shared.getListForDisplayType(.playlists) {
+				if MusicDataSource.shared.playlists.count == 0
+				{
+					return
+				}
+
+				DispatchQueue.main.async {
+					guard let cell = tableView.cellForRow(at: indexPath) else
+					{
+						return
+					}
+
+					let vc = PlaylistsTVC()
+					let tvc = NYXNavigationController(rootViewController: vc)
+					vc.trackToAdd = tracks[indexPath.row]
+					tvc.modalPresentationStyle = .popover
+					if let popController = tvc.popoverPresentationController
+					{
+						popController.permittedArrowDirections = .up
+						popController.sourceRect = cell.bounds
+						popController.sourceView = cell
+						popController.delegate = self
+						self.present(tvc, animated: true, completion: {
+						});
+					}
+				}
+			}
+			completionHandler(true)
+		})
+		action.image = #imageLiteral(resourceName: "btn-playlist-add")
+		action.backgroundColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+
+		return UISwipeActionsConfiguration(actions: [action])
+	}
+
+	/*func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
+	{
+		// Dummy cell
+		guard let tracks = album.tracks else { return nil }
+		if indexPath.row >= tracks.count
+		{
+			return nil
+		}
+
+		let addToPlaylist = UITableViewRowAction(style: .normal, title: "Add to playlist") { (action, indexPath) in
+		}
+
+		addToPlaylist.backgroundColor = .blue
+
+		return [addToPlaylist]
+	}*/
+}
+
+extension AlbumDetailVC : UIPopoverPresentationControllerDelegate
+{
+	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle
+	{
+		return .none
+	}
 }
 
 // MARK: - Peek & Pop

@@ -96,6 +96,14 @@
 "lbl_server_uptime" = "Uptime";
 "lbl_server_playtime" = "Playtime";
 "lbl_server_lastdbupdate" = "Last update";
+"lbl_add_to_playlist" = "Add to playlist";
+"lbl_remove_from_playlist" = "Remove from the playlist";
+"lbl_create_playlist" = "Create a new playlist";
+"lbl_create_playlist_name" = "Name of the playlist :";
+"lbl_playlist_create_emptyname" = "The name of the playlist can't be empty";
+"lbl_create_playlist_placeholder" = "New playlist";
+"lbl_delete_playlist" = "Delete playlist";
+"lbl_playlist_track_added" = "added to";
 
 "lbl_message_no_mpd_server" = "No MPD server configured";
 

@@ -363,6 +363,62 @@ final class MusicDataSource
 		}
 	}
 
+	func createPlaylist(name: String, _ callback: @escaping (ActionResult<Void>) -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			let result = strongSelf._connection.createPlaylist(name: name)
+			callback(result)
+		}
+	}
+
+	func deletePlaylist(name: String, _ callback: @escaping (ActionResult<Void>) -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			let result = strongSelf._connection.deletePlaylist(name: name)
+			callback(result)
+		}
+	}
+
+	func addTrackToPlaylist(playlist: Playlist, track: Track, _ callback: @escaping (ActionResult<Void>) -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			let result = strongSelf._connection.addTrackToPlaylist(playlist: playlist, track: track)
+			callback(result)
+		}
+	}
+
+	func removeTrackFromPlaylist(playlist: Playlist, track: Track, _ callback: @escaping (ActionResult<Void>) -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			let result = strongSelf._connection.removeTrackFromPlaylist(playlist: playlist, track: track)
+			callback(result)
+		}
+	}
+
 	// MARK: - Private
 	private func startTimer(_ interval: Int)
 	{

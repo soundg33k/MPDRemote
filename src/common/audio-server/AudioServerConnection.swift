@@ -76,6 +76,10 @@ protocol AudioServerConnection
 	// MARK: - Playlists
 	func getPlaylists() -> ActionResult<[MusicalEntity]>
 	func getSongsOfCurrentQueue() -> ActionResult<[Track]>
+	func createPlaylist(name: String) -> ActionResult<Void>
+	func deletePlaylist(name: String) -> ActionResult<Void>
+	func addTrackToPlaylist(playlist: Playlist, track: Track) -> ActionResult<Void>
+	func removeTrackFromPlaylist(playlist: Playlist, track: Track) -> ActionResult<Void>
 
 	// MARK: - Play / Queue
 	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool) -> ActionResult<Void>

@@ -557,6 +557,47 @@ final class MPDConnection : AudioServerConnection
 		return ActionResult<[Track]>(succeeded: true, entity: list)
 	}
 
+	func createPlaylist(name: String) -> ActionResult<Void>
+	{
+		let ret = mpd_run_save(_connection, name)
+		if ret
+		{
+			mpd_run_playlist_clear(_connection, name)
+			return ActionResult(succeeded: ret)
+		}
+		return ActionResult(succeeded: false, message: getLastErrorMessageForConnection())
+	}
+
+	func deletePlaylist(name: String) -> ActionResult<Void>
+	{
+		let ret = mpd_run_rm(_connection, name)
+		if ret
+		{
+			return ActionResult(succeeded: ret)
+		}
+		return ActionResult(succeeded: false, message: getLastErrorMessageForConnection())
+	}
+
+	func addTrackToPlaylist(playlist: Playlist, track: Track) -> ActionResult<Void>
+	{
+		let ret = mpd_run_playlist_add(_connection, playlist.name, track.uri)
+		if ret
+		{
+			return ActionResult(succeeded: ret)
+		}
+		return ActionResult(succeeded: false, message: getLastErrorMessageForConnection())
+	}
+
+	func removeTrackFromPlaylist(playlist: Playlist, track: Track) -> ActionResult<Void>
+	{
+		let ret = mpd_run_playlist_delete(_connection, playlist.name, UInt32(track.trackNumber - 1))
+		if ret
+		{
+			return ActionResult(succeeded: ret)
+		}
+		return ActionResult(succeeded: false, message: getLastErrorMessageForConnection())
+	}
+
 	// MARK: - Play / Queue
 	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool) -> ActionResult<Void>
 	{
