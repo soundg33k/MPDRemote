@@ -115,9 +115,12 @@
 		437AE4571EC21783002F9C00 /* ActionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437AE4561EC21783002F9C00 /* ActionResult.swift */; };
 		437E7ADE1D9BFC190097C4AA /* MenuViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437E7ADD1D9BFC190097C4AA /* MenuViewTableViewCell.swift */; };
 		438369441EA91135009520E6 /* AudioOutputsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438369431EA91135009520E6 /* AudioOutputsTVC.swift */; };
+		43A550831FDADA19005646A7 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A550821FDADA19005646A7 /* CollectionViewCell.swift */; };
+		43A550851FDAFB75005646A7 /* AlbumDetailVC_TVOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A550841FDAFB75005646A7 /* AlbumDetailVC_TVOS.swift */; };
+		43A550871FDB0929005646A7 /* TrackTableViewCell_TVOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A550861FDB0929005646A7 /* TrackTableViewCell_TVOS.swift */; };
 		43A9A8CF1DDF4D02002486AF /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A9A8CE1DDF4D02002486AF /* Playlist.swift */; };
 		43AFC5CC1FC2EA1E0067EE05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFC5CB1FC2EA1E0067EE05 /* AppDelegate.swift */; };
-		43AFC5CE1FC2EA1E0067EE05 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFC5CD1FC2EA1E0067EE05 /* FirstViewController.swift */; };
+		43AFC5CE1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFC5CD1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift */; };
 		43AFC5D01FC2EA1E0067EE05 /* ServerTV_VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFC5CF1FC2EA1E0067EE05 /* ServerTV_VC.swift */; };
 		43AFC5D31FC2EA1E0067EE05 /* main-atv.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43AFC5D11FC2EA1E0067EE05 /* main-atv.storyboard */; };
 		43AFC5D51FC2EA1E0067EE05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43AFC5D41FC2EA1E0067EE05 /* Assets.xcassets */; };
@@ -323,10 +326,13 @@
 		437AE4561EC21783002F9C00 /* ActionResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionResult.swift; sourceTree = "<group>"; };
 		437E7ADD1D9BFC190097C4AA /* MenuViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewTableViewCell.swift; sourceTree = "<group>"; };
 		438369431EA91135009520E6 /* AudioOutputsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioOutputsTVC.swift; sourceTree = "<group>"; };
+		43A550821FDADA19005646A7 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		43A550841FDAFB75005646A7 /* AlbumDetailVC_TVOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailVC_TVOS.swift; sourceTree = "<group>"; };
+		43A550861FDB0929005646A7 /* TrackTableViewCell_TVOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTableViewCell_TVOS.swift; sourceTree = "<group>"; };
 		43A9A8CE1DDF4D02002486AF /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		43AFC5C91FC2EA1E0067EE05 /* MPDRemote-TV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MPDRemote-TV.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43AFC5CB1FC2EA1E0067EE05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		43AFC5CD1FC2EA1E0067EE05 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
+		43AFC5CD1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryVC_TVOS.swift; sourceTree = "<group>"; };
 		43AFC5CF1FC2EA1E0067EE05 /* ServerTV_VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerTV_VC.swift; sourceTree = "<group>"; };
 		43AFC5D21FC2EA1E0067EE05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/main-atv.storyboard"; sourceTree = "<group>"; };
 		43AFC5D41FC2EA1E0067EE05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -646,6 +652,15 @@
 			path = widget;
 			sourceTree = "<group>";
 		};
+		43A550811FDAD9E1005646A7 /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				43A550821FDADA19005646A7 /* CollectionViewCell.swift */,
+				43A550861FDB0929005646A7 /* TrackTableViewCell_TVOS.swift */,
+			);
+			path = cells;
+			sourceTree = "<group>";
+		};
 		43E8C0241FC32001004F4ACB /* iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -660,6 +675,7 @@
 		43E8C0251FC3200B004F4ACB /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
+				43A550811FDAD9E1005646A7 /* cells */,
 				43E8C02C1FC321E4004F4ACB /* controllers */,
 				43E8C02B1FC321DB004F4ACB /* misc */,
 			);
@@ -730,7 +746,8 @@
 		43E8C02C1FC321E4004F4ACB /* controllers */ = {
 			isa = PBXGroup;
 			children = (
-				43AFC5CD1FC2EA1E0067EE05 /* FirstViewController.swift */,
+				43A550841FDAFB75005646A7 /* AlbumDetailVC_TVOS.swift */,
+				43AFC5CD1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift */,
 				43AFC5CF1FC2EA1E0067EE05 /* ServerTV_VC.swift */,
 			);
 			path = controllers;
@@ -1062,8 +1079,10 @@
 				43E8C0441FC33E5D004F4ACB /* CountedObject.swift in Sources */,
 				43E8C0451FC33E5D004F4ACB /* Duration.swift in Sources */,
 				43E8C0461FC33E5D004F4ACB /* ImageCache.swift in Sources */,
+				43A550851FDAFB75005646A7 /* AlbumDetailVC_TVOS.swift in Sources */,
 				43E8C0471FC33E5D004F4ACB /* KawaiiColors.swift in Sources */,
 				43E8C0481FC33E5D004F4ACB /* Logger.swift in Sources */,
+				43A550831FDADA19005646A7 /* CollectionViewCell.swift in Sources */,
 				43E8C0491FC33E5D004F4ACB /* MathUtilities.swift in Sources */,
 				43E8C04A1FC33E5D004F4ACB /* OperationManager.swift in Sources */,
 				43E8C04B1FC33E5D004F4ACB /* Settings.swift in Sources */,
@@ -1086,6 +1105,7 @@
 				43E8C03B1FC33E4F004F4ACB /* String+Extensions.swift in Sources */,
 				43E8C03C1FC33E4F004F4ACB /* UIColor+Extensions.swift in Sources */,
 				43E8C03D1FC33E4F004F4ACB /* UIDevice+Extensions.swift in Sources */,
+				43A550871FDB0929005646A7 /* TrackTableViewCell_TVOS.swift in Sources */,
 				43E8C03E1FC33E4F004F4ACB /* UIImage+Extensions.swift in Sources */,
 				43E8C03F1FC33E4F004F4ACB /* UIView+Extensions.swift in Sources */,
 				43E8C02D1FC33E48004F4ACB /* AudioServer.swift in Sources */,
@@ -1096,7 +1116,7 @@
 				43E8C0321FC33E48004F4ACB /* MPDConnection.swift in Sources */,
 				43AFC5D01FC2EA1E0067EE05 /* ServerTV_VC.swift in Sources */,
 				43AFC5CC1FC2EA1E0067EE05 /* AppDelegate.swift in Sources */,
-				43AFC5CE1FC2EA1E0067EE05 /* FirstViewController.swift in Sources */,
+				43AFC5CE1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1485,7 +1505,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = mpdremote.tvos.dev;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = appletvos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG NYX_DEBUG -D";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = NYX_DEBUG;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/MPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = resources/common/bridgingheader.h;
 				SWIFT_VERSION = 4.0;

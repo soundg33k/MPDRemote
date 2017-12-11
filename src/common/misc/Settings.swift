@@ -25,6 +25,7 @@ import UIKit
 
 public let kNYXPrefCoversDirectory = "app-covers-directory"
 public let kNYXPrefCoversSize = "app-covers-size"
+public let kNYXPrefCoversSizeTVOS = "app-covers-size-tvos"
 public let kNYXPrefDisplayType = "app-display-type"
 public let kNYXPrefFuzzySearch = "app-search-fuzzy"
 public let kNYXPrefShakeToPlayRandomAlbum = "app-shake-to-play"
@@ -113,13 +114,15 @@ final class Settings
 	private func _registerDefaultPreferences()
 	{
 		let coversDirectoryPath = "covers"
-		let columns = CGFloat(3)
-		let span = CGFloat(10)
-		let width = ceil((UIScreen.main.bounds.width / columns) - (2 * span))
+		let columns_ios = CGFloat(3)
+		let width_ios = ceil((UIScreen.main.bounds.width / columns_ios) - (2 * 10))
+		let columns_tvos = CGFloat(5)
+		let width_tvos = ceil(((UIScreen.main.bounds.width * (2.0 / 3.0)) / columns_tvos) - (2 * 50))
 		let defaultsValues: [String: Any] =
 			[
 				kNYXPrefCoversDirectory : coversDirectoryPath,
-				kNYXPrefCoversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width, width))),
+				kNYXPrefCoversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_ios, width_ios))),
+				kNYXPrefCoversSizeTVOS : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_tvos, width_tvos))),
 				kNYXPrefFuzzySearch : false,
 				kNYXPrefMPDShuffle : false,
 				kNYXPrefMPDRepeat : false,

@@ -33,6 +33,10 @@ final class ServerTV_VC : UIViewController
 	@IBOutlet fileprivate var viewMPD: UIView!
 	// WEB conf tablebiew
 	@IBOutlet fileprivate var viewWEB: UIView!
+	// MPD label
+	@IBOutlet private var lblMPD: UILabel!
+	// Covers label
+	@IBOutlet private var lblWEB: UILabel!
 	// MPD Server name
 	@IBOutlet fileprivate var tfMPDName: UITextField!
 	// MPD Server hostname
@@ -70,7 +74,10 @@ final class ServerTV_VC : UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+		self.tabBarItem.title = NYXLocalizedString("lbl_section_server")
 
+		lblMPD.text = NYXLocalizedString("lbl_server_section_server")
+		lblWEB.text = NYXLocalizedString("lbl_server_section_cover")
 		lblMPDName.text = NYXLocalizedString("lbl_server_name")
 		lblMPDHostname.text = NYXLocalizedString("lbl_server_host")
 		lblMPDPort.text = NYXLocalizedString("lbl_server_port")
@@ -318,7 +325,7 @@ final class ServerTV_VC : UIViewController
 			tfMPDOutput.text = ""
 		}
 
-		/*if let server = webServer
+		if let server = webServer
 		{
 			tfWEBHostname.text = server.hostname
 			tfWEBPort.text = String(server.port)
@@ -331,7 +338,7 @@ final class ServerTV_VC : UIViewController
 			tfWEBCoverName.text = "cover.jpg"
 		}
 
-		updateCacheLabel()*/
+		//updateCacheLabel()
 	}
 
 	fileprivate func clearCache(confirm: Bool)
@@ -390,18 +397,18 @@ final class ServerTV_VC : UIViewController
 				let outputs = PlayerController.shared.outputs
 				if outputs.count == 0
 				{
-					self.lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_available")
+					self.tfMPDOutput.text = NYXLocalizedString("lbl_server_no_output_available")
 					return
 				}
 				let enabledOutputs = outputs.filter({$0.enabled})
 				if enabledOutputs.count == 0
 				{
-					self.lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_enabled")
+					self.tfMPDOutput.text = NYXLocalizedString("lbl_server_no_output_enabled")
 					return
 				}
 				let text = enabledOutputs.reduce("", {$0 + $1.name + ", "})
 				let x = text[..<text.index(text.endIndex, offsetBy: -2)]
-				self.lblMPDOutput.text = String(x)
+				self.tfMPDOutput.text = String(x)
 				//self.lblMPDOutput.text = text.substring(to: text.index(text.endIndex, offsetBy: -2))
 			}
 		}
