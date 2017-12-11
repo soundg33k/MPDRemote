@@ -273,10 +273,11 @@ extension AlbumDetailVC : UITableViewDelegate
 					tvc.modalPresentationStyle = .popover
 					if let popController = tvc.popoverPresentationController
 					{
-						popController.permittedArrowDirections = .up
+						popController.permittedArrowDirections = [.up, .down]
 						popController.sourceRect = cell.bounds
 						popController.sourceView = cell
 						popController.delegate = self
+						tvc.preferredContentSize = CGSize(300, 200)
 						self.present(tvc, animated: true, completion: {
 						});
 					}
