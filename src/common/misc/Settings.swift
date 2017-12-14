@@ -118,21 +118,20 @@ final class Settings
 		let width_ios = ceil((UIScreen.main.bounds.width / columns_ios) - (2 * 10))
 		let columns_tvos = CGFloat(5)
 		let width_tvos = ceil(((UIScreen.main.bounds.width * (2.0 / 3.0)) / columns_tvos) - (2 * 50))
-		let defaultsValues: [String: Any] =
-			[
-				kNYXPrefCoversDirectory : coversDirectoryPath,
-				kNYXPrefCoversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_ios, width_ios))),
-				kNYXPrefCoversSizeTVOS : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_tvos, width_tvos))),
-				kNYXPrefFuzzySearch : false,
-				kNYXPrefMPDShuffle : false,
-				kNYXPrefMPDRepeat : false,
-				kNYXPrefDisplayType : DisplayType.albums.rawValue,
-				kNYXPrefShakeToPlayRandomAlbum : false,
-				kNYXPrefEnableLogging : false,
-				kNYXPrefLayoutLibraryCollection : true,
-				kNYXPrefLayoutAlbumsCollection : false,
-				kNYXPrefLayoutArtistsCollection : false,
-				kNYXPrefLastKnownVersion : Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? ""
+		let defaultsValues: [String: Any] = [
+			kNYXPrefCoversDirectory : coversDirectoryPath,
+			kNYXPrefCoversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_ios, width_ios))),
+			kNYXPrefCoversSizeTVOS : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_tvos, width_tvos))),
+			kNYXPrefFuzzySearch : false,
+			kNYXPrefMPDShuffle : false,
+			kNYXPrefMPDRepeat : false,
+			kNYXPrefDisplayType : DisplayType.albums.rawValue,
+			kNYXPrefShakeToPlayRandomAlbum : false,
+			kNYXPrefEnableLogging : false,
+			kNYXPrefLayoutLibraryCollection : true,
+			kNYXPrefLayoutAlbumsCollection : false,
+			kNYXPrefLayoutArtistsCollection : false,
+			kNYXPrefLastKnownVersion : Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? ""
 		]
 
 		let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!

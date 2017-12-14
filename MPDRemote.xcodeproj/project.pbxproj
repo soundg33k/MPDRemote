@@ -121,7 +121,7 @@
 		43A9A8CF1DDF4D02002486AF /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A9A8CE1DDF4D02002486AF /* Playlist.swift */; };
 		43AFC5CC1FC2EA1E0067EE05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFC5CB1FC2EA1E0067EE05 /* AppDelegate.swift */; };
 		43AFC5CE1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFC5CD1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift */; };
-		43AFC5D01FC2EA1E0067EE05 /* ServerTV_VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFC5CF1FC2EA1E0067EE05 /* ServerTV_VC.swift */; };
+		43AFC5D01FC2EA1E0067EE05 /* ServerVC_TVOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFC5CF1FC2EA1E0067EE05 /* ServerVC_TVOS.swift */; };
 		43AFC5D31FC2EA1E0067EE05 /* main-atv.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43AFC5D11FC2EA1E0067EE05 /* main-atv.storyboard */; };
 		43AFC5D51FC2EA1E0067EE05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43AFC5D41FC2EA1E0067EE05 /* Assets.xcassets */; };
 		43B35C2F1D9BCAAA00592E23 /* ZeroConfExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B35C2E1D9BCAAA00592E23 /* ZeroConfExplorer.swift */; };
@@ -333,7 +333,7 @@
 		43AFC5C91FC2EA1E0067EE05 /* MPDRemote-TV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MPDRemote-TV.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43AFC5CB1FC2EA1E0067EE05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		43AFC5CD1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryVC_TVOS.swift; sourceTree = "<group>"; };
-		43AFC5CF1FC2EA1E0067EE05 /* ServerTV_VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerTV_VC.swift; sourceTree = "<group>"; };
+		43AFC5CF1FC2EA1E0067EE05 /* ServerVC_TVOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerVC_TVOS.swift; sourceTree = "<group>"; };
 		43AFC5D21FC2EA1E0067EE05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/main-atv.storyboard"; sourceTree = "<group>"; };
 		43AFC5D41FC2EA1E0067EE05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		43AFC5D61FC2EA1E0067EE05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -748,7 +748,7 @@
 			children = (
 				43A550841FDAFB75005646A7 /* AlbumDetailVC_TVOS.swift */,
 				43AFC5CD1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift */,
-				43AFC5CF1FC2EA1E0067EE05 /* ServerTV_VC.swift */,
+				43AFC5CF1FC2EA1E0067EE05 /* ServerVC_TVOS.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -1114,7 +1114,7 @@
 				43E8C0301FC33E48004F4ACB /* MusicDataSource.swift in Sources */,
 				43E8C0311FC33E48004F4ACB /* PlayerController.swift in Sources */,
 				43E8C0321FC33E48004F4ACB /* MPDConnection.swift in Sources */,
-				43AFC5D01FC2EA1E0067EE05 /* ServerTV_VC.swift in Sources */,
+				43AFC5D01FC2EA1E0067EE05 /* ServerVC_TVOS.swift in Sources */,
 				43AFC5CC1FC2EA1E0067EE05 /* AppDelegate.swift in Sources */,
 				43AFC5CE1FC2EA1E0067EE05 /* LibraryVC_TVOS.swift in Sources */,
 			);

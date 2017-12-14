@@ -299,22 +299,22 @@ final class MPDConnection : AudioServerConnection
 	{
 		if mpd_search_db_songs(_connection, true) == false
 		{
-			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
 		{
-			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if album.artist.count > 0
 		{
 			if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM_ARTIST, album.artist) == false
 			{
-				return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
+				return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 			}
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		var list = [Track]()
@@ -330,7 +330,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		return ActionResult<[Track]>(succeeded: true, entity: list)
@@ -340,7 +340,7 @@ final class MPDConnection : AudioServerConnection
 	{
 		if mpd_send_list_playlist(_connection, playlist.name) == false
 		{
-			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		var list = [Track]()
@@ -362,7 +362,7 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		for track in list
@@ -399,27 +399,27 @@ final class MPDConnection : AudioServerConnection
 
 			if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 			{
-				return ActionResult<[Track]>(succeeded: false, message:  getLastErrorMessageForConnection())
+				return ActionResult<[Track]>(succeeded: false, message: getLastErrorMessageForConnection())
 			}
 		}
 
 		return ActionResult<[Track]>(succeeded: true, entity: list)
 	}
 
-	func getMetadatasForAlbum(_ album: Album) -> ActionResult<[String : Any]>
+	func getMetadatasForAlbum(_ album: Album) throws -> ActionResult<[String : Any]>
 	{
 		// Find album artist
 		if mpd_search_db_tags(_connection, MPD_TAG_ALBUM_ARTIST) == false
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		var metadatas = [String : Any]()
@@ -436,21 +436,21 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		// Find album year
 		if mpd_search_db_tags(_connection, MPD_TAG_DATE) == false
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		let tmpDate = mpd_recv_pair_tag(_connection, MPD_TAG_DATE)
 		if tmpDate != nil
@@ -470,21 +470,21 @@ final class MPDConnection : AudioServerConnection
 
 		if (mpd_connection_get_error(_connection) != MPD_ERROR_SUCCESS || mpd_response_finish(_connection) == false)
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 
 		// Find album genre
 		if mpd_search_db_tags(_connection, MPD_TAG_GENRE) == false
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_add_tag_constraint(_connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		if mpd_search_commit(_connection) == false
 		{
-			return ActionResult<[String : Any]>(succeeded: false, message:  getLastErrorMessageForConnection())
+			return ActionResult<[String : Any]>(succeeded: false, message: getLastErrorMessageForConnection())
 		}
 		let tmpGenre = mpd_recv_pair_tag(_connection, MPD_TAG_GENRE)
 		if tmpGenre != nil
@@ -769,7 +769,7 @@ final class MPDConnection : AudioServerConnection
 		return ActionResult<OpaquePointer>(succeeded: true, entity: ret)
 	}
 
-	func getPlayerInfos() -> ActionResult<[String : Any]>
+	func getPlayerInfos() throws -> ActionResult<[String : Any]>
 	{
 		guard let song = mpd_run_current_song(_connection) else
 		{

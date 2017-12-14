@@ -302,28 +302,36 @@ final class MusicDataSource
 
 		_queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getMetadatasForAlbum(album)
-			if result.succeeded == false
+			do
 			{
+				let result = try strongSelf._connection.getMetadatasForAlbum(album)
+				if result.succeeded == false
+				{
+				}
+				else
+				{
+					let metadatas = result.entity!
+					if let artist = metadatas["artist"] as! String?
+					{
+						album.artist = artist
+					}
+					if let year = metadatas["year"] as! String?
+					{
+						album.year = year
+					}
+					if let genre = metadatas["genre"] as! String?
+					{
+						album.genre = genre
+					}
 
+					callback()
+				}
 			}
-			else
+			catch
 			{
-				let metadatas = result.entity!
-				if let artist = metadatas["artist"] as! String?
-				{
-					album.artist = artist
+				DispatchQueue.main.async {
+					_ = strongSelf.reinitialize()
 				}
-				if let year = metadatas["year"] as! String?
-				{
-					album.year = year
-				}
-				if let genre = metadatas["genre"] as! String?
-				{
-					album.genre = genre
-				}
-
-				callback()
 			}
 		}
 	}

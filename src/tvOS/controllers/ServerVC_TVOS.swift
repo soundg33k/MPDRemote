@@ -1,4 +1,4 @@
-// ServerTV_VC.swift
+// ServerVC_TVOS.swift
 // Copyright (c) 2017 Nyx0uf
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,7 @@ import UIKit
 let headerSectionHeight = CGFloat(32)
 
 
-final class ServerTV_VC : UIViewController
+final class ServerVC_TVOS : UIViewController
 {
 	// MARK: - Private properties
 	// MPD conf tablebiew
@@ -416,7 +416,7 @@ final class ServerTV_VC : UIViewController
 }
 
 // MARK: - UITableViewDataSource
-/*extension ServerTV_VC : UITableViewDataSource
+/*extension ServerVC_TVOS : UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
@@ -477,7 +477,7 @@ final class ServerTV_VC : UIViewController
 }
 
 // MARK: - UITableViewDelegate
-extension ServerTV_VC : UITableViewDelegate
+extension ServerVC_TVOS : UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
@@ -530,7 +530,7 @@ extension ServerTV_VC : UITableViewDelegate
 
 
 // MARK: - UITextFieldDelegate
-extension ServerTV_VC : UITextFieldDelegate
+extension ServerVC_TVOS : UITextFieldDelegate
 {
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool
 	{

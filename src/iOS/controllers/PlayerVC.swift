@@ -388,6 +388,35 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		lblTrackArtist.text = track.artist
 		lblAlbumName.text = album.name
 		sliderPosition.maximumValue = Float(track.duration.seconds)
+
+		// Update cover if from another album (playlist case)
+		let iv = view as? UIImageView
+		if album.path != nil
+		{
+			let op = CoverOperation(album: album, cropSize: coverView.size)
+			op.callback = {(cover: UIImage, thumbnail: UIImage) in
+				DispatchQueue.main.async {
+					self.coverView.image = cover
+					iv?.image = cover
+				}
+			}
+			OperationManager.shared.addOperation(op)
+		}
+		else
+		{
+			let size = self.coverView.size
+			MusicDataSource.shared.getPathForAlbum(album) {
+				let op = CoverOperation(album: album, cropSize: size)
+				op.callback = {(cover: UIImage, thumbnail: UIImage) in
+					DispatchQueue.main.async {
+						self.coverView.image = cover
+						iv?.image = cover
+					}
+				}
+				OperationManager.shared.addOperation(op)
+			}
+		}
+
 		self.updateCurrentTrackInformation()
 	}
 

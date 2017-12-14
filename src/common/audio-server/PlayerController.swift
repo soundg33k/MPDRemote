@@ -392,32 +392,44 @@ final class PlayerController
 
 	private func playerInformations()
 	{
-		let result = _connection.getPlayerInfos()
-		if result.succeeded == false
+		if _connection == nil || _connection.isConnected == false
 		{
 			return
 		}
-		guard let infos = result.entity else {return}
-		let status = infos[kPlayerStatusKey] as! Int
-		let track = infos[kPlayerTrackKey] as! Track
-		let album = infos[kPlayerAlbumKey] as! Album
 
-		// Track changed
-		if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
+		do
 		{
-			NotificationCenter.default.postOnMainThreadAsync(name: .playingTrackChanged, object: nil, userInfo: infos)
-		}
+			let result = try _connection.getPlayerInfos()
+			if result.succeeded == false
+			{
+				return
+			}
+			guard let infos = result.entity else {return}
+			let status = infos[kPlayerStatusKey] as! Int
+			let track = infos[kPlayerTrackKey] as! Track
+			let album = infos[kPlayerAlbumKey] as! Album
 
-		// Status changed
-		if currentStatus.rawValue != status
+			// Track changed
+			if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
+			{
+				NotificationCenter.default.postOnMainThreadAsync(name: .playingTrackChanged, object: nil, userInfo: infos)
+			}
+
+			// Status changed
+			if currentStatus.rawValue != status
+			{
+				NotificationCenter.default.postOnMainThreadAsync(name: .playerStatusChanged, object: nil, userInfo: infos)
+			}
+
+			self.currentStatus = PlayerStatus(rawValue: status)!
+			currentTrack = track
+			currentAlbum = album
+			NotificationCenter.default.postOnMainThreadAsync(name: .currentPlayingTrack, object: nil, userInfo: infos)
+		}
+		catch
 		{
-			NotificationCenter.default.postOnMainThreadAsync(name: .playerStatusChanged, object: nil, userInfo: infos)
+			
 		}
-
-		self.currentStatus = PlayerStatus(rawValue: status)!
-		currentTrack = track
-		currentAlbum = album
-		NotificationCenter.default.postOnMainThreadAsync(name: .currentPlayingTrack, object: nil, userInfo: infos)
 	}
 
 	// MARK: - Notifications

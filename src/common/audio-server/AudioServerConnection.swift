@@ -71,7 +71,7 @@ protocol AudioServerConnection
 	func getPathForAlbum(_ album: Album) -> ActionResult<String>
 	func getTracksForAlbum(_ album: Album) -> ActionResult<[Track]>
 	func getTracksForPlaylist(_ playlist: Playlist) -> ActionResult<[Track]>
-	func getMetadatasForAlbum(_ album: Album) -> ActionResult<[String : Any]>
+	func getMetadatasForAlbum(_ album: Album) throws -> ActionResult<[String : Any]>
 
 	// MARK: - Playlists
 	func getPlaylists() -> ActionResult<[MusicalEntity]>
@@ -98,7 +98,7 @@ protocol AudioServerConnection
 
 	// MARK: - Player status
 	func getStatus() -> ActionResult<OpaquePointer>
-	func getPlayerInfos() -> ActionResult<[String : Any]>
+	func getPlayerInfos() throws -> ActionResult<[String : Any]>
 	func getAudioFormat() -> ActionResult<[String : String]>
 
 	// MARK: - Stats
