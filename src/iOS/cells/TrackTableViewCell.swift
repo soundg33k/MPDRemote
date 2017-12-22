@@ -45,7 +45,7 @@ final class TrackTableViewCell : UITableViewCell
 	{
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		self.contentView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		self.contentView.backgroundColor = self.backgroundColor
 
 		self.lblTrack = UILabel()
 		self.lblTrack.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
@@ -106,6 +106,9 @@ final class TrackTableViewCell : UITableViewCell
 			backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
 		contentView.backgroundColor = backgroundColor
+		lblTitle.backgroundColor = backgroundColor
+		lblDuration.backgroundColor = backgroundColor
+		lblTrack.backgroundColor = backgroundColor
 	}
 
 	override func setHighlighted(_ highlighted: Bool, animated: Bool)
@@ -121,5 +124,8 @@ final class TrackTableViewCell : UITableViewCell
 			backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
 		}
 		contentView.backgroundColor = backgroundColor
+		lblTitle.backgroundColor = backgroundColor
+		lblDuration.backgroundColor = backgroundColor
+		lblTrack.backgroundColor = backgroundColor
 	}
 }
