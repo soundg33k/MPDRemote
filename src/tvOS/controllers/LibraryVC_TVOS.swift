@@ -212,7 +212,7 @@ final class LibraryVC_TVOS : UIViewController
 	}
 
 	// MARK: - Private
-	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
+	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
 	{
 		let key = album.uniqueIdentifier
 		if let cop = _downloadOperations[key] as! CoverOperation?

@@ -31,7 +31,7 @@ enum LogType : String
 	case error = "❤️"
 }
 
-fileprivate struct Log : CustomStringConvertible
+private struct Log : CustomStringConvertible
 {
 	let type: LogType
 	let dateString: String

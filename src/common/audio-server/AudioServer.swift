@@ -25,6 +25,15 @@ import Foundation
 
 struct AudioServer : Codable, Equatable
 {
+	// Coding keys
+	private enum AudioServerCodingKeys: String, CodingKey
+	{
+		case name
+		case hostname
+		case port
+		case password
+	}
+
 	// MARK: - Public properties
 	// Server name
 	let name: String
@@ -34,14 +43,6 @@ struct AudioServer : Codable, Equatable
 	let port: UInt16
 	// Server password
 	let password: String
-
-	private enum AudioServerCodingKeys: String, CodingKey
-	{
-		case name
-		case hostname
-		case port
-		case password
-	}
 
 	// MARK: - Initializers
 	init(name: String, hostname: String, port: UInt16, password: String = "")

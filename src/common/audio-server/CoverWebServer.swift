@@ -25,6 +25,15 @@ import Foundation
 
 struct CoverWebServer : Codable, Equatable
 {
+	// Coding keys
+	private enum CoverServerCodingKeys: String, CodingKey
+	{
+		case name
+		case hostname
+		case port
+		case coverName
+	}
+
 	// MARK: - Public properties
 	// Server name
 	let name: String
@@ -34,14 +43,6 @@ struct CoverWebServer : Codable, Equatable
 	let port: UInt16
 	// Name of the cover files
 	let coverName: String
-
-	enum CoverServerCodingKeys: String, CodingKey
-	{
-		case name
-		case hostname
-		case port
-		case coverName
-	}
 
 	// MARK: - Initializers
 	init(name: String, hostname: String, port: UInt16, coverName: String)
@@ -63,6 +64,7 @@ struct CoverWebServer : Codable, Equatable
 		self.init(name: na, hostname: ho, port: po, coverName: co)
 	}
 
+	// MARK: - Public
 	public func publicDescription() -> String
 	{
 		return "\(self.hostname)\n\(self.port)\n\(self.coverName)"

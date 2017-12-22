@@ -33,9 +33,9 @@ final class ZeroConfExplorer : NSObject
 {
 	// MARK: - Public properties
 	// Is searching flag
-	fileprivate(set) var isSearching = false
+	private(set) var isSearching = false
 	// Services list
-	fileprivate(set) var services = [NetService : AudioServer]()
+	private(set) var services = [NetService : AudioServer]()
 	// Delegate
 	weak var delegate: ZeroConfExplorerDelegate?
 
@@ -76,7 +76,7 @@ final class ZeroConfExplorer : NSObject
 	}
 
 	// MARK: - Private
-	fileprivate func resolvZeroconfService(service: NetService)
+	private func resolvZeroconfService(service: NetService)
 	{
 		if let server = services[service] , isResolved(server)
 		{
@@ -87,7 +87,7 @@ final class ZeroConfExplorer : NSObject
 		service.resolve(withTimeout: 5)
 	}
 
-	fileprivate func isResolved(_ server: AudioServer) -> Bool
+	private func isResolved(_ server: AudioServer) -> Bool
 	{
 		return String.isNullOrWhiteSpace(server.hostname) == false && server.port != 0
 	}

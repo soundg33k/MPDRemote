@@ -32,11 +32,12 @@ protocol SideMenuVCDelegate : class
 final class SideMenuVC : UIViewController
 {
 	// MARK: - Public properties
-	// Table view
-	@IBOutlet fileprivate var tableView: UITableView!
 	// Menu delegate
 	weak var menuDelegate: SideMenuVCDelegate? = nil
 	// MARK: - Private properties
+	// Table view
+	@IBOutlet private var tableView: UITableView!
+	// Number of table rows
 	private let numberOfRows = 4
 
 	override func viewDidLoad()

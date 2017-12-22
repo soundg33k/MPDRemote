@@ -23,7 +23,7 @@
 import Foundation
 
 
-public final class Message : CustomStringConvertible
+final class Message : CustomStringConvertible
 {
 	public enum MessageType
 	{

@@ -56,7 +56,7 @@ final class AudioOutputsTVC : UITableViewController
 	}
 
 	// MARK: - Private
-	fileprivate func refreshOutputs()
+	private func refreshOutputs()
 	{
 		PlayerController.shared.getAvailableOutputs {
 			self.outputs = PlayerController.shared.outputs

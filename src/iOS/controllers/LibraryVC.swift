@@ -27,30 +27,32 @@ final class LibraryVC : UIViewController, CenterViewController
 {
 	// MARK: - Private properties
 	// Albums view
-	@IBOutlet fileprivate var collectionView: MusicalCollectionView!
+	@IBOutlet private var collectionView: MusicalCollectionView!
 	// Top constraint for collection view
-	@IBOutlet fileprivate var topConstraint: NSLayoutConstraint!
+	@IBOutlet private var topConstraint: NSLayoutConstraint!
+	// Search view
+	private var searchView: UIView! = nil
 	// Search bar
-	fileprivate var searchView: UIView! = nil
-	fileprivate var searchBar: UISearchBar! = nil
+	private var searchBar: UISearchBar! = nil
 	// Button in the navigationbar
-	fileprivate var titleView: UIButton! = nil
+	private var titleView: UIButton! = nil
 	// Should show the search view, flag
-	fileprivate var searchBarVisible = false
+	private var searchBarVisible = false
 	// Is currently searching, flag
-	fileprivate var searching = false
+	private var searching = false
 	// Long press gesture is recognized, flag
-	fileprivate var longPressRecognized = false
+	private var longPressRecognized = false
 	// View to change the type of items in the collection view
-	fileprivate var _typeChoiceView: TypeChoiceView! = nil
+	private var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
-	fileprivate var _displayType = DisplayType(rawValue: Settings.shared.integer(forKey: kNYXPrefDisplayType))!
+	private var _displayType = DisplayType(rawValue: Settings.shared.integer(forKey: kNYXPrefDisplayType))!
 	// Audio server changed
-	fileprivate var _serverChanged = false
+	private var _serverChanged = false
 	// Previewing context for peek & pop
-	fileprivate var _previewingContext: UIViewControllerPreviewing! = nil
+	private var _previewingContext: UIViewControllerPreviewing! = nil
 	// Long press gesture for devices without force touch
-	fileprivate var _longPress: UILongPressGestureRecognizer! = nil
+	private var _longPress: UILongPressGestureRecognizer! = nil
+	// MARK: - Public properties
 	// Delegate
 	var containerDelegate: ContainerVCDelegate? = nil
 
@@ -657,7 +659,7 @@ final class LibraryVC : UIViewController, CenterViewController
 	}
 
 	// MARK: - Private
-	fileprivate func showNavigationBar(animated: Bool = true)
+	private func showNavigationBar(animated: Bool = true)
 	{
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: .curveEaseOut, animations: {
 			self.searchBar.resignFirstResponder()
@@ -667,7 +669,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		})
 	}
 
-	fileprivate func updateNavigationTitle()
+	private func updateNavigationTitle()
 	{
 		let p = NSMutableParagraphStyle()
 		p.alignment = .center

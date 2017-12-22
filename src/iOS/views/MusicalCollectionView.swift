@@ -149,7 +149,7 @@ final class MusicalCollectionView : UICollectionView
 	// Delegate
 	weak var myDelegate: MusicalCollectionViewDelegate!
 	// Cover download operations
-	fileprivate var _downloadOperations = [String : Operation]()
+	private var _downloadOperations = [String : Operation]()
 
 	required init?(coder aDecoder: NSCoder)
 	{
@@ -165,7 +165,7 @@ final class MusicalCollectionView : UICollectionView
 	}
 
 	// MARK: - Private
-	fileprivate func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
+	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
 	{
 		let key = album.uniqueIdentifier
 		if let cop = _downloadOperations[key] as! CoverOperation?
@@ -191,7 +191,7 @@ final class MusicalCollectionView : UICollectionView
 		return downloadOperation
 	}
 
-	fileprivate func setCollectionLayout(animated: Bool)
+	private func setCollectionLayout(animated: Bool)
 	{
 		UIView.animate(withDuration: animated ? 0.2 : 0) { () -> Void in
 			self.collectionViewLayout.invalidateLayout()

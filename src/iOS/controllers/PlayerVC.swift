@@ -54,7 +54,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	@IBOutlet private var lblElapsedDuration: UILabel! = nil
 	// Track artist name
 	@IBOutlet private var lblRemainingDuration: UILabel! = nil
-	//
+	// Bit depth & samplerate
 	@IBOutlet private var lblTrackInformation: UILabel! = nil
 	// Volume control
 	@IBOutlet private var sliderVolume: UISlider! = nil
@@ -63,7 +63,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// High volume image
 	@IBOutlet private var btnVolumeHi: UIButton! = nil
 	// Album tracks view
-	@IBOutlet fileprivate var trackListView: TracksListTableView! = nil
+	@IBOutlet private var trackListView: TracksListTableView! = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()

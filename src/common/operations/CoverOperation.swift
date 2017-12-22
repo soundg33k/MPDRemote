@@ -134,7 +134,7 @@ final class CoverOperation : Operation
 	}
 
 	// MARK: - Private
-	fileprivate func processData()
+	private func processData()
 	{
 		guard let cover = UIImage(data: incomingData) else
 		{

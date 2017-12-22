@@ -37,9 +37,9 @@ final class ZeroConfBrowserTVC : UITableViewController
 
 	// MARK: - Private properties
 	// Zeroconf explorer
-	fileprivate var _explorer: ZeroConfExplorer! = nil
+	private var _explorer: ZeroConfExplorer! = nil
 	// List of servers found
-	fileprivate var _servers = [AudioServer]()
+	private var _servers = [AudioServer]()
 
 	// MARK: - Initializer
 	required init?(coder aDecoder: NSCoder)
@@ -95,7 +95,7 @@ final class ZeroConfBrowserTVC : UITableViewController
 	}
 
 	// MARK: - Private
-	fileprivate func currentAudioServer() -> AudioServer?
+	private func currentAudioServer() -> AudioServer?
 	{
 		if let serverAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
 		{

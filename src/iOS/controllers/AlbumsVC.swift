@@ -30,16 +30,16 @@ final class AlbumsVC : UIViewController
 	@IBOutlet var collectionView: MusicalCollectionView!
 	// Selected artist
 	var artist: Artist!
-	// Previewing context for peek & pop
-	fileprivate var _previewingContext: UIViewControllerPreviewing! = nil
-	// Long press gesture for devices without force touch
-	fileprivate var _longPress: UILongPressGestureRecognizer! = nil
-	// Long press gesture is recognized, flag
-	fileprivate var longPressRecognized = false
 
 	// MARK: - Private properties
 	// Label in the navigationbar
 	private var titleView: UILabel! = nil
+	// Previewing context for peek & pop
+	private var _previewingContext: UIViewControllerPreviewing! = nil
+	// Long press gesture for devices without force touch
+	private var _longPress: UILongPressGestureRecognizer! = nil
+	// Long press gesture is recognized, flag
+	private var longPressRecognized = false
 
 	// MARK: - Initializers
 	required init?(coder aDecoder: NSCoder)
@@ -208,7 +208,7 @@ final class AlbumsVC : UIViewController
 		titleView.attributedText = attrs
 	}
 
-	fileprivate func updateLongpressState()
+	private func updateLongpressState()
 	{
 		if traitCollection.forceTouchCapability == .available
 		{

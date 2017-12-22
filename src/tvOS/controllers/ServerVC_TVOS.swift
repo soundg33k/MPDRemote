@@ -30,29 +30,29 @@ final class ServerVC_TVOS : UIViewController
 {
 	// MARK: - Private properties
 	// MPD conf tablebiew
-	@IBOutlet fileprivate var viewMPD: UIView!
+	@IBOutlet private var viewMPD: UIView!
 	// WEB conf tablebiew
-	@IBOutlet fileprivate var viewWEB: UIView!
+	@IBOutlet private var viewWEB: UIView!
 	// MPD label
 	@IBOutlet private var lblMPD: UILabel!
 	// Covers label
 	@IBOutlet private var lblWEB: UILabel!
 	// MPD Server name
-	@IBOutlet fileprivate var tfMPDName: UITextField!
+	@IBOutlet private var tfMPDName: UITextField!
 	// MPD Server hostname
-	@IBOutlet fileprivate var tfMPDHostname: UITextField!
+	@IBOutlet private var tfMPDHostname: UITextField!
 	// MPD Server port
-	@IBOutlet fileprivate var tfMPDPort: UITextField!
+	@IBOutlet private var tfMPDPort: UITextField!
 	// MPD Server password
-	@IBOutlet fileprivate var tfMPDPassword: UITextField!
+	@IBOutlet private var tfMPDPassword: UITextField!
 	// MPD Output
-	@IBOutlet fileprivate var tfMPDOutput: UITextField!
+	@IBOutlet private var tfMPDOutput: UITextField!
 	// WEB Server hostname
-	@IBOutlet fileprivate var tfWEBHostname: UITextField!
+	@IBOutlet private var tfWEBHostname: UITextField!
 	// WEB Server port
-	@IBOutlet fileprivate var tfWEBPort: UITextField!
+	@IBOutlet private var tfWEBPort: UITextField!
 	// Cover name
-	@IBOutlet fileprivate var tfWEBCoverName: UITextField!
+	@IBOutlet private var tfWEBCoverName: UITextField!
 	// Cell Labels
 	@IBOutlet private var lblMPDName: UILabel! = nil
 	@IBOutlet private var lblMPDHostname: UILabel! = nil
@@ -306,7 +306,7 @@ final class ServerVC_TVOS : UIViewController
 	}
 
 	// MARK: - Private
-	fileprivate func updateFields()
+	private func updateFields()
 	{
 		if let server = mpdServer
 		{
@@ -341,7 +341,7 @@ final class ServerVC_TVOS : UIViewController
 		//updateCacheLabel()
 	}
 
-	fileprivate func clearCache(confirm: Bool)
+	private func clearCache(confirm: Bool)
 	{
 		let clearBlock = { () -> Void in
 			let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
@@ -379,7 +379,7 @@ final class ServerVC_TVOS : UIViewController
 		}
 	}
 
-	fileprivate func updateCacheLabel()
+	private func updateCacheLabel()
 	{
 		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return}
 		DispatchQueue.global().async {
@@ -390,7 +390,7 @@ final class ServerVC_TVOS : UIViewController
 		}
 	}
 
-	fileprivate func updateOutputsLabel()
+	private func updateOutputsLabel()
 	{
 		PlayerController.shared.getAvailableOutputs {
 			DispatchQueue.main.async {
