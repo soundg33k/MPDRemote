@@ -162,8 +162,6 @@ final class MusicalCollectionView : UICollectionView
 		self.layoutType = .collection
 
 		self.setCollectionLayout(animated: false)
-
-		NotificationCenter.default.addObserver(self, selector: #selector(collectionViewsLayoutDidChangeNotification(_:)), name: .collectionViewsLayoutDidChange, object: nil)
 	}
 
 	// MARK: - Private
@@ -208,13 +206,6 @@ final class MusicalCollectionView : UICollectionView
 			}
 		}
 	}
-
-	// MARK: - Notifications
-	@objc public func collectionViewsLayoutDidChangeNotification(_ notification: Notification)
-	{
-		//let layoutAsTable = Settings.shared.bool(forKey: kNYXPrefCollectionViewLayoutTable)
-		//self.layoutType = layoutAsTable ? .table : .collection
-	}
 }
 
 // MARK: - UICollectionViewDataSource
@@ -242,6 +233,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		cell.layer.rasterizationScale = UIScreen.main.scale
 		cell.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
 		cell.label.backgroundColor = collectionView.backgroundColor
+		cell.layoutList = self.layoutType == .table
 
 		// Sanity check
 		let searching = myDelegate.isSearching(actively: false)
@@ -259,6 +251,21 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		{
 			case .albums:
 				_handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
+				if String.isNullOrWhiteSpace((entity as! Album).artist) == true
+				{
+					MusicDataSource.shared.getMetadatasForAlbum((entity as! Album), callback: {
+						DispatchQueue.main.async {
+							if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
+							{
+								c.detailLabel.text = (entity as! Album).artist
+							}
+						}
+					})
+				}
+				else
+				{
+					cell.detailLabel.text = (entity as! Album).artist
+				}
 			case .artists:
 				_configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
 			case .albumsartists:

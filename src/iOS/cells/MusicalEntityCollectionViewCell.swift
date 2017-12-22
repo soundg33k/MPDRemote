@@ -40,6 +40,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 			imageView.image = image
 		}
 	}
+	var layoutList = false
 	// Flag to indicate that the cell is being long pressed
 	var longPressed: Bool = false
 	{
@@ -149,7 +150,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 
 	override func layoutSubviews()
 	{
-		if frame.width == UIScreen.main.bounds.width
+		if layoutList
 		{
 			self.imageView.frame = CGRect(.zero, frame.height, frame.height)
 			self.label.frame = CGRect(self.imageView.width + 4.0, (frame.height - 20.0) / 2.0, frame.width - self.imageView.width - 8.0, 20.0)
@@ -157,7 +158,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 			self.label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 14.0)
 			self.detailLabel.frame = CGRect(self.imageView.width + 4.0, frame.height - 24.0, frame.width - self.imageView.width - 8.0, 20.0)
 			self.detailLabel.textAlignment = .left
-			self.detailLabel.isHidden = true
+			self.detailLabel.isHidden = false
 		}
 		else
 		{
@@ -176,12 +177,12 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 		{
 			if isSelected
 			{
-				label.font = UIFont(name: "AvenirNextCondensed-DemiBold", size: 10.0)
+				label.font = UIFont(name: "AvenirNextCondensed-DemiBold", size: layoutList ? 14.0 : 10.0)
 				imageView.layer.borderWidth = 0.5
 			}
 			else
 			{
-				label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
+				label.font = UIFont(name: "AvenirNextCondensed-Medium", size: layoutList ? 14.0 : 10.0)
 				imageView.layer.borderWidth = 0.0
 			}
 		}
@@ -193,12 +194,12 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 		{
 			if isHighlighted
 			{
-				label.font = UIFont(name: "AvenirNextCondensed-DemiBold", size: 10.0)
+				label.font = UIFont(name: "AvenirNextCondensed-DemiBold", size: layoutList ? 14.0 : 10.0)
 				imageView.layer.borderWidth = 0.5
 			}
 			else
 			{
-				label.font = UIFont(name: "AvenirNextCondensed-Medium", size: 10.0)
+				label.font = UIFont(name: "AvenirNextCondensed-Medium", size: layoutList ? 14.0 : 10.0)
 				imageView.layer.borderWidth = 0.0
 			}
 		}
