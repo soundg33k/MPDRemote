@@ -180,6 +180,50 @@ final class PlaylistDetailVC : UIViewController
 		}
 	}
 
+	private func renamePlaylistAction()
+	{
+		let alertController = UIAlertController(title: "\(NYXLocalizedString("lbl_rename_playlist")) \(playlist.name)", message: nil, preferredStyle: .alert)
+
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default, handler: { alert -> Void in
+			let textField = alertController.textFields![0] as UITextField
+
+			if String.isNullOrWhiteSpace(textField.text)
+			{
+				let errorAlert = UIAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
+				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: { alert -> Void in
+				}))
+				self.present(errorAlert, animated: true, completion: nil)
+			}
+			else
+			{
+				MusicDataSource.shared.renamePlaylist(playlist: self.playlist, newName: textField.text!) { (result: ActionResult<Void>) in
+					if result.succeeded
+					{
+						MusicDataSource.shared.getListForDisplayType(.playlists) {
+							DispatchQueue.main.async {
+								self.updateNavigationTitle()
+							}
+						}
+					}
+					else
+					{
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: result.messages.first!)
+						}
+					}
+				}
+			}
+		}))
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel, handler: nil))
+
+		alertController.addTextField(configurationHandler: { (textField) -> Void in
+			textField.placeholder = NYXLocalizedString("lbl_rename_playlist_placeholder")
+			textField.textAlignment = .left
+		})
+
+		self.present(alertController, animated: true, completion: nil)
+	}
+
 	// MARK: - Buttons actions
 	@objc func toggleRandomAction(_ sender: Any?)
 	{
@@ -293,6 +337,11 @@ extension PlaylistDetailVC
 			MiniPlayerView.shared.stayHidden = false
 		}
 
+		let renameAction = UIPreviewAction(title: NYXLocalizedString("lbl_rename_playlisr"), style: .default) { (action, viewController) in
+			self.renamePlaylistAction()
+			MiniPlayerView.shared.stayHidden = false
+		}
+
 		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action, viewController) in
 			MusicDataSource.shared.deletePlaylist(name: self.playlist.name) { (result: ActionResult<Void>) in
 				if result.succeeded == false
@@ -303,6 +352,6 @@ extension PlaylistDetailVC
 			MiniPlayerView.shared.stayHidden = false
 		}
 
-		return [playAction, shuffleAction, deleteAction]
+		return [playAction, shuffleAction, renameAction, deleteAction]
 	}
 }

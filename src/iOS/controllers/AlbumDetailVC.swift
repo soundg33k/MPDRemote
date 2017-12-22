@@ -290,23 +290,6 @@ extension AlbumDetailVC : UITableViewDelegate
 
 		return UISwipeActionsConfiguration(actions: [action])
 	}
-
-	/*func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
-	{
-		// Dummy cell
-		guard let tracks = album.tracks else { return nil }
-		if indexPath.row >= tracks.count
-		{
-			return nil
-		}
-
-		let addToPlaylist = UITableViewRowAction(style: .normal, title: "Add to playlist") { (action, indexPath) in
-		}
-
-		addToPlaylist.backgroundColor = .blue
-
-		return [addToPlaylist]
-	}*/
 }
 
 extension AlbumDetailVC : UIPopoverPresentationControllerDelegate
