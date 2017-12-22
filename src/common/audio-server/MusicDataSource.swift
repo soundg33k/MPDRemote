@@ -405,6 +405,20 @@ final class MusicDataSource
 		}
 	}
 
+	func renamePlaylist(playlist: Playlist, newName: String, _ callback: @escaping (ActionResult<Void>) -> Void)
+	{
+		if _connection == nil || _connection.isConnected == false
+		{
+			return
+		}
+
+		_queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			let result = strongSelf._connection.renamePlaylist(playlist: playlist, newName: newName)
+			callback(result)
+		}
+	}
+
 	func addTrackToPlaylist(playlist: Playlist, track: Track, _ callback: @escaping (ActionResult<Void>) -> Void)
 	{
 		if _connection == nil || _connection.isConnected == false

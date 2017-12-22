@@ -8,6 +8,7 @@
 "lbl_enabled" = "Activé";
 "lbl_disabled" = "Désactivé";
 "lbl_is" = "est";
+"lbl_save" = "Enregistrer";
 
 "lbl_track" = "piste";
 "lbl_tracks" = "pistes";
@@ -103,6 +104,8 @@
 "lbl_playlist_create_emptyname" = "Le nom de la liste ne doit pas être vide";
 "lbl_create_playlist_placeholder" = "Nouvelle liste";
 "lbl_delete_playlist" = "Supprimer la liste";
+"lbl_rename_playlist" = "Renommer la liste";
+"lbl_rename_playlist_placeholder" = "Nouveau nom";
 "lbl_playlist_track_added" = "ajouté à";
 
 "lbl_message_no_mpd_server" = "Pas de serveur MPD configuré";

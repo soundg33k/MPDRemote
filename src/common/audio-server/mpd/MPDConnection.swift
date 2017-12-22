@@ -578,6 +578,16 @@ final class MPDConnection : AudioServerConnection
 		return ActionResult(succeeded: false, message: getLastErrorMessageForConnection())
 	}
 
+	func renamePlaylist(playlist: Playlist, newName: String) -> ActionResult<Void>
+	{
+		let ret = mpd_run_rename(_connection, playlist.name, newName)
+		if ret
+		{
+			return ActionResult(succeeded: ret)
+		}
+		return ActionResult(succeeded: false, message: getLastErrorMessageForConnection())
+	}
+
 	func addTrackToPlaylist(playlist: Playlist, track: Track) -> ActionResult<Void>
 	{
 		let ret = mpd_run_playlist_add(_connection, playlist.name, track.uri)

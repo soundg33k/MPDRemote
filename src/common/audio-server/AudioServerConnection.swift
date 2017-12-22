@@ -78,6 +78,7 @@ protocol AudioServerConnection
 	func getSongsOfCurrentQueue() -> ActionResult<[Track]>
 	func createPlaylist(name: String) -> ActionResult<Void>
 	func deletePlaylist(name: String) -> ActionResult<Void>
+	func renamePlaylist(playlist: Playlist, newName: String) -> ActionResult<Void>
 	func addTrackToPlaylist(playlist: Playlist, track: Track) -> ActionResult<Void>
 	func removeTrackFromPlaylist(playlist: Playlist, track: Track) -> ActionResult<Void>
 

@@ -8,6 +8,7 @@
 "lbl_enabled" = "Enabled";
 "lbl_disabled" = "Disabled";
 "lbl_is" = "is";
+"lbl_save" = "Save";
 
 "lbl_track" = "track";
 "lbl_tracks" = "tracks";
@@ -103,6 +104,8 @@
 "lbl_playlist_create_emptyname" = "The name of the playlist can't be empty";
 "lbl_create_playlist_placeholder" = "New playlist";
 "lbl_delete_playlist" = "Delete playlist";
+"lbl_rename_playlist" = "Rename playlist";
+"lbl_rename_playlist_placeholder" = "New playlist name";
 "lbl_playlist_track_added" = "added to";
 
 "lbl_message_no_mpd_server" = "No MPD server configured";
