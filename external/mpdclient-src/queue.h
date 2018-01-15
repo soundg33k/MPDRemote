@@ -38,6 +38,7 @@
 #define MPD_QUEUE_H
 
 #include "compiler.h"
+#include "tag.h"
 
 #include <stdbool.h>
 
@@ -124,6 +125,23 @@ mpd_send_queue_changes_meta(struct mpd_connection *connection,
 			    unsigned version);
 
 /**
+ * Same as mpd_send_queue_changes_meta(), but limit the result to a
+ * range.
+ *
+ * @param connection the connection to MPD
+ * @param start the start position of the range (including)
+ * @param end the end position of the range (excluding); the special
+ * value "(unsigned)-1" makes the end of the range open
+ * @return true on success, false on error
+ *
+ * @since libmpdclient 2.12
+ */
+bool
+mpd_send_queue_changes_meta_range(struct mpd_connection *connection,
+				  unsigned version,
+				  unsigned start, unsigned end);
+
+/**
  * A more bandwidth efficient version of the
  * mpd_send_queue_changes_meta().  It only returns the position and id
  * of changed songs.  The MPD command is called "plchangesposid".
@@ -135,6 +153,23 @@ mpd_send_queue_changes_meta(struct mpd_connection *connection,
 bool
 mpd_send_queue_changes_brief(struct mpd_connection *connection,
 			     unsigned version);
+
+/**
+ * Same as mpd_send_queue_changes_brief(), but limit the result to a
+ * range.
+ *
+ * @param connection the connection to MPD
+ * @param start the start position of the range (including)
+ * @param end the end position of the range (excluding); the special
+ * value "(unsigned)-1" makes the end of the range open
+ * @return true on success, false on error
+ *
+ * @since libmpdclient 2.12
+ */
+bool
+mpd_send_queue_changes_brief_range(struct mpd_connection *connection,
+				   unsigned version,
+				   unsigned start, unsigned end);
 
 /**
  * Receives a response element of mpd_send_queue_changes_brief().
@@ -450,6 +485,82 @@ mpd_send_swap_id(struct mpd_connection *connection, unsigned id1, unsigned id2);
  */
 bool
 mpd_run_swap_id(struct mpd_connection *connection, unsigned id1, unsigned id2);
+
+/**
+ * Adds a tag to the specified song (command "addtagid").
+ *
+ * @param connection the connection to MPD
+ * @param id the id of the song
+ * @param tag the tag to be added
+ * @param value the tag value
+ *
+ * @since libmpdclient 2.12, MPD 0.19
+ */
+bool
+mpd_send_add_tag_id(struct mpd_connection *connection, unsigned id,
+		    enum mpd_tag_type tag, const char *value);
+
+/**
+ * Shortcut for mpd_send_add_tag_id() and mpd_response_finish().
+ *
+ * @param connection the connection to MPD
+ * @param id the id of the song
+ * @param tag the tag to be added
+ * @param value the tag value
+ *
+ * @since libmpdclient 2.12, MPD 0.19
+ */
+bool
+mpd_run_add_tag_id(struct mpd_connection *connection, unsigned id,
+		   enum mpd_tag_type tag, const char *value);
+
+/**
+ * Remove a tag from the specified song (command "cleartagid").
+ *
+ * @param connection the connection to MPD
+ * @param id the id of the song
+ * @param tag the tag to be cleared
+ *
+ * @since libmpdclient 2.12, MPD 0.19
+ */
+bool
+mpd_send_clear_tag_id(struct mpd_connection *connection, unsigned id,
+		      enum mpd_tag_type tag);
+
+/**
+ * Shortcut for mpd_send_clear_tag_id() and mpd_response_finish().
+ *
+ * @param connection the connection to MPD
+ * @param id the id of the song
+ * @param tag the tag to be cleared
+ *
+ * @since libmpdclient 2.12, MPD 0.19
+ */
+bool
+mpd_run_clear_tag_id(struct mpd_connection *connection, unsigned id,
+		     enum mpd_tag_type tag);
+
+/**
+ * Remove all tags from the specified song (command "cleartagid").
+ *
+ * @param connection the connection to MPD
+ * @param id the id of the song
+ *
+ * @since libmpdclient 2.12, MPD 0.19
+ */
+bool
+mpd_send_clear_all_tags_id(struct mpd_connection *connection, unsigned id);
+
+/**
+ * Shortcut for mpd_send_clear_all_tags_id() and mpd_response_finish().
+ *
+ * @param connection the connection to MPD
+ * @param id the id of the song
+ *
+ * @since libmpdclient 2.12, MPD 0.19
+ */
+bool
+mpd_run_clear_all_tags_id(struct mpd_connection *connection, unsigned id);
 
 /**
  * Change the priority of the specified song.

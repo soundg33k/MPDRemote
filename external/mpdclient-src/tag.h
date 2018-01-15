@@ -64,8 +64,12 @@ enum mpd_tag_type
 	MPD_TAG_MUSICBRAINZ_TRACKID,
 	MPD_TAG_MUSICBRAINZ_RELEASETRACKID,
 
+	MPD_TAG_ORIGINAL_DATE,
+
 	MPD_TAG_ARTIST_SORT,
 	MPD_TAG_ALBUM_ARTIST_SORT,
+
+	MPD_TAG_ALBUM_SORT,
 
 	/* IMPORTANT: the ordering of tag types above must be
 	   retained, or else the libmpdclient ABI breaks */

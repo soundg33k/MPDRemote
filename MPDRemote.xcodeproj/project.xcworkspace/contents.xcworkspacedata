@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/nyxouf/Dropbox/Projects/volumios/MPDRemote.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>
